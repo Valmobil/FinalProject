@@ -9,10 +9,23 @@
     "react-scripts": "2.1.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p watch-styles-sass start-js",
+    "build": "npm run stylelint-build && react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "stylelint-dev": "stylelint 'src/**/*.scss' --cache --cache-location './.stylelintcache'; exit 0",
+    "stylelint-build": "stylelint 'src/**/*.scss'",
+    "stylelint-fix-sass": "stylelint --fix 'src/**/*.scss'",
+    "watch-styles-sass": "npm-watch"
+  },
+  "watch": {
+    "stylelint-dev": {
+      "patterns": [
+        "/src/**/*.scss"
+      ],
+      "extensions": "scss"
+    }
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -26,4 +39,5 @@
   "devDependencies": {
     "standard": "^10.0.3"
   }
+
 }
