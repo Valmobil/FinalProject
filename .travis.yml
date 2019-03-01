@@ -1,0 +1,21 @@
+#Java part
+
+dist: trusty
+
+  language: java
+
+  jdk:
+    - oraclejdk8
+
+  cache:
+    directories:
+      - $HOME/.m2
+      - ./src/frontend/node_modules/
+
+  script:
+    - mvn clean test
+    - npm run build --prefix ./src/frontend/
+
+  #Fromtend part
+  before_script:
+    - npm install --prefix ./src/frontend/
