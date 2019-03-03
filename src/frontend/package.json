@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
     "auth0-js": "^9.10.0",
     "jwt-decode": "^2.2.0",
     "node-sass": "^4.11.0",
