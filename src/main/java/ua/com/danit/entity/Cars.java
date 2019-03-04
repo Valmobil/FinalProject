@@ -13,11 +13,11 @@ import javax.persistence.*;
 @Builder
 @Entity
 public class Cars {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long carsId;
-    @ManyToOne
-    @JoinColumn(name = "users_id")
-    private long carsUsersId;
-    private String carsName;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long carsId;
+  @ManyToOne
+  @JoinColumn(name = "users_id")
+  private Users user;
+  private String carsName;
 }

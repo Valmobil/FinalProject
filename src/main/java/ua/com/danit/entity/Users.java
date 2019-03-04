@@ -16,15 +16,14 @@ import java.util.List;
 @SuperBuilder
 @Entity
 public class Users {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long usersId;
-    private String usersName;
-    private String usersPhone;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String usersPassword;
-    private String usersMail;
-//    @OneToMany
-//    @JoinColumn(name = "cars_users_Id")
-//    private List<Cars> usersCars;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long usersId;
+  private String usersName;
+  private String usersPhone;
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private String usersPassword;
+  private String usersMail;
+  @OneToMany(mappedBy = "user")
+  private List<Cars> usersCars;
 }

@@ -11,20 +11,20 @@ import java.util.List;
 
 @Service
 public class UsersService {
-    private UsersRepository usersRepository;
+  private UsersRepository usersRepository;
 
-    @Autowired
-    public UsersService(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
-    }
+  @Autowired
+  public UsersService(UsersRepository usersRepository) {
+    this.usersRepository = usersRepository;
+  }
 
 //    public Users createNewUsers(Users users) {
 //        return usersRepository.save(users);
 //    }
 
-    public Users getUsersById(Long userId) {
-        return usersRepository.getOne(userId);
-    }
+  public Users getUsersById(Long userId) {
+    return usersRepository.getOne(userId);
+  }
 
 //    public List<Users> findAll() {
 //        return (usersRepository.findAll();

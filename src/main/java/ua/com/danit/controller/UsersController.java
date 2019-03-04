@@ -8,23 +8,23 @@ import ua.com.danit.service.UsersService;
 @RestController
 @RequestMapping("api/users")
 public class UsersController {
-    private UsersService usersService;
+  private UsersService usersService;
 
-    @Autowired
-    public UsersController(UsersService usersService) {
-        this.usersService = usersService;
-    }
+  @Autowired
+  public UsersController(UsersService usersService) {
+    this.usersService = usersService;
+  }
 
-    @PostMapping("login")
-    public Users postLoginReturnUsers(@RequestBody Users users) {
-        //Write check in DB the user existance and return users data
-        return users;
-    }
+  @PostMapping("login")
+  public Users postLoginReturnUsers(@RequestBody Users users) {
+    //Write check in DB the user existance and return users data
+    return users;
+  }
 
-    @GetMapping("current")
-    public Users getReturnCurrentUsers(@RequestBody Users users) {
-        //Write check in DB the user existence and return users data
-        return usersService.getUsersById(1L);
-    }
+  @GetMapping("current")
+  public Users getReturnCurrentUsers(@RequestBody Users users) {
+    //Write check in DB the user existence and return users data
+    return usersService.getUsersById(1L);
+  }
 
 }

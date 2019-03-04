@@ -13,9 +13,9 @@ import java.util.Date;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class Auditable {
-    @CreatedDate
-    private Date createdDate;
+  @CreatedDate
+  private Date createdDate;
 
-    @LastModifiedDate
-    private Date modifiedDate;
+  @LastModifiedDate
+  private Date modifiedDate;
 }
