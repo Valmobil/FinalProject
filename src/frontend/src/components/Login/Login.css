@@ -4,15 +4,14 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    margin-top: 100px;
+    margin-top: 70px;
 }
-.MuiInputBase-input-100, .MuiInputBase-input-100:focus{
-    color: #fff;
+.MuiInputBase-root-158, .MuiInputBase-root-158:focus{
+    color: #fff!important;
 }
 .MuiButton-label-30{
     margin: 40px auto 20px auto;
 }
-.login-span{
-    color: #fff;
-
+.MuiFormGroup-root-29{
+    margin-top: 30px;
 }

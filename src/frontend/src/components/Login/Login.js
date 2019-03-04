@@ -7,12 +7,16 @@ import orange from '@material-ui/core/colors/orange';
 import purple from '@material-ui/core/colors/purple';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import './Login.css'
 
 
 class Login extends Component{
     state = {
         toggleLogin: 0,
+        radio: 'passenger',
         login: '',
         password: '',
         confirmPassword: '',
@@ -22,11 +26,16 @@ class Login extends Component{
         this.setState({ toggleLogin });
     };
 
+    handleRadio = event => {
+        this.setState({ radio: event.target.value });
+    };
+
     handleInput = (e) => {
         this.setState({[e.target.name]: e.target.value})
     }
     render() {
-        const { login, password, confirmPassword, toggleLogin} = this.state;
+        const { login, password, confirmPassword, toggleLogin, radio } = this.state;
+        console.log(radio);
         return (
             <div className="login-container">
                 <MuiThemeProvider theme={theme}>
@@ -42,6 +51,27 @@ class Login extends Component{
                         <Tab label="Register"/>
                     </Tabs>
 
+
+                    <RadioGroup
+                        aria-label="position"
+                        name="position"
+                        value={this.state.radio}
+                        onChange={this.handleRadio}
+                        row
+                    >
+                        <FormControlLabel
+                            value="passenger"
+                            control={<Radio color="primary" />}
+                            label="passenger"
+                            labelPlacement="top"
+                        />
+                        <FormControlLabel
+                            value="driver"
+                            control={<Radio color="primary" />}
+                            label="driver"
+                            labelPlacement="top" color="primary"
+                        />
+                    </RadioGroup>
                     <Button style={style.button} onClick={this.props.auth.login}>Log in with Google</Button>
                     <span>or</span>
                     <TextField
@@ -93,6 +123,7 @@ const style={
     },
     button: {
         color: '#ff9800',
+        marginTop: '30px'
     },
     submit:{
         height: '30px',
