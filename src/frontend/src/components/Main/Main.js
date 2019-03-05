@@ -9,14 +9,15 @@ class Main extends Component{
         this.props.logOut()
     }
     render(){
-    const {login, auth} = this.props.users
-    return(
-        <>
-        <div>Hello, {login}</div>
-        <button onClick={() => this.signOut(auth)}>Log out</button>
-        </>
-    )
-  }
+        console.log(this.props.users.user)
+        const {user: {login}, auth} = this.props.users
+        return(
+            <>
+                <div>Hello, {login}</div>
+                <button onClick={() => this.signOut(auth)}>Log out</button>
+            </>
+        )
+    }
 }
 
 const mapStateToProps = (state) => {

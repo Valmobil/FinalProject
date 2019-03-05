@@ -25,10 +25,12 @@ firebase.initializeApp({
 class Login extends Component{
     state = {
         // role: 'passenger',
+        user: {
+            login: '',
+            password: '',
+            confirmPassword: ''
+        },
         toggleLogin: 0,
-        login: '',
-        password: '',
-        confirmPassword: '',
         isSigned: false,
     };
 
@@ -52,15 +54,16 @@ class Login extends Component{
     // };
 
     handleInput = (e) => {
-        this.setState({[e.target.name]: e.target.value})
+        this.setState({user: {...this.state.user, [e.target.name]: e.target.value}})
     }
 
     componentDidMount (){
-        firebase.auth().onAuthStateChanged(user => {
-            if (user){
-                this.setState({ login: firebase.auth().currentUser.displayName, password: 'signed-in-by-social' })
-                // console.log("user", user)
-                this.props.setAuthorization(this.state)
+        firebase.auth().onAuthStateChanged(authenticated => {
+            if (authenticated){
+                const user = {login: firebase.auth().currentUser.displayName, password: 'signed-in-by-social'}
+                this.setState({ user})
+                // console.log("authenticated", authenticated)
+                this.props.setAuthorization(this.state.user)
                 this.props.setSocialAuth(firebase.auth())
             }
         })
@@ -68,7 +71,8 @@ class Login extends Component{
 
     render() {
         const { classes } = this.props;
-        const { login, password, confirmPassword, toggleLogin, role } = this.state;
+        const { toggleLogin, user: {login, password, confirmPassword} } = this.state;
+
         let allChecks = ((toggleLogin === 0 && login !== '' && password !== '') || (toggleLogin === 1 && login !== '' && password !== '' && password === confirmPassword));
         return (
             <div className="login-container">
@@ -85,31 +89,34 @@ class Login extends Component{
                         <Tab label="Register"/>
                     </Tabs>
                     {/*<RadioGroup*/}
-                        {/*aria-label="position"*/}
-                        {/*name="position"*/}
-                        {/*value={role}*/}
-                        {/*onChange={this.handleRadio}*/}
-                        {/*row*/}
-                        {/*style={style.radio}*/}
+                    {/*aria-label="position"*/}
+                    {/*name="position"*/}
+                    {/*value={role}*/}
+                    {/*onChange={this.handleRadio}*/}
+                    {/*row*/}
+                    {/*style={style.radio}*/}
                     {/*>*/}
-                        {/*<FormControlLabel*/}
-                            {/*value="passenger"*/}
-                            {/*control={<Radio color="primary" />}*/}
-                            {/*label="passenger"*/}
-                            {/*labelPlacement="top"*/}
-                        {/*/>*/}
-                        {/*<FormControlLabel*/}
-                            {/*value="driver"*/}
-                            {/*control={<Radio color="primary" />}*/}
-                            {/*label="driver"*/}
-                            {/*labelPlacement="top" color="primary"*/}
-                        {/*/>*/}
+                    {/*<FormControlLabel*/}
+                    {/*value="passenger"*/}
+                    {/*control={<Radio color="primary" />}*/}
+                    {/*label="passenger"*/}
+                    {/*labelPlacement="top"*/}
+                    {/*/>*/}
+                    {/*<FormControlLabel*/}
+                    {/*value="driver"*/}
+                    {/*control={<Radio color="primary" />}*/}
+                    {/*label="driver"*/}
+                    {/*labelPlacement="top" color="primary"*/}
+                    {/*/>*/}
                     {/*</RadioGroup>*/}
+
                     {!this.state.isSigned &&
-                    <StyledFirebaseAuth
+                    <div className="social-buttons">
+                        <StyledFirebaseAuth
                         uiConfig={this.uiConfig}
                         firebaseAuth={firebase.auth()}
-                    />
+                        />
+                    </div>
                     }
                     <span>or</span>
                     <TextField
@@ -153,7 +160,7 @@ class Login extends Component{
                         }}
                     />
                     }
-                    {allChecks && <Button onClick={() => this.props.setAuthorization(this.state)} style={style.button}>Submit</Button>}
+                    {allChecks && <Button onClick={() => this.props.setAuthorization(this.state.user)} style={style.button}>Submit</Button>}
                 </MuiThemeProvider>
             </div>
         )

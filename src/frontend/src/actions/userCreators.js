@@ -1,10 +1,11 @@
-import { SET_AUTH, SET_LOGIN, SET_PASS, SET_ROLE, SET_SOCIAL_AUTH } from './users'
-
+import { SET_AUTH, SET_USER, SET_SOCIAL_AUTH } from './users'
+import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
+    const user = {login: state.login, password: state.password}
     dispatch({type: SET_AUTH, payload: true})
-    dispatch({type: SET_LOGIN, payload: state.login})
-    dispatch({type: SET_PASS, payload: state.password})
+    dispatch({type: SET_USER, payload: user})
+    axios.post('http://localhost:9000/api/users/login', JSON.stringify(user))
 }
 //**********************
 
