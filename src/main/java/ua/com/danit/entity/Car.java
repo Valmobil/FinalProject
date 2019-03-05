@@ -18,18 +18,17 @@ import javax.persistence.ManyToOne;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-
 class Car extends Auditable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long carId;
   private String carName;
   private String carColour;
-  private String carLinkToPhoto;
+  private String carPhoto;
   @ManyToOne
   @JoinColumn(name = "user_id")
   @JsonBackReference

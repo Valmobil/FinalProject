@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
+@Builder
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User extends Auditable {
@@ -31,6 +33,7 @@ public class User extends Auditable {
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String userPassword;
   private String userMail;
+  private String userPhoto;
   @OneToMany(mappedBy = "user")
   @JsonBackReference
   private List<Car> userCars;
