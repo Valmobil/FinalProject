@@ -82,7 +82,7 @@
                             <encoding>utf-8</encoding>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
-                            <violationSeverity>warning</violationSeverity>
+                            <violationSeverity>warning</violationSeverity>K
                         </configuration>
                         <goals>
                             <goal>check</goal>
