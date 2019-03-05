@@ -1,7 +1,5 @@
-
-export const WRITE_LETTER = 'WRITE_LETTER'
-
-
-
-
-
+export const SET_AUTH = 'SET_AUTH'
+export const SET_LOGIN = 'SET_LOGIN'
+export const SET_PASS = 'SET_PASS'
+export const SET_ROLE = 'SET_ROLE'
+export const SET_SOCIAL_AUTH = 'SET_SOCIAL_AUTH'

@@ -1,29 +1,35 @@
 import React, { Component } from 'react';
 import './App.scss';
+import {Route, Switch } from "react-router-dom";
+import {connect} from 'react-redux'
+import Main from './components/Main/Main'
+import Login from './components/Login/Login'
+
+import NoMatch from './components/NoMatch/NoMatch'
 
 
 class App extends Component {
-  render() {
-      
-    return (
-      <div className="App">
-        <header className="App-header">
 
-          <p>
-            FINAL PROJECT "iViator"
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+    render() {
+        const { isAuthenticated } = this.props.users
+        return (
+            <div className="App">
+                <Switch>
+                    { isAuthenticated ? <Route exact path = '/' render={(props) => <Main {...props} />}
+                        />
+                        : <Route exact path = '/' render={(props) => <Login {...props}/>}
+                        />}
+                    <Route component={NoMatch}/>
+                </Switch>
+            </div>
+        );
+    }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+        users: state.users,
+    }
+}
+
+export default connect(mapStateToProps, null)(App);
