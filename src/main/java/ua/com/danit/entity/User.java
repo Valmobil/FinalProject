@@ -1,8 +1,11 @@
 package ua.com.danit.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -16,17 +19,19 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
+@EqualsAndHashCode(callSuper=false)
 @Entity
-public class Users {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class User extends Auditable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long usersId;
-  private String usersName;
-  private String usersPhone;
+  private long userId;
+  private String userName;
+  private String userPhone;
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-  private String usersPassword;
-  private String usersMail;
+  private String userPassword;
+  private String userMail;
   @OneToMany(mappedBy = "user")
-  private List<Cars> usersCars;
+  @JsonBackReference
+  private List<Car> userCars;
 }
