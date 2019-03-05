@@ -7,7 +7,7 @@ export default class LoginPage extends Component  {
     return (
 
       <div className={'login-form'}>
-        <h1>Login form</h1>
+        <h1>There must be a login form</h1>
       </div>
     );
   }
