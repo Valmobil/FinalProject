@@ -1,29 +1,24 @@
 import React, { Component } from 'react';
 import './App.scss';
 
+import { Switch, Route } from 'react-router-dom'
+import LoginPage from './components/LoginPage/index';
+import WelcomePage from './components/WelcomePage/index';
 
-class App extends Component {
+
+
+export default class App extends Component {
   render() {
       
     return (
-      <div className="App">
-        <header className="App-header">
-
-          <p>
-            FINAL PROJECT "iViator"
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <>
+          <Switch>
+           <Route path="/" exact component={LoginPage} />
+           <Route path="/welcome" exact component={WelcomePage} />
+          </Switch>
+      </>
     );
   }
 }
 
-export default App;
+
