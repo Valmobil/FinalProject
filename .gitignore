@@ -2,8 +2,7 @@
 *.class
 .idea/
 /target/
-
-# Log file
+/src/frontend/.stylelintcache
 *.log
 
 # BlueJ files
