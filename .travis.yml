@@ -2,20 +2,20 @@
 
 dist: trusty
 
-  language: java
+language: java
 
-  jdk:
-    - oraclejdk8
+jdk:
+  - oraclejdk8
 
-  cache:
-    directories:
-      - $HOME/.m2
-      - ./src/frontend/node_modules/
+cache:
+  directories:
+    - $HOME/.m2
+    - ./src/frontend/node_modules/
 
-  script:
-    - mvn clean test
-    - npm run build --prefix ./src/frontend/
+script:
+  - mvn clean test
+  - npm run build --prefix ./src/frontend/
 
-  #Fromtend part
-  before_script:
-    - npm install --prefix ./src/frontend/
+#Fromtend part
+before_script:
+  - npm install --prefix ./src/frontend/
