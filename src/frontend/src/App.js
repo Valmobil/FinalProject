@@ -13,8 +13,8 @@ export default class App extends Component {
     return (
       <>
           <Switch>
-           <Route path="/" component={LoginPage} />
-           <Route path="/welcome" component={WelcomePage} />
+           <Route path="/" exact component={LoginPage} />
+           <Route path="/welcome" exact component={WelcomePage} />
           </Switch>
       </>
     );
