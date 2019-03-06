@@ -3,6 +3,7 @@
 .idea/
 /target/
 /src/frontend/.stylelintcache
+
 *.log
 
 # BlueJ files
