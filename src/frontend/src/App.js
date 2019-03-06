@@ -3,9 +3,8 @@ import './App.scss'
 import { Switch, Route } from 'react-router-dom'
 import LoginPage from './pages/LoginPage/index'
 import WelcomePage from './pages/WelcomePage/index'
-import React, { Component } from 'react';
-import Routes from "./Routes";
-import './App.scss';
+import Route from './Routes'
+import ResetPassword from './components/PassRestoration'
 
 export default class App extends Component {
   render () {
@@ -14,6 +13,7 @@ export default class App extends Component {
           <Switch>
             <Route path="/" exact component={LoginPage} />
             <Route path="/welcome" exact component={WelcomePage} />
+            <Route path="/restorepass" exact component={ResetPassword} />
           </Switch>
       </>
     )

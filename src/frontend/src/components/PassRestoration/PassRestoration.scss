@@ -1,23 +1,23 @@
 @media all and (min-width: 480px) {
-  .ResetPassword {
+  .PassRestoration {
     padding: 60px 0;
   }
 
-  .ResetPassword form {
+  .PassRestoration form {
     margin: 0 auto;
     max-width: 320px;
   }
 
-  .ResetPassword .success {
+  .PassRestoration .success {
     max-width: 400px;
   }
 }
 
-.ResetPassword .success {
+.PassRestoration .success {
   margin: 0 auto;
   text-align: center;
 }
-.ResetPassword .success .glyphicon {
+.PassRestoration .success .glyphicon {
   color: grey;
   font-size: 30px;
   margin-bottom: 30px;
