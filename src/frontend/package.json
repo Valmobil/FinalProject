@@ -23,8 +23,8 @@
     "react-dev-utils": "^7.0.3",
     "standard": "^10.0.3",
     "stylelint": "^8.2.0",
-    "stylelint-config-standard": "^17.0.0",
-    "stylelint-order": "^0.7.0"
+    "stylelint-config-rational-order": "0.0.2",
+    "stylelint-order": "^2.0.0"
   },
   "scripts": {
     "start-js": "react-scripts start",
