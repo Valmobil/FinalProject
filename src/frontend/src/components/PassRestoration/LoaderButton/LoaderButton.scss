@@ -1,7 +1,6 @@
 .LoaderButton .spinning.glyphicon {
-  margin-top: 5px;
-  margin-right: 7px;
   top: 2px;
+  margin-right: 7px;
   animation: spin 1s infinite linear;
 }
 @keyframes spin {
