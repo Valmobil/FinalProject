@@ -6,9 +6,7 @@ import Main from './components/Main/Main'
 import Login from './components/Login/Login'
 
 import NoMatch from './components/NoMatch/NoMatch'
-import React, { Component } from 'react'
 import './App.scss'
-import { Switch, Route } from 'react-router-dom'
 import LoginPage from './pages/LoginPage/index'
 import WelcomePage from './pages/WelcomePage/index'
 import Route from './Routes'
@@ -19,8 +17,7 @@ class App extends Component {
 
     render() {
         const { isAuthenticated } = this.props.users
-        return (
-            <div className="App">
+        return ( <div className="App">
                 <Switch>
                     { isAuthenticated ? <Route exact path = '/' render={(props) => <Main {...props} />}
                         />
