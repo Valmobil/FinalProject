@@ -6,9 +6,6 @@ import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import orange from '@material-ui/core/colors/orange';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-// import Radio from '@material-ui/core/Radio';
-// import RadioGroup from '@material-ui/core/RadioGroup';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {connect} from 'react-redux'
 import { setAuthorization, setSocialAuth } from '../../actions/userCreators'
 import './Login.css'
@@ -24,7 +21,6 @@ firebase.initializeApp({
 
 class Login extends Component{
     state = {
-        // role: 'passenger',
         user: {
             login: '',
             password: '',
@@ -41,7 +37,7 @@ class Login extends Component{
             firebase.auth.FacebookAuthProvider.PROVIDER_ID,
         ],
         callbacks: {
-            signInSuccess: () => false
+            signInSuccessWithAuthResult: () => false
         }
     }
 
@@ -49,24 +45,24 @@ class Login extends Component{
         this.setState({ toggleLogin });
     };
 
-    // handleRadio = event => {
-    //     this.setState({ role: event.target.value });
-    // };
-
     handleInput = (e) => {
-        this.setState({user: {...this.state.user, [e.target.name]: e.target.value}})
+       this.setState({user: {...this.state.user, [e.target.name]: e.target.value}})
     }
 
     componentDidMount (){
         firebase.auth().onAuthStateChanged(authenticated => {
             if (authenticated){
-                const user = {login: firebase.auth().currentUser.displayName, password: 'signed-in-by-social'}
-                this.setState({ user})
-                // console.log("authenticated", authenticated)
-                this.props.setAuthorization(this.state.user)
-                this.props.setSocialAuth(firebase.auth())
+            const user = {login: firebase.auth().currentUser.displayName, password: 'signed-in-by-social'}
+            this.setState({ user}, () => this.switchToMain())
+            // console.log("authenticated", authenticated)
             }
         })
+    }
+
+    switchToMain = () => {
+        this.props.setAuthorization(this.state.user)
+        this.props.history.push({pathname: `/main`})
+        if (firebase.auth()) this.props.setSocialAuth(firebase.auth())
     }
 
     render() {
@@ -88,35 +84,12 @@ class Login extends Component{
                         <Tab label="Log in"/>
                         <Tab label="Register"/>
                     </Tabs>
-                    {/*<RadioGroup*/}
-                    {/*aria-label="position"*/}
-                    {/*name="position"*/}
-                    {/*value={role}*/}
-                    {/*onChange={this.handleRadio}*/}
-                    {/*row*/}
-                    {/*style={style.radio}*/}
-                    {/*>*/}
-                    {/*<FormControlLabel*/}
-                    {/*value="passenger"*/}
-                    {/*control={<Radio color="primary" />}*/}
-                    {/*label="passenger"*/}
-                    {/*labelPlacement="top"*/}
-                    {/*/>*/}
-                    {/*<FormControlLabel*/}
-                    {/*value="driver"*/}
-                    {/*control={<Radio color="primary" />}*/}
-                    {/*label="driver"*/}
-                    {/*labelPlacement="top" color="primary"*/}
-                    {/*/>*/}
-                    {/*</RadioGroup>*/}
 
                     {!this.state.isSigned &&
-                    <div className="social-buttons">
-                        <StyledFirebaseAuth
+                    <StyledFirebaseAuth
                         uiConfig={this.uiConfig}
                         firebaseAuth={firebase.auth()}
-                        />
-                    </div>
+                    />
                     }
                     <span>or</span>
                     <TextField
@@ -160,35 +133,33 @@ class Login extends Component{
                         }}
                     />
                     }
-                    {allChecks && <Button onClick={() => this.props.setAuthorization(this.state.user)} style={style.button}>Submit</Button>}
+                    {allChecks && <Button onClick={this.switchToMain} style={style.button}>Submit</Button>}
                 </MuiThemeProvider>
             </div>
         )
     }
 }
-const theme = createMuiTheme({
+    const theme = createMuiTheme({
     palette: {
         primary: orange,
     },
     typography: { useNextVariants: true },
-});
-const style={
-    input:{
+    });
+
+    const style={
+      input:{
         width: '100%',
         height: '50px',
         color: '#fff',
-    },
-    button: {
+        },
+      button: {
         color: '#ff9800',
         marginTop: '30px'
-    },
-    submit:{
+        },
+      submit:{
         height: '30px',
-    },
-    radio: {
-        marginTop: '30px'
+      },
     }
-}
 
 const styles = theme => ({
     inputColor: {

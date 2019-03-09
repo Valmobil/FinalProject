@@ -1,0 +1,19 @@
+.welcome-user{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    width: 300px;
+    color: #fff;
+}
+.logout-button{
+    margin-top: 30px;
+}
+.welcome-span{
+    color: #fff;
+    margin: 10px auto 10px auto;
+}
+.role-question{
+    margin-top: 40px;
+}

@@ -1,0 +1,90 @@
+.hamburger-button{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    position: absolute;
+    z-index: 50;
+    top: 10px;
+    left: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.hamburger{
+    background-color: #fff;
+    width: 30px;
+    height: 3px;
+    position: absolute;
+    z-index: 100;
+}
+.first-start{
+    transform: translateY(-8px);
+}
+.third-start{
+    transform: translateY(8px);
+
+}
+.first-in{
+    transform-origin: center;
+    animation: first-in .8s cubic-bezier(.56,1.7,.34,.89) forwards;
+}
+
+.third-in{
+    transform-origin: center;
+    animation: third-in .8s cubic-bezier(.56,1.7,.34,.89) forwards;
+}
+
+.second-in{
+    opacity: 0;
+}
+.second-out{
+    animation: second-out .8s forwards;
+}
+.first-out{
+    transform-origin: center;
+    animation: first-out .8s ease forwards;
+}
+.third-out{
+    transform-origin: center;
+    animation: third-out .8s ease forwards;
+}
+@keyframes first-in {
+    from {transform: translateY(-8px)}
+    25% {transform: translateY(0)}
+    to {transform: translateY(0) rotate(-135deg)}
+}
+
+@keyframes third-in {
+    from {transform: translateY(8px)}
+    25% {transform: translateY(0)}
+    to {transform: translateY(0) rotate(135deg)}
+}
+@keyframes first-out {
+    25%, 100% {
+        animation-timing-function: cubic-bezier(.56,1.7,.34,.89);
+    }
+    from {transform: rotate(-135deg) translateY(0)}
+    25% {transform: rotate(0deg) translateY(0)}
+    to {transform: rotate(0deg) translateY(-8px)}
+}
+
+@keyframes third-out {
+    25%, 100% {
+        animation-timing-function: cubic-bezier(.56,1.7,.34,.89);
+    }
+    from {transform: rotate(135deg) translateY(0)}
+    25% {transform: rotate(0deg) translateY(0)}
+    to {transform: rotate(0deg) translateY(8px)}
+}
+@keyframes second-out {
+    0% {opacity: 0}
+    49% {opacity: 0}
+    50%, 100% {opacity: 1}
+}
+
+@media screen and (min-width: 710px){
+    .hamburger-button, .hamburger{
+        display: none;
+    }
+}
