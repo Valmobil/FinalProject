@@ -15,17 +15,17 @@ public class CarsController {
   private CarsService carsService;
 
   @Autowired
-  public CarsController(CarsService carsService){
+  public CarsController(CarsService carsService) {
     this.carsService = carsService;
   }
 
   @PostMapping("{car_id}")
-  public Car getCarById(@PathVariable("car_id") Long carId){
+  public Car getCarById(@PathVariable("car_id") Long carId) {
     return carsService.getCarById(carId);
   }
 
   @GetMapping("test")
-  public Car getCarById(){
+  public Car getCarById() {
     return carsService.getCarById(1L);
   }
 

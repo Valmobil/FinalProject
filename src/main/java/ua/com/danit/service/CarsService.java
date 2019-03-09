@@ -10,15 +10,15 @@ public class CarsService {
   private CarsRepository carsRepository;
 
   @Autowired
-  public CarsService(CarsRepository carsRepository){
+  public CarsService(CarsRepository carsRepository) {
     this.carsRepository = carsRepository;
   }
 
-  public Car createNewCar(Car car){
+  public Car createNewCar(Car car) {
     return carsRepository.save(car);
   }
 
-  public Car getCarById(Long carId){
+  public Car getCarById(Long carId) {
     return carsRepository.getOne(carId);
   }
 }
