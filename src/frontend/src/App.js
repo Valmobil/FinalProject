@@ -7,7 +7,7 @@ import Login from './components/Login/Login'
 
 import NoMatch from './components/NoMatch/NoMatch'
 import './App.scss'
-import LoginPage from './pages/LoginPage/index'
+// import LoginPage from './pages/LoginPage/index'
 import WelcomePage from './pages/WelcomePage/index'
 // import Route from './Routes'
 import ResetPassword from './components/PassRestoration'

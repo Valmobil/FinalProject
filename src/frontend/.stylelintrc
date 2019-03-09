@@ -2,7 +2,7 @@
   "extends": "stylelint-config-rational-order",
   "plugins": [
     "stylelint-order"
-  ],
+],
   "syntax": "scss",
   "rules": {
     "number-leading-zero": "never",
