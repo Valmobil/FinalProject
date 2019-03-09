@@ -2,11 +2,8 @@ import React, { Component } from 'react'
 import { Auth } from 'aws-amplify'
 import { Link } from 'react-router-dom'
 import {
-  HelpBlock,
   FormGroup,
-  Glyphicon,
-  FormControl,
-  ControlLabel
+  FormControl
 } from 'react-bootstrap'
 import LoaderButton from './LoaderButton'
 import './PassRestoration.scss'
@@ -81,7 +78,7 @@ export default class PassRestoration extends Component {
     return (
       <form onSubmit={this.handleSendCodeClick}>
         <FormGroup bsSize="large" controlId="email">
-          <ControlLabel>Email</ControlLabel>
+          <div>Email</div>
           <FormControl
             autoFocus
             type="email"
@@ -106,21 +103,21 @@ export default class PassRestoration extends Component {
     return (
       <form onSubmit={this.handleConfirmClick}>
         <FormGroup bsSize="large" controlId="code">
-          <ControlLabel>Confirmation Code</ControlLabel>
+          <div>Confirmation Code</div>
           <FormControl
             autoFocus
             type="tel"
             value={this.state.code}
             onChange={this.handleChange}
           />
-          <HelpBlock>
+          <div>
             Please check your email ({this.state.email}) for the confirmation
             code.
-          </HelpBlock>
+          </div>
         </FormGroup>
         <hr />
         <FormGroup bsSize="large" controlId="password">
-          <ControlLabel>New Password</ControlLabel>
+          <div>New Password</div>
           <FormControl
             type="password"
             value={this.state.password}
@@ -128,7 +125,7 @@ export default class PassRestoration extends Component {
           />
         </FormGroup>
         <FormGroup bsSize="large" controlId="confirmPassword">
-          <ControlLabel>Confirm Password</ControlLabel>
+          <div>Confirm Password</div>
           <FormControl
             type="password"
             onChange={this.handleChange}
@@ -151,7 +148,6 @@ export default class PassRestoration extends Component {
   renderSuccessMessage () {
     return (
       <div className="success">
-        <Glyphicon glyph="ok" />
         <p>Your password has been reset.</p>
         <p>
           <Link to="/">
