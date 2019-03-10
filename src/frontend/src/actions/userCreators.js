@@ -1,30 +1,37 @@
-import {  } from './mails'
-//***********************
+import { SET_AUTH, SET_USER, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST } from './users'
+import axios from 'axios'
 
-export const deleteLetter = (emails, itemList) => dispatch => {
+export const setAuthorization = (state) => dispatch => {
+    const user = {login: state.login, password: state.password}
+    dispatch({type: SET_AUTH, payload: true})
+    dispatch({type: SET_USER, payload: user})
+    axios.post('http://localhost:9000/api/users/login', JSON.stringify(user))
+}
+//**********************
 
-    const {mailList, active, checkboxesArray} = emails
-    dispatch({type: LETTER_SHOWN, payload: false})
-    dispatch(setDelay(500))
-    dispatch({type: DRAWER_OPEN, payload: false})
-    const newCurrentList = mailList[active].slice().filter(letter => !itemList.some(element => element.id === letter.id))
-    if (active === 'received') {
-        dispatch(setUnRead(newCurrentList))
-    }
-    if (active !== 'deleted') {
-        let newDeleted = mailList['deleted'].slice()
-        itemList.forEach(item => item.checked = false)
-        newDeleted = newDeleted.concat(itemList)
-        dispatch({type: LETTER_LIST, payload: {...mailList, [active]: newCurrentList, 'deleted': newDeleted}})
-        dispatch({type: TEXT_SHOW, payload: 0})
-    } else {
-        dispatch({type: LETTER_LIST, payload: {...mailList, [active]: newCurrentList}})
-        dispatch({type: TEXT_SHOW, payload: 0})
-    }
-    if (itemList.length === 1 && checkboxesArray[active].some(element => element.id === itemList[0].id)) {
-        checkboxesArray[active].splice(checkboxesArray[active].indexOf(itemList[0]), 1)
-        dispatch({type: CHECKBOXES_HANDLE, payload: checkboxesArray})
-    }
-    dispatch({type: GROUP_CHECK, payload: false})
+export const setSocialAuth = (auth) => dispatch => {
+    dispatch({type: SET_SOCIAL_AUTH, payload: auth})
 }
 //***********************
+
+export const logOut = () => dispatch => {
+    dispatch({type: SET_AUTH, payload: false})
+}
+
+//***********************
+export const topMenuToggle = (topMenuOpen) => dispatch => {
+    dispatch({type: MENU_TOGGLE, payload: !topMenuOpen})
+}
+
+//***********************
+
+export const deleteCar = (carList, car) => dispatch => {
+    const newCarList = carList.filter(item => item !== car)
+    dispatch({type: SET_CAR_LIST, payload: newCarList})
+}
+//***********************
+
+export const addNewCar = (carList, car) => dispatch => {
+    const newCarList = [...carList, car]
+    dispatch({type: SET_CAR_LIST, payload: newCarList})
+}
