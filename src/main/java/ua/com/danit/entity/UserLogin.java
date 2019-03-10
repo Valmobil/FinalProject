@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserLogin {
-  private String userPhone;
+  private String userLogin;
   private String userPassword;
+  private String userToken;
 }
