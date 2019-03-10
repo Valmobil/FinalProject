@@ -22,7 +22,7 @@ import javax.persistence.ManyToOne;
 @Builder
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-class Car extends Auditable {
+public class Car extends Auditable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long carId;
