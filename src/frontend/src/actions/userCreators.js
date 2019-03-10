@@ -1,4 +1,4 @@
-import { SET_AUTH, SET_USER, SET_SOCIAL_AUTH } from './users'
+import { SET_AUTH, SET_USER, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST } from './users'
 import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
@@ -19,3 +19,19 @@ export const logOut = () => dispatch => {
 }
 
 //***********************
+export const topMenuToggle = (topMenuOpen) => dispatch => {
+    dispatch({type: MENU_TOGGLE, payload: !topMenuOpen})
+}
+
+//***********************
+
+export const deleteCar = (carList, car) => dispatch => {
+    const newCarList = carList.filter(item => item !== car)
+    dispatch({type: SET_CAR_LIST, payload: newCarList})
+}
+//***********************
+
+export const addNewCar = (carList, car) => dispatch => {
+    const newCarList = [...carList, car]
+    dispatch({type: SET_CAR_LIST, payload: newCarList})
+}
