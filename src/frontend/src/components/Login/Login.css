@@ -1,0 +1,11 @@
+.login-container{
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 70px;
+}
+.social-buttons{
+    margin-top: 20px;
+}
