@@ -49,18 +49,18 @@ public class UsersService {
   }
 
   static boolean checkEmailFormat(String userMail) {
-    Pattern VALID_EMAIL_ADDRESS_REGEX =
+    Pattern validEmailAddressRegex =
         Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
-      Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(userMail);
-      return matcher.find();
+    Matcher matcher = validEmailAddressRegex.matcher(userMail);
+    return matcher.find();
   }
 
   static String normalizeMobilePhone(String userPhone) {
-    String phone = userPhone.replace("(","")
-        .replace(")","")
-        .replace(" ","")
-        .replace("-","")
+    String phone = userPhone.replace("(", "")
+        .replace(")", "")
+        .replace(" ", "")
+        .replace("-", "")
         .trim();
     if (phone.charAt(0) != '+') {
       if (phone.length() == 10) {
