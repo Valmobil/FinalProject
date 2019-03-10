@@ -65,16 +65,16 @@ class Login extends Component{
     }
 
     switchToMain = () => {
+        const path = this.state.signType === 'log-in' ? `/main` : `/profile`
         this.props.setAuthorization(this.state.user)
-        this.props.history.push({pathname: `/main`})
+        this.props.history.push({pathname: path})
         if (firebase.auth()) this.props.setSocialAuth(firebase.auth())
     }
 
     render() {
         const { classes } = this.props;
         const { signType, user: {login, password, confirmPassword} } = this.state;
-
-        // let allChecks = ((toggleLogin === 0 && login !== '' && password !== '') || (toggleLogin === 1 && login !== '' && password !== '' && password === confirmPassword));
+        const allChecks = ((signType === 'log-in' && login !== '' && password !== '') || (signType === 'register' && login !== '' && password !== '' && password === confirmPassword));
         return (
             <div className="login-container">
                 <MuiThemeProvider theme={theme}>
@@ -107,9 +107,10 @@ class Login extends Component{
                     }
                     <span>or</span>
                     <TextField
-                        label="Login"
+                        label="Phone number or email"
                         id="mui-theme-provider-standard-input"
                         style={style.input}
+                        autoComplete="off"
                         name='login'
                         value={login}
                         onChange={this.handleInput}
@@ -123,6 +124,7 @@ class Login extends Component{
                         label="Password"
                         id="mui-theme-provider-standard-input"
                         style={style.input}
+                        autoComplete="off"
                         name='password'
                         value={password}
                         onChange={this.handleInput}
@@ -137,6 +139,7 @@ class Login extends Component{
                         label="Confirm password"
                         id="mui-theme-provider-standard-input"
                         style={style.input}
+                        autoComplete="off"
                         name='confirmPassword'
                         value={confirmPassword}
                         onChange={this.handleInput}
@@ -148,9 +151,14 @@ class Login extends Component{
                     />
                     }
                     <Button onClick={this.switchToMain}
-                            style={style.button}
-                            disabled
-                    >Submit
+                        disabled={!allChecks}
+                        style={style.button}
+                            classes={{
+                                root: classes.root,
+                                label: classes.label,
+                            }}
+                    >
+                        Submit
                     </Button>
                 </MuiThemeProvider>
             </div>
@@ -171,12 +179,9 @@ class Login extends Component{
         color: '#fff',
         },
       button: {
-        color: '#ff9800',
-        marginTop: '30px'
+          margin: theme.spacing.unit,
+          marginTop: '30px',
         },
-      submit:{
-        height: '30px',
-      },
       radio: {
             marginTop: '20px',
             display: 'flex',
@@ -189,6 +194,17 @@ const styles = theme => ({
         color:'#fff',
         width: '100%',
         height: '50px',
+    },
+    root: {
+        background: 'linear-gradient(45deg, #ff9800 30%, #f57c00 90%)',
+        borderRadius: 3,
+        border: 0,
+        color: 'white',
+        height: 30,
+        padding: '0 30px',
+    },
+    label: {
+        textTransform: 'capitalize',
     },
 });
 
