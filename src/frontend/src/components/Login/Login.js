@@ -27,7 +27,6 @@ class Login extends Component{
             password: '',
             confirmPassword: ''
         },
-        toggleLogin: 0,
         isSigned: false,
         signType: 'log-in',
     };
@@ -73,7 +72,7 @@ class Login extends Component{
 
     render() {
         const { classes } = this.props;
-        const { toggleLogin, signType, user: {login, password, confirmPassword} } = this.state;
+        const { signType, user: {login, password, confirmPassword} } = this.state;
 
         // let allChecks = ((toggleLogin === 0 && login !== '' && password !== '') || (toggleLogin === 1 && login !== '' && password !== '' && password === confirmPassword));
         return (
