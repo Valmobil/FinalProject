@@ -5,7 +5,10 @@ export const setAuthorization = (state) => dispatch => {
     const user = {login: state.login, password: state.password}
     dispatch({type: SET_AUTH, payload: true})
     dispatch({type: SET_USER, payload: user})
-    axios.post('http://localhost:9000/api/users/login', JSON.stringify(user))
+    axios.post('http://localhost:9000/api/users/login', {
+        body: JSON.stringify(user)})
+        .then(response => {})
+        .catch(err => console.log(err))
 }
 //**********************
 
