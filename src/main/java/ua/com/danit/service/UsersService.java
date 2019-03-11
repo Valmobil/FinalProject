@@ -6,6 +6,7 @@ import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserLogin;
 import ua.com.danit.repository.UsersRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +29,42 @@ public class UsersService {
   }
 
   public User checkUserCredentials(UserLogin userLogin) {
+    if (userLogin.getUserLogin() == null && userLogin.getUserToken() != null) {
+      //find user by Token in DB
+      return checkIfTokenIsValid(userLogin);
+    }
+    //Find user by login
+    User user = null;
+    if (userLogin.getUserLogin() != null) {
+      user = checkIfLoginIsCorrect(userLogin);
+    }
+    if (user == null) {
+      return null;
+    }
+    //Update Token if token and login are present
+    if (userLogin.getUserToken() != null) {
+      return updateTokenInDb(userLogin, user);
+    } else {
+      //find user by Login (can be e-Mail or Phone)
+      return user;
+    }
+  }
+
+  private User updateTokenInDb(UserLogin userLogin, User user) {
+    int dateShift = 30;
+    user.setUserToken(userLogin.getUserToken());
+    user.setUserTokenValidTo(getCurrentDatPlus(dateShift));
+    usersRepository.save(user);
+    return user;
+  }
+
+  private LocalDateTime getCurrentDatPlus(Integer dateShift) {
+    LocalDateTime date = LocalDateTime.now();
+    date = date.plusDays(dateShift);
+    return date;
+  }
+
+  private User checkIfLoginIsCorrect(UserLogin userLogin) {
     List<User> users;
     if (checkForEmail(userLogin)) {
       // if login is mail
@@ -35,14 +72,28 @@ public class UsersService {
       if (!checkEmailFormat(userLogin.getUserLogin())) {
         return null;
       }
-      users = usersRepository.findByuserMail(userLogin.getUserLogin());
+      users = usersRepository.findByUserMail(userLogin.getUserLogin());
     } else {
       //if login is phone
       users = usersRepository.findByUserPhone(normalizeMobilePhone(userLogin.getUserLogin()));
     }
-    for (User user : users) {
-      if (user.getUserPassword().equals(userLogin.getUserPassword())) {
-        return user;
+    if (users.size() != 1) {
+      return null;
+    }
+    if (users.get(0).getUserPassword().equals(userLogin.getUserPassword())) {
+      return users.get(0);
+    }
+    return null;
+  }
+
+
+  private User checkIfTokenIsValid(UserLogin userLogin) {
+    List<User> users = usersRepository.findByUserToken(userLogin.getUserToken());
+    if (users.size() != 1) {
+      return null;
+    } else {
+      if (users.get(0).getUserTokenValidTo().isBefore(getCurrentDatPlus(0))) {
+        return users.get(0);
       }
     }
     return null;
@@ -75,8 +126,4 @@ public class UsersService {
   private boolean checkForEmail(UserLogin userLogin) {
     return userLogin.getUserLogin().contains("@");
   }
-
-  //    public List<User> findAll() {
-  //        return (usersRepository.findAll();
-  //    }
 }
