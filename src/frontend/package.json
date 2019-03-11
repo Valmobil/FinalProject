@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "aws-amplify": "^1.1.19",
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
+    "aws-amplify": "^1.1.19",
     "axios": "^0.18.0",
     "firebase": "^5.8.5",
     "node-sass": "^4.11.0",
@@ -18,7 +18,7 @@
     "react-redux": "^6.0.1",
     "react-router-bootstrap": "^0.24.4",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.5",
+    "react-scripts": "^2.1.8",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0"
   },
@@ -27,7 +27,7 @@
     "npm-watch": "^0.3.0",
     "react-dev-utils": "^7.0.3",
     "standard": "^10.0.3",
-    "stylelint": "^8.2.0",
+    "stylelint": "^9.10.1",
     "stylelint-config-rational-order": "0.0.2",
     "stylelint-order": "^2.0.0"
   },
