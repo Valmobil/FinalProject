@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { Auth } from "aws-amplify";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl } from "react-bootstrap";
 import LoaderButton from "./LoaderButton";
-import "./ChangePassword.css";
+import "./ChangePassword.scss";
 
 export default class ChangePassword extends Component {
   constructor(props) {
@@ -10,7 +9,7 @@ export default class ChangePassword extends Component {
 
     this.state = {
       password: "",
-      oldPassword: "",
+      // oldPassword: "",
       isChanging: false,
       confirmPassword: ""
     };
@@ -18,7 +17,6 @@ export default class ChangePassword extends Component {
 
   validateForm() {
     return (
-      this.state.oldPassword.length > 0 &&
       this.state.password.length > 0 &&
       this.state.password === this.state.confirmPassword
     );
@@ -35,36 +33,15 @@ export default class ChangePassword extends Component {
 
     this.setState({ isChanging: true });
 
-    try {
-      const currentUser = await Auth.currentAuthenticatedUser();
-      await Auth.changePassword(
-        currentUser,
-        this.state.oldPassword,
-        this.state.password
-      );
-
-      this.props.history.push("/settings");
-    } catch (e) {
-      alert(e.message);
-      this.setState({ isChanging: false });
-    }
   };
 
   render() {
     return (
       <div className="ChangePassword">
         <form onSubmit={this.handleChangeClick}>
-          <FormGroup bsSize="large" controlId="oldPassword">
-            <ControlLabel>Old Password</ControlLabel>
-            <FormControl
-              type="password"
-              onChange={this.handleChange}
-              value={this.state.oldPassword}
-            />
-          </FormGroup>
           <hr />
           <FormGroup bsSize="large" controlId="password">
-            <ControlLabel>New Password</ControlLabel>
+            <div>New Password</div>
             <FormControl
               type="password"
               value={this.state.password}
@@ -72,7 +49,7 @@ export default class ChangePassword extends Component {
             />
           </FormGroup>
           <FormGroup bsSize="large" controlId="confirmPassword">
-            <ControlLabel>Confirm Password</ControlLabel>
+            <div>Confirm Password</div>
             <FormControl
               type="password"
               onChange={this.handleChange}

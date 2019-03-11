@@ -8,6 +8,7 @@ import Profile from './components/Profile/Profile'
 import NoMatch from './components/NoMatch/NoMatch'
 import ProtectedRoute from './components/hoc/ProtectedRoute/ProtectedRoute'
 import Header from './components/Header/Header'
+import ChangePassword from './components/ChangePassword'
 
 
 class App extends Component {
@@ -22,6 +23,7 @@ class App extends Component {
           <Route exact path='/' component={Login}/>
           <ProtectedRoute exact path="/main" component={Main} />
           <ProtectedRoute exact path="/profile" component={Profile} />
+          <Route exact path="/newpassword" component={ChangePassword} />
           <Route path='*' component={NoMatch}/>
             </Switch>
       </div>
