@@ -43,14 +43,14 @@ public class UsersService {
     }
     //Update Token if token and login are present
     if (userLogin.getUserToken() != null) {
-      return updateTokenInDB(userLogin, user);
+      return updateTokenInDb(userLogin, user);
     } else {
       //find user by Login (can be e-Mail or Phone)
       return user;
     }
   }
 
-  private User updateTokenInDB(UserLogin userLogin, User user) {
+  private User updateTokenInDb(UserLogin userLogin, User user) {
     int dateShift = 30;
     user.setUserToken(userLogin.getUserToken());
     user.setUserTokenValidTo(getCurrentDatPlus(dateShift));
