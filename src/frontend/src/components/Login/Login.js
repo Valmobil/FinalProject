@@ -4,14 +4,15 @@ import Button from '@material-ui/core/Button';
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import orange from '@material-ui/core/colors/orange';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import {connect} from 'react-redux'
 import { setAuthorization, setSocialAuth } from '../../actions/userCreators'
 import './Login.css'
 import { withStyles } from '@material-ui/core/styles';
 import firebase from "firebase"
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth"
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
 firebase.initializeApp({
@@ -26,8 +27,8 @@ class Login extends Component{
             password: '',
             confirmPassword: ''
         },
-        toggleLogin: 0,
         isSigned: false,
+        signType: 'log-in',
     };
 
     uiConfig = {
@@ -40,6 +41,10 @@ class Login extends Component{
             signInSuccessWithAuthResult: () => false
         }
     }
+
+    handleRadio = event => {
+        this.setState({ signType: event.target.value });
+    };
 
     handleLoginChange = (event, toggleLogin) => {
         this.setState({ toggleLogin });
@@ -60,31 +65,40 @@ class Login extends Component{
     }
 
     switchToMain = () => {
+        const path = this.state.signType === 'log-in' ? `/main` : `/profile`
         this.props.setAuthorization(this.state.user)
-        this.props.history.push({pathname: `/main`})
+        this.props.history.push({pathname: path})
         if (firebase.auth()) this.props.setSocialAuth(firebase.auth())
     }
 
     render() {
         const { classes } = this.props;
-        const { toggleLogin, user: {login, password, confirmPassword} } = this.state;
-
-        let allChecks = ((toggleLogin === 0 && login !== '' && password !== '') || (toggleLogin === 1 && login !== '' && password !== '' && password === confirmPassword));
+        const { signType, user: {login, password, confirmPassword} } = this.state;
+        const allChecks = ((signType === 'log-in' && login !== '' && password !== '') || (signType === 'register' && login !== '' && password !== '' && password === confirmPassword));
         return (
             <div className="login-container">
                 <MuiThemeProvider theme={theme}>
-                    <Tabs
-                        value={toggleLogin}
-                        onChange={this.handleLoginChange}
-                        indicatorColor="primary"
-                        textColor="primary"
-                        variant="scrollable"
-                        scrollButtons="auto"
+                    <RadioGroup
+                        aria-label="position"
+                        name="position"
+                        value={signType}
+                        onChange={this.handleRadio}
+                        row
+                        style={style.radio}
                     >
-                        <Tab label="Log in"/>
-                        <Tab label="Register"/>
-                    </Tabs>
-
+                        <FormControlLabel
+                            value="log-in"
+                            control={<Radio color="primary" />}
+                            label="Log in"
+                            labelPlacement="top"
+                        />
+                        <FormControlLabel
+                            value="register"
+                            control={<Radio color="primary" />}
+                            label="Register"
+                            labelPlacement="top" color="primary"
+                        />
+                    </RadioGroup>
                     {!this.state.isSigned &&
                     <StyledFirebaseAuth
                         uiConfig={this.uiConfig}
@@ -93,9 +107,10 @@ class Login extends Component{
                     }
                     <span>or</span>
                     <TextField
-                        label="Login"
+                        label="Phone number or email"
                         id="mui-theme-provider-standard-input"
                         style={style.input}
+                        autoComplete="off"
                         name='login'
                         value={login}
                         onChange={this.handleInput}
@@ -109,6 +124,7 @@ class Login extends Component{
                         label="Password"
                         id="mui-theme-provider-standard-input"
                         style={style.input}
+                        autoComplete="off"
                         name='password'
                         value={password}
                         onChange={this.handleInput}
@@ -118,11 +134,12 @@ class Login extends Component{
                             }
                         }}
                     />
-                    {this.state.toggleLogin === 1 &&
+                    {signType === 'register' &&
                     <TextField
                         label="Confirm password"
                         id="mui-theme-provider-standard-input"
                         style={style.input}
+                        autoComplete="off"
                         name='confirmPassword'
                         value={confirmPassword}
                         onChange={this.handleInput}
@@ -133,7 +150,16 @@ class Login extends Component{
                         }}
                     />
                     }
-                    {allChecks && <Button onClick={this.switchToMain} style={style.button}>Submit</Button>}
+                    <Button onClick={this.switchToMain}
+                        disabled={!allChecks}
+                        style={style.button}
+                            classes={{
+                                root: classes.root,
+                                label: classes.label,
+                            }}
+                    >
+                        Submit
+                    </Button>
                 </MuiThemeProvider>
             </div>
         )
@@ -153,12 +179,14 @@ class Login extends Component{
         color: '#fff',
         },
       button: {
-        color: '#ff9800',
-        marginTop: '30px'
+          margin: theme.spacing.unit,
+          marginTop: '30px',
         },
-      submit:{
-        height: '30px',
-      },
+      radio: {
+            marginTop: '20px',
+            display: 'flex',
+            justifyContent: 'center'
+        },
     }
 
 const styles = theme => ({
@@ -166,6 +194,17 @@ const styles = theme => ({
         color:'#fff',
         width: '100%',
         height: '50px',
+    },
+    root: {
+        background: 'linear-gradient(45deg, #ff9800 30%, #f57c00 90%)',
+        borderRadius: 3,
+        border: 0,
+        color: 'white',
+        height: 30,
+        padding: '0 30px',
+    },
+    label: {
+        textTransform: 'capitalize',
     },
 });
 
