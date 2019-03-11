@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -36,7 +37,7 @@ public class User extends Auditable {
   private String userPassword;
   private String userMail;
   private String userToken;
-  private Date userTokenValidTo;
+  private LocalDateTime userTokenValidTo;
   private String userPhoto;
   @OneToMany(mappedBy = "user")
   @JsonBackReference

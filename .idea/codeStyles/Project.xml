@@ -1,14 +1,5 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
-    <JSCodeStyleSettings version="0">
-      <option name="USE_SEMICOLON_AFTER_STATEMENT" value="false" />
-      <option name="FORCE_SEMICOLON_STYLE" value="true" />
-      <option name="SPACE_BEFORE_GENERATOR_MULT" value="true" />
-      <option name="USE_DOUBLE_QUOTES" value="false" />
-      <option name="FORCE_QUOTE_STYlE" value="true" />
-      <option name="SPACES_WITHIN_OBJECT_LITERAL_BRACES" value="true" />
-      <option name="SPACES_WITHIN_IMPORTS" value="true" />
-    </JSCodeStyleSettings>
     <DBN-PSQL>
       <case-options enabled="true">
         <option name="KEYWORD_CASE" value="lower" />
@@ -33,6 +24,15 @@
         <option name="ITERATION_ELEMENTS_WRAPPING" value="chop_down_if_not_single" />
       </formatting-settings>
     </DBN-SQL>
+    <JSCodeStyleSettings version="0">
+      <option name="USE_SEMICOLON_AFTER_STATEMENT" value="false" />
+      <option name="FORCE_SEMICOLON_STYLE" value="true" />
+      <option name="SPACE_BEFORE_GENERATOR_MULT" value="true" />
+      <option name="USE_DOUBLE_QUOTES" value="false" />
+      <option name="FORCE_QUOTE_STYlE" value="true" />
+      <option name="SPACES_WITHIN_OBJECT_LITERAL_BRACES" value="true" />
+      <option name="SPACES_WITHIN_IMPORTS" value="true" />
+    </JSCodeStyleSettings>
     <codeStyleSettings language="JAVA">
       <option name="SPACE_WITHIN_FOR_PARENTHESES" value="true" />
     </codeStyleSettings>
