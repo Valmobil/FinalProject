@@ -70,7 +70,7 @@ class Login extends Component{
             if (authenticated){
                 authenticated.getIdToken()
                     .then(res => {
-                        const user = {login: firebase.auth().currentUser.displayName, password: 'signed-in-by-social', token: res}
+                        const user = {login: firebase.auth().currentUser.email, password: 'signed-in-by-social', token: res}
                         this.setState({ user }, () => this.setAuth())
                     })
                 // console.log("authenticated", authenticated)
