@@ -11,7 +11,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "points")
 @EqualsAndHashCode(callSuper = false)
-
 public class Point extends Auditable {
   @Id
   private long point_id;
