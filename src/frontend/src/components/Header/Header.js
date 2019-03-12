@@ -8,7 +8,7 @@ import {connect} from "react-redux";
 class Header extends Component {
    render(){
        return(
-           <div className="header">Welcome, {this.props.users.user.login}
+           <div className="header">Welcome, {this.props.users.user.userLogin}
     <DrawerButton/>
     <Drawer/>
            </div>
