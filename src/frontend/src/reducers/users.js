@@ -1,15 +1,17 @@
-import { SET_AUTH, SET_USER, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST } from '../actions/users'
+import { SET_AUTH, SET_USER, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED } from '../actions/users'
 
 const initialState = {
     user: {
-        login: '',
-        password: ''
+        userLogin: '',
+        userPassword: '',
+        userToken: '',
     },
     role: 'passenger',
     cars: ['RangeRover Supercharged', 'Chevrolet Aveo'],
     isAuthenticated: false,
     auth: null,
     topMenuOpen: false,
+    loginRejected: false,
 }
 
 function users (state = initialState, action) {
@@ -26,7 +28,9 @@ function users (state = initialState, action) {
             return {...state, topMenuOpen: action.payload}
         case SET_CAR_LIST:
             return {...state, cars: action.payload}
-        
+        case LOGIN_REJECTED:
+            return {...state, loginRejected: action.payload}
+
         default:
             return {...state}
     }
