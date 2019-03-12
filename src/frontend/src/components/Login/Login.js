@@ -5,7 +5,7 @@ import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import orange from '@material-ui/core/colors/orange';
 import {connect} from 'react-redux'
-import { setAuthorization, setSocialAuth } from '../../actions/userCreators'
+import { setAuthorization, setSocialAuth, setLoginRejected } from '../../actions/userCreators'
 import './Login.css'
 import { withStyles } from '@material-ui/core/styles';
 import firebase from "firebase"
@@ -13,6 +13,11 @@ import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth"
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Slide from '@material-ui/core/Slide';
 
 
 firebase.initializeApp({
@@ -20,15 +25,21 @@ firebase.initializeApp({
     authDomain: "social-auth-7.firebaseapp.com"
 })
 
+function Transition(props) {
+    return <Slide direction="up" {...props} />;
+}
+
 class Login extends Component{
     state = {
         user: {
             login: '',
             password: '',
+            token: '',
             confirmPassword: ''
         },
         isSigned: false,
         signType: 'log-in',
+        alertOpen: false,
     };
 
     uiConfig = {
@@ -46,28 +57,36 @@ class Login extends Component{
         this.setState({ signType: event.target.value });
     };
 
-    handleLoginChange = (event, toggleLogin) => {
-        this.setState({ toggleLogin });
-    };
-
     handleInput = (e) => {
-       this.setState({user: {...this.state.user, [e.target.name]: e.target.value}})
+        this.setState({user: {...this.state.user, [e.target.name]: e.target.value}})
+    }
+
+    handleAlertClose = () => {
+        this.setState({alertOpen: false})
     }
 
     componentDidMount (){
         firebase.auth().onAuthStateChanged(authenticated => {
             if (authenticated){
-            const user = {login: firebase.auth().currentUser.displayName, password: 'signed-in-by-social'}
-            this.setState({ user}, () => this.switchToMain())
-            // console.log("authenticated", authenticated)
+                authenticated.getIdToken()
+                    .then(res => {
+                        const user = {login: firebase.auth().currentUser.displayName, password: 'signed-in-by-social', token: res}
+                        this.setState({ user }, () => this.setAuth())
+                    })
+                // console.log("authenticated", authenticated)
             }
         })
     }
 
-    switchToMain = () => {
-        const path = this.state.signType === 'log-in' ? `/main` : `/profile`
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.users.isAuthenticated !== prevProps.users.isAuthenticated) {
+            const path = this.state.signType === 'log-in' ? `/main` : `/profile`
+            this.props.history.push({pathname: path})
+        }
+    }
+
+    setAuth = () => {
         this.props.setAuthorization(this.state.user)
-        this.props.history.push({pathname: path})
         if (firebase.auth()) this.props.setSocialAuth(firebase.auth())
     }
 
@@ -150,9 +169,9 @@ class Login extends Component{
                         }}
                     />
                     }
-                    <Button onClick={this.switchToMain}
-                        disabled={!allChecks}
-                        style={style.button}
+                    <Button onClick={this.setAuth}
+                            disabled={!allChecks}
+                            style={style.button}
                             classes={{
                                 root: classes.root,
                                 label: classes.label,
@@ -161,33 +180,53 @@ class Login extends Component{
                         Submit
                     </Button>
                 </MuiThemeProvider>
+                <Dialog
+                    open={this.props.users.loginRejected}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={this.handleAlertClose}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-slide-description" style={{textAlign: 'center'}}>
+                            Login or password is incorrect. Please try again.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.props.setLoginRejected(false)} color="primary">
+                            Ok
+                        </Button>
+
+                    </DialogActions>
+                </Dialog>
             </div>
         )
     }
 }
-    const theme = createMuiTheme({
+const theme = createMuiTheme({
     palette: {
         primary: orange,
     },
     typography: { useNextVariants: true },
-    });
+});
 
-    const style={
-      input:{
+const style={
+    input:{
         width: '100%',
         height: '50px',
         color: '#fff',
-        },
-      button: {
-          margin: theme.spacing.unit,
-          marginTop: '30px',
-        },
-      radio: {
-            marginTop: '20px',
-            display: 'flex',
-            justifyContent: 'center'
-        },
-    }
+    },
+    button: {
+        margin: theme.spacing.unit,
+        marginTop: '30px',
+    },
+    radio: {
+        marginTop: '20px',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+}
 
 const styles = theme => ({
     inputColor: {
@@ -209,11 +248,18 @@ const styles = theme => ({
 });
 
 
+const mapStateToProps = (state) => {
+    return {
+        users: state.users,
+    }
+}
+
 const mapDispatchToProps = (dispatch) => {
     return {
         setAuthorization: (state) => dispatch(setAuthorization(state)),
         setSocialAuth: (auth) => dispatch(setSocialAuth(auth)),
+        setLoginRejected: (payload) => dispatch(setLoginRejected(payload)),
     }
 }
 
-export default withStyles(styles)(connect(null, mapDispatchToProps)(Login))
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Login))
