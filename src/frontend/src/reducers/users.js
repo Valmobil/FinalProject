@@ -1,35 +1,39 @@
-import { SET_AUTH, SET_USER, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST } from '../actions/users'
+import { SET_AUTH, SET_USER, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED } from '../actions/users'
 
 const initialState = {
-  user: {
-    login: '',
-    password: ''
-  },
-  role: 'passenger',
-  cars: ['RangeRover Supercharged', 'Chevrolet Aveo'],
-  isAuthenticated: false,
-  auth: null,
-  topMenuOpen: false
+    user: {
+        userLogin: '',
+        userPassword: '',
+        userToken: '',
+    },
+    role: 'passenger',
+    cars: ['RangeRover Supercharged', 'Chevrolet Aveo'],
+    isAuthenticated: false,
+    auth: null,
+    topMenuOpen: false,
+    loginRejected: false,
 }
 
 function users (state = initialState, action) {
-  switch (action.type) {
-    case SET_AUTH:
-      return {...state, isAuthenticated: action.payload}
-    case SET_USER:
-      return {...state, user: action.payload}
-    case SET_ROLE:
-      return {...state, role: action.payload}
-    case SET_SOCIAL_AUTH:
-      return {...state, auth: action.payload}
-    case MENU_TOGGLE:
-      return {...state, topMenuOpen: action.payload}
-    case SET_CAR_LIST:
-      return {...state, cars: action.payload}
-        
-    default:
-      return {...state}
-  }
+    switch (action.type){
+        case SET_AUTH:
+            return {...state, isAuthenticated: action.payload}
+        case SET_USER:
+            return {...state, user: action.payload}
+        case SET_ROLE:
+            return {...state, role: action.payload}
+        case SET_SOCIAL_AUTH:
+            return {...state, auth: action.payload}
+        case MENU_TOGGLE:
+            return {...state, topMenuOpen: action.payload}
+        case SET_CAR_LIST:
+            return {...state, cars: action.payload}
+        case LOGIN_REJECTED:
+            return {...state, loginRejected: action.payload}
+
+        default:
+            return {...state}
+    }
 }
 
 export default users
