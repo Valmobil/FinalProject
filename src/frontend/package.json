@@ -16,10 +16,12 @@
     "react-bootstrap": "^1.0.0-beta.5",
     "react-dom": "^16.8.3",
     "react-firebaseui": "^3.1.2",
+    "react-number-format": "^4.0.6",
     "react-redux": "^6.0.1",
     "react-router-bootstrap": "^0.24.4",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.8",
+    "react-text-mask": "^5.4.3",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0"
   },

@@ -12,7 +12,6 @@ import PassRestoration from './components/PassRestoration'
 import './App.css'
 
 class App extends Component {
-
   render () {
     const { isAuthenticated } = this.props.users
     return (
@@ -34,7 +33,7 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    users: state.users,
+    users: state.users
   }
 }
 
