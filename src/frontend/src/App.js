@@ -8,6 +8,7 @@ import NoMatch from './components/NoMatch/NoMatch'
 import ProtectedRoute from './components/hoc/ProtectedRoute/ProtectedRoute'
 import Header from './components/Header/Header'
 import PassRestoration from './components/PassRestoration'
+import ChangePassword from './components/ChangePassword'
 
 import './App.css'
 
@@ -23,6 +24,7 @@ class App extends Component {
             <ProtectedRoute exact path="/main" component={Main}/>
             <ProtectedRoute exact path="/profile" component={Profile}/>
             <Route exact path="/restore_password" component={PassRestoration}/>
+            <Route exact path="/newpassword" component={ChangePassword} />
             <Route path='*' component={NoMatch}/>
           </Switch>
         </div>
