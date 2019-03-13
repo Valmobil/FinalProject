@@ -30,8 +30,7 @@ public class Car extends Auditable {
   private String carColour;
   private String carPhoto;
   @ManyToOne
-  @JoinColumn(name = "user_id")
-  @JsonBackReference
+  @JoinColumn(name = "CAR_USER_ID", referencedColumnName = "userId")
   private User user;
 }
 

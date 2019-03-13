@@ -39,7 +39,4 @@ public class User extends Auditable {
   private String userToken;
   private LocalDateTime userTokenValidTo;
   private String userPhoto;
-  @OneToMany(mappedBy = "user")
-  @JsonBackReference
-  private List<Car> userCars;
 }

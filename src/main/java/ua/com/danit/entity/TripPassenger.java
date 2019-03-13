@@ -1,9 +1,8 @@
 package ua.com.danit.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
@@ -15,16 +14,17 @@ import javax.persistence.ManyToOne;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class TripPoint {
+@AllArgsConstructor
+public class TripPassenger {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long tripPointId;
+  private long tripPassengerId;
   @ManyToOne
-  @JoinColumn(name = "TRIP_POINT_TRIP_ID", referencedColumnName = "tripId")
+  @JoinColumn(name = "TRIP_PASSENGER_TRIP_ID", referencedColumnName = "tripId")
   private Trip trip;
-  private int tripPointSequence;
-//  @JoinColumn(name = "point_id", referencedColumnName="tripId") tripPointPoint;
+  @ManyToOne
+  @JoinColumn(name = "TRIP_PASSENGER_USER_ID", referencedColumnName = "userId")
+  private User user;
+  private int tripPassengerTogetherQty;
 }
