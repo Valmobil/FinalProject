@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 //@EnableJpaAuditin
 public class AppRunner {
-    public static void main(String[] args) {
-        SpringApplication.run(AppRunner.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(AppRunner.class, args);
+  }
 }
