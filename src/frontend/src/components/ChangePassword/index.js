@@ -1,41 +1,40 @@
-import React, { Component } from "react";
-import { FormGroup, FormControl } from "react-bootstrap";
-import LoaderButton from "./LoaderButton";
-import "./ChangePassword.scss";
+import React, { Component } from 'react'
+import { FormGroup, FormControl } from 'react-bootstrap'
+import LoaderButton from './LoaderButton'
+import './ChangePassword.scss'
 
 export default class ChangePassword extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
     this.state = {
-      password: "",
+      password: '',
       // oldPassword: "",
       isChanging: false,
-      confirmPassword: ""
-    };
+      confirmPassword: ''
+    }
   }
 
-  validateForm() {
+  validateForm () {
     return (
       this.state.password.length > 0 &&
       this.state.password === this.state.confirmPassword
-    );
+    )
   }
 
   handleChange = event => {
     this.setState({
       [event.target.id]: event.target.value
-    });
+    })
   };
 
   handleChangeClick = async event => {
-    event.preventDefault();
+    event.preventDefault()
 
-    this.setState({ isChanging: true });
-
+    this.setState({ isChanging: true })
   };
 
-  render() {
+  render () {
     return (
       <div className="ChangePassword">
         <form onSubmit={this.handleChangeClick}>
@@ -67,6 +66,6 @@ export default class ChangePassword extends Component {
           />
         </form>
       </div>
-    );
+    )
   }
 }

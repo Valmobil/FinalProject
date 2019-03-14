@@ -1,102 +1,215 @@
 import React, {Component} from 'react'
 import './Profile.css'
-import {connect} from "react-redux";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
-import TextField from '@material-ui/core/TextField';
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import orange from "@material-ui/core/colors/orange";
-import {withStyles} from "@material-ui/core";
-import Car from "../Car/Car";
-import Button from '@material-ui/core/Button';
-import {addNewCar} from "../../actions/userCreators";
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import TextField from '@material-ui/core/TextField'
 
-
-    const theme = createMuiTheme({
-        palette: {
-            primary: orange,
-        },
-        typography: { useNextVariants: true },
-    });
-
-    const style= {
-        input: {
-            width: '100%',
-            height: '50px',
-            color: '#fff',
-        },
-        button: {
-            color: '#ff9800',
-            marginTop: '20px'
-        },
-    }
-
-    const styles = theme => ({
-        inputColor: {
-            color:'#fff',
-            width: '100%',
-            height: '50px',
-        },
-    });
-class Profile extends Component{
-  state={
-      newCar: '',
+const styles = theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit
+  },
+  dense: {
+    marginTop: 16
+  },
+  menu: {
+    width: 200
   }
+})
+const carColor = [
+  {
+    id: 1,
+    label: ''
+  },
+  {
+    id: 2,
+    label: 'green'
+  },
+  {
+    id: 3,
+    label: 'yellow'
+  },
+  {
+    id: 4,
+    label: 'black'
+  },
+  {
+    id: 5,
+    label: 'white'
+  },
+  {
+    id: 6,
+    label: 'blue'
+  }
+]
+const car = [
+  {
 
-    handleInput = (e) => {
-        this.setState({[e.target.name]: e.target.value})
-    }
+    value: 'first',
+    label: ''
 
-    addCar = (cars, car) => {
-      this.setState({newCar: ''});
-      this.props.addNewCar(cars, car)
-    }
+  },
+  {
 
-    render() {
-        const { classes } = this.props;
-        const { cars } = this.props.users;
-        const { newCar } = this.state;
-        const carList = cars.map((item) => {
-            return(
-                <Car key={item} model={item}/>
-            )
-        })
-        return(
-            <>
-             <div className="profile-container">
-                <span className="welcome-user">you can change your car list here</span>
-                <div className="car-list">{carList}</div>
-                <MuiThemeProvider theme={theme}>
-                <TextField
-                    label="New car"
-                    id="mui-theme-provider-standard-input"
-                    style={style.input}
-                    name='newCar'
-                    value={this.state.newCar}
-                    onChange={this.handleInput}
-                    InputProps={{
-                        classes: {
-                            input: classes.inputColor
-                        }
-                    }}
-                />
-                    <Button onClick={() => this.addCar(cars, newCar)} style={style.button}>Submit changes</Button>
-                </MuiThemeProvider>
-            </div>
-            </>
-        )
-    }
+    value: 'tesla',
+    label: 'Tesla'
+
+  },
+  {
+    value: 'bmw',
+    label: 'BMW'
+  },
+  {
+    value: 'mercedes',
+    label: 'Mercedes-Benz'
+  },
+  {
+    value: 'nissan',
+    label: 'Nissan'
+  },
+  {
+    value: 'toyota',
+    label: 'Toyota'
+  },
+  {
+    value: 'honda',
+    label: 'Honda'
+  },
+  {
+    value: 'kia',
+    label: 'Kia'
+  },
+  {
+    value: 'mazda',
+    label: 'Mazda'
+  },
+  {
+    value: 'ford',
+    label: 'Ford'
+  }
+]
+class Profile extends Component {
+  state = {
+    name: '',
+    sits: '',
+    multiline: 'Controlled',
+    carModel: '',
+    carColor: '',
+    phone: ''
+
+  };
+
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value
+    })
+  };
+
+  render () {
+    const { classes } = this.props
+
+    return (
+      <form className={classes.container} noValidate autoComplete="off">
+        <TextField
+          required
+          id="outlined-name"
+          label="User Name"
+          className={classes.textField}
+          value={this.state.name}
+          onChange={this.handleChange('name')}
+          margin="normal"
+          variant="outlined"
+        />
+        <TextField
+          id="outlined-name"
+          label="Phone"
+          className={classes.textField}
+          value={this.state.phone}
+          onChange={this.handleChange('phone')}
+          margin="normal"
+          variant="outlined"
+        />
+        <TextField
+          required
+          id="outlined-email-input"
+          label="Email"
+          className={classes.textField}
+          type="email"
+          name="email"
+          autoComplete="email"
+          margin="normal"
+          variant="outlined"
+        />
+        <TextField
+          id="filled-select-car"
+          select
+          label="Car model"
+          className={classes.textField}
+          value={this.state.carModel}
+          onChange={this.handleChange('carModel')}
+          SelectProps={{
+            native: true,
+            MenuProps: {
+              className: classes.menu
+            }
+          }}
+          helperText="please select you car"
+          margin="normal"
+          variant="filled"
+        >
+          {car.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </TextField>
+        <TextField
+          id="filled-select-color-car"
+          select
+          label="Car color"
+          className={classes.textField}
+          value={this.state.carColor}
+          onChange={this.handleChange('carColor')}
+          SelectProps={{
+            native: true,
+            MenuProps: {
+              className: classes.menu
+            }
+          }}
+          helperText="please select you car color"
+          margin="normal"
+          variant="filled"
+        >
+          {carColor.map(option => (
+            <option key={option.id} value={option.label}>
+              {option.label}
+            </option>
+          ))}
+        </TextField>
+        <TextField
+          id="filled-number"
+          label="# of sits"
+          value={this.state.sits}
+          onChange={this.handleChange('sits')}
+          type="number"
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true
+          }}
+          margin="normal"
+          variant="filled"
+        />
+      </form>
+    )
+  }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        users: state.users,
-    }
+Profile.propTypes = {
+  classes: PropTypes.object.isRequired
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        addNewCar: (cars, car) => dispatch(addNewCar(cars, car))
-    }
-}
-
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Profile))
+export default withStyles(styles)(Profile)
