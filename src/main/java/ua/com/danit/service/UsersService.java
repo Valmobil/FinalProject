@@ -3,7 +3,7 @@ package ua.com.danit.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.User;
-import ua.com.danit.entity.UserLogin;
+import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.UsersRepository;
 
 import java.time.LocalDateTime;
@@ -29,6 +29,7 @@ public class UsersService {
   }
 
   public User checkUserCredentials(UserLogin userLogin) {
+    convertUserLoginBlankToNull(userLogin);
     if (userLogin.getUserLogin() == null && userLogin.getUserToken() != null) {
       //find user by Token in DB
       return checkIfTokenIsValid(userLogin);
@@ -47,6 +48,15 @@ public class UsersService {
     } else {
       //find user by Login (can be e-Mail or Phone)
       return user;
+    }
+  }
+
+  private void convertUserLoginBlankToNull(UserLogin userLogin) {
+    if (userLogin.getUserLogin().trim().equals("")) {
+      userLogin.setUserLogin(null);
+    }
+    if (userLogin.getUserToken().trim().equals("")) {
+      userLogin.setUserToken(null);
     }
   }
 
@@ -86,13 +96,12 @@ public class UsersService {
     return null;
   }
 
-
   private User checkIfTokenIsValid(UserLogin userLogin) {
     List<User> users = usersRepository.findByUserToken(userLogin.getUserToken());
     if (users.size() != 1) {
       return null;
     } else {
-      if (users.get(0).getUserTokenValidTo().isBefore(getCurrentDatPlus(0))) {
+      if (users.get(0).getUserTokenValidTo().isAfter(getCurrentDatPlus(0))) {
         return users.get(0);
       }
     }
