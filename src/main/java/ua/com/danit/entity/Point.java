@@ -16,9 +16,9 @@ public class Point extends Auditable {
   @Id
   @ManyToMany
   //@JoinTable(name="trip_point")
-  private long point_id;
-  private String point_name_en;
-  private String point_name_ru;
-  private String point_name_ua;
+  private long pointId;
+  private String pointNameEn;
+  private String pointNameRu;
+  private String pointNameUa;
 }
 

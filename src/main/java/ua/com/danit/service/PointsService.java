@@ -10,8 +10,8 @@ public class PointsService {
     this.pointsRepository = pointsRepository;
   }
 
-  public Point getPointById(Long point_id) {
-    return pointsRepository.getOne(point_id);
+  public Point getPointById(Long pointId) {
+    return pointsRepository.getOne(pointId);
   }
 
   public Point getPointByName(String pointName) {
