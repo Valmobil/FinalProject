@@ -3,7 +3,11 @@ package ua.com.danit.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.User;
+import ua.com.danit.entity.UserPoint;
+import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
+import ua.com.danit.repository.CarsRepository;
+import ua.com.danit.repository.UserPointRepository;
 import ua.com.danit.repository.UsersRepository;
 
 import java.time.LocalDateTime;
@@ -14,10 +18,15 @@ import java.util.regex.Pattern;
 @Service
 public class UsersService {
   private UsersRepository usersRepository;
+  private UserPointRepository userPointRepository;
+  private CarsRepository carsRepository;
+
 
   @Autowired
-  public UsersService(UsersRepository usersRepository) {
+  public UsersService(UsersRepository usersRepository, UserPointRepository userPointRepository, CarsRepository carsRepository) {
     this.usersRepository = usersRepository;
+    this.userPointRepository = userPointRepository;
+    this.carsRepository = carsRepository;
   }
 
   public User createNewUsers(User users) {
@@ -28,27 +37,60 @@ public class UsersService {
     return usersRepository.getOne(userId);
   }
 
-  public User checkUserCredentials(UserLogin userLogin) {
+  public UserInfo checkUserCredentials(UserLogin userLogin) {
     convertUserLoginBlankToNull(userLogin);
+    User user = null;
     if (userLogin.getUserLogin() == null && userLogin.getUserToken() != null) {
       //find user by Token in DB
-      return checkIfTokenIsValid(userLogin);
-    }
-    //Find user by login
-    User user = null;
-    if (userLogin.getUserLogin() != null) {
-      user = checkIfLoginIsCorrect(userLogin);
-    }
-    if (user == null) {
-      return null;
-    }
-    //Update Token if token and login are present
-    if (userLogin.getUserToken() != null) {
-      return updateTokenInDb(userLogin, user);
+      user = checkIfTokenIsValid(userLogin);
     } else {
-      //find user by Login (can be e-Mail or Phone)
-      return user;
+      //Find user by login
+      if (userLogin.getUserLogin() != null) {
+        user = checkIfLoginIsCorrect(userLogin);
+      }
+      if (user == null) {
+        return null;
+      }
+      //Update Token if token and login are present
+      if (userLogin.getUserToken() != null) {
+        user = updateTokenInDb(userLogin, user);
+      } else {
+        //find user by Login (can be e-Mail or Phone)
+      }
     }
+    UserInfo userInfo = new UserInfo();
+    addCarsAndUserPoints(userInfo, user);
+
+    return userInfo;
+  }
+
+  private void addCarsAndUserPoints(UserInfo userInfo, User user) {
+    userInfo.setUser(user);
+    //Collect Cars
+    userInfo.setCars(carsRepository.findByUser(user));
+    //Collect User Points
+    userInfo.setUserPoints(collectUserPointsAndFillInEmptyOnes(user));
+  }
+
+  private List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
+
+    List<UserPoint> userPoints = userPointRepository.findByUser(user);
+    if (userPoints.size() < 5) {
+      if (userPoints.size() < 1) {
+        UserPoint pointHome = new UserPoint(null, "Home", "adress", user, 0, 0);
+        userPoints.add(pointHome);
+      }
+      if (userPoints.size() < 2) {
+        UserPoint pointWork = new UserPoint(null, "Work", "Kyivska obl.", user, 50.570425, 30.2637260);
+        userPoints.add(pointWork);
+      }
+      for (int i = userPoints.size(); i < 5; i++) {
+        UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0);
+        userPoints.add(pointOther);
+      }
+      userPoints = userPointRepository.saveAll(userPoints);
+    }
+    return userPoints;
   }
 
   private void convertUserLoginBlankToNull(UserLogin userLogin) {
