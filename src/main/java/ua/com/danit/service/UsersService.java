@@ -23,7 +23,9 @@ public class UsersService {
 
 
   @Autowired
-  public UsersService(UsersRepository usersRepository, UserPointRepository userPointRepository, CarsRepository carsRepository) {
+  public UsersService(UsersRepository usersRepository,
+                      UserPointRepository userPointRepository,
+                      CarsRepository carsRepository) {
     this.usersRepository = usersRepository;
     this.userPointRepository = userPointRepository;
     this.carsRepository = carsRepository;
@@ -106,7 +108,7 @@ public class UsersService {
     int dateShift = 30;
     user.setUserToken(userLogin.getUserToken());
     user.setUserTokenValidTo(getCurrentDatPlus(dateShift));
-    usersRepository.save(user);
+    user = usersRepository.save(user);
     return user;
   }
 

@@ -14,8 +14,8 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = false)
 public class Point extends Auditable {
   @Id
-//  @ManyToMany
-//  @JoinTable(name="trip_point")
+  //  @ManyToMany
+  //  @JoinTable(name="trip_point")
   private long pointId;
   private String pointNameEn;
   private String pointNameRu;
