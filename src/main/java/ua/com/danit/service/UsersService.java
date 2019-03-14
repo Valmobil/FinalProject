@@ -56,9 +56,9 @@ public class UsersService {
       //Update Token if token and login are present
       if (userLogin.getUserToken() != null) {
         user = updateTokenInDb(userLogin, user);
-      } else {
+      //      } else {
         //find user by Login (can be e-Mail or Phone)
-      }
+      //      }
     }
     UserInfo userInfo = new UserInfo();
     addCarsAndUserPoints(userInfo, user);
