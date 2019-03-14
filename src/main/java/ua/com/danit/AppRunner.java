@@ -9,9 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 //@EnableJpaAuditin
 public class AppRunner {
-//  private static final Logger log = LoggerFactory.getLogger(AppRunner.class);
-
-
     public static void main(String[] args) {
         SpringApplication.run(AppRunner.class, args);
     }
