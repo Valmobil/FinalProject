@@ -117,14 +117,15 @@ class Main extends Component{
     render() {
     console.log(this.props.users)
         const { classes } = this.props;
-        const { role, from, to, car } = this.state;
-        const { auth, cars } = this.props.users;
+        const { role, car } = this.state;
+        const { cars } = this.props.users;
         let currentCar = cars.length === 1 ? cars[0] : car;
 
 
         const placesList = this.props.users.userPoints.map((item) => {
-        if (item.userPointName !== '<no point>'){
+
             return (
+            item.userPointName !== '<no point>' &&
                     <Button onClick={this.setRoute}
                         key = {item.userPointId}
                         variant="contained"
@@ -134,7 +135,8 @@ class Main extends Component{
                     >
                         {item.userPointName}
                     </Button>
-            )}
+
+            )
         })
 
         const carList = cars.map((item, index) => {
