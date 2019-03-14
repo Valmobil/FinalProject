@@ -1,11 +1,8 @@
 package ua.com.danit.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
@@ -15,22 +12,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Builder
 @Entity
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Car extends Auditable {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class TripPassenger {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long carId;
-  private String carName;
-  private String carColour;
-  private String carPhoto;
+  private long tripPassengerId;
   @ManyToOne
-  @JoinColumn(name = "CAR_USER_ID", referencedColumnName = "userId")
+  @JoinColumn(name = "TRIP_PASSENGER_TRIP_ID", referencedColumnName = "tripId")
+  private Trip trip;
+  @ManyToOne
+  @JoinColumn(name = "TRIP_PASSENGER_USER_ID", referencedColumnName = "userId")
   private User user;
+  private int tripPassengerTogetherQty;
 }
-
