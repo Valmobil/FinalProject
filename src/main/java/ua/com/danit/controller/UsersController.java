@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.User;
-import ua.com.danit.entity.UserLogin;
+import ua.com.danit.model.UserLogin;
 import ua.com.danit.service.UsersService;
 
 @RestController
