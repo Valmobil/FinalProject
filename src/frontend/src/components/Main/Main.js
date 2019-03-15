@@ -14,6 +14,9 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+
 
 
 
@@ -28,7 +31,7 @@ const styles = theme => ({
         color: 'white',
         height: 30,
         padding: 0,
-        marginTop: '20px',
+        margin: '20px 10% auto calc(10% + 20px)',
         width: '80%'
     },
     typeButtons: {
@@ -52,6 +55,16 @@ const styles = theme => ({
       },
     inputLabel: {
         color: '#fff',
+    },
+    iconButton: {
+        padding: 0,
+        marginBottom: '-15px',
+        marginRight: 0,
+        marginLeft: 'auto',
+        color: '#fff',
+        '&:focus': {
+            outline: 'none'
+        }
     }
 });
 const style={
@@ -78,16 +91,15 @@ class Main extends Component{
         selectedIndex: 1,
         from: '',
         to: '',
-        places: ['Home', 'Job', 'Parents', 'Sports', 'DAN IT'],
         newCar: '',
         car: '',
     };
 
-    handlePlacesListClick = (event, index, item) => {
-        this.setState({ selectedIndex: index });
-        if (this.state.from === '') this.setState({from: item})
-        else if (this.state.to === '') this.setState({to: item})
-    };
+    // handlePlacesListClick = (event, index, item) => {
+    //     this.setState({ selectedIndex: index });
+    //     if (this.state.from === '') this.setState({from: item})
+    //     else if (this.state.to === '') this.setState({to: item})
+    // };
 
     handleRadio = event => {
         this.setState({ role: event.target.value });
@@ -110,12 +122,15 @@ class Main extends Component{
         this.props.logOut()
     }
 
+    handleEdit = (id) => {
+        console.log(id)
+    }
+
     componentDidMount() {
         if (this.props.users.cars.length === 1) this.setState({car: this.props.users.cars[0]})
     }
 
     render() {
-    console.log(this.props.users)
         const { classes } = this.props;
         const { role, car } = this.state;
         const { cars } = this.props.users;
@@ -123,11 +138,10 @@ class Main extends Component{
 
 
         const placesList = this.props.users.userPoints.map((item) => {
-
             return (
             item.userPointName !== '<no point>' &&
+                <div key = {item.userPointId} style={{display: 'flex', width: '100%'}}>
                     <Button onClick={this.setRoute}
-                        key = {item.userPointId}
                         variant="contained"
                         color="primary"
                         className={classes.smartRoute}
@@ -136,11 +150,19 @@ class Main extends Component{
                         {item.userPointName}
                     </Button>
 
+                <IconButton
+                    onClick={() => this.handleEdit(item.userPointId)}
+                    className={classes.iconButton}
+                    aria-label="Edit">
+                <EditIcon />
+                </IconButton>
+                    </div>
+
             )
         })
 
-        const carList = cars.map((item, index) => {
-            return  <MenuItem value={item} key = {index}>{item}</MenuItem>
+        const carList = cars.map((item) => {
+            return  <MenuItem value={item.carName + ' ' + item.carColour} key = {item.carId}>{item.carName + ' ' + item.carColour}</MenuItem>
         })
 
         return (
