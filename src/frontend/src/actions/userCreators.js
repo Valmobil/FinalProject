@@ -3,9 +3,9 @@ import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
   const user = {userLogin: state.login, userPassword: state.password, userToken: state.token}
-  /*  dispatch({type: SET_AUTH, payload: true})
-  dispatch({type: SET_USER, payload: user}) */
-  axios.post('http://localhost:9000/api/users/login', {
+  dispatch({type: SET_AUTH, payload: true})
+  dispatch({type: SET_USER, payload: user})
+/*  axios.post('http://localhost:9000/api/users/login', {
     userLogin: state.login,
     userPassword: state.password,
     userToken: state.token})
@@ -17,7 +17,7 @@ export const setAuthorization = (state) => dispatch => {
         dispatch(setLoginRejected(true))
       }
     })
-    .catch(err => console.log(err))
+    .catch(err => console.log(err)) */
 }
 //* *********************
 
