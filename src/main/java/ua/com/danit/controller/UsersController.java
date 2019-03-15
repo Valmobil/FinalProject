@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.User;
+import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
 import ua.com.danit.service.UsersService;
 
@@ -23,7 +24,7 @@ public class UsersController {
   }
 
   @PostMapping("login")
-  public User postLoginReturnUser(@RequestBody UserLogin userLogin) {
+  public UserInfo postLoginReturnUser(@RequestBody UserLogin userLogin) {
     return usersService.checkUserCredentials(userLogin);
   }
 

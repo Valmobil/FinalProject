@@ -17,3 +17,10 @@
 .role-question{
     margin-top: 40px;
 }
+.type-button-container{
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    height: 40px;
+    margin-top: 10px;
+}
