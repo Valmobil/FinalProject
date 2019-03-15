@@ -9,7 +9,8 @@ body {
   background: linear-gradient(rgb(102, 110, 157), rgb(62, 69, 102));
   /*background: linear-gradient(rgb(108, 175, 70), rgb(48, 117, 54));*/
   /*background-color: #282c34;*/
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,4 +19,7 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+#root{
+  width: 100vw;
 }
