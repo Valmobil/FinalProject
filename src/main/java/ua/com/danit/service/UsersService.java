@@ -7,7 +7,7 @@ import ua.com.danit.entity.UserPoint;
 import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.CarsRepository;
-import ua.com.danit.repository.UserPointRepository;
+import ua.com.danit.repository.UserPointsRepository;
 import ua.com.danit.repository.UsersRepository;
 
 import java.time.LocalDateTime;
@@ -18,16 +18,16 @@ import java.util.regex.Pattern;
 @Service
 public class UsersService {
   private UsersRepository usersRepository;
-  private UserPointRepository userPointRepository;
+  private UserPointsRepository userPointsRepository;
   private CarsRepository carsRepository;
 
 
   @Autowired
   public UsersService(UsersRepository usersRepository,
-                      UserPointRepository userPointRepository,
+                      UserPointsRepository userPointRepository,
                       CarsRepository carsRepository) {
     this.usersRepository = usersRepository;
-    this.userPointRepository = userPointRepository;
+    this.userPointsRepository = userPointRepository;
     this.carsRepository = carsRepository;
   }
 
@@ -76,7 +76,7 @@ public class UsersService {
 
   private List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
 
-    List<UserPoint> userPoints = userPointRepository.findByUser(user);
+    List<UserPoint> userPoints = userPointsRepository.findByUser(user);
     if (userPoints.size() < 5) {
       if (userPoints.size() < 1) {
         UserPoint pointHome = new UserPoint(null, "Home", "adress", user, 0, 0);
@@ -90,7 +90,7 @@ public class UsersService {
         UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0);
         userPoints.add(pointOther);
       }
-      userPoints = userPointRepository.saveAll(userPoints);
+      userPoints = userPointsRepository.saveAll(userPoints);
     }
     return userPoints;
   }
