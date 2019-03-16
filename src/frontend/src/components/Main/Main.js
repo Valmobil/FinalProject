@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { logOut } from '../../actions/userCreators'
+import { logOut, setUserPoints } from '../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -16,6 +16,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditSmart from './EditSmart/EditSmart'
 
 
 
@@ -29,10 +31,11 @@ const styles = theme => ({
         borderRadius: 3,
         border: 0,
         color: 'white',
-        height: 30,
+        height: 40,
         padding: 0,
-        margin: '20px 10% auto calc(10% + 20px)',
-        width: '80%'
+        marginLeft: (window.innerWidth - 200)/2,
+        marginTop: 20,
+        width: 200
     },
     typeButtons: {
         borderRadius: 3,
@@ -58,13 +61,12 @@ const styles = theme => ({
     },
     iconButton: {
         padding: 0,
-        marginBottom: '-15px',
-        marginRight: 0,
-        marginLeft: 'auto',
+
         color: '#fff',
         '&:focus': {
             outline: 'none'
-        }
+        },
+
     }
 });
 const style={
@@ -91,8 +93,12 @@ class Main extends Component{
         selectedIndex: 1,
         from: '',
         to: '',
-        newCar: '',
+
         car: '',
+        name: '',
+        destination: '',
+        editing: '',
+        adding: false,
     };
 
     // handlePlacesListClick = (event, index, item) => {
@@ -122,8 +128,39 @@ class Main extends Component{
         this.props.logOut()
     }
 
-    handleEdit = (id) => {
-        console.log(id)
+    handleEdit = (item) => {
+        this.setState({editing: item.userPointId, name: item.userPointName, destination: item.userPointAddress})
+    }
+
+    handleEditInput = (e) => {
+        this.setState({[e.target.name]: e.target.value})
+    }
+
+    editClose = (id) => {
+        let newUserPoints = this.props.users.userPoints.map(item => {
+            if (item.userPointId === id){
+                return {...item, userPointName: this.state.name, userPointAddress: this.state.destination}
+            } else {
+                return item
+            }
+        })
+        this.props.setUserPoints(newUserPoints)
+        this.setState({editing: '', name: '', destination: '', adding: false})
+    }
+
+    addNewPoint = () => {
+        this.setState({adding: true})
+    }
+
+    handleDelete = (id) => {
+        let newUserPoints = this.props.users.userPoints.map(item => {
+            if (item.userPointId === id){
+                return {...item, userPointName: '<no point>', userPointAddress: ''}
+            } else {
+                return item
+            }
+        })
+        this.props.setUserPoints(newUserPoints)
     }
 
     componentDidMount() {
@@ -132,33 +169,53 @@ class Main extends Component{
 
     render() {
         const { classes } = this.props;
-        const { role, car } = this.state;
-        const { cars } = this.props.users;
+        const { role, car, name, destination, editing, adding } = this.state;
+        const { cars, userPoints } = this.props.users;
         let currentCar = cars.length === 1 ? cars[0] : car;
+        const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
+        let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
-
-        const placesList = this.props.users.userPoints.map((item) => {
-            return (
-            item.userPointName !== '<no point>' &&
-                <div key = {item.userPointId} style={{display: 'flex', width: '100%'}}>
-                    <Button onClick={this.setRoute}
-                        variant="contained"
-                        color="primary"
-                        className={classes.smartRoute}
-                        classes={{ label: classes.label }}
-                    >
-                        {item.userPointName}
-                    </Button>
-
-                <IconButton
-                    onClick={() => this.handleEdit(item.userPointId)}
-                    className={classes.iconButton}
-                    aria-label="Edit">
-                <EditIcon />
-                </IconButton>
+        const placesList = userPoints.map((item) => {
+            let output = null
+            if (item.userPointId === editing){
+                output = (
+                    <EditSmart key = {item.userPointId}
+                        handleEditInput={this.handleEditInput}
+                        editName={name}
+                        editDestination={destination}
+                        editClose={() => this.editClose(item.userPointId)}
+                    />
+                )
+            } else {
+                output = (
+                    item.userPointName !== '<no point>' &&
+                    <div key = {item.userPointId} style={{display: 'flex', width: '100%'}}>
+                        <Button onClick={this.setRoute}
+                                variant="contained"
+                                color="primary"
+                                className={classes.smartRoute}
+                                classes={{ label: classes.label }}
+                        >
+                            {item.userPointName}
+                        </Button>
+                        <div className="icon-container">
+                            <IconButton
+                                onClick={() => this.handleEdit(item)}
+                                className={classes.iconButton}
+                                aria-label="Edit">
+                                <EditIcon />
+                            </IconButton>
+                            <IconButton
+                                onClick={() => this.handleDelete(item.userPointId)}
+                                className={classes.iconButton}
+                                aria-label="Delete">
+                                <DeleteIcon />
+                            </IconButton>
+                        </div>
                     </div>
-
-            )
+                )
+            }
+            return output;
         })
 
         const carList = cars.map((item) => {
@@ -171,7 +228,6 @@ class Main extends Component{
             <div className="welcome-user">
             <span className="welcome-span role-question">what is your today's role?</span>
               <MuiThemeProvider theme={theme}>
-
                 <RadioGroup
                 aria-label="position"
                 name="position"
@@ -219,8 +275,10 @@ class Main extends Component{
 
                 {placesList}
 
-                  <Button type="raised"
+                  <Button onClick={this.addNewPoint}
+                          type="raised"
                           color="primary"
+                          disabled={adDisable}
                           classes={{
                               root: classes.typeButtons,
                               label: classes.label,
@@ -231,6 +289,14 @@ class Main extends Component{
                   >
                       New quick trip
                   </Button>
+                  {adding &&
+                  <EditSmart handleEditInput={this.handleEditInput}
+                             editName={name}
+                             editDestination={destination}
+                             editClose={() => this.editClose(firstEmptyUserPoint.userPointId)}
+                  />
+                  }
+
 
                   {this.state.role === 'driver' &&
                   <FormControl required className={classes.formControl}>
@@ -256,6 +322,7 @@ class Main extends Component{
 
                   {/*<button className="logout-button" onClick={() => this.signOut(auth)}>Log out</button>*/}
               </MuiThemeProvider>
+
             </div>
             </>
         );
@@ -272,6 +339,7 @@ class Main extends Component{
     const mapDispatchToProps = (dispatch) => {
         return {
             logOut: () => dispatch(logOut()),
+            setUserPoints: (payload) => dispatch(setUserPoints(payload)),
         }
     }
 
