@@ -3,6 +3,7 @@ import './Profile.css'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
+import AvatarProfile from '../avatar/AvatarProfile'
 
 const styles = theme => ({
   container: {
@@ -114,6 +115,7 @@ class Profile extends Component {
 
     return (
       <form className={classes.container} noValidate autoComplete="off">
+        <AvatarProfile/>
         <TextField
           required
           id="outlined-name"
