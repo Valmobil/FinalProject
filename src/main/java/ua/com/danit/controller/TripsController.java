@@ -17,13 +17,12 @@ public class TripsController {
   private TripsService tripsService;
 
   @Autowired
-  public TripsController(TripsService tripsService) { this.tripsService = tripsService; }
+  public TripsController(TripsService tripsService) {
+    this.tripsService = tripsService;
+  }
 
   @GetMapping("test")
   public Trip getTripbyId() {
     return tripsService.getTripById(1L);
   }
-
-
-
 }

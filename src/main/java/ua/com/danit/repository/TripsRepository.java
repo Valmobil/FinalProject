@@ -6,7 +6,8 @@ import ua.com.danit.entity.User;
 
 import java.util.List;
 
-public interface TripsRepository extends JpaRepository<Trip,Long> {
-  Trip findByTripId (long tripId);
-  List<Trip> findByUser (User user);
+public interface TripsRepository extends JpaRepository<Trip, Long> {
+  Trip findByTripId(long tripId);
+
+  List<Trip> findByUser(User user);
 }

@@ -18,7 +18,6 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -38,8 +37,8 @@ public class Trip extends Auditable {
   @JoinColumn(name = "TRIP_CAR_ID", referencedColumnName = "carId")
   private Car car;
   private LocalDateTime tripDateTime;
-//  @ManyToOne
-//  @JoinColumn(name = "TRIP_POINT_ID", referencedColumnName = "tripPointId")
-//  private List<TripPoint> tripTripPoints;
+  //  @ManyToOne
+  //  @JoinColumn(name = "TRIP_POINT_ID", referencedColumnName = "tripPointId")
+  //  private List<TripPoint> tripTripPoints;
   //  private List<User> tripUsers
 }

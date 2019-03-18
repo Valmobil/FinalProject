@@ -16,5 +16,7 @@ public class TripsService {
     this.tripsRepository = tripsRepository;
   }
 
-  public Trip getTripById(Long tripId) { return tripsRepository.getOne(tripId); }
+  public Trip getTripById(Long tripId) {
+    return tripsRepository.getOne(tripId);
+  }
 }
