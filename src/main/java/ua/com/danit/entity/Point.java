@@ -5,7 +5,6 @@ import lombok.Value;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Value
@@ -14,11 +13,14 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = false)
 public class Point extends Auditable {
   @Id
-  //  @ManyToMany
+  //@ManyToMany
   //  @JoinTable(name="trip_point")
   private long pointId;
   private String pointNameEn;
   private String pointNameRu;
   private String pointNameUa;
+  private double pointLongitude;
+  private double pointLatitude;
+
 }
 
