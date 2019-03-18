@@ -6,5 +6,5 @@ insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user
 insert into car (car_Id, car_user_id, car_Name, car_Colour, car_Photo) values (1, 1, 'Mercedes','Red','/CarsPhotos/1_1.jpg')
 insert into car (car_Id, car_user_id, car_Name, car_Colour, car_Photo) values (2, 1, 'Opel','Blue','/CarsPhotos/2_1.jpg')
 insert into car (car_Id, car_user_id, car_Name, car_Colour, car_Photo) values (3, 2, 'Cadillac','Blue','/CarsPhotos/2_2.jpg')
--- insert into userpoint (user_point_Id, user_point_Name, ) values (3, 2, 'Cadillac','Blue','/CarsPhotos/2_2.jpg')
--- insert into car (car_Id, car_user_id, car_Name, car_Colour, car_Photo) values (3, 2, 'Cadillac','Blue','/CarsPhotos/2_2.jpg')
+insert into trip (TRIP_ID, TRIP_DATE_TIME, TRIP_CAR_ID, TRIP_USER_ID) values (1, '2019-03-15T07:15:00', 1,1)
+insert into trip (TRIP_ID, TRIP_DATE_TIME, TRIP_CAR_ID, TRIP_USER_ID) values (2, '2019-03-16T20:00:00', 2,1)
