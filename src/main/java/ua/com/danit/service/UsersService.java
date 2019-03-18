@@ -21,6 +21,7 @@ public class UsersService {
   private UserPointsRepository userPointsRepository;
   private CarsRepository carsRepository;
 
+  private static final int dateShift = 30;
 
   @Autowired
   public UsersService(UsersRepository usersRepository,
@@ -42,28 +43,55 @@ public class UsersService {
   public UserInfo checkUserCredentials(UserLogin userLogin) {
     convertUserLoginBlankToNull(userLogin);
     User user = null;
-    if (userLogin.getUserLogin() == null && userLogin.getUserToken() != null) {
-      //find user by Token in DB
-      user = checkIfTokenIsValid(userLogin);
+    if (userLogin.getUserLogin() == null) {
+      if (userLogin.getUserToken() == null) {
+        if (userLogin.getUserPasswordNew() == null) {
+          //L=0 T=0 PN=0
+          return null;
+        } else {
+          //L=0 T=0 PN=1
+          //Change password
+          user = changePassword(userLogin);
+        }
+      } else {
+        //L=0 T=1
+        //find user by Token in DB
+        user = checkIfTokenIsPresent(userLogin);
+      }
     } else {
-      //Find user by login
-      if (userLogin.getUserLogin() != null) {
-        user = checkIfLoginIsCorrect(userLogin);
-      }
-      if (user == null) {
-        return null;
-      }
-      //Update Token if token and login are present
-      if (userLogin.getUserToken() != null) {
-        user = updateTokenInDb(userLogin, user);
-        //      } else {
-        //find user by Login (can be e-Mail or Phone)
+      if (userLogin.getUserToken() == null) {
+        //L=1 T=0
+        //Find user by login
+        if (userLogin.getUserLogin() != null) {
+          user = checkIfLoginAndPasswordIsCorrect(userLogin);
+        }
+        if (user == null) {
+          return null;
+        }
+      } else {
+        //L=1 T=1
+        //Update Token if token and login are present
+        user = checkLoginAndUpdateTokenInDb(userLogin, user);
       }
     }
     UserInfo userInfo = new UserInfo();
     addCarsAndUserPoints(userInfo, user);
 
     return userInfo;
+  }
+
+  private String passwordEncrypt(String userPasswordNew) {
+    //!!!!! Write password encryption procedure
+    return userPasswordNew;
+  }
+
+  private User changePassword(UserLogin userLogin) {
+    User user = checkIfLoginAndPasswordIsCorrect(userLogin);
+    if (user != null) {
+      user.setUserPassword(passwordEncrypt(userLogin.getUserPasswordNew()));
+      user = usersRepository.save(user);
+    }
+    return user;
   }
 
   private void addCarsAndUserPoints(UserInfo userInfo, User user) {
@@ -74,8 +102,7 @@ public class UsersService {
     userInfo.setUserPoints(collectUserPointsAndFillInEmptyOnes(user));
   }
 
-  private List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
-
+  public List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
     List<UserPoint> userPoints = userPointsRepository.findByUser(user);
     if (userPoints.size() < 5) {
       if (userPoints.size() < 1) {
@@ -96,16 +123,33 @@ public class UsersService {
   }
 
   private void convertUserLoginBlankToNull(UserLogin userLogin) {
-    if (userLogin.getUserLogin().trim().equals("")) {
-      userLogin.setUserLogin(null);
+    if (userLogin.getUserLogin() != null) {
+      if (userLogin.getUserLogin().trim().equals("")) {
+        userLogin.setUserLogin(null);
+      }
     }
-    if (userLogin.getUserToken().trim().equals("")) {
-      userLogin.setUserToken(null);
+    if (userLogin.getUserToken() != null) {
+      if (userLogin.getUserToken().trim().equals("")) {
+        userLogin.setUserToken(null);
+      }
+    }
+    if (userLogin.getUserPasswordNew() != null) {
+      if (userLogin.getUserPasswordNew().trim().equals("")) {
+        userLogin.setUserPasswordNew(null);
+      }
+    }
+    if (userLogin.getUserPassword() != null) {
+      if (userLogin.getUserPassword().trim().equals("")) {
+        userLogin.setUserPassword(null);
+      }
     }
   }
 
-  private User updateTokenInDb(UserLogin userLogin, User user) {
-    int dateShift = 30;
+  private User checkLoginAndUpdateTokenInDb(UserLogin userLogin, User user) {
+    user = checkLogin(userLogin);
+    if (user == null) {
+      return null;
+    }
     user.setUserToken(userLogin.getUserToken());
     user.setUserTokenValidTo(getCurrentDatPlus(dateShift));
     user = usersRepository.save(user);
@@ -118,7 +162,7 @@ public class UsersService {
     return date;
   }
 
-  private User checkIfLoginIsCorrect(UserLogin userLogin) {
+  private User checkLogin(UserLogin userLogin) {
     List<User> users;
     if (checkForEmail(userLogin)) {
       // if login is mail
@@ -134,13 +178,22 @@ public class UsersService {
     if (users.size() != 1) {
       return null;
     }
-    if (users.get(0).getUserPassword().equals(userLogin.getUserPassword())) {
-      return users.get(0);
+    return users.get(0);
+  }
+
+
+  private User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
+    User user = checkLogin(userLogin);
+    if (user == null) {
+      return null;
+    }
+    if (user.getUserPassword().equals(passwordEncrypt(userLogin.getUserPassword()))) {
+      return user;
     }
     return null;
   }
 
-  private User checkIfTokenIsValid(UserLogin userLogin) {
+  private User checkIfTokenIsPresent(UserLogin userLogin) {
     List<User> users = usersRepository.findByUserToken(userLogin.getUserToken());
     if (users.size() != 1) {
       return null;

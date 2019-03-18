@@ -8,4 +8,3 @@ insert into car (car_Id, car_user_id, car_Name, car_Colour, car_Photo) values (2
 insert into car (car_Id, car_user_id, car_Name, car_Colour, car_Photo) values (3, 2, 'Cadillac','Blue','/CarsPhotos/2_2.jpg')
 insert into trip (TRIP_ID, TRIP_DATE_TIME, TRIP_CAR_ID, TRIP_USER_ID) values (1, '2019-03-15T07:15:00', 1,1)
 insert into trip (TRIP_ID, TRIP_DATE_TIME, TRIP_CAR_ID, TRIP_USER_ID) values (2, '2019-03-16T20:00:00', 2,1)
--- insert into car (car_Id, car_user_id, car_Name, car_Colour, car_Photo) values (3, 2, 'Cadillac','Blue','/CarsPhotos/2_2.jpg')
