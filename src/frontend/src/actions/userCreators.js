@@ -58,5 +58,11 @@ export const setLoginRejected = (payload) => dispatch => {
 //***********************
 
 export const setUserPoints = (payload) => dispatch => {
+    axios({
+        method: 'post',
+        url: '/api/userpoints/save',
+        data: payload
+    })
+    .catch(err => console.log(err))
     dispatch({type: SET_USER_POINTS, payload})
 }
