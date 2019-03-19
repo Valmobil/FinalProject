@@ -1,4 +1,4 @@
-import { SET_AUTH, SET_USER,  SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED } from './users'
+import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED } from './users'
 import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
