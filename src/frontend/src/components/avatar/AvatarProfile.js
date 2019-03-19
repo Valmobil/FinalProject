@@ -9,8 +9,9 @@ import IconAvatars from '../iconAvatars/IconAvatars'
 const styles = {
   bigAvatar: {
     margin: 10,
-    width: 80,
-    height: 80
+    width: 100,
+    height: 80,
+    paddingTop: 20
   }
 }
 function AvatarProfile (props) {
