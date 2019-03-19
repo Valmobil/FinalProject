@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { FormGroup, FormControl } from 'react-bootstrap'
+import { saveNewPassword, saveNewConfirm, postNewPassword } from '../actions/restoreOldPass'
+// import IconButton from '@material-ui/core/IconButton'
+// import InputAdornment from '@material-ui/core/InputAdornment'
+// import Visibility from '@material-ui/icons/Visibility'
+// import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import LoaderButton from './LoaderButton'
 import './ChangePassword.scss'
 
@@ -11,7 +17,8 @@ export default class ChangePassword extends Component {
       password: '',
       // oldPassword: "",
       isChanging: false,
-      confirmPassword: ''
+      confirmPassword: '',
+      showPassword: false
     }
   }
 
@@ -22,23 +29,27 @@ export default class ChangePassword extends Component {
     )
   }
 
+  // handleClickShowPassword = () => {
+  //   this.setState({ showPassword: !this.state.showPassword })
+  // }
+
   handleChange = event => {
     this.setState({
       [event.target.id]: event.target.value
     })
-  };
+  }
 
   handleChangeClick = async event => {
     event.preventDefault()
 
     this.setState({ isChanging: true })
-  };
+  }
 
   render () {
     return (
       <div className="ChangePassword">
         <form onSubmit={this.handleChangeClick}>
-          <hr />
+          <hr/>
           <FormGroup bsSize="large" controlId="password">
             <div>New Password</div>
             <FormControl
@@ -53,6 +64,16 @@ export default class ChangePassword extends Component {
               type="password"
               onChange={this.handleChange}
               value={this.state.confirmPassword}
+              // endAdornment={
+              //   <InputAdornment position="end">
+              //     <IconButton
+              //       aria-label="Toggle password visibility"
+              //       onClick={this.handleClickShowPassword}
+              //     >
+              //       {this.state.showPassword ? <Visibility/> : <VisibilityOff/>}
+              //     </IconButton>
+              //   </InputAdornment>
+              // }
             />
           </FormGroup>
           <LoaderButton
