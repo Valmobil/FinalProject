@@ -1,10 +1,10 @@
 import {
-  SAVE_NEW_PASSWORD,
-  SAVE_NEW_CONFIRM_PASSWORD,
+  // SAVE_NEW_PASSWORD,
+  // SAVE_NEW_CONFIRM_PASSWORD,
   POST_NEW_PASSWORD_REQUESTED,
   POST_NEW_PASSWORD_SUCCEEDED,
   POST_NEW_PASSWORD_FAILED
-} from '../actions/changePass'
+} from '../actions/password'
 
 const initialState = {
   newPassword: '',
@@ -16,11 +16,11 @@ const initialState = {
 
 function password (state = initialState, action) {
   switch (action.type) {
-    case SAVE_NEW_PASSWORD:
-      return {
-        ...state,
-        newPassword: action.payload
-      }
+    // case SAVE_NEW_PASSWORD:
+    //   return {
+    //     ...state,
+    //     newPassword: action.payload
+    //   }
     case POST_NEW_PASSWORD_REQUESTED:
       return {
         ...state,
@@ -31,6 +31,12 @@ function password (state = initialState, action) {
         ...state,
         isRequesting: false,
         isSuccess: true
+      }
+    case POST_NEW_PASSWORD_FAILED:
+      return {
+        ...state,
+        isRequesting: false,
+        isSuccess: false
       }
 
     default:

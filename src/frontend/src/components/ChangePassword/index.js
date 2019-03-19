@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { FormGroup, FormControl } from 'react-bootstrap'
-import { saveNewPassword, saveNewConfirm, postNewPassword } from '../actions/restoreOldPass'
+import { postNewPassword } from '../../actions/passwordCreater'
 // import IconButton from '@material-ui/core/IconButton'
 // import InputAdornment from '@material-ui/core/InputAdornment'
 // import Visibility from '@material-ui/icons/Visibility'
@@ -9,7 +9,7 @@ import { saveNewPassword, saveNewConfirm, postNewPassword } from '../actions/res
 import LoaderButton from './LoaderButton'
 import './ChangePassword.scss'
 
-export default class ChangePassword extends Component {
+class ChangePassword extends Component {
   constructor (props) {
     super(props)
 
@@ -43,6 +43,7 @@ export default class ChangePassword extends Component {
     event.preventDefault()
 
     this.setState({ isChanging: true })
+    this.props.postNewPassword(this.state.password)
   }
 
   render () {
@@ -90,3 +91,17 @@ export default class ChangePassword extends Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    password: state.password
+  }
+}
+
+const mapDispatchToProps = (dispatch, value) => {
+  return {
+    postNewPassword: () => dispatch(postNewPassword(value))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChangePassword)
