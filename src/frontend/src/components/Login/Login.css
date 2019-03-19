@@ -9,3 +9,8 @@
 .social-buttons{
     margin-top: 20px;
 }
+@media screen and (max-width: 710px) and (min-width: 380px){
+    .login-container{
+        margin-top: 0;
+    }
+}
