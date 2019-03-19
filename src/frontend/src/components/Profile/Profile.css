@@ -1,6 +1,15 @@
-.profile-container{
-    margin-top: 60px;
+.form-container{
+    width: 90vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /*align-items: stretch;*/
+    margin-top: 50px;
 }
-.car-list{
-    margin-top: 20px;
+
+
+@media screen and (max-width: 710px) and (min-width: 380px){
+    .login-container{
+        margin-top: 0;
+    }
 }

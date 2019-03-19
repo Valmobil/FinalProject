@@ -1,11 +1,18 @@
 package ua.com.danit.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Point;
 import ua.com.danit.repository.PointsRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
 public class PointsService {
   private PointsRepository pointsRepository;
 
+  @Autowired
   public PointsService(PointsRepository pointsRepository) {
     this.pointsRepository = pointsRepository;
   }
@@ -14,9 +21,11 @@ public class PointsService {
     return pointsRepository.getOne(pointId);
   }
 
-  public Point getPointByName(String pointName) {
-    //TODO ...maybe with Locale?
-    return null;
+  public List<Point> getPointByName(String pointName) {
+    //realization only for EN names, not tested yet
+    List<Point> listOfPoints = new ArrayList<>();
+    pointsRepository.findPointByPointNameEnLike(pointName + "%");
+    return listOfPoints;
   }
 
 }
