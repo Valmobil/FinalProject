@@ -1,25 +1,25 @@
 import {
-  SAVE_NEW_PASSWORD,
-  SAVE_NEW_CONFIRM_PASSWORD,
+  // SAVE_NEW_PASSWORD,
+  // SAVE_NEW_CONFIRM_PASSWORD,
   POST_NEW_PASSWORD_REQUESTED,
   POST_NEW_PASSWORD_SUCCEEDED,
   POST_NEW_PASSWORD_FAILED
-} from './changePass'
+} from './password'
 import axios from 'axios'
 
-export const saveNewPassword = value => dispatch => {
-  dispatch({
-    type: SAVE_NEW_PASSWORD,
-    payload: value
-  })
-}
+// export const saveNewPassword = value => dispatch => {
+//   dispatch({
+//     type: SAVE_NEW_PASSWORD,
+//     payload: value
+//   })
+// }
 
-export const saveNewConfirm = value => dispatch => {
-  dispatch({
-    type: SAVE_NEW_CONFIRM_PASSWORD,
-    payload: value
-  })
-}
+// export const saveNewConfirm = value => dispatch => {
+//   dispatch({
+//     type: SAVE_NEW_CONFIRM_PASSWORD,
+//     payload: value
+//   })
+// }
 
 export const postNewPassword = value => dispatch => {
   dispatch({
@@ -33,7 +33,7 @@ export const postNewPassword = value => dispatch => {
       if (Object.keys(res.data).length !== 0) {
         dispatch({ type: POST_NEW_PASSWORD_SUCCEEDED, payload: res.data.user })
       } else {
-        dispatch({ type: POST_NEW_PASSWORD_FAILED, payload: res.data.login })
+        dispatch({ type: POST_NEW_PASSWORD_FAILED })
       }
     })
     .catch(err => console.log(err))

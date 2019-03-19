@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { FormGroup, FormControl } from 'react-bootstrap'
-import { saveNewPassword, saveNewConfirm, postNewPassword } from '../actions/restoreOldPass'
+import { postNewPassword } from '../../actions/passwordCreater'
 // import IconButton from '@material-ui/core/IconButton'
 // import InputAdornment from '@material-ui/core/InputAdornment'
 // import Visibility from '@material-ui/icons/Visibility'
 // import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import LoaderButton from './LoaderButton'
 import './ChangePassword.scss'
-import { logOut, setUserPoints } from '../../actions/userCreators'
 
 class ChangePassword extends Component {
   constructor (props) {
@@ -44,6 +43,7 @@ class ChangePassword extends Component {
     event.preventDefault()
 
     this.setState({ isChanging: true })
+    this.props.postNewPassword(this.state.password)
   }
 
   render () {
@@ -94,14 +94,13 @@ class ChangePassword extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    users: state.users
+    password: state.password
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, value) => {
   return {
-    logOut: () => dispatch(logOut()),
-    setUserPoints: (payload) => dispatch(setUserPoints(payload))
+    postNewPassword: () => dispatch(postNewPassword(value))
   }
 }
 
