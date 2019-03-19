@@ -10,41 +10,41 @@ const initialState = {
     userPhone: '',
     userPhoto: '',
     userToken: '',
-    userTokenValidTo: '',
-     },
-    cars: [],
-    userPoints: [],
-    role: 'passenger',
-    isAuthenticated: false,
-    auth: null,
-    topMenuOpen: false,
-    loginRejected: false,
+    userTokenValidTo: ''
+  },
+  cars: [],
+  userPoints: [],
+  role: 'passenger',
+  isAuthenticated: true,
+  auth: null,
+  topMenuOpen: false,
+  loginRejected: false
 }
 
 function users (state = initialState, action) {
-    switch (action.type){
-        case SET_AUTH:
-            return {...state, isAuthenticated: action.payload}
-        case SET_USER:
-            return {...state, user: action.payload}
-        case SET_CARS:
-            return {...state, cars: action.payload}
-        case SET_USER_POINTS:
-            return {...state, userPoints: action.payload}
-        case SET_ROLE:
-            return {...state, role: action.payload}
-        case SET_SOCIAL_AUTH:
-            return {...state, auth: action.payload}
-        case MENU_TOGGLE:
-            return {...state, topMenuOpen: action.payload}
-        case SET_CAR_LIST:
-            return {...state, cars: action.payload}
-        case LOGIN_REJECTED:
-            return {...state, loginRejected: action.payload}
+  switch (action.type) {
+    case SET_AUTH:
+      return {...state, isAuthenticated: action.payload}
+    case SET_USER:
+      return {...state, user: action.payload}
+    case SET_CARS:
+      return {...state, cars: action.payload}
+    case SET_USER_POINTS:
+      return {...state, userPoints: action.payload}
+    case SET_ROLE:
+      return {...state, role: action.payload}
+    case SET_SOCIAL_AUTH:
+      return {...state, auth: action.payload}
+    case MENU_TOGGLE:
+      return {...state, topMenuOpen: action.payload}
+    case SET_CAR_LIST:
+      return {...state, cars: action.payload}
+    case LOGIN_REJECTED:
+      return {...state, loginRejected: action.payload}
 
-        default:
-            return {...state}
-    }
+    default:
+      return {...state}
+  }
 }
 
 export default users
