@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface PointsRepository extends JpaRepository<Point, Long> {
 
-  List<Point> findPointByPointNameEnLike(String point_name_en);
+  List<Point> findPointByPointNameEnLike(String pointNameEn);
 
 }

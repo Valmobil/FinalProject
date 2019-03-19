@@ -27,15 +27,15 @@ public class PointsController {
     return pointsService.getPointById(pointId);
   }
 
-  @PostMapping("filter/{point_name_en}")
-  public List<Point> getPointByName(@PathVariable("point_name_en") String pointName) {
-    return pointsService.getPointByName(pointName);
-  }
-
   //returns first hardcoded Point in data.sql
   @GetMapping("test")
   public Point getPointById() {
     return pointsService.getPointById(1L);
+  }
+
+  @PostMapping("filter/{point_name_en}")
+  public List<Point> getPointByName(@PathVariable("point_name_en") String pointName) {
+    return pointsService.getPointByName(pointName);
   }
 
   //returns all hardcoded Points in data.sql
