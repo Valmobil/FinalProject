@@ -8,8 +8,9 @@ import { saveNewPassword, saveNewConfirm, postNewPassword } from '../actions/res
 // import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import LoaderButton from './LoaderButton'
 import './ChangePassword.scss'
+import { logOut, setUserPoints } from '../../actions/userCreators'
 
-export default class ChangePassword extends Component {
+class ChangePassword extends Component {
   constructor (props) {
     super(props)
 
@@ -90,3 +91,18 @@ export default class ChangePassword extends Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    users: state.users
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logOut: () => dispatch(logOut()),
+    setUserPoints: (payload) => dispatch(setUserPoints(payload))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChangePassword)
