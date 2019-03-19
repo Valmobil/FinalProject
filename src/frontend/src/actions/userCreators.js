@@ -13,7 +13,7 @@ export const setAuthorization = (state) => dispatch => {
         dispatch({type: SET_AUTH, payload: true})
         dispatch({type: SET_USER, payload: response.data.user})
         dispatch({type: SET_CARS, payload: response.data.cars})
-        dispatch({type: SET_USER_POINTS, payload: response.data.userPoints})
+        dispatch(setUserPoints(response.data.userPoints))
       } else {
         dispatch(setLoginRejected(true))
       }
@@ -52,4 +52,9 @@ export const addNewCar = (carList, car) => dispatch => {
 
 export const setLoginRejected = (payload) => dispatch => {
   dispatch({type: LOGIN_REJECTED, payload})
+}
+//* **********************
+
+export const setUserPoints = (payload) => dispatch => {
+  dispatch({type: SET_USER_POINTS, payload})
 }
