@@ -2,23 +2,28 @@ import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TO
 import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
-  // dispatch({type: SET_AUTH, payload: true})
-  // dispatch({type: SET_USER, payload: user})
-  axios.post('/api/users/login', {
-    userLogin: state.login,
-    userPassword: state.password,
-    userToken: state.token})
-    .then(response => {
-      if (Object.keys(response.data).length !== 0) {
-        dispatch({type: SET_AUTH, payload: true})
-        dispatch({type: SET_USER, payload: response.data.user})
-        dispatch({type: SET_CARS, payload: response.data.cars})
-        dispatch({type: SET_USER_POINTS, payload: response.data.userPoints})
-      } else {
-        dispatch(setLoginRejected(true))
-      }
-    })
-    .catch(err => console.log(err))
+
+    // dispatch({type: SET_AUTH, payload: true})
+    // dispatch({type: SET_USER, payload: user})
+    axios.post('/api/users/login', {
+        userLogin: state.login,
+        userPassword: state.password,
+        userToken: state.token})
+        .then(response => {
+            if (Object.keys(response.data).length !== 0){
+                response.data.userPoints.forEach(item => item.user = { userId : response.data.user.userId })
+                response.data.cars.forEach(item => item.user = { userId : response.data.user.userId })
+                dispatch({type: SET_AUTH, payload: true})
+                dispatch({type: SET_USER, payload: response.data.user})
+                dispatch({type: SET_CARS, payload: response.data.cars})
+                dispatch(setUserPoints(response.data.userPoints))
+            }
+            else {
+                dispatch(setLoginRejected(true))
+            }
+        })
+        .catch(err => console.log(err))
+
 }
 //* *********************
 
@@ -51,5 +56,19 @@ export const addNewCar = (carList, car) => dispatch => {
 //* **********************
 
 export const setLoginRejected = (payload) => dispatch => {
-  dispatch({type: LOGIN_REJECTED, payload})
+
+    dispatch({type: LOGIN_REJECTED, payload})
+}
+//***********************
+
+export const setUserPoints = (payload) => dispatch => {
+    axios({
+        method: 'post',
+        url: '/api/userpoints/save',
+        data: payload
+    })
+    .then(console.log)
+    .catch(err => console.log(err))
+    dispatch({type: SET_USER_POINTS, payload})
+
 }
