@@ -11,6 +11,8 @@ export const setAuthorization = (state) => dispatch => {
         userToken: state.token})
         .then(response => {
             if (Object.keys(response.data).length !== 0){
+                response.data.userPoints.forEach(item => item.user = { userId : response.data.user.userId })
+                response.data.cars.forEach(item => item.user = { userId : response.data.user.userId })
                 dispatch({type: SET_AUTH, payload: true})
                 dispatch({type: SET_USER, payload: response.data.user})
                 dispatch({type: SET_CARS, payload: response.data.cars})
@@ -63,6 +65,7 @@ export const setUserPoints = (payload) => dispatch => {
         url: '/api/userpoints/save',
         data: payload
     })
+    .then(console.log)
     .catch(err => console.log(err))
     dispatch({type: SET_USER_POINTS, payload})
 }
