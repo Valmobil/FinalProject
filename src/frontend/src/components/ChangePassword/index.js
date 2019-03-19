@@ -2,10 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { FormGroup, FormControl } from 'react-bootstrap'
 import { postNewPassword } from '../../actions/passwordCreater'
-// import IconButton from '@material-ui/core/IconButton'
-// import InputAdornment from '@material-ui/core/InputAdornment'
-// import Visibility from '@material-ui/icons/Visibility'
-// import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import LoaderButton from './LoaderButton'
 import './ChangePassword.scss'
 
@@ -28,10 +24,6 @@ class ChangePassword extends Component {
       this.state.password === this.state.confirmPassword
     )
   }
-
-  // handleClickShowPassword = () => {
-  //   this.setState({ showPassword: !this.state.showPassword })
-  // }
 
   handleChange = event => {
     this.setState({
