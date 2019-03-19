@@ -144,7 +144,7 @@ class Main extends Component{
                 return item
             }
         })
-        this.props.setUserPoints(newUserPoints)
+        this.props.setUserPoints( newUserPoints )
         this.setState({editing: '', name: '', destination: '', adding: false})
     }
 
@@ -160,7 +160,7 @@ class Main extends Component{
                 return item
             }
         })
-        this.props.setUserPoints(newUserPoints)
+        this.props.setUserPoints( newUserPoints )
     }
 
     componentDidMount() {
