@@ -22,7 +22,7 @@ public class PointsService {
   }
 
   public List<Point> getPointByName(String pointName) {
-    //realization only for EN names
+    //realization only for EN names, not tested yet
     List<Point> listOfPoints = new ArrayList<>();
     pointsRepository.findPointByPointNameEnLike(pointName + "%");
     return listOfPoints;
