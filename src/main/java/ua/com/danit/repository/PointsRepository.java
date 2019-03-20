@@ -7,5 +7,10 @@ import ua.com.danit.entity.User;
 
 import java.util.List;
 
+import java.util.List;
+
 public interface PointsRepository extends JpaRepository<Point, Long> {
+
+  List<Point> findPointByPointNameEnLike(String pointNameEn);
+
 }
