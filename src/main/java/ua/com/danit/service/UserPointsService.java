@@ -9,7 +9,6 @@ import ua.com.danit.repository.UsersRepository;
 
 import java.util.List;
 
-import static org.h2.server.pg.PgServer.getUserById;
 
 @Service
 public class UserPointsService {
