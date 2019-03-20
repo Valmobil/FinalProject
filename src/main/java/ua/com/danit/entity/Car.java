@@ -22,7 +22,7 @@ import javax.persistence.ManyToOne;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 @Entity
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "createdDate", "modifiedDate"})
 public class Car extends Auditable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
