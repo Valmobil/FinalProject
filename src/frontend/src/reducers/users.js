@@ -15,7 +15,9 @@ const initialState = {
   cars: [],
   userPoints: [],
   role: 'passenger',
+
   isAuthenticated: true,
+
   auth: null,
   topMenuOpen: false,
   loginRejected: false
