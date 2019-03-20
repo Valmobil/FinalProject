@@ -96,7 +96,7 @@ const theme = createMuiTheme({
 class Main extends Component {
   state = {
     role: 'passenger',
-    selectedIndex: 1,
+    selectedId: 1,
     from: '',
     to: '',
     car: '',
@@ -167,6 +167,11 @@ class Main extends Component {
     this.props.setUserPoints(newUserPoints)
   }
 
+  handlePlacesListClick = (item, id) => {
+      console.log(item)
+      this.setState({selectedId: item.id, name: item.pointNameEn}, () => this.editClose(id))
+  }
+
   componentDidMount () {
     if (this.props.users.cars.length === 1) this.setState({car: this.props.users.cars[0]})
   }
@@ -227,8 +232,8 @@ class Main extends Component {
               <div key = {item.pointId}>
                   <ListItem
                       button
-                      // selected={this.state.selectedIndex === index}
-                      // onClick={event => this.handlePlacesListClick(event, index, item)}
+                      selected={this.state.selectedId === item.pointId}
+                      onClick={() => this.handlePlacesListClick(item, firstEmptyUserPoint.userPointId)}
                   >
                       <ListItemText primary={item.pointNameEn}
                                     disableTypography

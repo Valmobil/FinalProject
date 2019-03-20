@@ -2,7 +2,6 @@ import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_S
 import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
-
     // dispatch({type: SET_AUTH, payload: true})
     // dispatch({type: SET_USER, payload: user})
     axios.post('/api/users/login', {
@@ -11,9 +10,9 @@ export const setAuthorization = (state) => dispatch => {
         userToken: state.token})
         .then(response => {
             if (Object.keys(response.data).length !== 0){
-              console.log(response.data)
-                // response.data.userPoints.forEach(item => item.user = { userId : response.data.user.userId })
-                // response.data.cars.forEach(item => item.user = { userId : response.data.user.userId })
+              // console.log(response.data)
+                response.data.userPoints.forEach(item => item.user = { userId : response.data.user.userId })
+                response.data.cars.forEach(item => item.user = { userId : response.data.user.userId })
                 dispatch({type: SET_AUTH, payload: true})
                 dispatch({type: SET_USER, payload: response.data.user})
                 dispatch({type: SET_CARS, payload: response.data.cars})
