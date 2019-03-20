@@ -2,13 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { FormGroup, FormControl } from 'react-bootstrap'
 import { postNewPassword } from '../../actions/passwordCreater'
-<<<<<<< HEAD
-=======
 // import IconButton from '@material-ui/core/IconButton'
 // import InputAdornment from '@material-ui/core/InputAdornment'
 // import Visibility from '@material-ui/icons/Visibility'
 // import VisibilityOff from '@material-ui/icons/VisibilityOff'
->>>>>>> 5d923903989ede644fe3d362c9a3a996daecde94
 import LoaderButton from './LoaderButton'
 import './ChangePassword.scss'
 
@@ -101,8 +98,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, value) => {
+const mapDispatchToProps = dispatch => {
   return {
+    onClick: event
     postNewPassword: () => dispatch(postNewPassword(value))
   }
 }
