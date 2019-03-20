@@ -1,9 +1,9 @@
-import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED } from './users'
+import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME } from './users'
 import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
-  // dispatch({type: SET_AUTH, payload: true})
-  // dispatch({type: SET_USER, payload: user})
+/*  dispatch({type: SET_AUTH, payload: true})
+  dispatch({type: SET_USER, payload: user})*/
   axios.post('/api/users/login', {
     userLogin: state.login,
     userPassword: state.password,
@@ -57,4 +57,9 @@ export const setLoginRejected = (payload) => dispatch => {
 
 export const setUserPoints = (payload) => dispatch => {
   dispatch({type: SET_USER_POINTS, payload})
+}
+
+//from /profile
+export const setUserName = (name) => dispatch => {
+  dispatch({type: SET_USER_NAME, payload: name})
 }
