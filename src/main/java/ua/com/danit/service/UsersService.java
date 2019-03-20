@@ -2,11 +2,13 @@ package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
 import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.CarsRepository;
+import ua.com.danit.repository.PointsRepository;
 import ua.com.danit.repository.UserPointsRepository;
 import ua.com.danit.repository.UsersRepository;
 
@@ -20,16 +22,19 @@ public class UsersService {
   private UsersRepository usersRepository;
   private UserPointsRepository userPointsRepository;
   private CarsRepository carsRepository;
+  private PointsRepository pointsRepository;
 
   private static final int dateShift = 30;
 
   @Autowired
   public UsersService(UsersRepository usersRepository,
                       UserPointsRepository userPointRepository,
-                      CarsRepository carsRepository) {
+                      CarsRepository carsRepository,
+                      PointsRepository pointsRepository) {
     this.usersRepository = usersRepository;
     this.userPointsRepository = userPointRepository;
     this.carsRepository = carsRepository;
+    this.pointsRepository = pointsRepository;
   }
 
   public User createNewUsers(User users) {
@@ -106,15 +111,21 @@ public class UsersService {
     List<UserPoint> userPoints = userPointsRepository.findByUser(user);
     if (userPoints.size() < 5) {
       if (userPoints.size() < 1) {
-        UserPoint pointHome = new UserPoint(null, "Home", "adress", user, 0, 0);
+        UserPoint pointHome = new UserPoint(null, "Home", "adress", user, 0, 0, null);
         userPoints.add(pointHome);
       }
       if (userPoints.size() < 2) {
-        UserPoint pointWork = new UserPoint(null, "Work", "Kyivska obl.", user, 50.570425, 30.2637260);
+        UserPoint pointWork = new UserPoint(null, "Work", "Kyivska obl.", user, 50.570425, 30.2637260, null);
+        userPoints.add(pointWork);
+      }
+      //for test purposes
+      if (userPoints.size() < 3) {
+        Point point = pointsRepository.getOne(4L);
+        UserPoint pointWork = new UserPoint(null, "Boryspil", "Kyivska obl.", user, 0, 0, point);
         userPoints.add(pointWork);
       }
       for (int i = userPoints.size(); i < 5; i++) {
-        UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0);
+        UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0, null);
         userPoints.add(pointOther);
       }
       userPoints = userPointsRepository.saveAll(userPoints);
