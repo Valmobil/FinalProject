@@ -32,7 +32,7 @@ public class UserPointsService {
 
   public String saveUserPoints(List<UserPoint> userPoints) {
     List<UserPoint> userPointsResult = userPointsRepository.saveAll(userPoints);
-    if (userPointsResult.equals(userPoints)) {
+    if (userPointsResult.size()>0) {
       return "Ok";
     } else {
       return "Fail";
