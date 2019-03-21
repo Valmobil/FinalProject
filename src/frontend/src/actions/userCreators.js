@@ -2,8 +2,8 @@ import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TO
 import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
-/*  dispatch({type: SET_AUTH, payload: true})
-  dispatch({type: SET_USER, payload: user})*/
+//  dispatch({type: SET_AUTH, payload: true})
+//  dispatch({type: SET_USER, payload: user})
   axios.post('/api/users/login', {
     userLogin: state.login,
     userPassword: state.password,
