@@ -168,7 +168,6 @@ class Main extends Component {
   }
 
   handlePlacesListClick = (item, id) => {
-      console.log(item)
       this.setState({selectedId: item.id, name: item.pointNameEn}, () => this.editClose(id))
   }
 
@@ -315,7 +314,6 @@ class Main extends Component {
             </Button>
             {adding &&
                 <>
-
              <div className={classes.root}>
                  {commonPointsList}
              </div>
