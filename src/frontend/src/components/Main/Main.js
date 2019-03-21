@@ -13,6 +13,8 @@ import Button from '@material-ui/core/Button'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import InputLabel from '@material-ui/core/InputLabel'
 import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
@@ -44,6 +46,15 @@ const styles = theme => ({
   label: {
     textTransform: 'capitalize'
   },
+    root: {
+    width: '100%',
+    marginTop: 20,
+    // backgroundColor: theme.palette.background.paper,
+        background: 'transparent',
+    position: 'relative',
+    overflow: 'auto',
+    maxHeight: 135,
+    },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
     width: windowWidth * 0.9
@@ -53,7 +64,8 @@ const styles = theme => ({
     width: '100%'
   },
   inputLabel: {
-    color: '#fff'
+    color: '#fff',
+    textAlign: 'center'
   },
   iconButton: {
     padding: 0,
@@ -62,7 +74,6 @@ const styles = theme => ({
     '&:focus': {
       outline: 'none'
     }
-
   }
 })
 const style = {
@@ -85,10 +96,9 @@ const theme = createMuiTheme({
 class Main extends Component {
   state = {
     role: 'passenger',
-    selectedIndex: 1,
+    selectedId: 1,
     from: '',
     to: '',
-
     car: '',
     name: '',
     destination: '',
@@ -157,6 +167,11 @@ class Main extends Component {
     this.props.setUserPoints(newUserPoints)
   }
 
+  handlePlacesListClick = (item, id) => {
+      console.log(item)
+      this.setState({selectedId: item.id, name: item.pointNameEn}, () => this.editClose(id))
+  }
+
   componentDidMount () {
     if (this.props.users.cars.length === 1) this.setState({car: this.props.users.cars[0]})
   }
@@ -164,7 +179,7 @@ class Main extends Component {
   render () {
     const { classes } = this.props
     const { role, car, name, destination, editing, adding } = this.state
-    const { cars, userPoints } = this.props.users
+    const { cars, userPoints, commonPoints } = this.props.users
     let currentCar = cars.length === 1 ? cars[0] : car
     const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
     let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
@@ -211,6 +226,23 @@ class Main extends Component {
       }
       return output
     })
+
+      const commonPointsList = commonPoints.map((item) => {
+          return (
+              <div key = {item.pointId}>
+                  <ListItem
+                      button
+                      selected={this.state.selectedId === item.pointId}
+                      onClick={() => this.handlePlacesListClick(item, firstEmptyUserPoint.userPointId)}
+                  >
+                      <ListItemText primary={item.pointNameEn}
+                                    disableTypography
+                       classes={{root: classes.inputLabel}}
+                      />
+                  </ListItem>
+              </div>
+          )
+      })
 
     const carList = cars.map((item) => {
       return <MenuItem value={item.carName + ' ' + item.carColour} key = {item.carId}>{item.carName + ' ' + item.carColour}</MenuItem>
@@ -282,11 +314,19 @@ class Main extends Component {
               New quick trip
             </Button>
             {adding &&
+                <>
+
+             <div className={classes.root}>
+                 {commonPointsList}
+             </div>
+
+
             <EditSmart handleEditInput={this.handleEditInput}
               editName={name}
               editDestination={destination}
               editClose={() => this.editClose(firstEmptyUserPoint.userPointId)}
             />
+                </>
             }
             {this.state.role === 'driver' &&
             <FormControl required className={classes.formControl}>
