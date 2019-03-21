@@ -20,7 +20,7 @@ public class TripsService {
     return tripsRepository.getOne(tripId);
   }
 
-  public String saveTripToDB(Trip trip) {
+  public String saveTripToDb(Trip trip) {
     if (tripsRepository.save(trip) != null) {
       return "Ok";
     } else {

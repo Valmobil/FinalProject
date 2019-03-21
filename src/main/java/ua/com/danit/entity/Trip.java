@@ -45,7 +45,7 @@ public class Trip extends Auditable {
   @JsonIgnoreProperties({"carName", "carColour", "carPhoto", "user"})
   private Car car;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "trip")
-//    @JoinColumn( name = "TRIP_ID", referencedColumnName = "tripId")
+  //    @JoinColumn( name = "TRIP_ID", referencedColumnName = "tripId")
   private List<TripPoint> tripPoint;
   //    @OneToMany(fetch = FetchType.EAGER)
   //    private List<TripPassenger> tripPassengers;
