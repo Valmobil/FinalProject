@@ -24,7 +24,7 @@ class App extends Component {
             <ProtectedRoute exact path="/main" component={Main}/>
             <ProtectedRoute exact path="/profile" component={Profile}/>
             <Route exact path="/restore_password" component={PassRestoration}/>
-            <Route exact path="/newpassword" component={ChangePassword} />
+            <Route exact path="/C" component={ChangePassword} />
             <Route path='*' component={NoMatch}/>
           </Switch>
         </div>
