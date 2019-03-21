@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button'
 import AvatarProfile from '../avatar/AvatarProfile'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
+import { connect } from 'react-redux'
+import {setUserName} from '../../actions/userCreators'
 
 class Profile extends Component {
   state = {
@@ -25,15 +27,27 @@ class Profile extends Component {
     })
   };
 
+  handleState = (e) => {
+    this.setState({[e.target.name]: e.target.value})
+  }
+
+
+  setName = () => {
+    const user = {...this.props.users.user, userName: this.state.name}
+    this.props.setUserName(user)
+  }
+
+
   render () {
     // const { classes } = this.props
     // const { signType, user: {login, password, confirmPassword} } = this.state
     // const allChecks = ((signType === 'log-in' && login !== '' && password !== '') || (signType === 'register' && login !== '' && password !== '' && password === confirmPassword))
-
+    const { userName } = this.props.users.user
+    console.log(userName)
     return (
       <form className="form-container" noValidate autoComplete="off">
         <AvatarProfile/>
-        <TextField
+        { userName.length === 0 && <TextField
           required
           id="outlined-name"
           label="User Name"
@@ -42,7 +56,7 @@ class Profile extends Component {
           onChange={this.handleChange('name')}
           margin="normal"
           variant="outlined"
-        />
+        />}
         <TextField
           id="outlined-phone"
           label="Phone"
@@ -157,4 +171,16 @@ Profile.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(Profile)
+const mapStateToProps = (state) => {
+  return {
+    users: state.users
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUserName: (name) => dispatch(setUserName(name))
+  }
+}
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Profile))
