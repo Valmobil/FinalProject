@@ -140,10 +140,10 @@ class Main extends Component {
     this.setState({[e.target.name]: e.target.value})
   }
 
-  editClose = (id) => {
+  editClose = (id, point) => {
     let newUserPoints = this.props.users.userPoints.map(item => {
       if (item.userPointId === id) {
-        return {...item, userPointName: this.state.name, userPointAddress: this.state.destination}
+        return {...item, userPointName: this.state.name, userPointAddress: this.state.destination, point}
       } else {
         return item
       }
@@ -168,7 +168,7 @@ class Main extends Component {
   }
 
   handlePlacesListClick = (item, id) => {
-      this.setState({selectedId: item.id, name: item.pointNameEn}, () => this.editClose(id))
+      this.setState({selectedId: item.id, name: item.pointNameEn}, () => this.editClose(id, item))
   }
 
   componentDidMount () {
@@ -176,6 +176,7 @@ class Main extends Component {
   }
 
   render () {
+    console.log(this.props.users)
     const { classes } = this.props
     const { role, car, name, destination, editing, adding } = this.state
     const { cars, userPoints, commonPoints } = this.props.users
@@ -191,7 +192,7 @@ class Main extends Component {
             handleEditInput={this.handleEditInput}
             editName={name}
             editDestination={destination}
-            editClose={() => this.editClose(item.userPointId)}
+            editClose={() => this.editClose(item.userPointId, null)}
           />
         )
       } else {
@@ -322,7 +323,7 @@ class Main extends Component {
             <EditSmart handleEditInput={this.handleEditInput}
               editName={name}
               editDestination={destination}
-              editClose={() => this.editClose(firstEmptyUserPoint.userPointId)}
+              editClose={() => this.editClose(firstEmptyUserPoint.userPointId, null)}
             />
                 </>
             }
