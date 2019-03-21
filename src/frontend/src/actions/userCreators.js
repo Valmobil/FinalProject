@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
 /*  dispatch({type: SET_AUTH, payload: true})
-  dispatch({type: SET_USER, payload: user})*/
+  // dispatch({type: SET_USER, payload: user})*/
   axios.post('/api/users/login', {
     userLogin: state.login,
     userPassword: state.password,

@@ -1,4 +1,4 @@
-import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED } from '../actions/users'
+import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME } from '../actions/users'
 
 const initialState = {
   user: {
@@ -41,6 +41,8 @@ function users (state = initialState, action) {
       return {...state, cars: action.payload}
     case LOGIN_REJECTED:
       return {...state, loginRejected: action.payload}
+    case SET_USER_NAME:
+      return {...state, user: action.payload}
 
     default:
       return {...state}
