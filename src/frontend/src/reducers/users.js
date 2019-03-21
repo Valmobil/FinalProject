@@ -16,7 +16,7 @@ const initialState = {
   userPoints: [],
   commonPoints: [],
   role: 'passenger',
-  isAuthenticated: false,
+  isAuthenticated: true,
   auth: null,
   topMenuOpen: false,
   loginRejected: false
@@ -44,6 +44,8 @@ function users (state = initialState, action) {
       return {...state, cars: action.payload}
     case LOGIN_REJECTED:
       return {...state, loginRejected: action.payload}
+    case SET_USER_NAME:
+      return {...state, user: action.payload}
 
     default:
       return {...state}
