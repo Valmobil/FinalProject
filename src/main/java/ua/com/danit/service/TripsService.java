@@ -19,4 +19,12 @@ public class TripsService {
   public Trip getTripById(Long tripId) {
     return tripsRepository.getOne(tripId);
   }
+
+  public String saveTripToDb(Trip trip) {
+    if (tripsRepository.save(trip) != null) {
+      return "Ok";
+    } else {
+      return "Fail";
+    }
+  }
 }

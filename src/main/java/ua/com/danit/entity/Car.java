@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +21,7 @@ import javax.persistence.ManyToOne;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+//@EqualsAndHashCode(callSuper = false)
 @Builder
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "createdDate", "modifiedDate"})
@@ -32,7 +34,8 @@ public class Car extends Auditable {
   private String carPhoto;
   @ManyToOne
   @JoinColumn(name = "CAR_USER_ID", referencedColumnName = "userId")
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  @NonNull
+  @JsonIgnoreProperties({"userName", "userPhone", "userMail", "userToken", "userTokenValidTo", "userPhoto"})
   private User user;
 }
 
