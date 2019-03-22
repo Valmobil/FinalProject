@@ -21,10 +21,10 @@ import javax.persistence.ManyToOne;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @Entity
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "createdDate", "modifiedDate"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Car extends Auditable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
