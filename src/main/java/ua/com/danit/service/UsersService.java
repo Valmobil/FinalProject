@@ -76,7 +76,7 @@ public class UsersService {
       } else {
         //L=1 T=1
         //Update Token if token and login are present
-        user = checkLoginAndUpdateTokenInDb(userLogin, user);
+        user = checkLoginAndUpdateTokenInDb(userLogin);
       }
     }
     UserInfo userInfo = new UserInfo();
@@ -107,7 +107,7 @@ public class UsersService {
     userInfo.setUserPoints(collectUserPointsAndFillInEmptyOnes(user));
   }
 
-  public List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
+  List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
     List<UserPoint> userPoints = userPointsRepository.findByUser(user);
     if (userPoints.size() < 5) {
       if (userPoints.size() < 1) {
@@ -133,7 +133,7 @@ public class UsersService {
     return userPoints;
   }
 
-  private void convertUserLoginBlankToNull(UserLogin userLogin) {
+  void convertUserLoginBlankToNull(UserLogin userLogin) {
     if (userLogin.getUserLogin() != null) {
       if (userLogin.getUserLogin().trim().equals("")) {
         userLogin.setUserLogin(null);
@@ -156,8 +156,8 @@ public class UsersService {
     }
   }
 
-  private User checkLoginAndUpdateTokenInDb(UserLogin userLogin, User user) {
-    user = checkLogin(userLogin);
+  private User checkLoginAndUpdateTokenInDb(UserLogin userLogin) {
+    User user = checkLogin(userLogin);
     if (user == null) {
       return null;
     }
@@ -173,7 +173,7 @@ public class UsersService {
     return date;
   }
 
-  private User checkLogin(UserLogin userLogin) {
+  User checkLogin(UserLogin userLogin) {
     List<User> users;
     if (checkForEmail(userLogin)) {
       // if login is mail

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.Trip;
+import ua.com.danit.entity.TripPoint;
 import ua.com.danit.repository.TripsRepository;
 
 
@@ -21,6 +22,14 @@ public class TripsService {
   }
 
   public String saveTripToDb(Trip trip) {
+    //Set TripId to TripPoints
+    for (TripPoint point : trip.getTripPoint()) {
+      point.setTrip(trip);
+    }
+    //Remove Car in Car == null
+    if (trip.getCar().getCarId() == 0) {
+      trip.setCar(null);
+    }
     if (tripsRepository.save(trip) != null) {
       return "Ok";
     } else {
