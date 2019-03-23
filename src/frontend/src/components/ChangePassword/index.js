@@ -76,6 +76,11 @@ class ChangePassword extends Component {
               //   </InputAdornment>
               // }
             />
+
+            <div className="input-group-addon">
+              <a href=""><i className="fa fa-eye-slash" aria-hidden="true"></i></a>
+            </div>
+
           </FormGroup>
           <LoaderButton
             block
@@ -100,8 +105,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onClick: event
-    postNewPassword: () => dispatch(postNewPassword(value))
+    postNewPassword: value => dispatch(postNewPassword(value))
   }
 }
 
