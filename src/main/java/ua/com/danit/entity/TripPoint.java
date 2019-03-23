@@ -7,10 +7,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,7 +35,7 @@ public class TripPoint {
   private double tripPointLongitude;
   private double tripPointLatitude;
   private int tripPointSequence;
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "TRIP_POINT_TRIP_ID", referencedColumnName = "tripId")
   @JsonIgnoreProperties({"user","car", "tripPoint", "tripDateTime"})
   private Trip trip;

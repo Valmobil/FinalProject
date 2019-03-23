@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,7 +35,6 @@ public class Car extends Auditable {
   private String carPhoto;
   @ManyToOne
   @JoinColumn(name = "CAR_USER_ID", referencedColumnName = "userId")
-  @NonNull
   @JsonIgnoreProperties({"userName", "userPhone", "userMail", "userToken", "userTokenValidTo", "userPhoto"})
   private User user;
 }

@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.lang.Nullable;
 import ua.com.danit.controller.View;
 
 import javax.persistence.CascadeType;
@@ -20,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,6 +45,7 @@ public class Trip extends Auditable {
   @ManyToOne
   @JoinColumn(name = "TRIP_CAR_ID", referencedColumnName = "carId")
   @JsonIgnoreProperties({"carName", "carColour", "carPhoto", "user"})
+  @Nullable
   private Car car;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "trip")
   //    @JoinColumn( name = "TRIP_ID", referencedColumnName = "tripId")

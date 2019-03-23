@@ -17,9 +17,9 @@ public class PswdResetTokenService {
   private MailSender mailSender;
 
   @Autowired
-  PswdResetTokenService(UsersService usersService
-      , PswdResetTokenRepository pswdResetTokenRepository
-      , MailSender mailSender) {
+  PswdResetTokenService(UsersService usersService,
+                        PswdResetTokenRepository pswdResetTokenRepository,
+                        MailSender mailSender) {
     this.usersService = usersService;
     this.pswdResetTokenRepository = pswdResetTokenRepository;
     this.mailSender = mailSender;
@@ -54,8 +54,9 @@ public class PswdResetTokenService {
   private SimpleMailMessage constructResetTokenEmail(
       String contextPath, String token, User user) {
     String url = contextPath + "/user/changePassword?id=" + "&token=" + token;
-    return constructEmail("Reset Password", "Добридень!\r\n Ви отримали це повідомлення, бо Ви (маємо таку надію) хочете змінити свій пароль "
-        + " \r\n" + url, user);
+    return constructEmail("Reset Password",
+        "Добридень!\r\n Ви отримали це повідомлення, бо Ви (маємо таку надію) хочете змінити свій пароль "
+            + " \r\n" + url, user);
   }
 
   private SimpleMailMessage constructEmail(String subject, String body,
