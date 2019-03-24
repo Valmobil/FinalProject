@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { logOut, setUserPoints } from '../../actions/userCreators'
+import { logOut, setUserPoints, setTrip } from '../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -38,10 +38,26 @@ const styles = theme => ({
   typeButtons: {
     borderRadius: 3,
     border: '1px solid #fff',
-    color: 'white',
+    color: '#fff',
     height: 30,
     padding: 0,
     width: '47%'
+  },
+  acceptButton: {
+      borderRadius: 3,
+      background: '#fff',
+      color: '#008000',
+      height: 30,
+      padding: 0,
+      width: '47%'
+  },
+  rejectButton: {
+      borderRadius: 3,
+      background: '#fff',
+      color: '#FC2847',
+      height: 30,
+      padding: 0,
+      width: '47%'
   },
   label: {
     textTransform: 'capitalize'
@@ -49,8 +65,7 @@ const styles = theme => ({
     root: {
     width: '100%',
     marginTop: 20,
-    // backgroundColor: theme.palette.background.paper,
-        background: 'transparent',
+    background: 'transparent',
     position: 'relative',
     overflow: 'auto',
     maxHeight: 135,
@@ -97,13 +112,15 @@ class Main extends Component {
   state = {
     role: 'passenger',
     selectedId: 1,
-    from: '',
-    to: '',
     car: '',
     name: '',
     destination: '',
     editing: '',
-    adding: false
+    adding: false,
+    trip: [],
+    creatingTrip: false,
+    latitude: 0,
+    longitude: 0,
   };
 
   // handlePlacesListClick = (event, index, item) => {
@@ -120,12 +137,57 @@ class Main extends Component {
     this.setState({[e.target.name]: e.target.value})
   }
 
-  setRoute = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      console.log('latitude = ', position.coords.latitude)
-      console.log('longitude = ', position.coords.longitude)
-    })
+  handleRoute = (userPoint) => {
+    if (this.state.trip.length === 0){
+      this.setStartRoute(userPoint)
+    } else this.setRoute(userPoint)
   }
+
+  setRoute = (userPoint) => {
+    const { userPointName, userPointLatitude, userPointLongitude } = userPoint
+    const tripPoint = {
+        tripPointId: this.state.trip.length,
+        tripPointName: userPointName,
+        tripPointLatitude: userPointLatitude,
+        tripPointLongitude: userPointLongitude,
+        tripPointSequence: this.state.trip.length,
+        trip: {
+          tripId: null
+        }
+    }
+     this.setState({trip: [...this.state.trip, tripPoint]})
+  }
+
+  setStartRoute = (userPoint) => {
+      this.setState({creatingTrip: true})
+      const tripPoint = {
+          tripPointId: 0,
+          tripPointName: 'Here',
+          tripPointLatitude: this.state.latitude,
+          tripPointLongitude: this.state.longitude,
+          tripPointSequence: 0,
+          trip: {
+            tripId: null
+          }
+      }
+      this.setState({trip: [tripPoint]}, () => this.setRoute(userPoint))
+  }
+
+   submitRoute = () => {
+    let trip = {
+      tripId: null,
+      user: {
+        userId: this.props.users.user.userId
+        },
+      car: {
+        carId: 1
+      },
+      tripPoint: this.state.trip,
+      tripDateTime: new Date().toISOString(),
+    }
+    this.props.setTrip(trip)
+    this.setState({creatingTrip: false})
+    }
 
   signOut = (auth) => {
     if (auth) auth.signOut()
@@ -143,7 +205,14 @@ class Main extends Component {
   editClose = (id, point) => {
     let newUserPoints = this.props.users.userPoints.map(item => {
       if (item.userPointId === id) {
-        return {...item, userPointName: this.state.name, userPointAddress: this.state.destination, point}
+        let userPoint = {}
+        if (point) {
+          const {pointNameEn, pointLatitude, pointLongitude} = point
+          userPoint = {...item, userPointName: pointNameEn, userPointLatitude: pointLatitude, userPointLongitude: pointLongitude, point}
+        } else {
+          userPoint = {...item, userPointName: this.state.name, userPointAddress: this.state.destination, point}
+        }
+        return userPoint
       } else {
         return item
       }
@@ -173,12 +242,15 @@ class Main extends Component {
 
   componentDidMount () {
     if (this.props.users.cars.length === 1) this.setState({car: this.props.users.cars[0]})
+    navigator.geolocation.getCurrentPosition((position) => {
+          this.setState({latitude: position.coords.latitude, longitude: position.coords.longitude})
+      })
   }
 
   render () {
-    console.log(this.props.users)
+    // console.log(this.props.users)
     const { classes } = this.props
-    const { role, car, name, destination, editing, adding } = this.state
+    const { role, car, name, destination, editing, adding, creatingTrip } = this.state
     const { cars, userPoints, commonPoints } = this.props.users
     let currentCar = cars.length === 1 ? cars[0] : car
     const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
@@ -199,7 +271,7 @@ class Main extends Component {
         output = (
           item.userPointName !== '<no point>' &&
           <div key = {item.userPointId} style={{display: 'flex', width: '100%'}}>
-            <Button onClick={this.setRoute}
+            <Button onClick={() => this.handleRoute(item)}
               variant="contained"
               color="primary"
               className={classes.smartRoute}
@@ -248,6 +320,46 @@ class Main extends Component {
       return <MenuItem value={item.carName + ' ' + item.carColour} key = {item.carId}>{item.carName + ' ' + item.carColour}</MenuItem>
     })
 
+    let dependentButton = null
+    if (creatingTrip){
+      dependentButton = (
+          <div className="type-button-container dependent-button-container">
+              <Button onClick={this.submitRoute}
+                      classes={{
+                          root: classes.acceptButton,
+                          label: classes.label
+                      }}
+              >
+                  Submit trip
+              </Button>
+              <Button classes={{
+                          root: classes.rejectButton,
+                          label: classes.label
+                      }}
+              >
+                  Reject trip
+              </Button>
+          </div>
+      )
+    } else {
+      dependentButton = (
+          <Button onClick={this.addNewPoint}
+                  type="raised"
+                  color="primary"
+                  disabled={adDisable}
+                  classes={{
+                      root: classes.typeButtons,
+                      label: classes.label
+                  }}
+                  style={{
+                      marginTop: 30
+                  }}
+          >
+              New quick trip
+          </Button>
+      )
+    }
+
     return (
       <>
 
@@ -276,20 +388,14 @@ class Main extends Component {
               />
             </RadioGroup>
             <div className="type-button-container">
-              <Button type="raised"
-                color="primary"
-                style={style.button}
-                classes={{
+              <Button classes={{
                   root: classes.typeButtons,
                   label: classes.label
                 }}
               >
                 Plan new trip
               </Button>
-              <Button type="raised"
-                color="primary"
-                style={style.button}
-                classes={{
+              <Button classes={{
                   root: classes.typeButtons,
                   label: classes.label
                 }}
@@ -299,20 +405,9 @@ class Main extends Component {
             </div>
             <span className="welcome-span">Choose from quick trips:</span>
             {placesList}
-            <Button onClick={this.addNewPoint}
-              type="raised"
-              color="primary"
-              disabled={adDisable}
-              classes={{
-                root: classes.typeButtons,
-                label: classes.label
-              }}
-              style={{
-                marginTop: 30
-              }}
-            >
-              New quick trip
-            </Button>
+
+              {dependentButton}
+
             {adding &&
                 <>
              <div className={classes.root}>
@@ -362,7 +457,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     logOut: () => dispatch(logOut()),
-    setUserPoints: (payload) => dispatch(setUserPoints(payload))
+    setUserPoints: (payload) => dispatch(setUserPoints(payload)),
+    setTrip: (trip) => dispatch(setTrip(trip))
   }
 }
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Main))
