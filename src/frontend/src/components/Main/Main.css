@@ -24,6 +24,9 @@
     height: 40px;
     margin-top: 10px;
 }
+.dependent-button-container{
+    margin-top: 30px;
+}
 .icon-container {
     display: flex;
     justify-content: space-between;
