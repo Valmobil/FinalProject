@@ -9,6 +9,7 @@ export const MENU_TOGGLE = 'MENU_TOGGLE'
 export const SET_CAR_LIST = 'SET_CAR_LIST'
 export const LOGIN_REJECTED = 'LOGIN_REJECTED'
 export const SET_USER_NAME = 'SET_USER_NAME'
+export const SET_TRIP = 'SET_TRIP'
 
 
 

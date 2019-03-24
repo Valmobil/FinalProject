@@ -6,7 +6,7 @@
     left: -200px;
     height: 100%;
     z-index: 9999;
-    transition: all .5s ease-in-out;
+    transition: all .3s ease-in-out;
 }
 .drawer.open{
     transform: translateX(200px);

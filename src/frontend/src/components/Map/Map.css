@@ -1,0 +1,10 @@
+#here-map .H_ui, #here-map span, #here-map a, #here-map svg, #here-map iframe {
+    display: none;
+}
+.circle-marker{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: aqua;
+
+}
