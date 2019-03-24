@@ -1,17 +1,15 @@
-import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED } from './users'
+import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME } from './users'
 import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
-  // dispatch({type: SET_AUTH, payload: true})
-  // dispatch({type: SET_USER, payload: user})
+
   axios.post('/api/users/login', {
     userLogin: state.login,
     userPassword: state.password,
     userToken: state.token})
     .then(response => {
       if (Object.keys(response.data).length !== 0) {
-        response.data.userPoints.forEach(item => item.user = { userId: response.data.user.userId })
-        response.data.cars.forEach(item => item.user = { userId: response.data.user.userId })
+
         dispatch({type: SET_AUTH, payload: true})
         dispatch({type: SET_USER, payload: response.data.user})
         dispatch({type: SET_CARS, payload: response.data.cars})
@@ -21,6 +19,7 @@ export const setAuthorization = (state) => dispatch => {
       }
     })
     .catch(err => console.log(err))
+
 }
 //* *********************
 
@@ -58,12 +57,18 @@ export const setLoginRejected = (payload) => dispatch => {
 //* **********************
 
 export const setUserPoints = (payload) => dispatch => {
-  axios({
-    method: 'post',
-    url: '/api/userpoints/save',
-    data: payload
-  })
-    .then(console.log)
+
+    axios({
+        method: 'post',
+        url: '/api/userpoints/save',
+        data: payload
+    })
     .catch(err => console.log(err))
-  dispatch({type: SET_USER_POINTS, payload})
+    dispatch({type: SET_USER_POINTS, payload})
+}
+
+//from /profile
+export const setUserName = (name) => dispatch => {
+  dispatch({type: SET_USER_NAME, payload: name})
+
 }
