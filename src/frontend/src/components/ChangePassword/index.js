@@ -77,9 +77,9 @@ class ChangePassword extends Component {
               // }
             />
 
-            <div className="input-group-addon">
-              <a href=""><i className="fa fa-eye-slash" aria-hidden="true"></i></a>
-            </div>
+            {/* <div className="input-group-addon"> */}
+            {/* <a href=""><i className="fa fa-eye-slash" aria-hidden="true"></i></a> */}
+            {/* </div> */}
 
           </FormGroup>
           <LoaderButton
