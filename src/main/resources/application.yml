@@ -40,3 +40,28 @@ spring:
 
 spring:
   profiles: prod
+
+---
+
+spring:
+  profiles: postgres
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/icabby
+    platform: POSTGRESQL
+    username: postgres
+    password: 1234
+    initialization-mode: always
+    data: classpath*:data-${platform}}.sql
+  #    continue-on-error: true
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
