@@ -58,8 +58,8 @@ export const setLoginRejected = (payload) => dispatch => {
 
 export const setUserPoints = (payload) => dispatch => {
     axios({
-        method: 'post',
-        url: '/api/userpoints/save',
+        method: 'put',
+        url: '/api/userpoints',
         data: payload
     })
     .catch(err => console.log(err))
