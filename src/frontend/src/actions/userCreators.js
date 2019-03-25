@@ -1,4 +1,5 @@
-import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME } from './users'
+import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP } from './users'
 import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
@@ -51,7 +52,6 @@ export const addNewCar = (carList, car) => dispatch => {
 //* **********************
 
 export const setLoginRejected = (payload) => dispatch => {
-
     dispatch({type: LOGIN_REJECTED, payload})
 }
 //* **********************
@@ -65,8 +65,23 @@ export const setUserPoints = (payload) => dispatch => {
     .catch(err => console.log(err))
     dispatch({type: SET_USER_POINTS, payload})
 }
+//* **********************
 
 //from /profile
 export const setUserName = (name) => dispatch => {
   dispatch({type: SET_USER_NAME, payload: name})
+}
+//* **********************
+
+export const setTrip = (trip) => dispatch => {
+    console.log(trip)
+    axios({
+        method: 'put',
+        url: '/api/trips',
+        data: trip,
+    })
+        .then(res => console.log('usersCreators: ', res))
+        .catch(err => console.log(err))
+    dispatch({type: SET_TRIP, trip})
+
 }
