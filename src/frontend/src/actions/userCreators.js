@@ -1,5 +1,6 @@
-import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP } from './users'
+
+import { SET_AUTH, SET_USER, SET_CARS, SET_SOCIAL_AUTH, SET_USER_NAME, SET_USER_POINTS, MENU_TOGGLE, SET_CAR_LIST, LOGIN_REJECTED, SET_TRIP } from './users'
+
 import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
@@ -18,8 +19,6 @@ export const setAuthorization = (state) => dispatch => {
       }
     })
     .catch(err => console.log(err))
-    axios.get('/api/points/filter/test')
-        .then(res => dispatch({type: SET_COMMON_POINTS, payload: res.data}))
 }
 //* *********************
 
@@ -52,22 +51,24 @@ export const addNewCar = (carList, car) => dispatch => {
 //* **********************
 
 export const setLoginRejected = (payload) => dispatch => {
+
     dispatch({type: LOGIN_REJECTED, payload})
+
 }
 //* **********************
 
 export const setUserPoints = (payload) => dispatch => {
-    axios({
-        method: 'post',
-        url: '/api/userpoints/save',
-        data: payload
-    })
+  axios({
+    method: 'post',
+    url: '/api/userpoints/save',
+    data: payload
+  })
     .catch(err => console.log(err))
-    dispatch({type: SET_USER_POINTS, payload})
+  dispatch({type: SET_USER_POINTS, payload})
 }
 //* **********************
 
-//from /profile
+// from /profile
 export const setUserName = (name) => dispatch => {
   dispatch({type: SET_USER_NAME, payload: name})
 }
