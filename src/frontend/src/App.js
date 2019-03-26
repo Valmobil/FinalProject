@@ -12,6 +12,7 @@ import ChangePassword from './components/ChangePassword'
 import Map from './components/Map/Map'
 
 import './App.css'
+import FeedbackForms from './components/FeedbackForms'
 
 class App extends Component {
   render () {
@@ -27,6 +28,7 @@ class App extends Component {
             <Route exact path="/map" component={Map}/>
             <Route exact path="/restore_password" component={PassRestoration}/>
             <Route exact path="/newpassword" component={ChangePassword} />
+            <Route exact path="/feedback" component={FeedbackForms} />
             <Route path='*' component={NoMatch}/>
           </Switch>
         </div>
