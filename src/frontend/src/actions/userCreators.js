@@ -1,5 +1,5 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP } from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS } from './users'
 import axios from 'axios'
 
 export const setAuthorization = (state) => dispatch => {
@@ -78,10 +78,20 @@ export const setTrip = (trip) => dispatch => {
     axios({
         method: 'put',
         url: '/api/trips',
-        data: trip,
+        data: JSON.stringify(trip)
     })
         .then(res => console.log('usersCreators: ', res))
         .catch(err => console.log(err))
     dispatch({type: SET_TRIP, trip})
 
+}
+//* **********************
+
+export const setAddress = (address) => dispatch => {
+    dispatch({type: SET_ADDRESS, payload: address})
+}
+//* **********************
+
+export const setMyCoordinates = coords => dispatch => {
+    dispatch({type: SET_MY_COORDS, payload: coords})
 }

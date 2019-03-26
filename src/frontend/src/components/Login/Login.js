@@ -213,8 +213,6 @@ const theme = createMuiTheme({
 const style = {
   input: {
     width: '100%',
-    height: '50px',
-    color: '#fff'
   },
   button: {
     margin: theme.spacing.unit,
@@ -231,7 +229,6 @@ const styles = theme => ({
   inputColor: {
     color: '#fff',
     width: '100%',
-    height: '50px'
   },
   root: {
     background: 'linear-gradient(45deg, #ff9800 30%, #f57c00 90%)',
