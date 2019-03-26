@@ -25,11 +25,15 @@ export const postNewPassword = value => dispatch => {
   dispatch({
     type: POST_NEW_PASSWORD_REQUESTED
   })
-  axios.post('/users/update-profile/password', {
-    newPassword: value
+  axios.post('/api/logins/pswdchange', {
+    data: {
+      newPassword: value
+    }
     // newPasswordToken: state.token
   })
     .then(res => {
+      console.log(res)
+      console.log('sucsses')
       if (Object.keys(res.data).length !== 0) {
         dispatch({ type: POST_NEW_PASSWORD_SUCCEEDED, payload: res.data.user })
       } else {
