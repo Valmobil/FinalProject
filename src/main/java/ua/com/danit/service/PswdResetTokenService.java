@@ -14,10 +14,12 @@ import java.util.UUID;
 public class PswdResetTokenService {
   private PswdResetTokenRepository pswdResetTokenRepository;
   private UsersService usersService;
+  private LoginService loginService;
   private MailSender mailSender;
 
   @Autowired
   PswdResetTokenService(UsersService usersService,
+                        LoginService loginService,
                         PswdResetTokenRepository pswdResetTokenRepository,
                         MailSender mailSender) {
     this.usersService = usersService;
@@ -29,7 +31,7 @@ public class PswdResetTokenService {
     if (userLogin == null) {
       return "Error: Please fill e-Mail cell!";
     }
-    usersService.convertUserLoginBlankToNull(userLogin);
+    loginService.convertUserLoginBlankToNull(userLogin);
     if (userLogin.getUserLogin() == null) {
       return "Error: Please fill e-Mail cell!";
     }
