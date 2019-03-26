@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { logOut, setUserPoints, setTrip } from '../../actions/userCreators'
+import { logOut, setUserPoints, setTrip, setMyCoordinates } from '../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -20,6 +20,7 @@ import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditSmart from './EditSmart/EditSmart'
+import Map from '../Map/Map'
 
 const windowWidth = window.innerWidth <= 380 ? window.innerWidth : 380
 
@@ -123,12 +124,6 @@ class Main extends Component {
     longitude: 0,
   };
 
-  // handlePlacesListClick = (event, index, item) => {
-  //     this.setState({ selectedIndex: index });
-  //     if (this.state.from === '') this.setState({from: item})
-  //     else if (this.state.to === '') this.setState({to: item})
-  // };
-
   handleRadio = event => {
     this.setState({ role: event.target.value })
   };
@@ -222,7 +217,7 @@ class Main extends Component {
   }
 
   addNewPoint = () => {
-    this.setState({adding: true})
+    this.setState({adding: true, editing: '', name: '', destination: ''})
   }
 
   handleDelete = (id) => {
@@ -240,12 +235,29 @@ class Main extends Component {
       this.setState({selectedId: item.id, name: item.pointNameEn}, () => this.editClose(id, item))
   }
 
+  locationFetchSuccess = (position) => {
+        this.props.setMyCoordinates({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        })
+    }
+  locationFetchError = (err) => {
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+    };
+
   componentDidMount () {
     if (this.props.users.cars.length === 1) this.setState({car: this.props.users.cars[0]})
-    navigator.geolocation.getCurrentPosition((position) => {
-          this.setState({latitude: position.coords.latitude, longitude: position.coords.longitude})
-      })
+    const options = {
+          enableHighAccuracy: true
+      };
+    navigator.geolocation.getCurrentPosition(this.locationFetchSuccess, this.locationFetchError, options)
   }
+
+  componentDidUpdate (prevProps, prevState, snapshot) {
+        if (this.props.users.address !== prevProps.users.address) {
+            this.setState({destination: this.props.users.address})
+        }
+    }
 
   render () {
     // console.log(this.props.users)
@@ -341,7 +353,7 @@ class Main extends Component {
               </Button>
           </div>
       )
-    } else {
+    } else if ( !adding ){
       dependentButton = (
           <Button onClick={this.addNewPoint}
                   type="raised"
@@ -410,16 +422,17 @@ class Main extends Component {
 
             {adding &&
                 <>
-             <div className={classes.root}>
-                 {commonPointsList}
-             </div>
-
+             <Map />
 
             <EditSmart handleEditInput={this.handleEditInput}
               editName={name}
               editDestination={destination}
               editClose={() => this.editClose(firstEmptyUserPoint.userPointId, null)}
             />
+
+            <div className={classes.root}>
+                  {commonPointsList}
+            </div>
                 </>
             }
             {this.state.role === 'driver' &&
@@ -458,7 +471,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     logOut: () => dispatch(logOut()),
     setUserPoints: (payload) => dispatch(setUserPoints(payload)),
-    setTrip: (trip) => dispatch(setTrip(trip))
+    setTrip: (trip) => dispatch(setTrip(trip)),
+    setMyCoordinates: (coords) => dispatch(setMyCoordinates(coords)),
   }
 }
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Main))

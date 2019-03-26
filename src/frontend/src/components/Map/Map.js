@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import './Map.css'
+import { setAddress } from "../../actions/userCreators";
+import { connect } from "react-redux";
 /*global H*/
 const platform = {
     app_id: 'dxvPSIheZpzC0JnT43pa',
@@ -15,10 +17,24 @@ const platform = {
 class Map extends Component {
 
     state = {
-        myLatitude: 0,
-        myLongitude: 0,
         targetLatitude: 0,
         targetLongitude: 0,
+    }
+
+    reverseGeocode = () => {
+        const geocoder = this.platform.getGeocodingService(),
+            parameters = {
+                prox: this.state.targetLatitude + ',' + this.state.targetLongitude + ',250',
+                mode: 'retrieveAddresses',
+                maxresults: '1',
+                gen: '9'};
+
+        geocoder.reverseGeocode(parameters,
+            (result) => {
+                this.props.setAddress(result.Response.View[0].Result[0].Location.Address.Label);
+            }, (error) => {
+                console.log(error);
+            });
     }
 
     setUpClickListener = (map) => {
@@ -27,16 +43,21 @@ class Map extends Component {
                 evt.currentPointer.viewportY);
             let latitude = coord.lat.toFixed(6)
             let longitude = coord.lng.toFixed(6)
-            const currentMarker = new H.map.Marker({lat:latitude, lng:longitude});
+            const currentMarker = new H.map.Marker({lat: latitude, lng: longitude});
             map.addObject(currentMarker);
             console.log('Clicked at ' + coord.lat.toFixed(6) + ' ' + coord.lng.toFixed(6));
-            this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)})
+            this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)}, () => this.myRoute())
         });
     }
 
-    calculateRouteFromAtoB = (platform) => {
+    myRoute = () => {
+        this.calculateRouteFromAtoB ();
+        this.reverseGeocode()
+    }
+
+    calculateRouteFromAtoB = () => {
         // set marker on starting point
-        const currentMarker = new H.map.Marker({lat:this.state.myLatitude, lng:this.state.myLongitude});
+        const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
         this.map.addObject(currentMarker);
 
 
@@ -46,7 +67,7 @@ class Map extends Component {
                 representation: 'display',
                 routeattributes : 'waypoints,summary,shape,legs',
                 maneuverattributes: 'direction,action',
-                waypoint0: this.state.myLatitude + ',' + this.state.myLongitude,
+                waypoint0: this.props.coords.latitude + ',' + this.props.coords.longitude,
                 waypoint1: this.state.targetLatitude + ',' + this.state.targetLongitude,
             };
         router.calculateRoute(
@@ -59,11 +80,7 @@ class Map extends Component {
     onSuccess = (result) => {
         const route = result.response.route[0];
         this.addRouteShapeToMap(route);
-        // this.addManueversToMap(route);
-        // addWaypointsToPanel(route.waypoint);
-        // addManueversToPanel(route);
-        // addSummaryToPanel(route.summary);
-
+        console.log('route = ', route.leg[0].maneuver);
     }
 
     onError = (error) => {
@@ -92,16 +109,10 @@ class Map extends Component {
         this.map.setViewBounds(polyline.getBounds(), true);
     }
 
-
     componentDidMount() {
-        navigator.geolocation.getCurrentPosition((position) => {
-            this.setState({myLatitude: position.coords.latitude, myLongitude: position.coords.longitude})
-        })
         this.platform = new H.service.Platform(platform);
-
         const layer = this.platform.createDefaultLayers();
         const container = document.getElementById('here-map');
-
         this.map = new H.Map(container, layer.normal.map, {
             center: platform.center,
             zoom: platform.zoom,
@@ -111,18 +122,26 @@ class Map extends Component {
         // eslint-disable-next-line
         const behavior = new H.mapevents.Behavior(events);
         // eslint-disable-next-line
-        const ui = new H.ui.UI.createDefault(this.map, layer)
+        const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
         this.setUpClickListener(this.map)
     }
 
     render() {
-        if (this.state.myLatitude !== 0 && this.state.myLongitude !== 0 && this.state.targetLatitude !== 0 && this.state.targetLongitude !== 0){
-            this.calculateRouteFromAtoB (platform);
-        }
+
         return (
-            <div id="here-map" style={{width: '100%', height: '100vh', background: 'grey' }} />
+            <div id="here-map" style={{width: '100%', height: '450px', background: 'grey', margin: '20px 0' }} />
         );
     }
 }
+const mapStateToProps = (state) => {
+    return {
+        coords: state.users.myCoordinates
+    }
+}
 
-export default Map
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setAddress: (address) => dispatch(setAddress(address))
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Map)
