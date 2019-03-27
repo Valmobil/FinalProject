@@ -23,8 +23,8 @@ public class LoginController {
     this.loginsService = loginsService;
   }
 
-//  @PostMapping("session")
-//  public
+  //  @PostMapping("session")
+  //  public
 
   @PostMapping("signin")
   public UserInfo postLoginSignIn(@RequestBody UserLogin userLogin) {
@@ -48,9 +48,7 @@ public class LoginController {
 
 
   @GetMapping("test")
-  public UserLogin showUserLoginFormat(){
-    UserLogin userLogin = loginsService.loginServiceTest();
-    return userLogin;
+  public UserLogin showUserLoginFormat() {
+    return loginsService.loginServiceTest();
   }
-
 }
