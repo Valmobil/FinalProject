@@ -17,7 +17,7 @@ const initialState = {
   userPoints: [],
   commonPoints: [],
   role: 'passenger',
-  isAuthenticated: false,
+  isAuthenticated: true,
   auth: null,
   topMenuOpen: false,
   loginRejected: false,
