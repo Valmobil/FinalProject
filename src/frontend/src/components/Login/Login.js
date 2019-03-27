@@ -8,6 +8,8 @@ import {connect} from 'react-redux'
 import { setAuthorization, setSocialAuth, setLoginRejected } from '../../actions/userCreators'
 import './Login.css'
 import { withStyles } from '@material-ui/core/styles'
+import InputAdornment from '@material-ui/core/InputAdornment';
+import { RemoveRedEye } from '@material-ui/icons';
 import firebase from 'firebase'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 import Radio from '@material-ui/core/Radio'
@@ -38,7 +40,8 @@ class Login extends Component {
       },
       isSigned: false,
       signType: 'log-in',
-      alertOpen: false
+      alertOpen: false,
+      passwordIsHidden: true,
     };
 
     uiConfig = {
@@ -89,9 +92,15 @@ class Login extends Component {
       if (firebase.auth()) this.props.setSocialAuth(firebase.auth())
     }
 
+    togglePasswordMask = () => {
+        this.setState(prevState => ({
+            passwordIsHidden: !prevState.passwordIsHidden,
+        }));
+    }
+
     render () {
       const { classes } = this.props
-      const { signType, user: {login, password, confirmPassword} } = this.state
+      const { signType, passwordIsHidden, user: {login, password, confirmPassword} } = this.state
       const allChecks = ((signType === 'log-in' && login !== '' && password !== '') || (signType === 'register' && login !== '' && password !== '' && password === confirmPassword))
       return (
         <div className="login-container">
@@ -127,6 +136,7 @@ class Login extends Component {
             <TextField
               label="Phone number or email"
               id="mui-theme-provider-standard-input"
+              autoFocus={true}
               style={style.input}
               autoComplete="off"
               name='login'
@@ -141,6 +151,7 @@ class Login extends Component {
             <TextField
               label="Password"
               id="mui-theme-provider-standard-input"
+              type={passwordIsHidden ? 'password' : 'text'}
               style={style.input}
               autoComplete="off"
               name='password'
@@ -149,22 +160,39 @@ class Login extends Component {
               InputProps={{
                 classes: {
                   input: classes.inputColor
-                }
+                },
+                endAdornment: (
+                      <InputAdornment position="end">
+                          <RemoveRedEye
+                              className={classes.eye}
+                              onClick={this.togglePasswordMask}
+                          />
+                      </InputAdornment>
+                  ),
               }}
             />
             {signType === 'register' &&
                     <TextField
                       label="Confirm password"
                       id="mui-theme-provider-standard-input"
+                      type={passwordIsHidden ? 'password' : 'text'}
                       style={style.input}
                       autoComplete="off"
                       name='confirmPassword'
                       value={confirmPassword}
                       onChange={this.handleInput}
                       InputProps={{
-                        classes: {
-                          input: classes.inputColor
-                        }
+                          classes: {
+                              input: classes.inputColor
+                          },
+                          endAdornment: (
+                              <InputAdornment position="end">
+                                  <RemoveRedEye
+                                      className={classes.eye}
+                                      onClick={this.togglePasswordMask}
+                                  />
+                              </InputAdornment>
+                          ),
                       }}
                     />
             }
@@ -240,7 +268,11 @@ const styles = theme => ({
   },
   label: {
     textTransform: 'capitalize'
-  }
+  },
+  eye: {
+    cursor: 'pointer',
+    color: '#3E4566',
+  },
 })
 
 const mapStateToProps = (state) => {
