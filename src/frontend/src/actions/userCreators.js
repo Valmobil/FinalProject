@@ -1,14 +1,39 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS } from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE } from './users'
 import axios from 'axios'
 
-export const setAuthorization = (state) => dispatch => {
-    axios.post('/api/users/login', {
+// export const setAuthorization = (state) => dispatch => {
+//     axios.post('/api/users/login', {
+//         userLogin: state.login,
+//         userPassword: state.password,
+//         userToken: state.token})
+//         .then(response => {
+//             if (Object.keys(response.data).length !== 0) {
+//                 dispatch({type: SET_AUTH, payload: true})
+//                 dispatch({type: SET_USER, payload: response.data.user})
+//                 dispatch({type: SET_CARS, payload: response.data.cars})
+//                 dispatch(setUserPoints(response.data.userPoints))
+//             } else {
+//                 dispatch(setLoginRejected(true))
+//             }
+//         })
+//         .catch(err => console.log(err))
+//     axios.get('/api/points/filter/test')
+//         .then(res => dispatch({type: SET_COMMON_POINTS, payload: res.data}))
+// }
+
+export const setAuthorization = (state, signType) => dispatch => {
+    let route = signType === 'log-in' ? 'signin' : 'signup'
+    axios.post('/api/logins/' + route, {
         userLogin: state.login,
         userPassword: state.password,
-        userToken: state.token})
+        userToken: state.token,
+        userPasswordNew: state.password
+    })
         .then(response => {
-            if (Object.keys(response.data).length !== 0) {
+            console.log(response)
+            dispatch(setErrorMessage(response.data.message))
+            if (response.data.user !== null) {
                 dispatch({type: SET_AUTH, payload: true})
                 dispatch({type: SET_USER, payload: response.data.user})
                 dispatch({type: SET_CARS, payload: response.data.cars})
@@ -18,8 +43,12 @@ export const setAuthorization = (state) => dispatch => {
             }
         })
         .catch(err => console.log(err))
+
+    if (signType === 'sign-in') {
     axios.get('/api/points/filter/test')
         .then(res => dispatch({type: SET_COMMON_POINTS, payload: res.data}))
+        .catch(err => console.log(err))
+    }
 }
 //* *********************
 
@@ -95,3 +124,9 @@ export const setAddress = (address) => dispatch => {
 export const setMyCoordinates = coords => dispatch => {
     dispatch({type: SET_MY_COORDS, payload: coords})
 }
+//* **********************
+
+export const setErrorMessage = (message) => dispatch => {
+    dispatch({type: SET_ERROR_MESSAGE, payload: message})
+}
+
