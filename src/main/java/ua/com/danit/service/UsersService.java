@@ -39,6 +39,9 @@ public class UsersService {
     this.pointsRepository = pointsRepository;
   }
 
+  @Autowired
+  LoginsService loginService;
+
   public User createNewUsers(User users) {
     return usersRepository.save(users);
   }
@@ -97,17 +100,24 @@ public class UsersService {
     return userPoints;
   }
 
-  public User checkLoginAndUpdateTokenInDb(UserLogin userLogin) {
+  public void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       //Save new user based on external token
+      user = new User();
+      userInfo.setUser(user);
+      loginService.saveLoginToMailOrPhone(userInfo, userLogin);
       user.setUserMail(userLogin.getUserLogin());
     }
     user.setUserExternalToken(userLogin.getUserToken());
+    generateNewSessionToken(user);
+    user = usersRepository.save(user);
+    userInfo.setUser(user);
+  }
+
+  public void generateNewSessionToken(User user) {
     user.setUserToken(UUID.randomUUID().toString());
     user.setUserTokenValidTo(getCurrentDatePlus(dateShift));
-    user = usersRepository.save(user);
-    return user;
   }
 
   private LocalDateTime getCurrentDatePlus(Integer dateShift) {
@@ -167,7 +177,7 @@ public class UsersService {
     return matcher.find();
   }
 
-  static String normalizeMobilePhone(String userPhone) {
+  public static String normalizeMobilePhone(String userPhone) {
     String phone = userPhone.replace("(", "")
         .replace(")", "")
         .replace(" ", "")
@@ -188,7 +198,5 @@ public class UsersService {
   }
 
 
-  public String checkPasswordChange(UserLogin userLogin) {
-    return "Ok";
-  }
+
 }
