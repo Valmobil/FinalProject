@@ -1,13 +1,12 @@
 package ua.com.danit.service;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import ua.com.danit.entity.User;
-import ua.com.danit.repository.UsersRepository;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static ua.com.danit.service.UsersService.*;
 
 
 class UsersServiceTest {
@@ -21,8 +20,8 @@ class UsersServiceTest {
 
   @Test
   void testCheckEmailFormat() {
-    assertTrue(UsersService.checkEmailFormat("we@def.com"));
-    assertFalse(UsersService.checkEmailFormat("1@1.1"));
+    assertTrue(checkEmailFormat("we@def.com"));
+    assertFalse(checkEmailFormat("1@1.1"));
   }
 
 }
