@@ -2,7 +2,16 @@ import React, {Component} from 'react'
 import './Map.css'
 import { setAddress } from "../../actions/userCreators";
 import { connect } from "react-redux";
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import orange from "@material-ui/core/colors/orange";
+import { withStyles } from '@material-ui/core/styles'
+
+
 /*global H*/
+
 const platform = {
     app_id: 'dxvPSIheZpzC0JnT43pa',
     app_code: '2AQJFcfRqLmLZPd0q0hz7g',
@@ -19,6 +28,62 @@ class Map extends Component {
     state = {
         targetLatitude: 0,
         targetLongitude: 0,
+        search: '',
+    }
+
+    geocode = (searchPoint) => {
+        const geocoder = this.platform.getGeocodingService(),
+            geocodingParameters = {
+                searchText: searchPoint,
+                jsonattributes : 1
+            };
+
+        geocoder.geocode(
+            geocodingParameters,
+            this.onFind,
+            this.onError
+        );
+    }
+
+    onFind = (result) => {
+        const locations = result.response.view[0].result;
+        this.addLocationsToMap(locations);
+    }
+
+    addLocationsToMap = (locations) => {
+        let group = new H.map.Group(),
+            position,
+            i;
+
+        for (i = 0;  i < locations.length; i += 1) {
+            position = {
+                lat: locations[i].location.displayPosition.latitude,
+                lng: locations[i].location.displayPosition.longitude
+            };
+            const marker = new H.map.Marker(position);
+            marker.label = locations[i].location.address.label;
+            group.addObject(marker);
+        }
+        const map = this.map;
+        const openBubble = this.openBubble
+        group.addEventListener('tap', function (evt) {
+            map.setCenter(evt.target.getPosition());
+            openBubble(
+                evt.target.getPosition(), evt.target.label);
+        }, false);
+
+        // Add the locations group to the map
+        this.map.addObject(group);
+        this.map.setCenter(group.getBounds().getCenter());
+    }
+
+    openBubble = (position, text) => {
+            const bubble = new H.ui.InfoBubble(
+                position,
+                {content: text});
+            const layer = this.platform.createDefaultLayers();
+            const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
+            ui.addBubble(bubble);
     }
 
     reverseGeocode = () => {
@@ -109,6 +174,14 @@ class Map extends Component {
         this.map.setViewBounds(polyline.getBounds(), true);
     }
 
+    handleInput = (e) => {
+        this.setState({[e.target.name]: e.target.value})
+    }
+
+    submitSearch = () => {
+        this.geocode(this.state.search)
+    }
+
     componentDidMount() {
         this.platform = new H.service.Platform(platform);
         const layer = this.platform.createDefaultLayers();
@@ -127,12 +200,76 @@ class Map extends Component {
     }
 
     render() {
-
+        const { classes } = this.props
         return (
+            <>
+            <MuiThemeProvider theme={theme}>
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'flex-end', width: '100%'}}>
+                <TextField
+                    label="Search for location"
+                    id="mui-theme-provider-standard-input"
+                    autoComplete="off"
+                    name='search'
+                    value={this.state.search}
+                    onChange={this.handleInput}
+                    style={style.input}
+                    InputProps={{
+                        classes: {
+                            input: classes.inputColor
+                        }
+                    }}
+                />
+                <Button onClick={this.submitSearch}
+                        disabled={this.state.search.length < 4}
+                        classes={{
+                            root: classes.submit,
+                            label: classes.label
+                        }}
+                >
+                    Submit
+                </Button>
+                </div>
+            </MuiThemeProvider>
+
             <div id="here-map" style={{width: '100%', height: '450px', background: 'grey', margin: '20px 0' }} />
+            </>
         );
     }
 }
+
+const theme = createMuiTheme({
+    palette: {
+        primary: orange
+    },
+    typography: { useNextVariants: true }
+})
+
+const styles = theme => ({
+    inputColor: {
+        color: '#fff',
+        width: '100%',
+    },
+    submit: {
+        background: 'linear-gradient(45deg, #ff9800 30%, #f57c00 90%)',
+        borderRadius: 3,
+        border: 0,
+        color: '#fff',
+        height: 30,
+        padding: '0 15px',
+        marginLeft: 10,
+    },
+    label: {
+        textTransform: 'capitalize'
+    }
+})
+
+const style = {
+    input: {
+        width: '70%',
+    },
+}
+
+
 const mapStateToProps = (state) => {
     return {
         coords: state.users.myCoordinates
@@ -144,4 +281,4 @@ const mapDispatchToProps = (dispatch) => {
         setAddress: (address) => dispatch(setAddress(address))
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Map)
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Map))
