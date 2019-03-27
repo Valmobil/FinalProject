@@ -126,6 +126,9 @@ class Button extends React.Component {
     this.setState((prevState) => ({
       initLike: prevState.initLike + 1
     }))
+    this.setState((prevStateDis) => ({
+      initDislike: prevStateDis.initDislike + 1
+    }))
   }
 
   // onDisLikeClick () {
@@ -142,23 +145,29 @@ class Button extends React.Component {
   // }
 
   render () {
-  //   const classLikeButton = ClassNames({
-  //     'like-button': true,
-  //     'liked': this.state.liked
-  //   })
-  //
-  //   const classDisLikeButton = ClassNames({
-  //     'dislike-button': true,
-  //     'disliked': this.state.disliked
-  //   })
+    //   const classLikeButton = ClassNames({
+    //     'like-button': true,
+    //     'liked': this.state.liked
+    //   })
+    //
+    //   const classDisLikeButton = ClassNames({
+    //     'dislike-button': true,
+    //     'disliked': this.state.disliked
+    //   })
 
     // console.log(this.state)
     // console.log(classLikeButton)
     // console.log(classDisLikeButton)
 
     return (
+      <div>
+        <button onClick={this.handleClick.bind(this)}><i className="fas fa-thumbs-up">|</i> {this.state.initLike}
+        </button>
 
-      <button onClick={this.handleClick.bind(this)}>Clicked {this.state.initLike} Times</button>
+        <button onClick={this.handleClick.bind(this)}><i
+          className="fas fa-thumbs-down">|</i> {this.state.initDislike} </button>
+
+      </div>
 
     // <div>
     //   <span className={classLikeButton}
