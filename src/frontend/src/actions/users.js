@@ -10,6 +10,8 @@ export const SET_CAR_LIST = 'SET_CAR_LIST'
 export const LOGIN_REJECTED = 'LOGIN_REJECTED'
 export const SET_USER_NAME = 'SET_USER_NAME'
 export const SET_TRIP = 'SET_TRIP'
+export const SET_ADDRESS = 'SET_ADDRESS'
+export const SET_MY_COORDS = 'SET_MY_COORDS'
 
 
 
