@@ -1,0 +1,33 @@
+//.likeDislikeContainer{
+//  max-width: 100px;
+//  padding-top: 30px;
+//  border-color: white;
+//}
+
+
+.like-button {
+  background: #ffff99;
+  margin-right: 20px;
+}
+
+.liked {
+  background: #ffff00;
+  font-size: 20pt;
+}
+
+.likes-counter {
+  color: #006400;
+}
+
+.dislike-button {
+  background: #99ffff;
+}
+
+.disliked {
+  background: #00ffff;
+  font-size: 20pt;
+}
+
+.dislikes-counter {
+  color: #0000CD;
+}
