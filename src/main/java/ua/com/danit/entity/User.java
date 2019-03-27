@@ -37,6 +37,8 @@ public class User extends Auditable {
   private String userPassword;
   private String userMail;
   private String userToken;
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private String userExternalToken;
   private LocalDateTime userTokenValidTo;
   private String userPhoto;
 }

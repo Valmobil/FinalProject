@@ -40,3 +40,4 @@ spring:
 
 spring:
   profiles: prod
+
