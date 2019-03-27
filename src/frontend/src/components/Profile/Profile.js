@@ -29,10 +29,10 @@ class Profile extends Component {
   };*/
 
     handleChange = (e) => {
-        if(e.target.name == 'sits' && e.target.value > 5){
+        if(e.target.name === 'sits' && e.target.value > 5){
             return ""
         }
-        else if (e.target.name == 'phone' && e.target.value.length > 16 ){
+        else if (e.target.name === 'phone' && e.target.value.length > 16 ){
             console.log(e.target.value.length)
             return ""
         }
