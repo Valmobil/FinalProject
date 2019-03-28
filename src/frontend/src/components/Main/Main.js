@@ -141,14 +141,10 @@ class Main extends Component {
   setRoute = (userPoint) => {
     const { userPointName, userPointLatitude, userPointLongitude } = userPoint
     const tripPoint = {
-        tripPointId: this.state.trip.length,
         tripPointName: userPointName,
         tripPointLatitude: userPointLatitude,
         tripPointLongitude: userPointLongitude,
         tripPointSequence: this.state.trip.length,
-        trip: {
-          tripId: null
-        }
     }
      this.setState({trip: [...this.state.trip, tripPoint]})
   }
@@ -156,24 +152,16 @@ class Main extends Component {
   setStartRoute = (userPoint) => {
       this.setState({creatingTrip: true})
       const tripPoint = {
-          tripPointId: 0,
           tripPointName: 'Here',
           tripPointLatitude: this.state.latitude,
           tripPointLongitude: this.state.longitude,
           tripPointSequence: 0,
-          trip: {
-            tripId: null
-          }
       }
       this.setState({trip: [tripPoint]}, () => this.setRoute(userPoint))
   }
 
    submitRoute = () => {
     let trip = {
-      tripId: null,
-      user: {
-        userId: this.props.users.user.userId
-        },
       car: {
         carId: 1
       },
@@ -261,6 +249,7 @@ class Main extends Component {
 
   render () {
     // console.log(this.props.users)
+      console.log('car = ', this.state.car)
     const { classes } = this.props
     const { role, car, name, destination, editing, adding, creatingTrip } = this.state
     const { cars, userPoints, commonPoints } = this.props.users
@@ -329,7 +318,7 @@ class Main extends Component {
       })
 
     const carList = cars.map((item) => {
-      return <MenuItem value={item.carName + ' ' + item.carColour} key = {item.carId}>{item.carName + ' ' + item.carColour}</MenuItem>
+      return <MenuItem value={item} key = {item.carId}>{item.carName + ' ' + item.carColour}</MenuItem>
     })
 
     let dependentButton = null
@@ -441,7 +430,7 @@ class Main extends Component {
                 root: classes.inputLabel
               }} htmlFor="age-required">Your car</InputLabel>
               <Select
-                value={currentCar}
+                value={currentCar.carName ? currentCar.carName : ''}
                 onChange={this.handleInput}
                 name="car"
                 inputProps={{
