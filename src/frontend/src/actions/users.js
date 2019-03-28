@@ -12,6 +12,7 @@ export const SET_USER_NAME = 'SET_USER_NAME'
 export const SET_TRIP = 'SET_TRIP'
 export const SET_ADDRESS = 'SET_ADDRESS'
 export const SET_MY_COORDS = 'SET_MY_COORDS'
+export const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE'
 
 
 
