@@ -70,9 +70,10 @@ class Login extends Component {
     componentDidMount () {
       firebase.auth().onAuthStateChanged(authenticated => {
         if (authenticated) {
+
           authenticated.getIdToken()
             .then(res => {
-              const user = {login: firebase.auth().currentUser.email, password: 'signed-in-by-social', token: res}
+              const user = {login: firebase.auth().currentUser.email, password: 'signed-in-by-social', confirmPassword: 'signed-in-by-social'}
               this.setState({ user }, () => this.setAuth())
             })
           // console.log("authenticated", authenticated)
@@ -109,7 +110,7 @@ class Login extends Component {
       const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const allChecks = (phoneNumber.test(login.split('-').join('')) || email.test(login.toLowerCase())) &&
           ((signType === 'log-in' && login !== '' && password !== '') ||
-              (signType === 'register' && login !== '' && password !== '' && password === confirmPassword))
+              (signType === 'register' && login !== '' && password !== ''))
       return (
         <div className="login-container">
           <MuiThemeProvider theme={theme}>
@@ -134,12 +135,12 @@ class Login extends Component {
                 labelPlacement="top" color="primary"
               />
             </RadioGroup>
-            {!this.state.isSigned &&
+
                     <StyledFirebaseAuth
                       uiConfig={this.uiConfig}
                       firebaseAuth={firebase.auth()}
                     />
-            }
+
             <span>or</span>
             <TextField
               label="Phone number or email"
