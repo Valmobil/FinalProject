@@ -12,7 +12,7 @@ import { withStyles } from '@material-ui/core/styles'
 
 /*global H*/
 
-const platform = {
+let platform = {
     app_id: 'dxvPSIheZpzC0JnT43pa',
     app_code: '2AQJFcfRqLmLZPd0q0hz7g',
     center: {
@@ -64,27 +64,12 @@ class Map extends Component {
             marker.label = locations[i].location.address.label;
             group.addObject(marker);
         }
-        const map = this.map;
-        const openBubble = this.openBubble
-        group.addEventListener('tap', function (evt) {
-            map.setCenter(evt.target.getPosition());
-            openBubble(
-                evt.target.getPosition(), evt.target.label);
-        }, false);
 
         // Add the locations group to the map
         this.map.addObject(group);
         this.map.setCenter(group.getBounds().getCenter());
     }
 
-    openBubble = (position, text) => {
-            const bubble = new H.ui.InfoBubble(
-                position,
-                {content: text});
-            const layer = this.platform.createDefaultLayers();
-            const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
-            ui.addBubble(bubble);
-    }
 
     reverseGeocode = () => {
         const geocoder = this.platform.getGeocodingService(),
@@ -183,6 +168,12 @@ class Map extends Component {
     }
 
     componentDidMount() {
+        if (this.props.coords.latitude !== 0) {
+            platform.center = {
+                lat: this.props.coords.latitude,
+                lng: this.props.coords.longitude,
+            };
+        }
         this.platform = new H.service.Platform(platform);
         const layer = this.platform.createDefaultLayers();
         const container = document.getElementById('here-map');
@@ -190,7 +181,6 @@ class Map extends Component {
             center: platform.center,
             zoom: platform.zoom,
         })
-
         const events = new H.mapevents.MapEvents(this.map);
         // eslint-disable-next-line
         const behavior = new H.mapevents.Behavior(events);
@@ -202,7 +192,7 @@ class Map extends Component {
     render() {
         const { classes } = this.props
         return (
-            <>
+            <div style={{width: '100%', margin: '20px 0' }}>
             <MuiThemeProvider theme={theme}>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'flex-end', width: '100%'}}>
                 <TextField
@@ -231,8 +221,9 @@ class Map extends Component {
                 </div>
             </MuiThemeProvider>
 
-            <div id="here-map" style={{width: '100%', height: '450px', background: 'grey', margin: '20px 0' }} />
-            </>
+            <div id="here-map" style={{width: '100%', height: '400px', background: 'grey', marginTop: 15}} />
+
+            </div>
         );
     }
 }
@@ -250,13 +241,19 @@ const styles = theme => ({
         width: '100%',
     },
     submit: {
-        background: 'linear-gradient(45deg, #ff9800 30%, #f57c00 90%)',
+        // background: 'linear-gradient(45deg, #ff9800 30%, #f57c00 90%)',
+        background: '#fff',
         borderRadius: 3,
         border: 0,
-        color: '#fff',
-        height: 30,
-        padding: '0 15px',
+        color: '#f57c00',
+        height: 25,
+        padding: '0 10px',
         marginLeft: 10,
+        '&:focus':{
+            background: '#fff',
+            outline: 'none',
+            color: '#008000',
+        }
     },
     label: {
         textTransform: 'capitalize'
