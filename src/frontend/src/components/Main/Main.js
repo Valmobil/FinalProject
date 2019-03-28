@@ -122,10 +122,15 @@ class Main extends Component {
     creatingTrip: false,
     latitude: 0,
     longitude: 0,
+    mapSwitch: 'common',
   };
 
   handleRadio = event => {
     this.setState({ role: event.target.value })
+  };
+
+  handleMapSwitch = event => {
+    this.setState({ mapSwitch: event.target.value })
   };
 
   handleInput = (e) => {
@@ -250,7 +255,7 @@ class Main extends Component {
   render () {
     // console.log(this.props.users)
     const { classes } = this.props
-    const { role, car, name, destination, editing, adding, creatingTrip } = this.state
+    const { role, car, name, destination, editing, adding, creatingTrip, mapSwitch } = this.state
     const { cars, userPoints, commonPoints } = this.props.users
     let currentCar = cars.length === 1 ? cars[0] : car
     const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
@@ -409,19 +414,44 @@ class Main extends Component {
               {dependentButton}
 
             {adding &&
-                <>
-             <Map />
+            <>
+                <RadioGroup
+                    aria-label="position"
+                    name="position"
+                    value={mapSwitch}
+                    onChange={this.handleMapSwitch}
+                    row
+                    style={style.radio}
+                >
+                    <FormControlLabel
+                        value="common"
+                        control={<Radio color="primary" />}
+                        label="common places"
+                        labelPlacement="top"
+                    />
+                    <FormControlLabel
+                        value="map"
+                        control={<Radio color="primary" />}
+                        label="open map"
+                        labelPlacement="top" color="primary"
+                    />
+                </RadioGroup>
 
-            <EditSmart handleEditInput={this.handleEditInput}
-              editName={name}
-              editDestination={destination}
-              editClose={() => this.editClose(firstEmptyUserPoint.userPointId, null)}
-            />
-
+            { mapSwitch === 'common' &&
             <div className={classes.root}>
                   {commonPointsList}
             </div>
-                </>
+            }
+            { mapSwitch === 'map' &&
+            <Map />
+            }
+            <EditSmart handleEditInput={this.handleEditInput}
+                           editName={name}
+                           editDestination={destination}
+                           editClose={() => this.editClose(firstEmptyUserPoint.userPointId, null)}
+            />
+
+            </>
             }
             {this.state.role === 'driver' &&
             <FormControl required className={classes.formControl}>
