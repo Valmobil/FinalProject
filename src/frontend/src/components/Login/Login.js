@@ -70,9 +70,10 @@ class Login extends Component {
     componentDidMount () {
       firebase.auth().onAuthStateChanged(authenticated => {
         if (authenticated) {
+
           authenticated.getIdToken()
             .then(res => {
-              const user = {login: firebase.auth().currentUser.email, password: 'signed-in-by-social', token: res}
+              const user = {login: firebase.auth().currentUser.email, password: 'signed-in-by-social', confirmPassword: 'signed-in-by-social'}
               this.setState({ user }, () => this.setAuth())
             })
           // console.log("authenticated", authenticated)
@@ -88,7 +89,7 @@ class Login extends Component {
     }
 
     setAuth = () => {
-      this.props.setAuthorization(this.state.user)
+      this.props.setAuthorization(this.state.user, this.state.signType)
       if (firebase.auth()) this.props.setSocialAuth(firebase.auth())
     }
 
@@ -98,10 +99,18 @@ class Login extends Component {
         }));
     }
 
+    tryToLoginAgagin = () => {
+        this.setState({user: {...this.state.user, login: '', password: '', confirmPassword: ''}}, () => this.props.setLoginRejected(false))
+    }
+
     render () {
       const { classes } = this.props
       const { signType, passwordIsHidden, user: {login, password, confirmPassword} } = this.state
-      const allChecks = ((signType === 'log-in' && login !== '' && password !== '') || (signType === 'register' && login !== '' && password !== '' && password === confirmPassword))
+      const phoneNumber = /^\+?[0-9]{10}/;
+      const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const allChecks = (phoneNumber.test(login.split('-').join('')) || email.test(login.toLowerCase())) &&
+          ((signType === 'log-in' && login !== '' && password !== '') ||
+              (signType === 'register' && login !== '' && password !== ''))
       return (
         <div className="login-container">
           <MuiThemeProvider theme={theme}>
@@ -126,16 +135,15 @@ class Login extends Component {
                 labelPlacement="top" color="primary"
               />
             </RadioGroup>
-            {!this.state.isSigned &&
+
                     <StyledFirebaseAuth
                       uiConfig={this.uiConfig}
                       firebaseAuth={firebase.auth()}
                     />
-            }
+
             <span>or</span>
             <TextField
               label="Phone number or email"
-              id="mui-theme-provider-standard-input"
               autoFocus={true}
               style={style.input}
               autoComplete="off"
@@ -150,7 +158,6 @@ class Login extends Component {
             />
             <TextField
               label="Password"
-              id="mui-theme-provider-standard-input"
               type={passwordIsHidden ? 'password' : 'text'}
               style={style.input}
               autoComplete="off"
@@ -174,7 +181,6 @@ class Login extends Component {
             {signType === 'register' &&
                     <TextField
                       label="Confirm password"
-                      id="mui-theme-provider-standard-input"
                       type={passwordIsHidden ? 'password' : 'text'}
                       style={style.input}
                       autoComplete="off"
@@ -204,7 +210,7 @@ class Login extends Component {
                 label: classes.label
               }}
             >
-                        Submit
+               Submit
             </Button>
           </MuiThemeProvider>
           <Dialog
@@ -217,12 +223,12 @@ class Login extends Component {
           >
             <DialogContent>
               <DialogContentText id="alert-dialog-slide-description" style={{textAlign: 'center'}}>
-                            Login or password is incorrect. Please try again.
+                  {this.props.users.errorMessage}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => this.props.setLoginRejected(false)} color="primary">
-                            Ok
+              <Button onClick={this.tryToLoginAgagin} color="primary">
+                Ok
               </Button>
 
             </DialogActions>
@@ -283,7 +289,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setAuthorization: (state) => dispatch(setAuthorization(state)),
+    setAuthorization: (state, signType) => dispatch(setAuthorization(state, signType)),
     setSocialAuth: (auth) => dispatch(setSocialAuth(auth)),
     setLoginRejected: (payload) => dispatch(setLoginRejected(payload))
   }

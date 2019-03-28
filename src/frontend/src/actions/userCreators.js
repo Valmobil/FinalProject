@@ -1,14 +1,19 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS } from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE } from './users'
 import axios from 'axios'
 
-export const setAuthorization = (state) => dispatch => {
-    axios.post('/api/users/login', {
+
+export const setAuthorization = (state, signType) => dispatch => {
+    let route = signType === 'log-in' ? 'signin' : 'signup'
+    axios.post('/api/logins/' + route, {
         userLogin: state.login,
         userPassword: state.password,
-        userToken: state.token})
+        userToken: state.token,
+        userPasswordNew: state.confirmPassword
+    })
         .then(response => {
-            if (Object.keys(response.data).length !== 0) {
+            dispatch(setErrorMessage(response.data.message))
+            if (response.data.user !== null) {
                 dispatch({type: SET_AUTH, payload: true})
                 dispatch({type: SET_USER, payload: response.data.user})
                 dispatch({type: SET_CARS, payload: response.data.cars})
@@ -18,8 +23,12 @@ export const setAuthorization = (state) => dispatch => {
             }
         })
         .catch(err => console.log(err))
+
+    if (signType === 'log-in') {
     axios.get('/api/points/filter/test')
         .then(res => dispatch({type: SET_COMMON_POINTS, payload: res.data}))
+        .catch(err => console.log(err))
+    }
 }
 //* *********************
 
@@ -74,11 +83,10 @@ export const setUserName = (name) => dispatch => {
 //* **********************
 
 export const setTrip = (trip) => dispatch => {
-    console.log(trip)
     axios({
         method: 'put',
         url: '/api/trips',
-        data: JSON.stringify(trip)
+        data: trip
     })
         .then(res => console.log('usersCreators: ', res))
         .catch(err => console.log(err))
@@ -95,3 +103,9 @@ export const setAddress = (address) => dispatch => {
 export const setMyCoordinates = coords => dispatch => {
     dispatch({type: SET_MY_COORDS, payload: coords})
 }
+//* **********************
+
+export const setErrorMessage = (message) => dispatch => {
+    dispatch({type: SET_ERROR_MESSAGE, payload: message})
+}
+
