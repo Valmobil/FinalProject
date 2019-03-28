@@ -4,11 +4,12 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import AvatarProfile from '../avatar/AvatarProfile'
+import AvatarProfile from '../Avatar/AvatarProfile'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import { connect } from 'react-redux'
 import {setUserName} from '../../actions/userCreators'
+
 
 class Profile extends Component {
   state = {
@@ -16,18 +17,16 @@ class Profile extends Component {
     sits: '',
     carModel: '',
     carColor: '',
-    phone:   '+380 - ',      //this.props.users.user.userPhone
-    userEmail: this.props.users.user.userEmail           //this.props.users.user.userMail
+    phone:   '+380 - ',                                  //this.props.users.user.userPhone
+    userEmail: this.props.users.user.userMail           //this.props.users.user.userMail
 
   };
-
 /*  handleChange = name => event => {
     this.setState({
       [name]: event.target.value
 
     })
   };*/
-
     handleChange = (e) => {
         if(e.target.name === 'sits' && e.target.value > 5){
             return ""
@@ -46,6 +45,8 @@ class Profile extends Component {
   };
 
   render () {
+    const {...profileProps} = this.state
+
     const { userName } = this.props.users.user
     console.log(userName)
     return (
@@ -57,7 +58,7 @@ class Profile extends Component {
           label="User Name"
           name='name'
           // className={classes.textField}
-          value={this.state.name}
+          value={profileProps.name}
           onChange={this.handleChange}
           margin="normal"
           variant="outlined"
@@ -68,7 +69,7 @@ class Profile extends Component {
           name='phone'
           placeholder= '+38'
           // className={classes.textField}
-          value={this.state.phone}
+          value={profileProps.phone}
           onChange={this.handleChange}
           margin="normal"
           variant="outlined"
@@ -80,7 +81,7 @@ class Profile extends Component {
           // className={classes.textField}
           type="email"
           name='userEmail'
-          value= {this.state.email}
+          value= {profileProps.userEmail}
           onChange={this.handleChange}
           autoComplete="email"
           margin="normal"
@@ -98,7 +99,7 @@ class Profile extends Component {
           id="outlined-car-model"
           label="Car model"
           // className={classes.textField}
-          value={this.state.carModel}
+          value={profileProps.carModel}
           name='carModel'
           onChange={this.handleChange}
           margin="normal"
@@ -108,7 +109,7 @@ class Profile extends Component {
           id="outlined-color"
           label="Color"
           // className={classes.textField}
-          value={this.state.carColor}
+          value={profileProps.carColor}
           name='carColor'
           onChange={this.handleChange}
           margin="normal"
@@ -118,7 +119,7 @@ class Profile extends Component {
         <TextField
           id="filled-number"
           label="# of sits"
-          value={this.state.sits}
+          value={profileProps.sits}
           name='sits'
           onChange={this.handleChange}
           type="number"
