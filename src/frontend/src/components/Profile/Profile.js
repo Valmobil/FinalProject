@@ -12,57 +12,64 @@ import {setUserName} from '../../actions/userCreators'
 
 class Profile extends Component {
   state = {
-    name: '',
+    name: '', //this.props.users.user.userName
     sits: '',
-    multiline: 'Controlled',
     carModel: '',
     carColor: '',
-    phone: ''
+    phone:   '+380 - ',      //this.props.users.user.userPhone
+    userEmail: this.props.users.user.userEmail           //this.props.users.user.userMail
 
   };
 
-  handleChange = name => event => {
+/*  handleChange = name => event => {
     this.setState({
       [name]: event.target.value
+
     })
-  };
+  };*/
 
-  handleState = (e) => {
-    this.setState({[e.target.name]: e.target.value})
-  }
-
-
+    handleChange = (e) => {
+        if(e.target.name === 'sits' && e.target.value > 5){
+            return ""
+        }
+        else if (e.target.name === 'phone' && e.target.value.length > 16 ){
+            console.log(e.target.value.length)
+            return ""
+        }
+        else{
+            this.setState({[e.target.name]: e.target.value})
+        }
+    }
   setName = () => {
     const user = {...this.props.users.user, userName: this.state.name}
     this.props.setUserName(user)
-  }
-
+  };
 
   render () {
-    // const { classes } = this.props
-    // const { signType, user: {login, password, confirmPassword} } = this.state
-    // const allChecks = ((signType === 'log-in' && login !== '' && password !== '') || (signType === 'register' && login !== '' && password !== '' && password === confirmPassword))
     const { userName } = this.props.users.user
     console.log(userName)
     return (
       <form className="form-container" noValidate autoComplete="off">
         <AvatarProfile/>
-        { userName.length === 0 && <TextField
+          <TextField
           required
           id="outlined-name"
           label="User Name"
+          name='name'
           // className={classes.textField}
           value={this.state.name}
-          onChange={this.handleChange('name')}
+          onChange={this.handleChange}
           margin="normal"
           variant="outlined"
-        />}
+        />
         <TextField
           id="outlined-phone"
           label="Phone"
+          name='phone'
+          placeholder= '+38'
           // className={classes.textField}
           value={this.state.phone}
-          onChange={this.handleChange('phone')}
+          onChange={this.handleChange}
           margin="normal"
           variant="outlined"
         />
@@ -72,18 +79,18 @@ class Profile extends Component {
           label="Email"
           // className={classes.textField}
           type="email"
-          name="email"
+          name='userEmail'
+          value= {this.state.email}
+          onChange={this.handleChange}
           autoComplete="email"
           margin="normal"
           variant="outlined"
         />
         <Button onClick={this.setAuth}
           // disabled={!allChecks}
+            color="primary"
           style={style.button}
-          /* classes={{
-            root: classes.root,
-            label: classes.label
-          }} */
+
         >
           Change Password
         </Button>
@@ -92,7 +99,8 @@ class Profile extends Component {
           label="Car model"
           // className={classes.textField}
           value={this.state.carModel}
-          onChange={this.handleChange('carModel')}
+          name='carModel'
+          onChange={this.handleChange}
           margin="normal"
           variant="outlined"
         />
@@ -101,7 +109,8 @@ class Profile extends Component {
           label="Color"
           // className={classes.textField}
           value={this.state.carColor}
-          onChange={this.handleChange('carColor')}
+          name='carColor'
+          onChange={this.handleChange}
           margin="normal"
           variant="outlined"
         />
@@ -110,7 +119,8 @@ class Profile extends Component {
           id="filled-number"
           label="# of sits"
           value={this.state.sits}
-          onChange={this.handleChange('sits')}
+          name='sits'
+          onChange={this.handleChange}
           type="number"
           // className={classes.textField}
           InputLabelProps={{
@@ -120,12 +130,9 @@ class Profile extends Component {
           variant="filled"
         />
         <Button onClick={this.setAuth}
-          // disabled={!allChecks}
+          //disabled={!allChecks}
           style={style.button}
-          /* classes={{
-            root: classes.root,
-            label: classes.label
-          }} */
+
         >
           Submit
         </Button>
@@ -134,10 +141,10 @@ class Profile extends Component {
   }
 }
 const theme = createMuiTheme({
-  palette: {
-    primary: orange
-  },
-  typography: { useNextVariants: true }
+    palette: {
+        primary: orange
+    },
+    typography: { useNextVariants: true }
 })
 const styles = theme => ({
   container: {
@@ -163,7 +170,9 @@ const style = {
   },
   button: {
     margin: theme.spacing.unit,
-    marginTop: '10px'
+    marginTop: '10px',
+      color: 'orange',
+      border: '1px solid #38D1FF'
   }
 }
 
