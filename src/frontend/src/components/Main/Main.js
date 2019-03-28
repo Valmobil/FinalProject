@@ -163,7 +163,7 @@ class Main extends Component {
    submitRoute = () => {
     let trip = {
       car: {
-        carId: 1
+        carId: this.state.car.carId
       },
       tripPoint: this.state.trip,
       tripDateTime: new Date().toISOString(),
@@ -249,7 +249,6 @@ class Main extends Component {
 
   render () {
     // console.log(this.props.users)
-      console.log('car = ', this.state.car)
     const { classes } = this.props
     const { role, car, name, destination, editing, adding, creatingTrip } = this.state
     const { cars, userPoints, commonPoints } = this.props.users
@@ -430,7 +429,7 @@ class Main extends Component {
                 root: classes.inputLabel
               }} htmlFor="age-required">Your car</InputLabel>
               <Select
-                value={currentCar.carName ? currentCar.carName : ''}
+                value={currentCar}
                 onChange={this.handleInput}
                 name="car"
                 inputProps={{
