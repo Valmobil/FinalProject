@@ -18,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -34,8 +35,9 @@ public class Car extends Auditable {
   private String carColour;
   private String carPhoto;
   @ManyToOne
+  @NonNull
   @JoinColumn(name = "CAR_USER_ID", referencedColumnName = "userId")
-  @JsonIgnoreProperties({"userName", "userPhone", "userMail", "userToken", "userTokenValidTo", "userPhoto"})
+  @JsonIgnoreProperties({"car", "user", "userId", "userName", "userPhone", "userMail", "userToken", "userTokenValidTo", "userPhoto"})
   private User user;
 }
 

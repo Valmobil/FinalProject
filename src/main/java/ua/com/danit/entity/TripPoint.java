@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -36,6 +37,7 @@ public class TripPoint {
   private double tripPointLatitude;
   private int tripPointSequence;
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @NonNull
   @JoinColumn(name = "TRIP_POINT_TRIP_ID", referencedColumnName = "tripId")
   @JsonIgnoreProperties({"user","car", "tripPoint", "tripDateTime"})
   private Trip trip;

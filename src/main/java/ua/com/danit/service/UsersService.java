@@ -25,6 +25,7 @@ public class UsersService {
   private UserPointsRepository userPointsRepository;
   private CarsRepository carsRepository;
   private PointsRepository pointsRepository;
+  private LoginsService loginsService;
 
   private static final int dateShift = 30;
 
@@ -32,15 +33,14 @@ public class UsersService {
   public UsersService(UsersRepository usersRepository,
                       UserPointsRepository userPointRepository,
                       CarsRepository carsRepository,
-                      PointsRepository pointsRepository) {
+                      PointsRepository pointsRepository,
+                      LoginsService loginsService) {
     this.usersRepository = usersRepository;
     this.userPointsRepository = userPointRepository;
     this.carsRepository = carsRepository;
     this.pointsRepository = pointsRepository;
+    this.loginsService = loginsService;
   }
-
-  @Autowired
-  LoginsService loginService;
 
   public User createNewUsers(User users) {
     return usersRepository.save(users);
@@ -64,7 +64,7 @@ public class UsersService {
     return user;
   }
 
-  public void addCarsAndUserPoints(UserInfo userInfo) {
+  void addCarsAndUserPoints(UserInfo userInfo) {
     //Collect Cars
     userInfo.setCars(carsRepository.findByUser(userInfo.getUser()));
     //Collect User Points
@@ -100,13 +100,13 @@ public class UsersService {
     return userPoints;
   }
 
-  public void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
+  void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       //Save new user based on external token
       user = new User();
       userInfo.setUser(user);
-      loginService.saveLoginToMailOrPhone(userInfo, userLogin);
+      loginsService.saveLoginToMailOrPhone(userInfo, userLogin);
       user.setUserMail(userLogin.getUserLogin());
     }
     user.setUserExternalToken(userLogin.getUserToken());
@@ -115,7 +115,7 @@ public class UsersService {
     userInfo.setUser(user);
   }
 
-  public void generateNewSessionToken(User user) {
+  void generateNewSessionToken(User user) {
     user.setUserToken(UUID.randomUUID().toString());
     user.setUserTokenValidTo(getCurrentDatePlus(dateShift));
   }
@@ -146,7 +146,7 @@ public class UsersService {
   }
 
 
-  public User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
+  User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       return null;
@@ -157,7 +157,7 @@ public class UsersService {
     return null;
   }
 
-  public User checkIfSessionTokenIsPresent(UserLogin userLogin) {
+  User checkIfSessionTokenIsPresent(UserLogin userLogin) {
     List<User> users = usersRepository.findByUserToken(userLogin.getUserToken());
     if (users.size() != 1) {
       return null;
@@ -193,10 +193,16 @@ public class UsersService {
     return phone;
   }
 
-  public boolean checkForEmail(UserLogin userLogin) {
+  boolean checkForEmail(UserLogin userLogin) {
     return userLogin.getUserLogin().contains("@");
   }
 
 
-
+  public UserInfo saveUserProfile(User user) {
+    usersRepository.save(user);
+    UserInfo userInfo = new UserInfo();
+    userInfo.setUser(usersRepository.getOne(user.getUserId()));
+    addCarsAndUserPoints(userInfo);
+    return userInfo;
+  }
 }

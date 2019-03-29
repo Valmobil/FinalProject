@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,9 +22,11 @@ public class TripPassenger {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long tripPassengerId;
   @ManyToOne
+  @NonNull
   @JoinColumn(name = "TRIP_PASSENGER_TRIP_ID", referencedColumnName = "tripId")
   private Trip trip;
   @ManyToOne
+  @NonNull
   @JoinColumn(name = "TRIP_PASSENGER_USER_ID", referencedColumnName = "userId")
   private User user;
   private int tripPassengerTogetherQty;
