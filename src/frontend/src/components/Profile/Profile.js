@@ -8,7 +8,7 @@ import AvatarProfile from '../Avatar/AvatarProfile'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import { connect } from 'react-redux'
-import {setAuthorization, setProfile} from '../../actions/userCreators'
+import {setProfile} from '../../actions/userCreators'
 
 
 

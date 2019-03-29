@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import pink from '@material-ui/core/colors/deepPurple'
 import Avatar from '@material-ui/core/Avatar'
 import Grid from '@material-ui/core/Grid'
-import MyEditor from "../AvatarEditor/MyEditor";
+
 
 const styles = {
   pinkAvatar: {
