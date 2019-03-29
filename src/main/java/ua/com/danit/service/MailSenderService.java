@@ -4,6 +4,7 @@ package ua.com.danit.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.PswdResetToken;
@@ -22,33 +23,35 @@ public class MailSenderService {
 
   @Autowired
   MailSenderService(UsersService usersService,
-                        LoginsService loginsService,
-                        PswdResetTokenRepository pswdResetTokenRepository) {
+                    LoginsService loginsService,
+                    PswdResetTokenRepository pswdResetTokenRepository) {
 
     this.usersService = usersService;
     this.loginsService = loginsService;
     this.pswdResetTokenRepository = pswdResetTokenRepository;
   }
 
+  @Autowired
+  public JavaMailSender emailSender;
 
-  @Bean
-  public JavaMailSenderImpl getJavaMailSender() {
-
-    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-    mailSender.setHost("smtp.gmail.com");
-    mailSender.setPort(587);
-
-    mailSender.setUsername("valmobil@gmail.com");
-    mailSender.setPassword("password");
-
-    Properties props = mailSender.getJavaMailProperties();
-    props.put("mail.transport.protocol", "smtp");
-    props.put("mail.smtp.auth", "true");
-    props.put("mail.smtp.starttls.enable", "true");
-    props.put("mail.debug", "true");
-
-    return mailSender;
-  }
+//  @Bean
+//  public JavaMailSenderImpl getJavaMailSender() {
+//
+//    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//    mailSender.setHost("smtp.gmail.com");
+//    mailSender.setPort(587);
+//
+//    mailSender.setUsername("valmobil@gmail.com");
+//    mailSender.setPassword("password");
+//
+//    Properties props = mailSender.getJavaMailProperties();
+//    props.put("mail.transport.protocol", "smtp");
+//    props.put("mail.smtp.auth", "true");
+//    props.put("mail.smtp.starttls.enable", "true");
+//    props.put("mail.debug", "true");
+//
+//    return mailSender;
+//  }
 
   public String checkUserByEmail(UserLogin userLogin, String contextPath) {
     if (userLogin == null) {
@@ -73,15 +76,15 @@ public class MailSenderService {
     //save token in DB
     createPasswordResetTokenForUser(user, token);
     //Mail token to user
-    getJavaMailSender().send(constructResetTokenEmail(contextPath, token, user));
+    emailSender.send(constructResetTokenEmail(contextPath, token, user));
   }
 
   private SimpleMailMessage constructResetTokenEmail(
       String contextPath, String token, User user) {
     String url = contextPath + "/user/changePassword?id=" + "&token=" + token;
     return constructEmail("Reset Password",
-        "Добридень!\r\n Ви отримали це повідомлення, бо Ви (маємо таку надію) хочете змінити свій пароль "
-            + " \r\n" + url, user);
+        "Добридень!\r\n\r\nВи отримали це повідомлення, бо Ви (маємо таку надію що це були Ви) хочете встановити свій новий пароль "
+            + "\r\n<a href=\"" + url + "\">Please click for password restore!</a>\r\n  \r\nЗ повагою, ваша комманда!", user);
   }
 
   private SimpleMailMessage constructEmail(String subject, String body,
