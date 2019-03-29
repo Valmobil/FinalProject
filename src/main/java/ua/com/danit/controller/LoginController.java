@@ -28,8 +28,8 @@ public class LoginController {
     this.mailSenderService = mailSenderService;
   }
 
-  @Autowired
-  private HttpServletRequest request;
+  //  @Autowired
+  //  private HttpServletRequest request;
 
   //  @PostMapping("session")
   //  public
@@ -61,7 +61,7 @@ public class LoginController {
     return mailSenderService.checkUserByEmail(userLogin, "localhost:3000");
   }
 
-    @GetMapping("test")
+  @GetMapping("test")
   public UserLogin showUserLoginFormat() {
     return loginsService.loginServiceTest();
   }

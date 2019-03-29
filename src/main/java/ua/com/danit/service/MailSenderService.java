@@ -39,24 +39,24 @@ public class MailSenderService {
     this.mailSender = mailSender;
   }
 
-//  @Bean
-//  public JavaMailSenderImpl getJavaMailSender() {
-//
-//    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-//    mailSender.setHost("smtp.gmail.com");
-//    mailSender.setPort(587);
-//
-//    mailSender.setUsername("valmobil@gmail.com");
-//    mailSender.setPassword("password");
-//
-//    Properties props = mailSender.getJavaMailProperties();
-//    props.put("mail.transport.protocol", "smtp");
-//    props.put("mail.smtp.auth", "true");
-//    props.put("mail.smtp.starttls.enable", "true");
-//    props.put("mail.debug", "true");
-//
-//    return mailSender;
-//  }
+  //  @Bean
+  //  public JavaMailSenderImpl getJavaMailSender() {
+  //
+  //    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+  //    mailSender.setHost("smtp.gmail.com");
+  //    mailSender.setPort(587);
+  //
+  //    mailSender.setUsername("valmobil@gmail.com");
+  //    mailSender.setPassword("password");
+  //
+  //    Properties props = mailSender.getJavaMailProperties();
+  //    props.put("mail.transport.protocol", "smtp");
+  //    props.put("mail.smtp.auth", "true");
+  //    props.put("mail.smtp.starttls.enable", "true");
+  //    props.put("mail.debug", "true");
+  //
+  //    return mailSender;
+  //  }
 
   public String checkUserByEmail(UserLogin userLogin, String contextPath) {
     if (userLogin == null) {
@@ -88,8 +88,10 @@ public class MailSenderService {
       String contextPath, String token, User user) {
     String url = contextPath + "/user/changePassword?id=" + "&token=" + token;
     return constructMimeMail("Reset Password",
-        "Добридень!<br><br>Ви отримали це повідомлення, бо Ви (маємо таку надію що це були Ви) хочете встановити свій новий пароль "
-            + "<br><a href=\"" + url + "\">Please click for password restore!</a><br><br>З повагою, ваша комманда!", "", user.getUserMail());
+        "Добридень!<br><br>Ви отримали це повідомлення, бо Ви (маємо таку надію що це були Ви) "
+            + "хочете встановити свій новий пароль "
+            + "<br><a href=\"" + url + "\">Please click for password restore!</a><br><br>З повагою, ваша комманда!",
+        "", user.getUserMail());
   }
 
   //  private SimpleMailMessage constructEmail(String subject, String body,
@@ -102,7 +104,7 @@ public class MailSenderService {
   //    return email;
   //  }
 
-  public MimeMessage constructMimeMail(String subject, String msg, String from, String to) {
+  private MimeMessage constructMimeMail(String subject, String msg, String from, String to) {
     try {
       MimeMessage message = mailSender.createMimeMessage();
 
