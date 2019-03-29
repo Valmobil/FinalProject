@@ -8,18 +8,18 @@ import AvatarProfile from '../Avatar/AvatarProfile'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import { connect } from 'react-redux'
-import {setUserName} from '../../actions/userCreators'
+import {setAuthorization, setProfile} from '../../actions/userCreators'
+
 
 
 class Profile extends Component {
   state = {
-    name: '', //this.props.users.user.userName
+    name: this.props.users.user.userName,             //this.props.users.user.userName
     sits: '',
     carModel: '',
     carColor: '',
-    phone:   '+380 - ',                                  //this.props.users.user.userPhone
+    phone:   this.props.users.user.userPhone,                                  //this.props.users.user.userPhone
     userEmail: this.props.users.user.userMail           //this.props.users.user.userMail
-
   };
 /*  handleChange = name => event => {
     this.setState({
@@ -31,24 +31,27 @@ class Profile extends Component {
         if(e.target.name === 'sits' && e.target.value > 5){
             return ""
         }
-        else if (e.target.name === 'phone' && e.target.value.length > 16 ){
-            console.log(e.target.value.length)
-            return ""
-        }
         else{
             this.setState({[e.target.name]: e.target.value})
         }
     }
-  setName = () => {
-    const user = {...this.props.users.user, userName: this.state.name}
-    this.props.setUserName(user)
+  setProfileToReference = () => {
+    this.props.setProfile(this.state)
   };
+    changePass = () =>
+    {
+        return (
+        console.log('Hi')
+    )}
+
 
   render () {
-    const {...profileProps} = this.state
-
-    const { userName } = this.props.users.user
-    console.log(userName)
+        const {...profileProps} = this.state
+        // const { phone, userEmail } = this.state
+        /*const phoneNumber = /^\+?[0-9]{10}/;
+        const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;*/
+        //const { userName } = this.props.users.user
+        // console.log(userName)
     return (
       <form className="form-container" noValidate autoComplete="off">
         <AvatarProfile/>
@@ -57,6 +60,7 @@ class Profile extends Component {
           id="outlined-name"
           label="User Name"
           name='name'
+          type='text'
           // className={classes.textField}
           value={profileProps.name}
           onChange={this.handleChange}
@@ -87,7 +91,7 @@ class Profile extends Component {
           margin="normal"
           variant="outlined"
         />
-        <Button onClick={this.setAuth}
+        <Button onClick={this.changePass}
           // disabled={!allChecks}
             color="primary"
           style={style.button}
@@ -130,7 +134,7 @@ class Profile extends Component {
           margin="normal"
           variant="filled"
         />
-        <Button onClick={this.setAuth}
+        <Button onClick={this.setProfileToReference}
           //disabled={!allChecks}
           style={style.button}
 
@@ -189,7 +193,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setUserName: (name) => dispatch(setUserName(name))
+    setProfile: (state) => dispatch(setProfile(state)),
+    // setUserName: (name) => dispatch(setUserName(name))
   }
 }
 
