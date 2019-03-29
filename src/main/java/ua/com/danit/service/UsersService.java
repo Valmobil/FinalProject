@@ -1,6 +1,7 @@
 package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
@@ -27,20 +28,25 @@ public class UsersService {
   private PointsRepository pointsRepository;
   private LoginsService loginsService;
 
+
   private static final int dateShift = 30;
 
   @Autowired
   public UsersService(UsersRepository usersRepository,
                       UserPointsRepository userPointRepository,
                       CarsRepository carsRepository,
-                      PointsRepository pointsRepository,
-                      LoginsService loginsService) {
+                      PointsRepository pointsRepository) {
     this.usersRepository = usersRepository;
     this.userPointsRepository = userPointRepository;
     this.carsRepository = carsRepository;
     this.pointsRepository = pointsRepository;
+  }
+
+  @Autowired
+  public void setLoginsService(LoginsService loginsService) {
     this.loginsService = loginsService;
   }
+
 
   public User createNewUsers(User users) {
     return usersRepository.save(users);

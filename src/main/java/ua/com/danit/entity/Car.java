@@ -37,7 +37,8 @@ public class Car extends Auditable {
   @ManyToOne
   @NonNull
   @JoinColumn(name = "CAR_USER_ID", referencedColumnName = "userId")
-  @JsonIgnoreProperties({"car", "user", "userId", "userName", "userPhone", "userMail", "userToken", "userTokenValidTo", "userPhoto"})
+  @JsonIgnoreProperties({"car", "user", "userId", "userName",
+      "userPhone", "userMail", "userToken", "userTokenValidTo", "userPhoto"})
   private User user;
 }
 

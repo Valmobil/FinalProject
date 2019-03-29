@@ -24,17 +24,10 @@ public class UsersController {
     this.usersService = usersService;
   }
 
-  @PostMapping("{user_id}")
-  public User getUserById(@PathVariable("user_id") Long userId) {
-    return usersService.getUserById(userId);
-  }
-
-
   @PutMapping("")
   public UserInfo saveUserProfile(@RequestBody User user) {
     return usersService.saveUserProfile(user);
   }
-
 
   @GetMapping("test")
   public User getUserById() {
