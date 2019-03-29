@@ -9,19 +9,27 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
 import ua.com.danit.service.LoginsService;
+import ua.com.danit.service.MailSenderService;
 import ua.com.danit.service.UsersService;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("api/logins")
 public class LoginController {
   private UsersService usersService;
   private LoginsService loginsService;
+  private MailSenderService mailSenderService;
 
   @Autowired
-  public LoginController(UsersService usersService, LoginsService loginsService) {
+  public LoginController(UsersService usersService, LoginsService loginsService, MailSenderService mailSenderService) {
     this.usersService = usersService;
     this.loginsService = loginsService;
+    this.mailSenderService = mailSenderService;
   }
+
+  //  @Autowired
+  //  private HttpServletRequest request;
 
   //  @PostMapping("session")
   //  public
@@ -46,6 +54,12 @@ public class LoginController {
     return loginsService.checkPasswordRestore(userLogin);
   }
 
+  @PostMapping("email")
+  public String checkUserByEmail(@RequestBody UserLogin userLogin) {
+    //https://www.baeldung.com/spring-security-registration-i-forgot-my-password
+    //    return pswdResetTokenService.checkUserByEmail(userLogin, request.getContextPath());
+    return mailSenderService.checkUserByEmail(userLogin, "localhost:3000");
+  }
 
   @GetMapping("test")
   public UserLogin showUserLoginFormat() {

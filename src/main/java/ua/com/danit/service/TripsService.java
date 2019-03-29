@@ -7,6 +7,8 @@ import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.TripPoint;
 import ua.com.danit.repository.TripsRepository;
 
+import java.util.List;
+
 
 @Service
 public class TripsService {
@@ -35,5 +37,9 @@ public class TripsService {
     } else {
       return "Fail";
     }
+  }
+
+  public List<Trip> getTripListService() {
+    return tripsRepository.findAll();
   }
 }

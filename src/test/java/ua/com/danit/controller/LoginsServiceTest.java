@@ -40,7 +40,7 @@ public class LoginsServiceTest {
     assertThat(userInfo.getUser()).isNull();
     assertThat(userInfo.getCars()).size().isEqualTo(0);
     assertThat(userInfo.getUserPoints()).size().isEqualTo(0);
-    assertThat(userInfo.getMessage().equals("Error: incorrect login or password!!!"));
+    assertThat(userInfo.getMessage().equals("Error: incorrect login or password!"));
   }
 
   @Test
@@ -53,7 +53,7 @@ public class LoginsServiceTest {
 
     assertThat(userInfo).isNotNull();
     assertThat(userInfo.getUser()).isNull();
-    assertThat(userInfo.getMessage().equals("Error: Please repeat password correctly!!!"));
+    assertThat(userInfo.getMessage().equals("Error: Please repeat password correctly!"));
 
 
     userLogin.setUserPasswordNew("12345");
@@ -75,7 +75,7 @@ public class LoginsServiceTest {
 
     assertThat(userInfo).isNotNull();
     assertThat(userInfo.getUser()).isNull();
-    assertThat(userInfo.getMessage().equals("Error: Please repeat password correctly!!!"));
+    assertThat(userInfo.getMessage().equals("Error: Please repeat password correctly!"));
 
     userLogin.setUserLogin("valeriy@gmail.com");
     userInfo = loginsService.checkRegistrationCredentials(userLogin);
