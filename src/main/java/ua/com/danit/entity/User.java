@@ -3,6 +3,7 @@ package ua.com.danit.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jdk.nashorn.internal.objects.annotations.Property;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,6 +40,7 @@ public class User extends Auditable {
   private String userMail;
   private String userToken;
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  @Column(length = 1200)
   private String userExternalToken;
   private LocalDateTime userTokenValidTo;
   private String userPhoto;
