@@ -5,12 +5,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
 import ua.com.danit.service.LoginsService;
-import ua.com.danit.service.PswdResetTokenService;
+import ua.com.danit.service.MailSenderService;
 import ua.com.danit.service.UsersService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,14 +19,17 @@ import javax.servlet.http.HttpServletRequest;
 public class LoginController {
   private UsersService usersService;
   private LoginsService loginsService;
-  private PswdResetTokenService pswdResetTokenService;
+  private MailSenderService mailSenderService;
 
   @Autowired
-  public LoginController(UsersService usersService, LoginsService loginsService, PswdResetTokenService pswdResetTokenService) {
+  public LoginController(UsersService usersService, LoginsService loginsService, MailSenderService mailSenderService) {
     this.usersService = usersService;
     this.loginsService = loginsService;
-    this.pswdResetTokenService = pswdResetTokenService;
+    this.mailSenderService = mailSenderService;
   }
+
+  @Autowired
+  private HttpServletRequest request;
 
   //  @PostMapping("session")
   //  public
@@ -53,9 +55,10 @@ public class LoginController {
   }
 
   @PostMapping("email")
-  public String checkUserByEmail(@RequestBody UserLogin userLogin, @RequestParam HttpServletRequest request) {
+  public String checkUserByEmail(@RequestBody UserLogin userLogin) {
     //https://www.baeldung.com/spring-security-registration-i-forgot-my-password
-    return pswdResetTokenService.checkUserByEmail(userLogin, request.getContextPath());
+    //    return pswdResetTokenService.checkUserByEmail(userLogin, request.getContextPath());
+    return mailSenderService.checkUserByEmail(userLogin, "localhost:3000");
   }
 
     @GetMapping("test")
