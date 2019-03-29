@@ -2,25 +2,6 @@ import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_S
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE } from './users'
 import axios from 'axios'
 
-// export const setAuthorization = (state) => dispatch => {
-//     axios.post('/api/users/login', {
-//         userLogin: state.login,
-//         userPassword: state.password,
-//         userToken: state.token})
-//         .then(response => {
-//             if (Object.keys(response.data).length !== 0) {
-//                 dispatch({type: SET_AUTH, payload: true})
-//                 dispatch({type: SET_USER, payload: response.data.user})
-//                 dispatch({type: SET_CARS, payload: response.data.cars})
-//                 dispatch(setUserPoints(response.data.userPoints))
-//             } else {
-//                 dispatch(setLoginRejected(true))
-//             }
-//         })
-//         .catch(err => console.log(err))
-//     axios.get('/api/points/filter/test')
-//         .then(res => dispatch({type: SET_COMMON_POINTS, payload: res.data}))
-// }
 
 export const setAuthorization = (state, signType) => dispatch => {
     let route = signType === 'log-in' ? 'signin' : 'signup'
@@ -28,10 +9,9 @@ export const setAuthorization = (state, signType) => dispatch => {
         userLogin: state.login,
         userPassword: state.password,
         userToken: state.token,
-        userPasswordNew: state.password
+        userPasswordNew: state.confirmPassword
     })
         .then(response => {
-            console.log(response)
             dispatch(setErrorMessage(response.data.message))
             if (response.data.user !== null) {
                 dispatch({type: SET_AUTH, payload: true})
@@ -44,7 +24,7 @@ export const setAuthorization = (state, signType) => dispatch => {
         })
         .catch(err => console.log(err))
 
-    if (signType === 'sign-in') {
+    if (signType === 'log-in') {
     axios.get('/api/points/filter/test')
         .then(res => dispatch({type: SET_COMMON_POINTS, payload: res.data}))
         .catch(err => console.log(err))
@@ -103,11 +83,10 @@ export const setUserName = (name) => dispatch => {
 //* **********************
 
 export const setTrip = (trip) => dispatch => {
-    console.log(trip)
     axios({
         method: 'put',
         url: '/api/trips',
-        data: JSON.stringify(trip)
+        data: trip
     })
         .then(res => console.log('usersCreators: ', res))
         .catch(err => console.log(err))
