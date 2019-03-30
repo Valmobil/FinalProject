@@ -8,6 +8,7 @@
     "@material-ui/icons": "^3.0.2",
     "aws-amplify": "^1.1.19",
     "axios": "^0.18.0",
+    "classnames": "^2.2.6",
     "firebase": "^5.8.6",
     "mongodb": "^3.1.13",
     "node-sass": "^4.11.0",
