@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import classnames from 'classnames'
-// import PropTypes from 'prop-types'
-// import { withStyles } from '@material-ui/core/styles'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import Avatar from '@material-ui/core/Avatar'
@@ -14,7 +14,13 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 
 import './FeedbackForms.scss'
 
-export default class Button extends Component {
+const styles = theme => ({
+  card: {
+    maxWidth: 400
+  }
+})
+
+class Button extends Component {
   // constructor (props) {
   //   super(props)
   //
@@ -41,14 +47,14 @@ export default class Button extends Component {
   // //     })
   // //   }
   // // }
-  // handleClick () {
-  //   this.setState((prevState) => ({
-  //     initLike: prevState.initLike + 1
-  //   }))
-  //   this.setState((prevStateDis) => ({
-  //     initDislike: prevStateDis.initDislike + 1
-  //   }))
-  // }
+  handleClick () {
+    this.setState((prevState) => ({
+      initLike: prevState.initLike + 1
+    }))
+    this.setState((prevStateDis) => ({
+      initDislike: prevStateDis.initDislike + 1
+    }))
+  }
   //
   // // onDisLikeClick () {
   // //   if (!this.state.liked) {
@@ -96,6 +102,8 @@ export default class Button extends Component {
     )
   }
 }
+
+export default withStyles(styles)(Button)
 
 // import lllllll/
 
