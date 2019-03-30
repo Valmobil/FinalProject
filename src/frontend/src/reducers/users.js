@@ -13,7 +13,13 @@ const initialState = {
     userToken: '',
     userTokenValidTo: ''
   },
-  cars: [],
+  cars: {
+      carId: '',
+      carName: '',
+      carColour: '',
+      carPhoto: '',
+      sits: ''
+  },
   userPoints: [],
   commonPoints: [],
   role: 'passenger',
