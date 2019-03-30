@@ -37,13 +37,13 @@ public class LoginsService {
     UserInfo userInfo = new UserInfo();
     if (userLogin.getUserToken() == null) {
       //L=0 T=0 P=0 NP=0
-      return "Error! Please fill restore token!!!";
+      return "Error! Please fill restore token!";
     } else {
       //L=0 T=1 P=0 NP=0
       //find user by Session Token in DB
       userInfo.setUser(usersService.checkIfSessionTokenIsPresent(userLogin));
       if (userInfo.getUser() == null) {
-        return "Error: Incorrect or expired Token!!!";
+        return "Error: Incorrect or expired Token!";
       }
       //Generate new token
       usersService.generateNewSessionToken(userInfo.getUser());
@@ -57,16 +57,16 @@ public class LoginsService {
     UserInfo userInfo = new UserInfo();
     if (userLogin.getUserLogin() == null) {
       //L=0 T=0 P=0 NP=0
-      return "Error! Have no user login!!!";
+      return "Error! Have no user login!";
     } else {
       if (userLogin.getUserPassword() == null) {
         //L=1 T=0 P=0 NP=0
-        return "Error: incorrect old password!!!";
+        return "Error: incorrect old password!";
       } else {
         //L=1 T=0 P=1 NP=0
         userInfo.setUser(usersService.checkIfLoginAndPasswordIsCorrect(userLogin));
         if (userInfo.getUser() == null) {
-          return "Error: incorrect login or password!!!";
+          return "Error: incorrect login or password!";
         }
         //Save new password
         userInfo.getUser().setUserPassword(userLogin.getUserPasswordNew());
@@ -82,27 +82,27 @@ public class LoginsService {
     if (userLogin.getUserLogin() == null) {
       if (userLogin.getUserToken() == null) {
         //L=0 T=0 P=0 NP=0
-        userInfo.setMessage("Error! Please fill user login with phone or e-Mail or use Google/Facebook authorization !!!");
+        userInfo.setMessage("Error! Please fill user login with phone or e-Mail or use Google/Facebook authorization!");
         return userInfo;
       } else {
         //L=0 T=1 P=0 NP=0
         //find user by Session Token in DB
         userInfo.setUser(usersService.checkIfSessionTokenIsPresent(userLogin));
         if (userInfo.getUser() == null) {
-          userInfo.setMessage("Error: have no e-Mail for your external token!!!");
+          userInfo.setMessage("Error: have no e-Mail for your external token!");
         }
       }
     } else {
       if (userLogin.getUserToken() == null) {
         if (userLogin.getUserPassword() == null) {
           //L=1 T=0 P=0 NP=0
-          userInfo.setMessage("Error: incorrect password!!!");
+          userInfo.setMessage("Error: incorrect password!");
           return userInfo;
         } else {
           if (userLogin.getUserPasswordNew() == null
               || !userLogin.getUserPassword().equals(userLogin.getUserPasswordNew())) {
             //L=1 T=0 P=1 NP=0
-            userInfo.setMessage("Error: Please repeat password correctly!!!");
+            userInfo.setMessage("Error: Please repeat password correctly!");
             return userInfo;
           } else {
             //L=1 T=0 P=1 NP=1
@@ -118,7 +118,7 @@ public class LoginsService {
               userInfo.setMessage("Ok! User was created!");
             } else {
               userInfo = new UserInfo();
-              userInfo.setMessage("Error: The user with this login was already registered!!!");
+              userInfo.setMessage("Error: The user with this login was already registered!");
             }
           }
         }
@@ -137,7 +137,7 @@ public class LoginsService {
       // if login is mail
       //check if e-Mail has correct format
       if (!checkEmailFormat(userLogin.getUserLogin())) {
-        userInfo.setMessage("Error: e-Mail address format is not correct!!!");
+        userInfo.setMessage("Error: e-Mail address format is not correct!");
         return;
       }
       userInfo.getUser().setUserMail(userLogin.getUserLogin());
@@ -153,27 +153,27 @@ public class LoginsService {
     if (userLogin.getUserLogin() == null) {
       if (userLogin.getUserToken() == null) {
         //L=0 T=0 P=0 NP=0
-        userInfo.setMessage("Error! Have no user with such login!!!");
+        userInfo.setMessage("Error! Have no user with such login!");
         return userInfo;
       } else {
         //L=0 T=1 P=0 NP=0
         //find user by Session Token in DB
         userInfo.setUser(usersService.checkIfSessionTokenIsPresent(userLogin));
         if (userInfo.getUser() == null) {
-          userInfo.setMessage("Error: have no valid session token!!!");
+          userInfo.setMessage("Error: have no valid session token!");
         }
       }
     } else {
       if (userLogin.getUserToken() == null) {
         if (userLogin.getUserPassword() == null) {
           //L=1 T=0 P=0 NP=0
-          userInfo.setMessage("Error: incorrect login or password!!!");
+          userInfo.setMessage("Error: incorrect login or password!");
           return userInfo;
         } else {
           //L=1 T=0 P=1 NP=0
           userInfo.setUser(usersService.checkIfLoginAndPasswordIsCorrect(userLogin));
           if (userInfo.getUser() == null) {
-            userInfo.setMessage("Error: incorrect login or password!!!");
+            userInfo.setMessage("Error: incorrect login or password!");
           }
         }
       } else {
