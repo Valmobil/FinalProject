@@ -14,11 +14,20 @@ import {setProfile} from '../../actions/userCreators'
 
 class Profile extends Component {
   state = {
-    userName: this.props.users.user.userName,
-    userPhoto: this.props.users.user.userPhoto,                      //this.props.users.user.userName
-    userPhone:   this.props.users.user.userPhone,           //this.props.users.user.userPhone
-    userMail: this.props.users.user.userMail,           //this.props.users.user.userMail,
-    cars: this.props.users.cars
+      user:
+  {
+    uName:      this.props.users.user.userName,
+    userPhoto:  this.props.users.user.userPhoto,
+    userPhone:  this.props.users.user.userPhone,
+    userMail:   this.props.users.user.userMail
+  },
+    cars: {
+       carId: '',
+       carName: '',
+       carColour: '',
+       carPhoto: '',
+       carSits: '',
+    }
   };
 /*  handleChange = name => event => {
     this.setState({
@@ -31,7 +40,7 @@ class Profile extends Component {
             return ""
         }
         else{
-            this.setState({[e.target.name]: e.target.value})
+            this.setState({user: {...this.state.user, [e.target.name]: e.target.value}, cars: {...this.state.cars, [e.target.name]:e.target.value}})
         }
     }
   setProfileToReference = () => {
@@ -58,10 +67,10 @@ class Profile extends Component {
           required
           id="outlined-name"
           label="User Name"
-          name='name'
+          name='uName'
           type='text'
           // className={classes.textField}
-          value={profileProps.userName}
+          value={profileProps.user.uName}
           onChange={this.handleChange}
           margin="normal"
           variant="outlined"
@@ -69,10 +78,10 @@ class Profile extends Component {
         <TextField
           id="outlined-phone"
           label="Phone"
-          name='phone'
+          name='userPhone'
           placeholder= '+38'
           // className={classes.textField}
-          value={profileProps.userPhone}
+          value={profileProps.user.userPhone}
           onChange={this.handleChange}
           margin="normal"
           variant="outlined"
@@ -84,7 +93,7 @@ class Profile extends Component {
           // className={classes.textField}
           type="email"
           name='userMail'
-          value= {profileProps.userMail}
+          value= {profileProps.user.userMail}
           onChange={this.handleChange}
           autoComplete="email"
           margin="normal"
@@ -122,8 +131,8 @@ class Profile extends Component {
         <TextField
           id="filled-number"
           label="# of sits"
-          value={profileProps.cars.sits}
-          name='sits'
+          value={profileProps.cars.carSits}
+          name='carSits'
           onChange={this.handleChange}
           type="number"
           // className={classes.textField}

@@ -113,23 +113,11 @@ export const setErrorMessage = (message) => dispatch => {
 
 ////setProfile datas to database
 export const setProfile = (state) => dispatch => {
-    const userId = this.props.users.user.userId
-    axios.post('/api/users/' + {userId}, {
-        userName: state.name,
-        userPassword: state.password,
-        userToken: state.token,
-        userPasswordNew: state.confirmPassword
+    axios({
+        method: 'put',
+        url: '/api/users',
+        data: state
     })
-        .then(response => {
-            dispatch(setErrorMessage(response.data.message))
-            if (response.data.user !== null) {
-                dispatch({type: SET_AUTH, payload: true})
-                dispatch({type: SET_USER, payload: response.data.user})
-                dispatch({type: SET_CARS, payload: response.data.cars})
-                dispatch(setUserPoints(response.data.userPoints))
-            } else {
-                dispatch(setLoginRejected(true))
-            }
-        })
         .catch(err => console.log(err))
+    dispatch({type: SET_USER, state})
 }
