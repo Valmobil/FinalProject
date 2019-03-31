@@ -111,3 +111,13 @@ export const setErrorMessage = (message) => dispatch => {
     dispatch({type: SET_ERROR_MESSAGE, payload: message})
 }
 
+////setProfile datas to database
+export const setProfile = (state) => dispatch => {
+    axios({
+        method: 'put',
+        url: '/api/users',
+        data: state
+    })
+        .catch(err => console.log(err))
+    dispatch({type: SET_USER, state})
+}
