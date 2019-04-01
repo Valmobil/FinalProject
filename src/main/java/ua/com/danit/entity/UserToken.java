@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -24,7 +25,7 @@ public class UserToken {
   @JoinColumn(name = "USER_TOKEN_USER_ID", referencedColumnName = "userId")
   private User user;
   private String userTokenRead;
-  private Date userTokenReadTo;
+  private LocalDateTime userTokenReadTo;
   private String userTokenAccess;
-  private Date userTokenAccessTo;
+  private LocalDateTime userTokenAccessTo;
 }

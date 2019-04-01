@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
+import ua.com.danit.entity.UserToken;
 import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.CarsRepository;
@@ -15,7 +16,6 @@ import ua.com.danit.repository.UsersRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +25,7 @@ public class UsersService {
   private UserPointsRepository userPointsRepository;
   private CarsRepository carsRepository;
   private PointsRepository pointsRepository;
+  private UserTokensService userTokensService;
 
   private static final int dateShift = 30;
 
@@ -32,11 +33,13 @@ public class UsersService {
   public UsersService(UsersRepository usersRepository,
                       UserPointsRepository userPointRepository,
                       CarsRepository carsRepository,
-                      PointsRepository pointsRepository) {
+                      PointsRepository pointsRepository,
+                      UserTokensService userTokensService) {
     this.usersRepository = usersRepository;
     this.userPointsRepository = userPointRepository;
     this.carsRepository = carsRepository;
     this.pointsRepository = pointsRepository;
+    this.userTokensService = userTokensService;
   }
 
   @Autowired
@@ -109,21 +112,12 @@ public class UsersService {
       loginService.saveLoginToMailOrPhone(userInfo, userLogin);
       user.setUserMail(userLogin.getUserLogin());
     }
-    user.setUserExternalToken(userLogin.getUserToken());
-    generateNewSessionToken(user);
+    user.setUserTokenExternal(userLogin.getUserToken());
+    UserToken userToken = userTokensService.generateInitialTokinSet(user);
+    user.setUserTokenRead(userToken.getUserTokenRead());
+    user.setUserTokenAccess(userToken.getUserTokenAccess());
     user = usersRepository.save(user);
     userInfo.setUser(user);
-  }
-
-  public void generateNewSessionToken(User user) {
-    user.setUserToken(UUID.randomUUID().toString());
-    user.setUserTokenValidTo(getCurrentDatePlus(dateShift));
-  }
-
-  private LocalDateTime getCurrentDatePlus(Integer dateShift) {
-    LocalDateTime date = LocalDateTime.now();
-    date = date.plusDays(dateShift);
-    return date;
   }
 
   User checkLogin(UserLogin userLogin) {
@@ -158,11 +152,11 @@ public class UsersService {
   }
 
   public User checkIfSessionTokenIsPresent(UserLogin userLogin) {
-    List<User> users = usersRepository.findByUserToken(userLogin.getUserToken());
+    List<User> users = usersRepository.findByUserTokenRead(userLogin.getUserToken());
     if (users.size() != 1) {
       return null;
     } else {
-      if (users.get(0).getUserTokenValidTo().isAfter(getCurrentDatePlus(0))) {
+      if (users.get(0).getUserTokenAccessTo().isAfter(LocalDateTime.now())) {
         return users.get(0);
       }
     }
@@ -196,7 +190,4 @@ public class UsersService {
   public boolean checkForEmail(UserLogin userLogin) {
     return userLogin.getUserLogin().contains("@");
   }
-
-
-
 }
