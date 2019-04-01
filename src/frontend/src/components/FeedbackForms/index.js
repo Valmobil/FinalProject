@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
@@ -28,76 +29,107 @@ const styles = theme => ({
 })
 
 class Button extends Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      // liked: false,
-      // disliked: false,
-      initLike: 0,
-      initDislike: 0
-    }
-  }
-  //
-  //   // this.onLikeClick = this.onLikeClick.bind(this)
-  //   // this.onDisLikeClick = this.onDisLikeClick.bind(this)
-  // }
-  //
-  // // onLikeClick () {
-  // //   if (!this.state.disliked) {
-  // //     this.setState({
-  // //       liked: !this.state.liked + 1
-  // //     })
-  // //   } else {
-  // //     this.setState({
-  // //       liked: true,
-  // //       disliked: false
-  // //     })
-  // //   }
-  // // }
-  handleClick () {
-    this.setState((prevState) => ({
-      initLike: prevState.initLike + 1
-    }))
-  }
-  handleClickDis () {
-    this.setState((prevStateDis) => ({
-      initDislike: prevStateDis.initDislike + 1
-    }))
-  }
+   state = {
+     // liked: false,
+     // disliked: false,
+     initLike: 0,
+     initDislike: 0
+   }
+   //
+   //   // this.onLikeClick = this.onLikeClick.bind(this)
+   //   // this.onDisLikeClick = this.onDisLikeClick.bind(this)
+   // }
+   //
+   // // onLikeClick () {
+   // //   if (!this.state.disliked) {
+   // //     this.setState({
+   // //       liked: !this.state.liked + 1
+   // //     })
+   // //   } else {
+   // //     this.setState({
+   // //       liked: true,
+   // //       disliked: false
+   // //     })
+   // //   }
+   // // }
+   handleClick = () => {
+     this.setState((prevState) => ({
+       initLike: prevState.initLike + 1
+     }))
+   }
+   handleClickDis = () => {
+     this.setState((prevStateDis) => ({
+       initDislike: prevStateDis.initDislike + 1
+     }))
+   }
 
   state = { expanded: false };
 
   render () {
     const { classes } = this.props
+    console.log(this.props)
+    const tripList = this.props.lastsTrips.map(trip => {
+      return (
+        <Card className={classes.card} key={trip.id}>
+          <CardHeader
+            avatar={
+              <Avatar aria-label="Recipe" src={trip.img} className={classes.avatar}>
+                R
+              </Avatar>
+            }
+            title={trip.tripRoad}
+            subheader={trip.date}
+          />
+          <div className={classes.thumbUp}>
+            <button onClick={this.handleClick} ><i className="fas fa-thumbs-up">|</i> {trip.initLike}
+            </button>
 
+            <button onClick={this.handleClickDis}><i className="fas fa-thumbs-down">|</i> {trip.initDislike} </button>
+
+          </div>
+        </Card>
+      )
+    })
     return (
-      <Card className={classes.card}>
-        <CardHeader
-          avatar={
-            <Avatar aria-label="Recipe" src={'https://www.elastic.co/assets/bltada7771f270d08f6/enhanced-buzz-1492-1379411828-15.jpg'} className={classes.avatar}>
-              R
-            </Avatar>
-          }
-          // action={
-          //   <IconButton>
-          //     <MoreVertIcon />
-          //   </IconButton>
-          // }
-          title="Irpen' - Gostomel'"
-          subheader="September 14, 2016"
-        />
-        <div className={classes.thumbUp}>
-          <button onClick={this.handleClick.bind(this)} ><i className="fas fa-thumbs-up">|</i> {this.state.initLike}
-          </button>
-
-          <button onClick={this.handleClickDis.bind(this)}><i className="fas fa-thumbs-down">|</i> {this.state.initDislike} </button>
-
-        </div>
-      </Card>
+      <>
+        {tripList}
+      </>
 
     )
   }
 }
 
-export default withStyles(styles)(Button)
+const mapStateToProps = state => {
+  return {
+    lastsTrips: [
+      {
+        id: '1',
+        img: 'https://www.elastic.co/assets/bltada7771f270d08f6/enhanced-buzz-1492-1379411828-15.jpg',
+        tripRoad: 'From - To',
+        date: '01/04/19',
+        initLike: 0,
+        initDislike: 0
+      },
+      {id: '2',
+        img: 'https://www.elastic.co/assets/bltada7771f270d08f6/enhanced-buzz-1492-1379411828-15.jpg',
+        tripRoad: 'From2- To2',
+        date: '03/04/19',
+        initLike: 0,
+        initDislike: 0},
+      {id: '3',
+        img: 'https://www.elastic.co/assets/bltada7771f270d08f6/enhanced-buzz-1492-1379411828-15.jpg',
+        tripRoad: 'From3 - To3',
+        date: '02/04/19',
+        initLike: 0,
+        initDislike: 0},
+      {id: '4',
+        img: 'https://www.elastic.co/assets/bltada7771f270d08f6/enhanced-buzz-1492-1379411828-15.jpg',
+        tripRoad: 'From4 - To4',
+        date: '05/04/19',
+        initLike: 0,
+        initDislike: 0}
+    ]
+  }
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(Button))

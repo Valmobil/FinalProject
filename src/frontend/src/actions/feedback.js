@@ -1,0 +1,1 @@
+export const POST_CARD_TRIP = 'POST_CARD_TRIP'
