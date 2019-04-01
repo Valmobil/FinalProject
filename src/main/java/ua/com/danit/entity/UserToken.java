@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +22,7 @@ public class UserToken {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long userTokenId;
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "USER_TOKEN_USER_ID", referencedColumnName = "userId")
   private User user;
   private String userTokenRead;

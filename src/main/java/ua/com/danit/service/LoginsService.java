@@ -6,6 +6,7 @@ import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserToken;
 import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
+import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
 import static ua.com.danit.service.UsersService.checkEmailFormat;
@@ -16,14 +17,17 @@ public class LoginsService {
   private UsersRepository usersRepository;
   private UsersService usersService;
   private UserTokensService userTokensService;
+  private UserTokensRepository userTokensRepository;
 
   @Autowired
   public LoginsService(UsersRepository usersRepository,
                        UsersService usersService,
-                       UserTokensService userTokensService) {
+                       UserTokensService userTokensService,
+                       UserTokensRepository userTokensRepository) {
     this.usersRepository = usersRepository;
     this.usersService = usersService;
     this.userTokensService = userTokensService;
+    this.userTokensRepository = userTokensRepository;
   }
 
   public UserLogin loginServiceTest() {
@@ -121,6 +125,7 @@ public class LoginsService {
               userInfo.getUser().setUserTokenRead(userToken.getUserTokenRead());
               userInfo.getUser().setUserTokenAccess(userToken.getUserTokenAccess());
               userInfo.setUser(usersRepository.save(userInfo.getUser()));
+              userToken = userTokensRepository.save(userToken);
               userInfo.setMessage("Ok! User was created!");
             } else {
               userInfo = new UserInfo();
