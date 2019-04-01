@@ -21,9 +21,12 @@ public class TripPassenger {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long tripPassengerId;
   @ManyToOne
-  @JoinColumn(name = "TRIP_PASSENGER_DRIVER_TRIP_ID", referencedColumnName = "tripId")
-  private Trip tripDriver;
-  @ManyToOne
+  @NonNull
   @JoinColumn(name = "TRIP_PASSENGER_TRIP_ID", referencedColumnName = "tripId")
-  private Trip tripPassenger;
+  private Trip trip;
+  @ManyToOne
+  @NonNull
+  @JoinColumn(name = "TRIP_PASSENGER_USER_ID", referencedColumnName = "userId")
+  private User user;
+  private int tripPassengerTogetherQty;
 }

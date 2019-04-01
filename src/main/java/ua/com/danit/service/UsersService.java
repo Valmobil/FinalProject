@@ -1,6 +1,7 @@
 package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
@@ -17,6 +18,7 @@ import ua.com.danit.repository.UsersRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,8 +28,6 @@ public class UsersService {
   private UserPointsRepository userPointsRepository;
   private CarsRepository carsRepository;
   private PointsRepository pointsRepository;
-  private UserTokensService userTokensService;
-  private UserTokensRepository userTokensRepository;
 
   private static final int dateShift = 30;
 
@@ -47,7 +47,10 @@ public class UsersService {
   }
 
   @Autowired
-  LoginsService loginService;
+  public void setLoginsService(LoginsService loginsService) {
+    this.loginsService = loginsService;
+  }
+
 
   public User createNewUsers(User users) {
     return usersRepository.save(users);
@@ -71,7 +74,7 @@ public class UsersService {
     return user;
   }
 
-  public void addCarsAndUserPoints(UserInfo userInfo) {
+  void addCarsAndUserPoints(UserInfo userInfo) {
     //Collect Cars
     userInfo.setCars(carsRepository.findByUser(userInfo.getUser()));
     //Collect User Points
@@ -107,13 +110,13 @@ public class UsersService {
     return userPoints;
   }
 
-  public void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
+  void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       //Save new user based on external token
       user = new User();
       userInfo.setUser(user);
-      loginService.saveLoginToMailOrPhone(userInfo, userLogin);
+      loginsService.saveLoginToMailOrPhone(userInfo, userLogin);
       user.setUserMail(userLogin.getUserLogin());
     }
     user.setUserTokenExternal(userLogin.getUserToken());
@@ -145,7 +148,7 @@ public class UsersService {
   }
 
 
-  public User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
+  User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       return null;
@@ -192,7 +195,16 @@ public class UsersService {
     return phone;
   }
 
-  public boolean checkForEmail(UserLogin userLogin) {
+  boolean checkForEmail(UserLogin userLogin) {
     return userLogin.getUserLogin().contains("@");
+  }
+
+
+  public UserInfo saveUserProfile(User user) {
+    usersRepository.save(user);
+    UserInfo userInfo = new UserInfo();
+    userInfo.setUser(usersRepository.getOne(user.getUserId()));
+    addCarsAndUserPoints(userInfo);
+    return userInfo;
   }
 }
