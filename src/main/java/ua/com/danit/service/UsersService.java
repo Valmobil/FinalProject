@@ -1,11 +1,11 @@
 package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
+import ua.com.danit.entity.UserToken;
 import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.CarsRepository;
@@ -16,7 +16,6 @@ import ua.com.danit.repository.UsersRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,8 +25,7 @@ public class UsersService {
   private UserPointsRepository userPointsRepository;
   private CarsRepository carsRepository;
   private PointsRepository pointsRepository;
-  private LoginsService loginsService;
-
+  private UserTokensService userTokensService;
 
   private static final int dateShift = 30;
 
@@ -35,18 +33,17 @@ public class UsersService {
   public UsersService(UsersRepository usersRepository,
                       UserPointsRepository userPointRepository,
                       CarsRepository carsRepository,
-                      PointsRepository pointsRepository) {
+                      PointsRepository pointsRepository,
+                      UserTokensService userTokensService) {
     this.usersRepository = usersRepository;
     this.userPointsRepository = userPointRepository;
     this.carsRepository = carsRepository;
     this.pointsRepository = pointsRepository;
+    this.userTokensService = userTokensService;
   }
 
   @Autowired
-  public void setLoginsService(LoginsService loginsService) {
-    this.loginsService = loginsService;
-  }
-
+  LoginsService loginService;
 
   public User createNewUsers(User users) {
     return usersRepository.save(users);
@@ -70,7 +67,7 @@ public class UsersService {
     return user;
   }
 
-  void addCarsAndUserPoints(UserInfo userInfo) {
+  public void addCarsAndUserPoints(UserInfo userInfo) {
     //Collect Cars
     userInfo.setCars(carsRepository.findByUser(userInfo.getUser()));
     //Collect User Points
@@ -106,30 +103,21 @@ public class UsersService {
     return userPoints;
   }
 
-  void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
+  public void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       //Save new user based on external token
       user = new User();
       userInfo.setUser(user);
-      loginsService.saveLoginToMailOrPhone(userInfo, userLogin);
+      loginService.saveLoginToMailOrPhone(userInfo, userLogin);
       user.setUserMail(userLogin.getUserLogin());
     }
-    user.setUserExternalToken(userLogin.getUserToken());
-    generateNewSessionToken(user);
+    user.setUserTokenExternal(userLogin.getUserToken());
+    UserToken userToken = userTokensService.generateInitialTokinSet(user);
+    user.setUserTokenRead(userToken.getUserTokenRead());
+    user.setUserTokenAccess(userToken.getUserTokenAccess());
     user = usersRepository.save(user);
     userInfo.setUser(user);
-  }
-
-  void generateNewSessionToken(User user) {
-    user.setUserToken(UUID.randomUUID().toString());
-    user.setUserTokenValidTo(getCurrentDatePlus(dateShift));
-  }
-
-  private LocalDateTime getCurrentDatePlus(Integer dateShift) {
-    LocalDateTime date = LocalDateTime.now();
-    date = date.plusDays(dateShift);
-    return date;
   }
 
   User checkLogin(UserLogin userLogin) {
@@ -152,7 +140,7 @@ public class UsersService {
   }
 
 
-  User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
+  public User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       return null;
@@ -163,12 +151,12 @@ public class UsersService {
     return null;
   }
 
-  User checkIfSessionTokenIsPresent(UserLogin userLogin) {
-    List<User> users = usersRepository.findByUserToken(userLogin.getUserToken());
+  public User checkIfSessionTokenIsPresent(UserLogin userLogin) {
+    List<User> users = usersRepository.findByUserTokenRead(userLogin.getUserToken());
     if (users.size() != 1) {
       return null;
     } else {
-      if (users.get(0).getUserTokenValidTo().isAfter(getCurrentDatePlus(0))) {
+      if (users.get(0).getUserTokenAccessTo().isAfter(LocalDateTime.now())) {
         return users.get(0);
       }
     }
@@ -199,16 +187,7 @@ public class UsersService {
     return phone;
   }
 
-  boolean checkForEmail(UserLogin userLogin) {
+  public boolean checkForEmail(UserLogin userLogin) {
     return userLogin.getUserLogin().contains("@");
-  }
-
-
-  public UserInfo saveUserProfile(User user) {
-    usersRepository.save(user);
-    UserInfo userInfo = new UserInfo();
-    userInfo.setUser(usersRepository.getOne(user.getUserId()));
-    addCarsAndUserPoints(userInfo);
-    return userInfo;
   }
 }
