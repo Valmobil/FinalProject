@@ -12,7 +12,7 @@ import { withStyles } from '@material-ui/core/styles'
 
 /*global H*/
 
-const platform = {
+let platform = {
     app_id: 'dxvPSIheZpzC0JnT43pa',
     app_code: '2AQJFcfRqLmLZPd0q0hz7g',
     center: {
@@ -168,6 +168,12 @@ class Map extends Component {
     }
 
     componentDidMount() {
+        if (this.props.coords.latitude !== 0) {
+            platform.center = {
+                lat: this.props.coords.latitude,
+                lng: this.props.coords.longitude,
+            };
+        }
         this.platform = new H.service.Platform(platform);
         const layer = this.platform.createDefaultLayers();
         const container = document.getElementById('here-map');
@@ -215,7 +221,7 @@ class Map extends Component {
                 </div>
             </MuiThemeProvider>
 
-            <div id="here-map" style={{width: '100%', height: '400px', background: 'grey', marginTop: 10}} />
+            <div id="here-map" style={{width: '100%', height: '400px', background: 'grey', marginTop: 15}} />
 
             </div>
         );
@@ -240,8 +246,8 @@ const styles = theme => ({
         borderRadius: 3,
         border: 0,
         color: '#f57c00',
-        height: 30,
-        padding: '0 15px',
+        height: 25,
+        padding: '0 10px',
         marginLeft: 10,
         '&:focus':{
             background: '#fff',

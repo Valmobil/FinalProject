@@ -3,17 +3,19 @@ import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_S
 import axios from 'axios'
 
 
+
+
 export const setAuthorization = (state, signType) => dispatch => {
     let route = signType === 'log-in' ? 'signin' : 'signup'
     axios.post('/api/logins/' + route, {
         userLogin: state.login,
         userPassword: state.password,
-        userToken: state.token,
         userPasswordNew: state.confirmPassword
     })
         .then(response => {
             dispatch(setErrorMessage(response.data.message))
             if (response.data.user !== null) {
+                axios.defaults.headers.common['Authorization'] = response.data.user.userToken;
                 dispatch({type: SET_AUTH, payload: true})
                 dispatch({type: SET_USER, payload: response.data.user})
                 dispatch({type: SET_CARS, payload: response.data.cars})
@@ -109,3 +111,13 @@ export const setErrorMessage = (message) => dispatch => {
     dispatch({type: SET_ERROR_MESSAGE, payload: message})
 }
 
+////setProfile datas to database
+export const setProfile = (state) => dispatch => {
+    axios({
+        method: 'put',
+        url: '/api/users',
+        data: state
+    })
+        .catch(err => console.log(err))
+    dispatch({type: SET_USER, state})
+}
