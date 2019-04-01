@@ -9,7 +9,7 @@ import ProtectedRoute from './components/hoc/ProtectedRoute/ProtectedRoute'
 import Header from './components/Header/Header'
 import PassRestoration from './components/PassRestoration'
 import ChangePassword from './components/ChangePassword'
-import Map from './components/Map/Map'
+
 
 import './App.css'
 import FeedbackForms from './components/FeedbackForms'
@@ -25,7 +25,6 @@ class App extends Component {
             <Route exact path='/' component={Login}/>
             <ProtectedRoute exact path="/main" component={Main}/>
             <ProtectedRoute exact path="/profile" component={Profile}/>
-            <Route exact path="/map" component={Map}/>
             <Route exact path="/restore_password" component={PassRestoration}/>
             <Route exact path="/newpassword" component={ChangePassword} />
             <Route exact path="/feedback" component={FeedbackForms} />

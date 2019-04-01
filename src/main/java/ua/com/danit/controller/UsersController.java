@@ -23,11 +23,6 @@ public class UsersController {
     this.usersService = usersService;
   }
 
-  @PostMapping("login")
-  public UserInfo postLoginReturnUser(@RequestBody UserLogin userLogin) {
-    return usersService.checkUserCredentials(userLogin);
-  }
-
   @PostMapping("{user_id}")
   public User getUserById(@PathVariable("user_id") Long userId) {
     return usersService.getUserById(userId);
@@ -38,4 +33,5 @@ public class UsersController {
     //Write check in DB the user existence and return user data
     return usersService.getUserById(1L);
   }
+
 }

@@ -16,4 +16,5 @@ public class UserInfo {
   private User user;
   private List<Car> cars;
   private List<UserPoint> userPoints;
+  private String message;
 }

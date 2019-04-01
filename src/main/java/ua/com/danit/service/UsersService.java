@@ -5,14 +5,17 @@ import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
+import ua.com.danit.entity.UserToken;
 import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.CarsRepository;
 import ua.com.danit.repository.PointsRepository;
 import ua.com.danit.repository.UserPointsRepository;
+import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,6 +26,8 @@ public class UsersService {
   private UserPointsRepository userPointsRepository;
   private CarsRepository carsRepository;
   private PointsRepository pointsRepository;
+  private UserTokensService userTokensService;
+  private UserTokensRepository userTokensRepository;
 
   private static final int dateShift = 30;
 
@@ -30,12 +35,19 @@ public class UsersService {
   public UsersService(UsersRepository usersRepository,
                       UserPointsRepository userPointRepository,
                       CarsRepository carsRepository,
-                      PointsRepository pointsRepository) {
+                      PointsRepository pointsRepository,
+                      UserTokensService userTokensService,
+                      UserTokensRepository userTokensRepository) {
     this.usersRepository = usersRepository;
     this.userPointsRepository = userPointRepository;
     this.carsRepository = carsRepository;
     this.pointsRepository = pointsRepository;
+    this.userTokensService = userTokensService;
+    this.userTokensRepository = userTokensRepository;
   }
+
+  @Autowired
+  LoginsService loginService;
 
   public User createNewUsers(User users) {
     return usersRepository.save(users);
@@ -45,47 +57,7 @@ public class UsersService {
     return usersRepository.getOne(userId);
   }
 
-  public UserInfo checkUserCredentials(UserLogin userLogin) {
-    convertUserLoginBlankToNull(userLogin);
-    User user = null;
-    if (userLogin.getUserLogin() == null) {
-      if (userLogin.getUserToken() == null) {
-        if (userLogin.getUserPasswordNew() == null) {
-          //L=0 T=0 PN=0
-          return null;
-        } else {
-          //L=0 T=0 PN=1
-          //Change password
-          user = changePassword(userLogin);
-        }
-      } else {
-        //L=0 T=1
-        //find user by Token in DB
-        user = checkIfTokenIsPresent(userLogin);
-      }
-    } else {
-      if (userLogin.getUserToken() == null) {
-        //L=1 T=0
-        //Find user by login
-        if (userLogin.getUserLogin() != null) {
-          user = checkIfLoginAndPasswordIsCorrect(userLogin);
-        }
-        if (user == null) {
-          return null;
-        }
-      } else {
-        //L=1 T=1
-        //Update Token if token and login are present
-        user = checkLoginAndUpdateTokenInDb(userLogin);
-      }
-    }
-    UserInfo userInfo = new UserInfo();
-    addCarsAndUserPoints(userInfo, user);
-
-    return userInfo;
-  }
-
-  private String passwordEncrypt(String userPasswordNew) {
+  public String passwordEncrypt(String userPasswordNew) {
     //!!!!! Write password encryption procedure
     return userPasswordNew;
   }
@@ -99,15 +71,17 @@ public class UsersService {
     return user;
   }
 
-  private void addCarsAndUserPoints(UserInfo userInfo, User user) {
-    userInfo.setUser(user);
+  public void addCarsAndUserPoints(UserInfo userInfo) {
     //Collect Cars
-    userInfo.setCars(carsRepository.findByUser(user));
+    userInfo.setCars(carsRepository.findByUser(userInfo.getUser()));
     //Collect User Points
-    userInfo.setUserPoints(collectUserPointsAndFillInEmptyOnes(user));
+    userInfo.setUserPoints(collectUserPointsAndFillInEmptyOnes(userInfo.getUser()));
   }
 
   List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
+    if (user == null) {
+      return new ArrayList<>();
+    }
     List<UserPoint> userPoints = userPointsRepository.findByUser(user);
     if (userPoints.size() < 5) {
       if (userPoints.size() < 1) {
@@ -133,44 +107,22 @@ public class UsersService {
     return userPoints;
   }
 
-  void convertUserLoginBlankToNull(UserLogin userLogin) {
-    if (userLogin.getUserLogin() != null) {
-      if (userLogin.getUserLogin().trim().equals("")) {
-        userLogin.setUserLogin(null);
-      }
-    }
-    if (userLogin.getUserToken() != null) {
-      if (userLogin.getUserToken().trim().equals("")) {
-        userLogin.setUserToken(null);
-      }
-    }
-    if (userLogin.getUserPasswordNew() != null) {
-      if (userLogin.getUserPasswordNew().trim().equals("")) {
-        userLogin.setUserPasswordNew(null);
-      }
-    }
-    if (userLogin.getUserPassword() != null) {
-      if (userLogin.getUserPassword().trim().equals("")) {
-        userLogin.setUserPassword(null);
-      }
-    }
-  }
-
-  private User checkLoginAndUpdateTokenInDb(UserLogin userLogin) {
+  public void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
-      return null;
+      //Save new user based on external token
+      user = new User();
+      userInfo.setUser(user);
+      loginService.saveLoginToMailOrPhone(userInfo, userLogin);
+      user.setUserMail(userLogin.getUserLogin());
     }
-    user.setUserToken(userLogin.getUserToken());
-    user.setUserTokenValidTo(getCurrentDatPlus(dateShift));
+    user.setUserTokenExternal(userLogin.getUserToken());
+    UserToken userToken = userTokensService.generateInitialTokinSet(user);
+    user.setUserTokenRead(userToken.getUserTokenRead());
+    user.setUserTokenAccess(userToken.getUserTokenAccess());
     user = usersRepository.save(user);
-    return user;
-  }
-
-  private LocalDateTime getCurrentDatPlus(Integer dateShift) {
-    LocalDateTime date = LocalDateTime.now();
-    date = date.plusDays(dateShift);
-    return date;
+    userToken = userTokensRepository.save(userToken);
+    userInfo.setUser(user);
   }
 
   User checkLogin(UserLogin userLogin) {
@@ -193,7 +145,7 @@ public class UsersService {
   }
 
 
-  private User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
+  public User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       return null;
@@ -204,12 +156,12 @@ public class UsersService {
     return null;
   }
 
-  private User checkIfTokenIsPresent(UserLogin userLogin) {
-    List<User> users = usersRepository.findByUserToken(userLogin.getUserToken());
+  public User checkIfSessionTokenIsPresent(UserLogin userLogin) {
+    List<User> users = usersRepository.findByUserTokenRead(userLogin.getUserToken());
     if (users.size() != 1) {
       return null;
     } else {
-      if (users.get(0).getUserTokenValidTo().isAfter(getCurrentDatPlus(0))) {
+      if (users.get(0).getUserTokenAccessTo().isAfter(LocalDateTime.now())) {
         return users.get(0);
       }
     }
@@ -224,7 +176,7 @@ public class UsersService {
     return matcher.find();
   }
 
-  static String normalizeMobilePhone(String userPhone) {
+  public static String normalizeMobilePhone(String userPhone) {
     String phone = userPhone.replace("(", "")
         .replace(")", "")
         .replace(" ", "")
@@ -240,7 +192,7 @@ public class UsersService {
     return phone;
   }
 
-  private boolean checkForEmail(UserLogin userLogin) {
+  public boolean checkForEmail(UserLogin userLogin) {
     return userLogin.getUserLogin().contains("@");
   }
 }

@@ -17,7 +17,6 @@ const theme = createMuiTheme({
 const style= {
     input: {
         width: '80%',
-        height: 40,
     },
     button: {
         margin: theme.spacing.unit,
@@ -66,7 +65,7 @@ class EditSmart extends Component{
                 />
 
                 <TextField
-                    label="Destination"
+                    label="Address"
                     id="mui-theme-provider-standard-input"
                     style={style.input}
                     autoComplete="off"

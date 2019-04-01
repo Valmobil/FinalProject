@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { logOut, setUserPoints, setTrip } from '../../actions/userCreators'
+import { logOut, setUserPoints, setTrip, setMyCoordinates } from '../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -20,6 +20,7 @@ import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditSmart from './EditSmart/EditSmart'
+import Map from '../Map/Map'
 
 const windowWidth = window.innerWidth <= 380 ? window.innerWidth : 380
 
@@ -121,16 +122,15 @@ class Main extends Component {
     creatingTrip: false,
     latitude: 0,
     longitude: 0,
+    mapSwitch: 'common',
   };
-
-  // handlePlacesListClick = (event, index, item) => {
-  //     this.setState({ selectedIndex: index });
-  //     if (this.state.from === '') this.setState({from: item})
-  //     else if (this.state.to === '') this.setState({to: item})
-  // };
 
   handleRadio = event => {
     this.setState({ role: event.target.value })
+  };
+
+  handleMapSwitch = event => {
+    this.setState({ mapSwitch: event.target.value })
   };
 
   handleInput = (e) => {
@@ -146,14 +146,10 @@ class Main extends Component {
   setRoute = (userPoint) => {
     const { userPointName, userPointLatitude, userPointLongitude } = userPoint
     const tripPoint = {
-        tripPointId: this.state.trip.length,
         tripPointName: userPointName,
         tripPointLatitude: userPointLatitude,
         tripPointLongitude: userPointLongitude,
         tripPointSequence: this.state.trip.length,
-        trip: {
-          tripId: null
-        }
     }
      this.setState({trip: [...this.state.trip, tripPoint]})
   }
@@ -161,26 +157,18 @@ class Main extends Component {
   setStartRoute = (userPoint) => {
       this.setState({creatingTrip: true})
       const tripPoint = {
-          tripPointId: 0,
           tripPointName: 'Here',
           tripPointLatitude: this.state.latitude,
           tripPointLongitude: this.state.longitude,
           tripPointSequence: 0,
-          trip: {
-            tripId: null
-          }
       }
       this.setState({trip: [tripPoint]}, () => this.setRoute(userPoint))
   }
 
    submitRoute = () => {
     let trip = {
-      tripId: null,
-      user: {
-        userId: this.props.users.user.userId
-        },
       car: {
-        carId: 1
+        carId: this.state.car.carId
       },
       tripPoint: this.state.trip,
       tripDateTime: new Date().toISOString(),
@@ -222,7 +210,7 @@ class Main extends Component {
   }
 
   addNewPoint = () => {
-    this.setState({adding: true})
+    this.setState({adding: true, editing: '', name: '', destination: ''})
   }
 
   handleDelete = (id) => {
@@ -240,17 +228,34 @@ class Main extends Component {
       this.setState({selectedId: item.id, name: item.pointNameEn}, () => this.editClose(id, item))
   }
 
+  locationFetchSuccess = (position) => {
+        this.props.setMyCoordinates({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        })
+    }
+  locationFetchError = (err) => {
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+    };
+
   componentDidMount () {
     if (this.props.users.cars.length === 1) this.setState({car: this.props.users.cars[0]})
-    navigator.geolocation.getCurrentPosition((position) => {
-          this.setState({latitude: position.coords.latitude, longitude: position.coords.longitude})
-      })
+    const options = {
+          enableHighAccuracy: true
+      };
+    navigator.geolocation.getCurrentPosition(this.locationFetchSuccess, this.locationFetchError, options)
   }
+
+  componentDidUpdate (prevProps, prevState, snapshot) {
+        if (this.props.users.address !== prevProps.users.address) {
+            this.setState({destination: this.props.users.address})
+        }
+    }
 
   render () {
     // console.log(this.props.users)
     const { classes } = this.props
-    const { role, car, name, destination, editing, adding, creatingTrip } = this.state
+    const { role, car, name, destination, editing, adding, creatingTrip, mapSwitch } = this.state
     const { cars, userPoints, commonPoints } = this.props.users
     let currentCar = cars.length === 1 ? cars[0] : car
     const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
@@ -317,7 +322,7 @@ class Main extends Component {
       })
 
     const carList = cars.map((item) => {
-      return <MenuItem value={item.carName + ' ' + item.carColour} key = {item.carId}>{item.carName + ' ' + item.carColour}</MenuItem>
+      return <MenuItem value={item} key = {item.carId}>{item.carName + ' ' + item.carColour}</MenuItem>
     })
 
     let dependentButton = null
@@ -341,7 +346,7 @@ class Main extends Component {
               </Button>
           </div>
       )
-    } else {
+    } else if ( !adding ){
       dependentButton = (
           <Button onClick={this.addNewPoint}
                   type="raised"
@@ -409,18 +414,44 @@ class Main extends Component {
               {dependentButton}
 
             {adding &&
-                <>
-             <div className={classes.root}>
-                 {commonPointsList}
-             </div>
+            <>
+                <RadioGroup
+                    aria-label="position"
+                    name="position"
+                    value={mapSwitch}
+                    onChange={this.handleMapSwitch}
+                    row
+                    style={style.radio}
+                >
+                    <FormControlLabel
+                        value="common"
+                        control={<Radio color="primary" />}
+                        label="common places"
+                        labelPlacement="top"
+                    />
+                    <FormControlLabel
+                        value="map"
+                        control={<Radio color="primary" />}
+                        label="open map"
+                        labelPlacement="top" color="primary"
+                    />
+                </RadioGroup>
 
-
+            { mapSwitch === 'common' &&
+            <div className={classes.root}>
+                  {commonPointsList}
+            </div>
+            }
+            { mapSwitch === 'map' &&
+            <Map />
+            }
             <EditSmart handleEditInput={this.handleEditInput}
-              editName={name}
-              editDestination={destination}
-              editClose={() => this.editClose(firstEmptyUserPoint.userPointId, null)}
+                           editName={name}
+                           editDestination={destination}
+                           editClose={() => this.editClose(firstEmptyUserPoint.userPointId, null)}
             />
-                </>
+
+            </>
             }
             {this.state.role === 'driver' &&
             <FormControl required className={classes.formControl}>
@@ -458,7 +489,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     logOut: () => dispatch(logOut()),
     setUserPoints: (payload) => dispatch(setUserPoints(payload)),
-    setTrip: (trip) => dispatch(setTrip(trip))
+    setTrip: (trip) => dispatch(setTrip(trip)),
+    setMyCoordinates: (coords) => dispatch(setMyCoordinates(coords)),
   }
 }
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Main))

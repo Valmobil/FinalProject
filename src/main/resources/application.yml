@@ -4,6 +4,18 @@ server:
 spring:
   profiles:
     active: local
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: itripper0@gmail.com
+    password: zozich2019
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
 
 ---
 
@@ -40,3 +52,4 @@ spring:
 
 spring:
   profiles: prod
+
