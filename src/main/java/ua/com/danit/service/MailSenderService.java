@@ -39,25 +39,6 @@ public class MailSenderService {
     this.mailSender = mailSender;
   }
 
-  //  @Bean
-  //  public JavaMailSenderImpl getJavaMailSender() {
-  //
-  //    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-  //    mailSender.setHost("smtp.gmail.com");
-  //    mailSender.setPort(587);
-  //
-  //    mailSender.setUsername("valmobil@gmail.com");
-  //    mailSender.setPassword("password");
-  //
-  //    Properties props = mailSender.getJavaMailProperties();
-  //    props.put("mail.transport.protocol", "smtp");
-  //    props.put("mail.smtp.auth", "true");
-  //    props.put("mail.smtp.starttls.enable", "true");
-  //    props.put("mail.debug", "true");
-  //
-  //    return mailSender;
-  //  }
-
   public String checkUserByEmail(UserLogin userLogin, String contextPath) {
     if (userLogin == null) {
       return "Error: Please fill e-Mail cell!";
@@ -93,16 +74,6 @@ public class MailSenderService {
             + "<br><a href=\"" + url + "\">Please click for password restore!</a><br><br>З повагою, ваша комманда!",
         "", user.getUserMail());
   }
-
-  //  private SimpleMailMessage constructEmail(String subject, String body,
-  //                                           User user) {
-  //    SimpleMailMessage email = new SimpleMailMessage();
-  //    email.setSubject(subject);
-  //    email.setText(body);
-  //    email.setTo(user.getUserMail());
-  //    //    email.setFrom(env.getProperty("support.email"));
-  //    return email;
-  //  }
 
   private MimeMessage constructMimeMail(String subject, String msg, String from, String to) {
     try {
