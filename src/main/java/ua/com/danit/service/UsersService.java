@@ -5,18 +5,17 @@ import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
-import ua.com.danit.entity.UserToken;
 import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.CarsRepository;
 import ua.com.danit.repository.PointsRepository;
 import ua.com.danit.repository.UserPointsRepository;
-import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,7 +106,7 @@ public class UsersService {
     return userPoints;
   }
 
-  public void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
+  void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       //Save new user based on external token
@@ -145,7 +144,7 @@ public class UsersService {
   }
 
 
-  public User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
+  User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       return null;
@@ -192,7 +191,16 @@ public class UsersService {
     return phone;
   }
 
-  public boolean checkForEmail(UserLogin userLogin) {
+  boolean checkForEmail(UserLogin userLogin) {
     return userLogin.getUserLogin().contains("@");
+  }
+
+
+  public UserInfo saveUserProfile(User user) {
+    usersRepository.save(user);
+    UserInfo userInfo = new UserInfo();
+    userInfo.setUser(usersRepository.getOne(user.getUserId()));
+    addCarsAndUserPoints(userInfo);
+    return userInfo;
   }
 }
