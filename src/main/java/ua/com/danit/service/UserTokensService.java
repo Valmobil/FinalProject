@@ -26,7 +26,6 @@ public class UserTokensService {
     userToken.setUser(user);
     generateNewSessionToken("Read", userToken);
     generateNewSessionToken("Access", userToken);
-    userToken = userTokensRepository.save(userToken);
     return userToken;
   }
 

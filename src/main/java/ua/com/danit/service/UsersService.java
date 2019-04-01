@@ -11,6 +11,7 @@ import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.CarsRepository;
 import ua.com.danit.repository.PointsRepository;
 import ua.com.danit.repository.UserPointsRepository;
+import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class UsersService {
   private CarsRepository carsRepository;
   private PointsRepository pointsRepository;
   private UserTokensService userTokensService;
+  private UserTokensRepository userTokensRepository;
 
   private static final int dateShift = 30;
 
@@ -34,12 +36,14 @@ public class UsersService {
                       UserPointsRepository userPointRepository,
                       CarsRepository carsRepository,
                       PointsRepository pointsRepository,
-                      UserTokensService userTokensService) {
+                      UserTokensService userTokensService,
+                      UserTokensRepository userTokensRepository) {
     this.usersRepository = usersRepository;
     this.userPointsRepository = userPointRepository;
     this.carsRepository = carsRepository;
     this.pointsRepository = pointsRepository;
     this.userTokensService = userTokensService;
+    this.userTokensRepository = userTokensRepository;
   }
 
   @Autowired
@@ -117,6 +121,7 @@ public class UsersService {
     user.setUserTokenRead(userToken.getUserTokenRead());
     user.setUserTokenAccess(userToken.getUserTokenAccess());
     user = usersRepository.save(user);
+    userToken = userTokensRepository.save(userToken);
     userInfo.setUser(user);
   }
 

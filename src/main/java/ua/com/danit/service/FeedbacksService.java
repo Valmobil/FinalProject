@@ -16,7 +16,7 @@ public class FeedbacksService {
   private SecurirtyService securirtyService;
 
   @Autowired
-  FeedbacksService (FeedbacksRepository feedbacksRepository,
+  FeedbacksService(FeedbacksRepository feedbacksRepository,
                     UsersRepository usersRepository,
                     SecurirtyService securirtyService) {
     this.feedbacksRepository = feedbacksRepository;
@@ -24,7 +24,7 @@ public class FeedbacksService {
     this.securirtyService = securirtyService;
   }
 
-  public List<Feedback> askForNewListOfFeedbacks () {
+  public List<Feedback> askForNewListOfFeedbacks() {
     return feedbacksRepository.findByUserWho(securirtyService.findUserByAccessToken());
   }
 }
