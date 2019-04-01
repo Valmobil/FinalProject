@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import pink from '@material-ui/core/colors/deepPurple'
 import Avatar from '@material-ui/core/Avatar'
-import PageviewIcon from '@material-ui/icons/Pageview'
 import Grid from '@material-ui/core/Grid'
+
 
 const styles = {
   pinkAvatar: {
@@ -14,17 +14,17 @@ const styles = {
   }
 }
 
-function IconAvatars (props) {
+function AvatarIconButton (props) {
   const { classes } = props
   return (
     <Grid container justify="center" alignItems="center">
       <Avatar className={classes.pinkAvatar} >
-        <PageviewIcon/>
+
       </Avatar>
     </Grid>
   )
 }
-IconAvatars.propTypes = {
+AvatarIconButton.propTypes = {
   classes: PropTypes.object.isRequired
 }
-export default withStyles(styles)(IconAvatars)
+export default withStyles(styles)(AvatarIconButton)

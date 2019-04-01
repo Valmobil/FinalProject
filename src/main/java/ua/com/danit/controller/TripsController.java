@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.service.TripsService;
 
+import java.util.List;
+
 @JsonView(View.Summary.class)
 @RestController
 @RequestMapping("api/trips")
@@ -30,4 +32,10 @@ public class TripsController {
   public String saveTripToDb(@RequestBody Trip trip) {
     return tripsService.saveTripToDb(trip);
   }
+
+  @GetMapping("list")
+  public List<Trip> getUserTripList() {
+    return tripsService.getTripListService();
+  }
+
 }

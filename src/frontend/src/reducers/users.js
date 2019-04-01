@@ -1,5 +1,5 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE,
-    SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_TRIP } from '../actions/users'
+    SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE } from '../actions/users'
 
 const initialState = {
   user: {
@@ -17,11 +17,17 @@ const initialState = {
   userPoints: [],
   commonPoints: [],
   role: 'passenger',
-  isAuthenticated: true,
+  isAuthenticated: false,
   auth: null,
   topMenuOpen: false,
   loginRejected: false,
   trip: {},
+  address: '',
+  myCoordinates: {
+    latitude: 0,
+    longitude: 0,
+  },
+  errorMessage: null,
 }
 
 function users (state = initialState, action) {
@@ -50,6 +56,12 @@ function users (state = initialState, action) {
       return {...state, user: action.payload}
     case SET_TRIP:
       return {...state, trip: action.payload}
+    case SET_ADDRESS:
+      return {...state, address: action.payload}
+    case SET_MY_COORDS:
+      return {...state, myCoordinates: action.payload}
+    case SET_ERROR_MESSAGE:
+      return {...state, errorMessage: action.payload}
 
     default:
       return {...state}

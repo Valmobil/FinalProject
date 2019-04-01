@@ -4,65 +4,85 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import AvatarProfile from '../avatar/AvatarProfile'
+import AvatarProfile from '../Avatar/AvatarProfile'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import { connect } from 'react-redux'
-import {setUserName} from '../../actions/userCreators'
+import {setProfile} from '../../actions/userCreators'
+
+
 
 class Profile extends Component {
   state = {
-    name: '',
-    sits: '',
-    multiline: 'Controlled',
-    carModel: '',
-    carColor: '',
-    phone: ''
-
+      user:
+  {
+    uName:      this.props.users.user.userName,
+    userPhoto:  this.props.users.user.userPhoto,
+    userPhone:  this.props.users.user.userPhone,
+    userMail:   this.props.users.user.userMail
+  },
+    cars: {
+       carId: '',
+       carName: '',
+       carColour: '',
+       carPhoto: '',
+       carSits: '',
+    }
   };
-
-  handleChange = name => event => {
+/*  handleChange = name => event => {
     this.setState({
       [name]: event.target.value
+
     })
+  };*/
+    handleChange = (e) => {
+        if(e.target.name === 'sits' && e.target.value > 5){
+            return ""
+        }
+        else{
+            this.setState({user: {...this.state.user, [e.target.name]: e.target.value}, cars: {...this.state.cars, [e.target.name]:e.target.value}})
+        }
+    }
+  setProfileToReference = () => {
+    this.props.setProfile(this.state)
   };
-
-  handleState = (e) => {
-    this.setState({[e.target.name]: e.target.value})
-  }
-
-
-  setName = () => {
-    const user = {...this.props.users.user, userName: this.state.name}
-    this.props.setUserName(user)
-  }
+    changePass = () =>
+    {
+        return (
+        console.log('Hi')
+    )}
 
 
   render () {
-    // const { classes } = this.props
-    // const { signType, user: {login, password, confirmPassword} } = this.state
-    // const allChecks = ((signType === 'log-in' && login !== '' && password !== '') || (signType === 'register' && login !== '' && password !== '' && password === confirmPassword))
-    const { userName } = this.props.users.user
-    console.log(userName)
+        const {...profileProps} = this.state
+        // const { phone, userEmail } = this.state
+        /*const phoneNumber = /^\+?[0-9]{10}/;
+        const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;*/
+        //const { userName } = this.props.users.user
+        // console.log(userName)
     return (
       <form className="form-container" noValidate autoComplete="off">
         <AvatarProfile/>
-        { userName.length === 0 && <TextField
+          <TextField
           required
           id="outlined-name"
           label="User Name"
+          name='uName'
+          type='text'
           // className={classes.textField}
-          value={this.state.name}
-          onChange={this.handleChange('name')}
+          value={profileProps.user.uName}
+          onChange={this.handleChange}
           margin="normal"
           variant="outlined"
-        />}
+        />
         <TextField
           id="outlined-phone"
           label="Phone"
+          name='userPhone'
+          placeholder= '+38'
           // className={classes.textField}
-          value={this.state.phone}
-          onChange={this.handleChange('phone')}
+          value={profileProps.user.userPhone}
+          onChange={this.handleChange}
           margin="normal"
           variant="outlined"
         />
@@ -72,18 +92,18 @@ class Profile extends Component {
           label="Email"
           // className={classes.textField}
           type="email"
-          name="email"
+          name='userMail'
+          value= {profileProps.user.userMail}
+          onChange={this.handleChange}
           autoComplete="email"
           margin="normal"
           variant="outlined"
         />
-        <Button onClick={this.setAuth}
+        <Button onClick={this.changePass}
           // disabled={!allChecks}
+            color="primary"
           style={style.button}
-          /* classes={{
-            root: classes.root,
-            label: classes.label
-          }} */
+
         >
           Change Password
         </Button>
@@ -91,8 +111,9 @@ class Profile extends Component {
           id="outlined-car-model"
           label="Car model"
           // className={classes.textField}
-          value={this.state.carModel}
-          onChange={this.handleChange('carModel')}
+          value={profileProps.cars.carName}
+          name='carName'
+          onChange={this.handleChange}
           margin="normal"
           variant="outlined"
         />
@@ -100,8 +121,9 @@ class Profile extends Component {
           id="outlined-color"
           label="Color"
           // className={classes.textField}
-          value={this.state.carColor}
-          onChange={this.handleChange('carColor')}
+          value={profileProps.cars.carColour}
+          name='carColour'
+          onChange={this.handleChange}
           margin="normal"
           variant="outlined"
         />
@@ -109,8 +131,9 @@ class Profile extends Component {
         <TextField
           id="filled-number"
           label="# of sits"
-          value={this.state.sits}
-          onChange={this.handleChange('sits')}
+          value={profileProps.cars.carSits}
+          name='carSits'
+          onChange={this.handleChange}
           type="number"
           // className={classes.textField}
           InputLabelProps={{
@@ -119,13 +142,10 @@ class Profile extends Component {
           margin="normal"
           variant="filled"
         />
-        <Button onClick={this.setAuth}
-          // disabled={!allChecks}
+        <Button onClick={this.setProfileToReference}
+          //disabled={!allChecks}
           style={style.button}
-          /* classes={{
-            root: classes.root,
-            label: classes.label
-          }} */
+
         >
           Submit
         </Button>
@@ -134,10 +154,10 @@ class Profile extends Component {
   }
 }
 const theme = createMuiTheme({
-  palette: {
-    primary: orange
-  },
-  typography: { useNextVariants: true }
+    palette: {
+        primary: orange
+    },
+    typography: { useNextVariants: true }
 })
 const styles = theme => ({
   container: {
@@ -163,7 +183,9 @@ const style = {
   },
   button: {
     margin: theme.spacing.unit,
-    marginTop: '10px'
+    marginTop: '10px',
+      color: 'orange',
+      border: '1px solid #38D1FF'
   }
 }
 
@@ -179,7 +201,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setUserName: (name) => dispatch(setUserName(name))
+    setProfile: (state) => dispatch(setProfile(state)),
+    // setUserName: (name) => dispatch(setUserName(name))
   }
 }
 

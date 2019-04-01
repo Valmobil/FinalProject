@@ -48,9 +48,10 @@ public class Trip extends Auditable {
   @Nullable
   private Car car;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "trip")
-  //    @JoinColumn( name = "TRIP_ID", referencedColumnName = "tripId")
   private List<TripPoint> tripPoint;
   //    @OneToMany(fetch = FetchType.EAGER)
   //    private List<TripPassenger> tripPassengers;
   private LocalDateTime tripDateTime;
+  //  private boolean tripIsForDriver;
+  private int tripSitsQty;
 }
