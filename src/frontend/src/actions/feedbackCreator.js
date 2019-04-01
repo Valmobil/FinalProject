@@ -6,7 +6,7 @@ import { POST_CARD_TRIP } from './feedback'
 
 
 
-export const postCa = value => dispatch => {
+export const postCard = value => dispatch => {
   dispatch({
     type: POST_CARD_TRIP
   })
