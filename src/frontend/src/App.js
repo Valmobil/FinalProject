@@ -10,8 +10,8 @@ import Header from './components/Header/Header'
 import PassRestoration from './components/PassRestoration'
 import ChangePassword from './components/ChangePassword'
 
-
 import './App.css'
+import TripsHistory from "./components/TripsHistory/TripsHistory";
 
 class App extends Component {
   render () {
@@ -26,6 +26,7 @@ class App extends Component {
             <ProtectedRoute exact path="/profile" component={Profile}/>
             <Route exact path="/restore_password" component={PassRestoration}/>
             <Route exact path="/C" component={ChangePassword} />
+            <Route path='/history' component={TripsHistory}/>
             <Route path='*' component={NoMatch}/>
 
           </Switch>
