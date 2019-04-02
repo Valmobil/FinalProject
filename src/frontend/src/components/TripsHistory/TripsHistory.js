@@ -87,10 +87,9 @@ class TripsHistory extends Component {
                     {
                         item.tripPoint.forEach((name) => {
                             nameOfPoint += name.tripPointName + ' - '
-                        // console.log('tripPointName',string)
-                    })}
+                        })
+                    }
                     {nameOfPoint}
-                    {/*<button>COPY</button>*/}
                     <div className="icon-container">
                         <IconButton
                             // onClick={() => this.handleEdit(item)}
