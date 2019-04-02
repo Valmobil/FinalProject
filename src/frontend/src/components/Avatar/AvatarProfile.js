@@ -4,13 +4,14 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Avatar from '@material-ui/core/Avatar'
 import Grid from '@material-ui/core/Grid'
-import IconAvatars from '../iconButtonAddAvatar/IconAvatars'
+import IconAvatars from '../AvatarIconButton/AvatarIconButton'
+
 
 const styles = {
   bigAvatar: {
     margin: 10,
-    width: 80,
-    height: 80,
+    width: 130,
+    height: 130,
     paddingTop: 20
   }
 }

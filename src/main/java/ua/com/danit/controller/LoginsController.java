@@ -16,13 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("api/logins")
-public class LoginController {
+public class LoginsController {
   private UsersService usersService;
   private LoginsService loginsService;
   private MailSenderService mailSenderService;
 
   @Autowired
-  public LoginController(UsersService usersService, LoginsService loginsService, MailSenderService mailSenderService) {
+  public LoginsController(UsersService usersService, LoginsService loginsService, MailSenderService mailSenderService) {
     this.usersService = usersService;
     this.loginsService = loginsService;
     this.mailSenderService = mailSenderService;
