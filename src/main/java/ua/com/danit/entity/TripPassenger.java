@@ -24,14 +24,14 @@ public class TripPassenger {
   @ManyToOne
   @NonNull
   @JoinColumn(name = "TRIP_PASSENGER_TRIP_ID", referencedColumnName = "tripId")
-  private Trip trip;
+  private Trip tripPassenger;
+  @ManyToOne
+  @NonNull
   @JoinColumn(name = "TRIP_PASSENGER_DRIVER_TRIP_ID", referencedColumnName = "tripId")
   private Trip tripDriver;
   @ManyToOne
   @NonNull
   @JoinColumn(name = "TRIP_PASSENGER_USER_ID", referencedColumnName = "userId")
   private User user;
-  private int tripPassengerTogetherQty;
-  @JoinColumn(name = "TRIP_PASSENGER_TRIP_ID", referencedColumnName = "tripId")
-  private Trip tripPassenger;
+  private int tripPassengerEmptySitsQty;
 }
