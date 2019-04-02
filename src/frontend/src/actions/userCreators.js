@@ -1,5 +1,6 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE} from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, TRIPS_HISTORY_REQUEST,
+    TRIPS_HISTORY_SUCCESS, TRIPS_HISTORY_FAILURE} from './users'
 import axios from 'axios'
 
 
@@ -121,4 +122,24 @@ export const setProfile = (state) => dispatch => {
         .catch(err => console.log(err))
     dispatch({type: SET_USER, state})
 }
+//* **********************
 
+export const fetchTripsHistory = (userId) => dispatch =>{
+    console.log(userId)
+    dispatch({type:TRIPS_HISTORY_REQUEST, payload: true})
+    axios.get(
+        // method:'get',
+        // url:
+        '/api/trips/list'
+        // data:userId
+    )
+        .then(resp=>{
+            console.log('response data',resp.data)
+            dispatch({type:TRIPS_HISTORY_REQUEST, payload: false})
+            dispatch({type:TRIPS_HISTORY_SUCCESS, payload: resp.data})
+        })
+        .catch(err => {
+            dispatch({type:TRIPS_HISTORY_REQUEST, payload: false})
+            dispatch({type:TRIPS_HISTORY_FAILURE, payload: 'error from history message'})
+        })
+}
