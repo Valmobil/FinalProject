@@ -52,4 +52,6 @@ public class Trip extends Auditable {
   //    @OneToMany(fetch = FetchType.EAGER)
   //    private List<TripPassenger> tripPassengers;
   private LocalDateTime tripDateTime;
+  //  private boolean tripIsForDriver;
+  private int tripSitsQty;
 }

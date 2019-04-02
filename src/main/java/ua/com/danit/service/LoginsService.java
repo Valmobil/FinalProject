@@ -3,8 +3,10 @@ package ua.com.danit.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.User;
+import ua.com.danit.entity.UserToken;
 import ua.com.danit.model.UserInfo;
 import ua.com.danit.model.UserLogin;
+import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
 import static ua.com.danit.service.UsersService.checkEmailFormat;
@@ -14,12 +16,18 @@ import static ua.com.danit.service.UsersService.normalizeMobilePhone;
 public class LoginsService {
   private UsersRepository usersRepository;
   private UsersService usersService;
+  private UserTokensService userTokensService;
+  private UserTokensRepository userTokensRepository;
 
   @Autowired
   public LoginsService(UsersRepository usersRepository,
-                       UsersService usersService) {
+                       UsersService usersService,
+                       UserTokensService userTokensService,
+                       UserTokensRepository userTokensRepository) {
     this.usersRepository = usersRepository;
     this.usersService = usersService;
+    this.userTokensService = userTokensService;
+    this.userTokensRepository = userTokensRepository;
   }
 
   public UserLogin loginServiceTest() {
@@ -28,7 +36,7 @@ public class LoginsService {
     userLogin.setUserLogin(user.getUserPhone());
     userLogin.setUserPassword(user.getUserPassword());
     userLogin.setUserPasswordNew("54321");
-    userLogin.setUserToken(user.getUserToken());
+    //    userLogin.setUserToken(user.getUserToken());
     return userLogin;
   }
 
@@ -46,8 +54,8 @@ public class LoginsService {
         return "Error: Incorrect or expired Token!";
       }
       //Generate new token
-      usersService.generateNewSessionToken(userInfo.getUser());
-      usersRepository.save(userInfo.getUser());
+      //      usersService.generateNewSessionToken(userInfo.getUser());
+      //      usersRepository.save(userInfo.getUser());
     }
     return "Ok. Password was changed! Please login using new password!";
   }
@@ -113,8 +121,11 @@ public class LoginsService {
 
               saveLoginToMailOrPhone(userInfo, userLogin);
               userInfo.getUser().setUserPassword(usersService.passwordEncrypt(userLogin.getUserPassword()));
-              usersService.generateNewSessionToken(userInfo.getUser());
+              UserToken userToken = userTokensService.generateInitialTokinSet(userInfo.getUser());
+              userInfo.getUser().setUserTokenRead(userToken.getUserTokenRead());
+              userInfo.getUser().setUserTokenAccess(userToken.getUserTokenAccess());
               userInfo.setUser(usersRepository.save(userInfo.getUser()));
+              userToken = userTokensRepository.save(userToken);
               userInfo.setMessage("Ok! User was created!");
             } else {
               userInfo = new UserInfo();
