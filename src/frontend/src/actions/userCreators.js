@@ -1,5 +1,5 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE } from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE} from './users'
 import axios from 'axios'
 
 
@@ -121,3 +121,4 @@ export const setProfile = (state) => dispatch => {
         .catch(err => console.log(err))
     dispatch({type: SET_USER, state})
 }
+

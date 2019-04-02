@@ -27,6 +27,7 @@ class App extends Component {
             <Route exact path="/restore_password" component={PassRestoration}/>
             <Route exact path="/C" component={ChangePassword} />
             <Route path='*' component={NoMatch}/>
+
           </Switch>
         </div>
       </>
