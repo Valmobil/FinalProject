@@ -28,7 +28,6 @@ class App extends Component {
             <Route exact path="/C" component={ChangePassword} />
             <Route path='/history' component={TripsHistory}/>
             <Route path='*' component={NoMatch}/>
-
           </Switch>
         </div>
       </>

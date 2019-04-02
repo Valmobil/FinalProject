@@ -14,6 +14,9 @@ import {
     SET_ADDRESS,
     SET_MY_COORDS,
     SET_ERROR_MESSAGE,
+    TRIPS_HISTORY_REQUEST,
+    TRIPS_HISTORY_SUCCESS,
+    TRIPS_HISTORY_FAILURE
 } from '../actions/users'
 
 const initialState = {
@@ -79,8 +82,15 @@ function users (state = initialState, action) {
       return {...state, myCoordinates: action.payload}
     case SET_ERROR_MESSAGE:
       return {...state, errorMessage: action.payload}
+    case TRIPS_HISTORY_REQUEST:
+      return {...state, tripsHistoryRequest: action.payload}
+    case TRIPS_HISTORY_SUCCESS:
+      return {...state, tripsHistory: action.payload}
+    case TRIPS_HISTORY_FAILURE:
+      return {...state, tripsHistory: action.payload}
 
-    default:
+
+      default:
       return {...state}
   }
 }
