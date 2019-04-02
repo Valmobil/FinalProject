@@ -49,10 +49,6 @@ public class UsersService {
   @Autowired
   LoginsService loginService;
 
-  public User createNewUsers(User users) {
-    return usersRepository.save(users);
-  }
-
   public User getUserById(Long userId) {
     return usersRepository.getOne(userId);
   }
@@ -194,5 +190,13 @@ public class UsersService {
 
   public boolean checkForEmail(UserLogin userLogin) {
     return userLogin.getUserLogin().contains("@");
+  }
+
+  public UserInfo saveUserProfile(User user) {
+    usersRepository.save(user);
+    UserInfo userInfo = new UserInfo();
+    userInfo.setUser(usersRepository.getOne(user.getUserId()));
+    addCarsAndUserPoints(userInfo);
+    return userInfo;
   }
 }
