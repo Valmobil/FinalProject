@@ -31,26 +31,26 @@ public class UserTokensService {
       return null;
     }
 
-    //    UserToken userTokenDb = userTokensRepository.findByUserTokenRead(userToken.getUserTokenRead());
-    //    if (userToken.getUserTokenAccess().equals(userTokenDb.getUserTokenAccess())) {
-    //      if (userTokenDb.getUserTokenReadTo().isBefore(LocalDateTime.now())) {
-    //        //All tokens are valid but read token was aspired
-    //        generateNewSessionToken("Read", userTokenDb);
-    //      }
-    //      generateNewSessionToken("Access", userTokenDb);
-    //      userTokenDb = userTokensRepository.save(userTokenDb);
-    //      return userTokenDb;
-    //    } else {
-    //      userTokensRepository.delete(userTokenDb);
-    //    }
-    //      return null;
-    return generateInitialTokinSet(new User());
+    UserToken userTokenDb = userTokensRepository.findByUserTokenRead(userToken.getUserTokenRead());
+    if (userToken.getUserTokenAccess().equals(userTokenDb.getUserTokenAccess())) {
+      if (userTokenDb.getUserTokenReadTo().isBefore(LocalDateTime.now())) {
+        //All tokens are valid but read token was aspired
+        generateNewSessionToken("Read", userTokenDb);
+      }
+      generateNewSessionToken("Access", userTokenDb);
+      userTokenDb = userTokensRepository.save(userTokenDb);
+      return userTokenDb;
+    } else {
+      userTokensRepository.delete(userTokenDb);
+    }
+    return null;
+    //    return generateInitialTokinSet(new User());
   }
 
-  public void generateNewSessionToken(String type, UserToken userToken) {
-    int dateShift = 0;
+  private void generateNewSessionToken(String type, UserToken userToken) {
+    int dateShift;
     LocalDateTime date = LocalDateTime.now();
-    if (type == "Read") {
+    if (type.equals("Read")) {
       userToken.setUserTokenAccess(UUID.randomUUID().toString());
       dateShift = 15;
       date = date.plusMinutes(dateShift);
