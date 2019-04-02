@@ -26,7 +26,7 @@ public class UserTokensController {
   }
 
   @GetMapping("test")
-  public UserToken testNewToken(){
+  public UserToken testNewToken() {
     User user = new User();
     return userTokensService.generateInitialTokinSet(user);
   }
