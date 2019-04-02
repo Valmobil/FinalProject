@@ -40,7 +40,8 @@ class Profile extends Component {
             return ""
         }
         else{
-            this.setState({user: {...this.state.user, [e.target.name]: e.target.value}, cars: {...this.state.cars, [e.target.name]:e.target.value}})
+            this.setState({user: {...this.state.user, [e.target.name]: e.target.value},
+                cars: {...this.state.cars, [e.target.name]:e.target.value}})
         }
     }
   setProfileToReference = () => {
