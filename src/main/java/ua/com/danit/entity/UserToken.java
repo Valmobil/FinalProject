@@ -26,11 +26,11 @@ public class UserToken {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "USER_TOKEN_USER_ID", referencedColumnName = "userId")
   @JsonIgnoreProperties({"user", "userId", "userName", "userPhone",
-      "userMail", "userTokenRead", "userTokenAccess", "userTokenAccessTo",
+      "userMail", "userTokenRefresh", "userTokenAccess", "userTokenAccessTo",
       "userPhoto", "car"})
   private User user;
-  private String userTokenRead;
-  private LocalDateTime userTokenReadTo;
+  private String userTokenRefresh;
+  private LocalDateTime userTokenRefreshTo;
   private String userTokenAccess;
   private LocalDateTime userTokenAccessTo;
 }

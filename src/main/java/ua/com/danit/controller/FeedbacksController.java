@@ -5,8 +5,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.Feedback;
-import ua.com.danit.entity.User;
+import ua.com.danit.model.FeedbackInfo;
 import ua.com.danit.service.FeedbacksService;
+import ua.com.danit.service.UsersService;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("api/feedbacks")
 public class FeedbacksController {
   private FeedbacksService feedbacksService;
+  //  private UsersService usersService;
 
 
   @Autowired
@@ -22,8 +24,7 @@ public class FeedbacksController {
   }
 
   @PostMapping("")
-  public List<Feedback> getFeedbackProduceAndSave() {
-
+  public List<FeedbackInfo> getFeedbackFromDb() {
     return feedbacksService.askForNewListOfFeedbacks();
   }
 }

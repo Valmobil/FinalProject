@@ -17,7 +17,6 @@ import ua.com.danit.repository.UsersRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,7 +71,9 @@ public class UsersService {
     return user;
   }
 
-  public void addCarsAndUserPoints(UserInfo userInfo) {
+  public void addCarsUserPointsTokens(UserInfo userInfo) {
+    //Generate new tokens
+    updateUserTokenInUserEntity(userInfo.getUser());
     //Collect Cars
     userInfo.setCars(carsRepository.findByUser(userInfo.getUser()));
     //Collect User Points
@@ -118,12 +119,16 @@ public class UsersService {
       user.setUserMail(userLogin.getUserLogin());
     }
     user.setUserTokenExternal(userLogin.getUserToken());
+    updateUserTokenInUserEntity(user);
+    userInfo.setUser(user);
+  }
+
+  public void updateUserTokenInUserEntity(User user) {
     UserToken userToken = userTokensService.generateInitialTokinSet(user);
-    user.setUserTokenRead(userToken.getUserTokenRead());
+    user.setUserTokenRefresh(userToken.getUserTokenRefresh());
     user.setUserTokenAccess(userToken.getUserTokenAccess());
     user = usersRepository.save(user);
     userToken = userTokensRepository.save(userToken);
-    userInfo.setUser(user);
   }
 
   User checkLogin(UserLogin userLogin) {
@@ -158,7 +163,7 @@ public class UsersService {
   }
 
   public User checkIfSessionTokenIsPresent(UserLogin userLogin) {
-    List<User> users = usersRepository.findByUserTokenRead(userLogin.getUserToken());
+    List<User> users = usersRepository.findByUserTokenRefresh(userLogin.getUserToken());
     if (users.size() != 1) {
       return null;
     } else {
@@ -202,7 +207,7 @@ public class UsersService {
     usersRepository.save(user);
     UserInfo userInfo = new UserInfo();
     userInfo.setUser(usersRepository.getOne(user.getUserId()));
-    addCarsAndUserPoints(userInfo);
+    addCarsUserPointsTokens(userInfo);
     return userInfo;
   }
 }

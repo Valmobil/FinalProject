@@ -121,11 +121,12 @@ public class LoginsService {
 
               saveLoginToMailOrPhone(userInfo, userLogin);
               userInfo.getUser().setUserPassword(usersService.passwordEncrypt(userLogin.getUserPassword()));
-              UserToken userToken = userTokensService.generateInitialTokinSet(userInfo.getUser());
-              userInfo.getUser().setUserTokenRead(userToken.getUserTokenRead());
-              userInfo.getUser().setUserTokenAccess(userToken.getUserTokenAccess());
-              userInfo.setUser(usersRepository.save(userInfo.getUser()));
-              userToken = userTokensRepository.save(userToken);
+              usersService.updateUserTokenInUserEntity(userInfo.getUser());
+              //              UserToken userToken = userTokensService.generateInitialTokinSet(userInfo.getUser());
+              //              userInfo.getUser().setUserTokenRefresh(userToken.getUserTokenRefresh());
+              //              userInfo.getUser().setUserTokenAccess(userToken.getUserTokenAccess());
+              //              userInfo.setUser(usersRepository.save(userInfo.getUser()));
+              //              userToken = userTokensRepository.save(userToken);
               userInfo.setMessage("Ok! User was created!");
             } else {
               userInfo = new UserInfo();
@@ -139,7 +140,7 @@ public class LoginsService {
         usersService.checkLoginAndUpdateTokenInDb(userInfo, userLogin);
       }
     }
-    usersService.addCarsAndUserPoints(userInfo);
+    usersService.addCarsUserPointsTokens(userInfo);
     return userInfo;
   }
 
@@ -193,7 +194,7 @@ public class LoginsService {
         usersService.checkLoginAndUpdateTokenInDb(userInfo, userLogin);
       }
     }
-    usersService.addCarsAndUserPoints(userInfo);
+    usersService.addCarsUserPointsTokens(userInfo);
     return userInfo;
   }
 

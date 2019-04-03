@@ -23,13 +23,10 @@ public class Feedback {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long feedbackId;
   @ManyToOne
-  @JoinColumn(name = "FEEDBACK_USER_WHO_ID", referencedColumnName = "userId")
-  private User userWho;
+  @JoinColumn(name = "FEEDBACK_DRIVER_TRIP_ID", referencedColumnName = "tripId")
+  private Trip tripDriver;
   @ManyToOne
-  @JoinColumn(name = "FEEDBACK_USER_WHOM_ID", referencedColumnName = "userId")
-  private User userWhom;
-  @ManyToOne
-  @JoinColumn(name = "FEEDBACK_TRIP_ID", referencedColumnName = "tripId")
-  private Trip trip;
+  @JoinColumn(name = "FEEDBACK_PASSENGER_TRIP_ID", referencedColumnName = "tripId")
+  private Trip trippassenger;
   private int feedbackValue;
 }
