@@ -20,6 +20,7 @@ function AvatarProfile (props) {
   return (
     <Grid container justify="center" alignItems="center">
       <Avatar alt="Remy Sharp" className={classes.bigAvatar} />
+        <input type="file"/>
       <IconAvatars/>
     </Grid>
   )
