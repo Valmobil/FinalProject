@@ -1,0 +1,27 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+.list-history{
+  display: inline-block;
+  list-style-type: none;
+  /*margin-top: 20px;*/
+  color: #ffffff;
+}
+.type-button-container{
+  justify-content: center;
+  width: 100%;
+  margin-top: 60px;
+  margin-bottom: 20px;
+}
+.trip-history{
+  display: block;
+  width: 250px;
+}
+.trip-history li{
+  display: flex;
+  margin-top: 10px;
+}
+.icon-container button{
+  padding-left: 20px;
+}
