@@ -6,6 +6,8 @@ import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
 import { fetchTripsHistory } from '../../actions/userCreators'
+import PropTypes from 'prop-types'
+
 // import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 // import orange from "@material-ui/core/colors/orange";
 import './TripsHistory.css'
@@ -19,14 +21,14 @@ const styles = theme => ({
         padding: 0,
         width: '47%'
     },
-    acceptButton: {
-        borderRadius: 3,
-        background: '#fff',
-        color: '#008000',
-        height: 30,
-        padding: 0,
-        width: '47%'
-    },
+    // acceptButton: {
+    //     borderRadius: 3,
+    //     background: '#fff',
+    //     color: '#008000',
+    //     height: 30,
+    //     padding: 0,
+    //     width: '47%'
+    // },
     label: {
         textTransform: 'capitalize'
     },
@@ -89,7 +91,7 @@ class TripsHistory extends Component {
                         })
                     }
                     {nameOfPoint}
-                    <div className="icon-container">
+                    <div className="icon-trip">
                         <IconButton
                             // onClick={() => this.handleEdit(item)}
                             className={classes.iconButton}
@@ -110,7 +112,7 @@ class TripsHistory extends Component {
         return (
             <div className='trip-history'>
                 <h3>TripsHistory</h3>
-                <div className="type-button-container">
+                <div className="trip-button">
                     <Button classes={{
                         root: classes.typeButtons,
                         label: classes.label
@@ -139,6 +141,13 @@ const mapDispatchToProps = (dispatch) => {
         fetchTripsHistory: (userId) => dispatch(fetchTripsHistory(userId))
     }
 }
+
+TripsHistory.propTypes ={
+    tripsHistory: PropTypes.object.isRequired,
+    tripsHistoryRequest: PropTypes.bool.isRequired,
+    fetchTripsHistory: PropTypes.func.isRequired,
+}
+
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TripsHistory))
 
