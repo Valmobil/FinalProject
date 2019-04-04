@@ -253,7 +253,6 @@ class Main extends Component {
     }
 
   render () {
-
     // console.log(this.props.users)
     const { classes } = this.props
     const { role, car, name, destination, editing, adding, creatingTrip, mapSwitch } = this.state
