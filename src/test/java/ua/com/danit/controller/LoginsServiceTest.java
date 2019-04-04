@@ -71,19 +71,19 @@ public class LoginsServiceTest {
     //Create new user
     UserLogin userLogin = new UserLogin();
     userLogin.setUserToken(UUID.randomUUID().toString());
-//    UserInfo userInfo = loginsService.checkRegistrationCredentials(userLogin);
+    UserInfo userInfo = loginsService.checkRegistrationCredentials(userLogin);
 
-//    assertThat(userInfo).isNotNull();
-//    assertThat(userInfo.getUser()).isNull();
-//    assertThat(userInfo.getMessage().equals("Error: Please repeat password correctly!"));
-//
-//    userLogin.setUserLogin("valeriy@gmail.com");
-//    userInfo = loginsService.checkRegistrationCredentials(userLogin);
-//
-//    assertThat(userInfo.getUser()).isNotNull();
-//    assertThat(userInfo.getUser().getUserMail().equals(userLogin.getUserLogin()));
-//    assertThat(userInfo.getUser().getUserPassword()).isNull();
-//    assertThat(userInfo.getCars()).size().isEqualTo(0);
-//    assertThat(userInfo.getUserPoints()).size().isEqualTo(5);
+    assertThat(userInfo).isNotNull();
+    assertThat(userInfo.getUser()).isNull();
+    assertThat(userInfo.getMessage().equals("Error: Please repeat password correctly!"));
+
+    userLogin.setUserLogin("valeriy@gmail.com");
+    userInfo = loginsService.checkRegistrationCredentials(userLogin);
+
+    assertThat(userInfo.getUser()).isNotNull();
+    assertThat(userInfo.getUser().getUserMail().equals(userLogin.getUserLogin()));
+    assertThat(userInfo.getUser().getUserPassword()).isNull();
+    assertThat(userInfo.getCars()).size().isEqualTo(0);
+    assertThat(userInfo.getUserPoints()).size().isEqualTo(5);
   }
 }

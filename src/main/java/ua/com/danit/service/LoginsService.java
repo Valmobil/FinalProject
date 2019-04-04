@@ -49,7 +49,7 @@ public class LoginsService {
     } else {
       //L=0 T=1 P=0 NP=0
       //find user by Session Token in DB
-      userInfo.setUser(usersService.checkIfSessionTokenIsPresent(userLogin));
+      userInfo.setUser(userTokensService.checkIfAccessTokenIsValid(userLogin.getUserToken()));
       if (userInfo.getUser() == null) {
         return "Error: Incorrect or expired Token!";
       }
@@ -95,7 +95,7 @@ public class LoginsService {
       } else {
         //L=0 T=1 P=0 NP=0
         //find user by Session Token in DB
-        userInfo.setUser(usersService.checkIfSessionTokenIsPresent(userLogin));
+        userInfo.setUser(userTokensService.checkIfAccessTokenIsValid(userLogin.getUserToken()));
         if (userInfo.getUser() == null) {
           userInfo.setMessage("Error: have no e-Mail for your external token!");
         }
@@ -170,7 +170,7 @@ public class LoginsService {
       } else {
         //L=0 T=1 P=0 NP=0
         //find user by Session Token in DB
-        userInfo.setUser(usersService.checkIfSessionTokenIsPresent(userLogin));
+        userInfo.setUser(userTokensService.checkIfAccessTokenIsValid(userLogin.getUserToken()));
         if (userInfo.getUser() == null) {
           userInfo.setMessage("Error: have no valid session token!");
         }

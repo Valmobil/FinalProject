@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserToken;
+import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.UserTokensRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -17,6 +19,19 @@ public class UserTokensService {
   public UserTokensService(UserTokensRepository userTokensRepository) {
     this.userTokensRepository = userTokensRepository;
   }
+
+  User checkIfAccessTokenIsValid(String accessToken) {
+    List<UserToken> userTokens = userTokensRepository.findByUserTokenAccess(accessToken);
+    if (userTokens.size() != 1) {
+      return null;
+    } else {
+      if (userTokens.get(0).getUserTokenAccessTo().isAfter(LocalDateTime.now())) {
+        return userTokens.get(0).getUser();
+      }
+    }
+    return null;
+  }
+
 
   public UserToken generateInitialTokinSet(User user) {
     UserToken userToken = new UserToken();
