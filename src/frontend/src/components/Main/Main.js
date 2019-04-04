@@ -174,7 +174,7 @@ class Main extends Component {
       tripDateTime: new Date().toISOString(),
     }
     this.props.setTrip(trip)
-    this.setState({creatingTrip: false})
+    this.setState({creatingTrip: false, trip: []})
     }
 
   signOut = (auth) => {
