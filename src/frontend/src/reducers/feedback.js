@@ -1,9 +1,7 @@
 import {
-// SAVE_NEW_PASSWORD,
-// SAVE_NEW_CONFIRM_PASSWORD,
-// POST_NEW_PASSWORD_REQUESTED,
-// POST_NEW_PASSWORD_SUCCEEDED,
-// POST_NEW_PASSWORD_FAILED
+  GET_TRIP_REQUEST,
+  GET_TRIP_SUCCESS,
+  GET_TRIP_FAILED
 } from '../actions/feedback'
 
 const initialState = {
@@ -50,7 +48,7 @@ function feedback (state = initialState, action) {
     case GET_TRIP_SUCCESS:
       return {
         ...state,
-        date: action.payload,
+        initLike: action.payload,
         isRequestingDataTrip: false
       }
     case GET_TRIP_FAILED:

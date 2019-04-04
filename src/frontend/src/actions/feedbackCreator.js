@@ -1,27 +1,22 @@
 import {
-
-} from './password'
+  GET_TRIP_REQUEST,
+  GET_TRIP_SUCCESS,
+  // GET_TRIP_FAILED
+} from './feedback'
 import axios from 'axios'
-import { POST_CARD_TRIP } from './feedback'
 
-
-
-export const postCard = value => dispatch => {
+export const likeUp = (value, id) => dispatch => {
   dispatch({
-    type: POST_CARD_TRIP
+    type: GET_TRIP_REQUEST
   })
   axios.post('/api/logins/pswdchange', {
     data: {
-      avatar: value
+      isLike: value
     }
   })
     .then(res => {
-
-      if (Object.keys(res.data).length !== 0) {
-        dispatch({ type: POST_NEW_PASSWORD_SUCCEEDED, payload: res.data.user })
-      } else {
-        dispatch({ type: POST_NEW_PASSWORD_FAILED })
-      }
-    })
-    .catch(err => console.log(err))
+      dispatch({ type: GET_TRIP_SUCCESS, payload: res.data.isLike })
+    }
+    )
+    .catch((err) => console.log('Failed'))
 }
