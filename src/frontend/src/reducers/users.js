@@ -1,7 +1,10 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE,
-    SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE } from '../actions/users'
+    SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, TRIPS_HISTORY_REQUEST,
+    TRIPS_HISTORY_SUCCESS, TRIPS_HISTORY_FAILURE  } from '../actions/users'
 
 const initialState = {
+    tripsHistoryRequest: false,
+    tripsHistory :[],
   user: {
     createdDate: '',
     modifiedDate: '',
@@ -10,8 +13,9 @@ const initialState = {
     userName: '',
     userPhone: '',
     userPhoto: '',
-    userToken: '',
-    userTokenValidTo: ''
+    userTokenAccess: '',
+    userTokenAccessTo: '',
+    userTokenRefresh: '',
   },
   cars: [],
   userPoints: [],
@@ -62,6 +66,12 @@ function users (state = initialState, action) {
       return {...state, myCoordinates: action.payload}
     case SET_ERROR_MESSAGE:
       return {...state, errorMessage: action.payload}
+    case TRIPS_HISTORY_REQUEST:
+        return {...state, tripsHistoryRequest: action.payload}
+    case TRIPS_HISTORY_SUCCESS:
+        return {...state, tripsHistory: action.payload}
+    case TRIPS_HISTORY_FAILURE:
+        return {...state, tripsHistory: action.payload}
 
     default:
       return {...state}

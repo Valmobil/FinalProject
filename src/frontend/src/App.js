@@ -9,7 +9,7 @@ import ProtectedRoute from './components/hoc/ProtectedRoute/ProtectedRoute'
 import Header from './components/Header/Header'
 import PassRestoration from './components/PassRestoration'
 import ChangePassword from './components/ChangePassword'
-
+// import TripsHistory from "./components/TripsHistory/TripsHistory";
 
 import './App.css'
 import FeedbackForms from './components/FeedbackForms'

@@ -1,6 +1,6 @@
 import {
   GET_TRIP_REQUEST,
-  GET_TRIP_SUCCESS,
+  GET_TRIP_SUCCESS
   // GET_TRIP_FAILED
 } from './feedback'
 import axios from 'axios'
