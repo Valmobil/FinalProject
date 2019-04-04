@@ -68,7 +68,10 @@ public class UsersService {
     return user;
   }
 
-  public void addCarsAndUserPoints(UserInfo userInfo) {
+  void addCarsUserPointsTokens(UserInfo userInfo) {
+
+    //Generate new tokens
+    updateUserTokenInUserEntity(userInfo.getUser());
     //Collect Cars
     userInfo.setCars(carsRepository.findByUser(userInfo.getUser()));
     //Collect User Points
@@ -114,12 +117,19 @@ public class UsersService {
       user.setUserMail(userLogin.getUserLogin());
     }
     user.setUserTokenExternal(userLogin.getUserToken());
-    UserToken userToken = userTokensService.generateInitialTokinSet(user);
-    user.setUserTokenRead(userToken.getUserTokenRead());
-    user.setUserTokenAccess(userToken.getUserTokenAccess());
-    user = usersRepository.save(user);
-    userToken = userTokensRepository.save(userToken);
+    updateUserTokenInUserEntity(user);
     userInfo.setUser(user);
+  }
+
+  void updateUserTokenInUserEntity(User user) {
+    if (user == null) {
+      return;
+    }
+    UserToken userToken = userTokensService.generateInitialTokinSet(user);
+    user.setUserTokenRefresh(userToken.getUserTokenRefresh());
+    user.setUserTokenAccess(userToken.getUserTokenAccess());
+    usersRepository.save(user);
+    userTokensRepository.save(userToken);
   }
 
   User checkLogin(UserLogin userLogin) {
@@ -153,17 +163,7 @@ public class UsersService {
     return null;
   }
 
-  public User checkIfSessionTokenIsPresent(UserLogin userLogin) {
-    List<User> users = usersRepository.findByUserTokenRead(userLogin.getUserToken());
-    if (users.size() != 1) {
-      return null;
-    } else {
-      if (users.get(0).getUserTokenAccessTo().isAfter(LocalDateTime.now())) {
-        return users.get(0);
-      }
-    }
-    return null;
-  }
+
 
   static boolean checkEmailFormat(String userMail) {
     Pattern validEmailAddressRegex =
@@ -197,7 +197,7 @@ public class UsersService {
     usersRepository.save(user);
     UserInfo userInfo = new UserInfo();
     userInfo.setUser(usersRepository.getOne(user.getUserId()));
-    addCarsAndUserPoints(userInfo);
+    addCarsUserPointsTokens(userInfo);
     return userInfo;
   }
 }
