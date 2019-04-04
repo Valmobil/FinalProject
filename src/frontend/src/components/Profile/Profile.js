@@ -9,9 +9,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import { connect } from 'react-redux'
 import {setProfile} from '../../actions/userCreators'
-import FormControl from "@material-ui/core/es/FormControl/FormControl";
-import NativeSelect from "@material-ui/core/es/NativeSelect/NativeSelect";
-import FormHelperText from "@material-ui/core/es/FormHelperText/FormHelperText";
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
 
 
@@ -19,14 +17,18 @@ import FormHelperText from "@material-ui/core/es/FormHelperText/FormHelperText";
 class Profile extends Component {
   state = {
       user: {
-          uName:     this.props.users.user.userName,
-          uPhoto:    this.props.users.user.userPhoto,
-          uPhone:    this.props.users.user.userPhone,
-          uMail:     this.props.users.user.userMail
+          userName:     this.props.users.user.userName,
+          userPhoto:    this.props.users.user.userPhoto,
+          userPhone:    this.props.users.user.userPhone,
+          userMail:     this.props.users.user.userMail,
+          car:          this.props.users.user.car,
       },
-    cars: [
+      newCar: {
+          newCarModel: '',
+          newCarColor: '',
+      },
 
-  ]
+
   };
 /*  handleChange = name => event => {
     this.setState({
@@ -39,6 +41,10 @@ class Profile extends Component {
         this.setState({ [name]: event.target.value });
     };
 
+    handleCar = (e) => {
+    this.setState({newCar: {...this.state.newCar, [e.target.name]: e.target.value}})
+    }
+
     handleChange = (e) => {
         if(e.target.name === 'sits' && e.target.value > 5){
             return ""
@@ -47,20 +53,25 @@ class Profile extends Component {
             this.setState({user: {...this.state.user, [e.target.name]: e.target.value}, cars: {...this.state.cars, [e.target.name]:e.target.value}})
         }
     }
-  setProfileToReference = () => {
+    setProfileToReference = () => {
     this.props.setProfile(this.state)
   };
-    changePass = () =>
-    {
-        return (
-        console.log('Hi')
-    )}
+
+
+    changePass = () => {
+        const car = this.state.user.car
+        car.push(this.state.newCar)
+        const user = {...this.state.user, car}
+        console.log(user)
+    }
 
 
   render () {
+        console.log('this.state =', this.state)
         const {classes} = this.props
-        const {...profileProps} = this.state
-        console.log(profileProps.cars)
+
+
+      const { cars } = this.props.users
         // const { phone, userEmail } = this.state
         /*const phoneNumber = /^\+?[0-9]{10}/;
         const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;*/
@@ -69,28 +80,35 @@ class Profile extends Component {
     return (
       <form className="form-container" noValidate autoComplete="off">
         <AvatarProfile/>
+          <MuiThemeProvider theme={theme}>
           <TextField
           required
           id="outlined-name"
           label="User Name"
-          name='uName'
+          name='userName'
           type='text'
-          // className={classes.textField}
-          value={profileProps.user.uName}
           onChange={this.handleChange}
           margin="normal"
-          variant="outlined"
+          value={this.state.user.userName}
+          InputProps={{
+              classes: {
+                  input: classes.inputColor
+              }
+          }}
         />
         <TextField
           id="outlined-phone"
           label="Phone"
           name='userPhone'
           placeholder= '+38'
-          // className={classes.textField}
-          value={profileProps.user.uPhone}
           onChange={this.handleChange}
           margin="normal"
-          variant="outlined"
+          value={this.state.user.userPhone}
+          InputProps={{
+              classes: {
+                  input: classes.inputColor
+              }
+          }}
         />
         <TextField
           required
@@ -99,11 +117,15 @@ class Profile extends Component {
           // className={classes.textField}
           type="email"
           name='userMail'
-          value= {profileProps.user.uMail}
           onChange={this.handleChange}
           autoComplete="email"
           margin="normal"
-          variant="outlined"
+          value={this.state.user.userMail}
+          InputProps={{
+              classes: {
+                  input: classes.inputColor
+              }
+          }}
         />
         <Button onClick={this.changePass}
           // disabled={!allChecks}
@@ -116,40 +138,33 @@ class Profile extends Component {
         >
           Change Password
         </Button>
-          <FormControl className={classes.formControl}>
-              <NativeSelect
-                  className={classes.selectEmpty}
-                  value={this.state.cars}
-                  name="carName"
-                  // onChange={this.handleChangeCar('carName')}
-              >
-                  {profileProps.cars.map(({ carName, index }) => (
-                      <option
-                          key={`${carName}+${index}`}
-                          onClick=""
-                      >{carName}</option>
-                  ))}
-                  {/*<option value="" disabled>
-                      Placeholder
-                  </option>*/}
-
-
-                  {/*<option value={10}>Ten</option>
-                  <option value={20}>Twenty</option>
-                  <option value={30}>Thirty</option>*/}
-              </NativeSelect>
-              <FormHelperText>Placeholder</FormHelperText>
-          </FormControl>
           <TextField
-              id="colorArea"
+              label="Enter car model"
+              style={style.input}
+              autoComplete="off"
+              name='newCarModel'
+              value={this.state.newCar.newCarModel}
+              onChange={this.handleCar}
+              InputProps={{
+                  classes: {
+                      input: classes.inputColor
+                  }
+              }}
+          />
+          <TextField
               label="Car color"
-              placeholder="Car color"
-              // value={profileProps.cars[1].carName}
-              name='carColor'
-              value={profileProps.cars.carColour}
-              onChange={this.handleChange}
-              className={classes.textField}
+              style={style.input}
+              autoComplete="off"
+              name='newCarColor'
+              value={this.state.newCar.newCarColor}
+              onChange={this.handleCar}
               margin="normal"
+
+              InputProps={{
+                  classes: {
+                      input: classes.inputColor
+                  }
+              }}
           />
           <Button onClick={this.changePass}
                   color="primary"
@@ -162,7 +177,7 @@ class Profile extends Component {
           >
               Submit
           </Button>
-
+          </MuiThemeProvider>
       </form>
     )
   }
@@ -173,11 +188,17 @@ const theme = createMuiTheme({
     },
     typography: { useNextVariants: true }
 })
+
+
 const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap'
   },
+    inputColor: {
+        color: '#fff',
+        width: '100%',
+    },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit

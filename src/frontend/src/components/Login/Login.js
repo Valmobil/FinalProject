@@ -9,7 +9,6 @@ import { setAuthorization, setSocialAuth, setLoginRejected } from '../../actions
 import './Login.css'
 import { withStyles } from '@material-ui/core/styles'
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { RemoveRedEye } from '@material-ui/icons';
 import firebase from 'firebase'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 import Radio from '@material-ui/core/Radio'
@@ -20,6 +19,9 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import Slide from '@material-ui/core/Slide'
+import IconButton from '@material-ui/core/IconButton';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 firebase.initializeApp({
   apiKey: 'AIzaSyDx0_JsSsE45hOx_XKwpVptROViTneTVbA',
@@ -104,7 +106,6 @@ class Login extends Component {
     }
 
     render () {
-
       const { classes } = this.props
       const { signType, passwordIsHidden, user: {login, password, confirmPassword} } = this.state
       const phoneNumber = /^\+?[0-9]{10}/;
@@ -171,10 +172,13 @@ class Login extends Component {
                 },
                 endAdornment: (
                       <InputAdornment position="end">
-                          <RemoveRedEye
+                          <IconButton
+                              aria-label="Toggle password visibility"
                               className={classes.eye}
                               onClick={this.togglePasswordMask}
-                          />
+                          >
+                              {this.state.passwordIsHidden ? <VisibilityOff />  : <Visibility />}
+                          </IconButton>
                       </InputAdornment>
                   ),
               }}
@@ -194,10 +198,13 @@ class Login extends Component {
                           },
                           endAdornment: (
                               <InputAdornment position="end">
-                                  <RemoveRedEye
+                                  <IconButton
+                                      aria-label="Toggle password visibility"
                                       className={classes.eye}
                                       onClick={this.togglePasswordMask}
-                                  />
+                                  >
+                                      {this.state.passwordIsHidden ? <VisibilityOff />  : <Visibility />}
+                                  </IconButton>
                               </InputAdornment>
                           ),
                       }}
@@ -269,9 +276,9 @@ const styles = theme => ({
     background: 'linear-gradient(45deg, #ff9800 30%, #f57c00 90%)',
     borderRadius: 3,
     border: 0,
-    height: 40,
-    padding: '0 30px',
-      fontWeight: '600'
+    color: 'white',
+    height: 30,
+    padding: '0 30px'
   },
   label: {
     textTransform: 'capitalize'
@@ -279,6 +286,9 @@ const styles = theme => ({
   eye: {
     cursor: 'pointer',
     color: '#3E4566',
+    '&:focus': {
+        outline: 'none',
+    }
   },
 })
 
