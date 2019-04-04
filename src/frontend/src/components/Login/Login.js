@@ -268,9 +268,9 @@ const styles = theme => ({
   root: {
     background: 'linear-gradient(45deg, #ff9800 30%, #f57c00 90%)',
     borderRadius: 3,
-    border: 0,
-    height: 40,
-    padding: '0 30px',
+      color: 'white',
+      height: 30,
+      padding: '0 30px',
       fontWeight: '600'
   },
   label: {
