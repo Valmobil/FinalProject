@@ -1,0 +1,26 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+.trip-button{
+  justify-content: center;
+  width: 100%;
+  margin-top: 60px;
+  margin-bottom: 20px;
+}
+.trip-history{
+  display: block;
+  width: 250px;
+}
+.trip-history li{
+  display: flex;
+  margin-top: 10px;
+  list-style-type: none;
+  color: #ffffff;
+}
+.icon-trip{
+  display: flex;
+}
+.icon-trip button{
+  margin-left: 20px;
+}
