@@ -13,8 +13,9 @@ const initialState = {
     userName: '',
     userPhone: '',
     userPhoto: '',
-    userToken: '',
-    userTokenValidTo: ''
+    userTokenAccess: '',
+    userTokenAccessTo: '',
+    userTokenRefresh: '',
   },
   cars: [],
   userPoints: [],
