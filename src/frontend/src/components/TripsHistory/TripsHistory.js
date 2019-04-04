@@ -7,6 +7,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
 import { fetchTripsHistory } from '../../actions/userCreators'
 import PropTypes from 'prop-types'
+
 // import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 // import orange from "@material-ui/core/colors/orange";
 import './TripsHistory.css'
@@ -140,11 +141,13 @@ const mapDispatchToProps = (dispatch) => {
         fetchTripsHistory: (userId) => dispatch(fetchTripsHistory(userId))
     }
 }
+
 TripsHistory.propTypes ={
     tripsHistory: PropTypes.object.isRequired,
     tripsHistoryRequest: PropTypes.bool.isRequired,
     fetchTripsHistory: PropTypes.func.isRequired,
 }
+
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TripsHistory))
 

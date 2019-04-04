@@ -104,6 +104,7 @@ class Login extends Component {
     }
 
     render () {
+
       const { classes } = this.props
       const { signType, passwordIsHidden, user: {login, password, confirmPassword} } = this.state
       const phoneNumber = /^\+?[0-9]{10}/;
@@ -267,10 +268,10 @@ const styles = theme => ({
   root: {
     background: 'linear-gradient(45deg, #ff9800 30%, #f57c00 90%)',
     borderRadius: 3,
-    border: 0,
-    color: 'white',
-    height: 30,
-    padding: '0 30px'
+      color: 'white',
+      height: 30,
+      padding: '0 30px',
+      fontWeight: '600'
   },
   label: {
     textTransform: 'capitalize'
