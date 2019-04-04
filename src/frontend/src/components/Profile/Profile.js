@@ -15,21 +15,23 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
 
 class Profile extends Component {
-  state = {
-      user: {
-          userName:     this.props.users.user.userName,
-          userPhoto:    this.props.users.user.userPhoto,
-          userPhone:    this.props.users.user.userPhone,
-          userMail:     this.props.users.user.userMail,
-          car:          this.props.users.user.car,
-      },
-      newCar: {
-          newCarModel: '',
-          newCarColor: '',
-      },
+
+    state = {
+     user: {
+            userName:     this.props.users.user.userName,
+            userPhoto:    this.props.users.user.userPhoto,
+            userPhone:    this.props.users.user.userPhone,
+            userMail:     this.props.users.user.userMail,
+            car:          '',
+        },
+            newCar: {
+                carName: '',
+                carColor: '',
+                carPhoto: '/CarsPhotos/n_1.jpg',
+            },
+        }
 
 
-  };
 /*  handleChange = name => event => {
     this.setState({
       [name]: event.target.value
@@ -61,17 +63,30 @@ class Profile extends Component {
     changePass = () => {
         const car = this.state.user.car
         car.push(this.state.newCar)
-        const user = {...this.state.user, car}
-        console.log(user)
+        this.setState({...this.state.user, car})
+        this.props.setProfile(this.state.user)
+        console.log(this.state.user)
     }
 
 
+    componentDidMount() {
+        const oldCar = this.props.users.user.car
+        let car = []
+        oldCar.forEach(object => {
+            let newCar = {}
+            Object.keys(object).forEach(key => {
+                if (key !== 'user') newCar[key] = object[key]
+            })
+            car.push(newCar)
+        })
+        this.setState({user: {...this.state.user, car}})
+    }
+
   render () {
-        console.log('this.state =', this.state)
         const {classes} = this.props
 
 
-      const { cars } = this.props.users
+      // const { cars } = this.props.users
         // const { phone, userEmail } = this.state
         /*const phoneNumber = /^\+?[0-9]{10}/;
         const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;*/
@@ -142,8 +157,8 @@ class Profile extends Component {
               label="Enter car model"
               style={style.input}
               autoComplete="off"
-              name='newCarModel'
-              value={this.state.newCar.newCarModel}
+              name='carName'
+              value={this.state.newCar.carName}
               onChange={this.handleCar}
               InputProps={{
                   classes: {
@@ -155,11 +170,10 @@ class Profile extends Component {
               label="Car color"
               style={style.input}
               autoComplete="off"
-              name='newCarColor'
-              value={this.state.newCar.newCarColor}
+              name='carColor'
+              value={this.state.newCar.carColor}
               onChange={this.handleCar}
               margin="normal"
-
               InputProps={{
                   classes: {
                       input: classes.inputColor

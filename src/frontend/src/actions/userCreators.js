@@ -111,16 +111,17 @@ export const setMyCoordinates = coords => dispatch => {
 export const setErrorMessage = (message) => dispatch => {
     dispatch({type: SET_ERROR_MESSAGE, payload: message})
 }
+//* **********************
 
-////setProfile datas to database
-export const setProfile = (state) => dispatch => {
+////setProfile data to database
+export const setProfile = (profile) => dispatch => {
     axios({
         method: 'put',
         url: '/api/users',
-        data: state
+        data: profile
     })
         .catch(err => console.log(err))
-    dispatch({type: SET_USER, state})
+    dispatch({type: SET_USER, payload: profile})
 }
 //* **********************
 
