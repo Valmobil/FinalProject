@@ -1,6 +1,6 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, TRIPS_HISTORY_REQUEST,
-    TRIPS_HISTORY_SUCCESS, TRIPS_HISTORY_FAILURE} from './users'
+    TRIPS_HISTORY_SUCCESS, TRIPS_HISTORY_FAILURE, SET_TRIPS_HISTORY } from './users'
 import axios from 'axios'
 
 
@@ -142,4 +142,8 @@ export const fetchTripsHistory = (userId) => dispatch =>{
             dispatch({type:TRIPS_HISTORY_REQUEST, payload: false})
             dispatch({type:TRIPS_HISTORY_FAILURE, payload: 'error from history message'})
         })
+}
+
+export const setTripsHistory = (newTripsHistory) => dispatch=>{
+
 }
