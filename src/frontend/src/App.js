@@ -9,7 +9,7 @@ import ProtectedRoute from './components/hoc/ProtectedRoute/ProtectedRoute'
 import Header from './components/Header/Header'
 import PassRestoration from './components/PassRestoration'
 import ChangePassword from './components/ChangePassword'
-// import TripsHistory from "./components/TripsHistory/TripsHistory";
+import TripsHistoryForm from "./components/TripsHistory/TripsHistoryForm";
 
 import './App.css'
 
@@ -26,7 +26,7 @@ class App extends Component {
             <ProtectedRoute exact path="/profile" component={Profile}/>
             <Route exact path="/restore_password" component={PassRestoration}/>
             <Route exact path="/C" component={ChangePassword} />
-            {/*<Route path='/history' component={TripsHistory}/>*/}
+            <Route exact path='/history' component={TripsHistoryForm}/>
             <Route path='*' component={NoMatch}/>
           </Switch>
         </div>

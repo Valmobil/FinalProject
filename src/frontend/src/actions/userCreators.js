@@ -1,10 +1,6 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, TRIPS_HISTORY_REQUEST,
-    TRIPS_HISTORY_SUCCESS, TRIPS_HISTORY_FAILURE} from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY } from './users'
 import axios from 'axios'
-
-
-
 
 export const callApi = (method, url, data) => {
     let headers = null
@@ -152,18 +148,25 @@ export const setProfile = (profile) => dispatch => {
     dispatch({type: SET_USER, payload: profile})
 }
 //* **********************
+//
+// export const fetchTripsHistory = (userId) => dispatch =>{
+//     console.log(userId)
+//     dispatch({type:TRIPS_HISTORY_REQUEST, payload: true})
+//     callApi('get', '/api/trips/list', JSON.stringify({id:userId}))
+//         .then(resp=>{
+//             console.log('response data',resp.data)
+//             dispatch({type:TRIPS_HISTORY_REQUEST, payload: false})
+//             dispatch({type:TRIPS_HISTORY_SUCCESS, payload: resp.data})
+//         })
+//         .catch(err => {
+//             dispatch({type:TRIPS_HISTORY_REQUEST, payload: false})
+//             dispatch({type:TRIPS_HISTORY_FAILURE, payload: 'error from history message'})
+//         })
+// }
 
-export const fetchTripsHistory = (userId) => dispatch =>{
-    console.log(userId)
-    dispatch({type:TRIPS_HISTORY_REQUEST, payload: true})
-    callApi('get', '/api/trips/list')
-        .then(resp=>{
-            console.log('response data',resp.data)
-            dispatch({type:TRIPS_HISTORY_REQUEST, payload: false})
-            dispatch({type:TRIPS_HISTORY_SUCCESS, payload: resp.data})
-        })
-        .catch(err => {
-            dispatch({type:TRIPS_HISTORY_REQUEST, payload: false})
-            dispatch({type:TRIPS_HISTORY_FAILURE, payload: 'error from history message'})
-        })
+export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
+    dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
+    callApi('post','api/trips/delete')
+        .then(console.log)
+        .catch(err => console.log(err))
 }
