@@ -1,12 +1,13 @@
 package ua.com.danit.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.com.danit.entity.Point;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.TripPoint;
 import ua.com.danit.repository.TripsRepository;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -42,4 +43,30 @@ public class TripsService {
   public List<Trip> getTripListService() {
     return tripsRepository.findAll();
   }
+
+  public void deleteTripById(Long tripId) {
+    tripsRepository.deleteById(tripId);
+  }
+
+  public void copyTripById(long tripId) {
+    Trip trip = tripsRepository.getOne(tripId);
+    //create copy
+    ObjectMapper objectMapper = new ObjectMapper();
+    Trip tripDeepCopy = null;
+    try {
+      tripDeepCopy = objectMapper.readValue(objectMapper.writeValueAsString(trip), Trip.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    //re-new some fields
+    tripDeepCopy.getUser().setUserId(null);
+    for (TripPoint tripPoint : tripDeepCopy.getTripPoint()) {
+      tripPoint.setTripPointId(null);
+      tripPoint.setTrip(trip);
+    }
+    tripDeepCopy.setTripDateTime(trip.getTripDateTime().plusDays(1));
+    tripsRepository.save(tripDeepCopy);
+  }
 }
+

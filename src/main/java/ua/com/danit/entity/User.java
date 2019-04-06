@@ -29,7 +29,7 @@ import java.util.List;
 public class User extends Auditable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long userId;
+  private Long userId;
   private String userName;
   private String userPhone;
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -37,7 +37,6 @@ public class User extends Auditable {
   private String userMail;
   private String userTokenRefresh;
   private String userTokenAccess;
-  private LocalDateTime userTokenAccessTo;
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   @Column(length = 1200)
   private String userTokenExternal;
