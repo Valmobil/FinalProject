@@ -2,9 +2,6 @@ import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_S
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY } from './users'
 import axios from 'axios'
 
-
-
-
 export const callApi = (method, url, data) => {
     let headers = null
     if (window.localStorage.getItem('iTripper_access_token')){

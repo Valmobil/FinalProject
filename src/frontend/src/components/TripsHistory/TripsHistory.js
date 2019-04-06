@@ -12,22 +12,7 @@ import PropTypes from 'prop-types'
 import './TripsHistory.css'
 
 const styles = theme => ({
-    // typeButtons: {
-    //     borderRadius: 3,
-    //     border: '1px solid #fff',
-    //     color: '#fff',
-    //     height: 30,
-    //     padding: 0,
-    //     width: '47%'
-    // },
-    // acceptButton: {
-    //     borderRadius: 3,
-    //     background: '#fff',
-    //     color: '#008000',
-    //     height: 30,
-    //     padding: 0,
-    //     width: '47%'
-    // },
+
     label: {
         textTransform: 'capitalize'
     },
@@ -48,13 +33,6 @@ const styles = theme => ({
         }
     }
 })
-
-// const theme = createMuiTheme({
-//     palette: {
-//         primary: orange
-//     },
-//     typography: { useNextVariants: true }
-// })
 
 class TripsHistory extends Component {
     state ={
