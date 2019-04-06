@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.model.UserInfo;
@@ -55,10 +56,10 @@ public class LoginsController {
   }
 
   @PostMapping("email")
-  public String checkUserByEmail(@RequestBody UserLogin userLogin) {
+  public String checkUserByEmail(@RequestBody UserLogin userLogin, @RequestHeader(value = "Host") String host) {
     //https://www.baeldung.com/spring-security-registration-i-forgot-my-password
     //    return pswdResetTokenService.checkUserByEmail(userLogin, request.getContextPath());
-    return mailSenderService.checkUserByEmail(userLogin, "localhost:3000");
+    return mailSenderService.checkUserByEmail(userLogin, host);
   }
 
   @GetMapping("test")
