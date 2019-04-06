@@ -1,14 +1,14 @@
 import React, {Component} from 'react'
 import './Profile.css'
-// import {connect} from 'react-redux'
+import {connect} from 'react-redux'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import TextField from '@material-ui/core/TextField'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
-// import {withStyles} from '@material-ui/core'
+import {withStyles} from '@material-ui/core'
 import Car from '../Car/Car'
 import Button from '@material-ui/core/Button'
-// import {addNewCar} from '../../actions/userCreators'
+import {addNewCar} from '../../actions/userCreators'
 
 const theme = createMuiTheme({
   palette: {
@@ -87,7 +87,6 @@ class Profile extends Component {
     }
 }
 
-/*
 const mapStateToProps = (state) => {
   return {
     users: state.users
@@ -100,4 +99,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Profile)) */
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Profile))

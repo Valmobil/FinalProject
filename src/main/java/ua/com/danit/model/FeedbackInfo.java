@@ -15,7 +15,6 @@ import javax.persistence.SqlResultSetMapping;
 import java.text.SimpleDateFormat;
 
 
-
 @Data
 @AllArgsConstructor
 @Builder
