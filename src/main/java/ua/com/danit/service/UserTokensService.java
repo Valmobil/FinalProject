@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserToken;
+import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.UserTokensRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -18,10 +20,23 @@ public class UserTokensService {
     this.userTokensRepository = userTokensRepository;
   }
 
+  User checkIfAccessTokenIsValid(String accessToken) {
+    List<UserToken> userTokens = userTokensRepository.findByUserTokenAccess(accessToken);
+    if (userTokens.size() != 1) {
+      return null;
+    } else {
+      if (userTokens.get(0).getUserTokenAccessTo().isAfter(LocalDateTime.now())) {
+        return userTokens.get(0).getUser();
+      }
+    }
+    return null;
+  }
+
+
   public UserToken generateInitialTokinSet(User user) {
     UserToken userToken = new UserToken();
     userToken.setUser(user);
-    generateNewSessionToken("Read", userToken);
+    generateNewSessionToken("Refresh", userToken);
     generateNewSessionToken("Access", userToken);
     return userToken;
   }
@@ -30,36 +45,38 @@ public class UserTokensService {
     if (userToken == null) {
       return null;
     }
+    UserToken userTokenDb = userTokensRepository.findByUserTokenRefresh(userToken.getUserTokenRefresh());
+    if (userTokenDb == null) {
+      return null;
+    }
 
-    UserToken userTokenDb = userTokensRepository.findByUserTokenRead(userToken.getUserTokenRead());
-    if (userToken.getUserTokenAccess().equals(userTokenDb.getUserTokenAccess())) {
-      if (userTokenDb.getUserTokenReadTo().isBefore(LocalDateTime.now())) {
-        //All tokens are valid but read token was aspired
-        generateNewSessionToken("Read", userTokenDb);
-      }
+    //    if (userToken.getUserTokenAccess().equals(userTokenDb.getUserTokenAccess())) {
+    if (userTokenDb.getUserTokenRefreshTo().isAfter(LocalDateTime.now())) {
+      //If Refresh token are valid
+      generateNewSessionToken("Refresh", userTokenDb);
       generateNewSessionToken("Access", userTokenDb);
       userTokenDb = userTokensRepository.save(userTokenDb);
       return userTokenDb;
     } else {
       userTokensRepository.delete(userTokenDb);
+      return null;
+      //    return generateInitialTokinSet(new User());
     }
-    return null;
-    //    return generateInitialTokinSet(new User());
   }
 
-  private void generateNewSessionToken(String type, UserToken userToken) {
+  private void generateNewSessionToken(String stype, UserToken userToken) {
     int dateShift;
     LocalDateTime date = LocalDateTime.now();
-    if (type.equals("Read")) {
+    if (stype.equals("Refresh")) {
       userToken.setUserTokenAccess(UUID.randomUUID().toString());
       dateShift = 15;
       date = date.plusMinutes(dateShift);
       userToken.setUserTokenAccessTo(date);
     } else {
-      userToken.setUserTokenRead(UUID.randomUUID().toString());
+      userToken.setUserTokenRefresh(UUID.randomUUID().toString());
       dateShift = 60 * 24 * 30;
       date = date.plusMinutes(dateShift);
-      userToken.setUserTokenReadTo(date);
+      userToken.setUserTokenRefreshTo(date);
     }
   }
 }

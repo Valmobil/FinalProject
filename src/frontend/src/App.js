@@ -26,7 +26,7 @@ class App extends Component {
             <ProtectedRoute exact path="/profile" component={Profile}/>
             <Route exact path="/restore_password" component={PassRestoration}/>
             <Route exact path="/C" component={ChangePassword} />
-            <Route path='/history' component={TripsHistoryForm}/>
+            <Route exact path='/history' component={TripsHistoryForm}/>
             <Route path='*' component={NoMatch}/>
           </Switch>
         </div>

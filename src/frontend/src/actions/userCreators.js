@@ -1,12 +1,50 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, TRIPS_HISTORY_REQUEST,
-    TRIPS_HISTORY_SUCCESS, TRIPS_HISTORY_FAILURE, SET_TRIPS_HISTORY } from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY } from './users'
 import axios from 'axios'
 
 
 
 
-export const setAuthorization = (state, signType) => dispatch => {
+export const callApi = (method, url, data) => {
+    let headers = null
+    if (window.localStorage.getItem('iTripper_access_token')){
+        const expires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
+
+        if (Date.now() >= expires){
+            const refresh = { userTokenRefresh: window.localStorage.getItem('iTripper_refresh_token') }
+            axiosRequest('post', 'api/usertokens', refresh)
+                .then(response => {
+                    setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh, response.data.userTokenAccessTo, response.data.userTokenRefreshTo)
+                })
+        }
+        headers = {
+            Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}`,
+        }
+    }
+    return axiosRequest(method, url, data, headers)
+}
+
+//* *********************
+export const axiosRequest = (method, url, data, headers) => {
+    return axios({
+        method,
+        url,
+        data,
+        headers
+    })
+}
+
+const setLocalStorage = (accessToken, refreshToken, accessTokenExpires, refreshTokenExpires) => {
+    window.localStorage.setItem('iTripper_access_token', accessToken)
+    window.localStorage.setItem('iTripper_refresh_token', refreshToken)
+    window.localStorage.setItem('iTripper_access_token_expires', accessTokenExpires)
+    window.localStorage.setItem('iTripper_refresh_token_expires', refreshTokenExpires)
+}
+
+//* *********************
+
+export const setAuthorization = (state, signType) => (dispatch) => {
+    // console.log('state = ',getState())
     let route = signType === 'log-in' ? 'signin' : 'signup'
     axios.post('/api/logins/' + route, {
         userLogin: state.login,
@@ -16,7 +54,9 @@ export const setAuthorization = (state, signType) => dispatch => {
         .then(response => {
             dispatch(setErrorMessage(response.data.message))
             if (response.data.user !== null) {
-                axios.defaults.headers.common['Authorization'] = response.data.user.userToken;
+                console.log('user = ',response.data.user)
+                setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh, response.data.user.userTokenAccessTo)
+
                 dispatch({type: SET_AUTH, payload: true})
                 dispatch({type: SET_USER, payload: response.data.user})
                 dispatch({type: SET_CARS, payload: response.data.cars})
@@ -26,11 +66,10 @@ export const setAuthorization = (state, signType) => dispatch => {
             }
         })
         .catch(err => console.log(err))
-
     if (signType === 'log-in') {
-    axios.get('/api/points/filter/test')
-        .then(res => dispatch({type: SET_COMMON_POINTS, payload: res.data}))
-        .catch(err => console.log(err))
+        callApi('get', '/api/points/filter/test')
+            .then(response => dispatch({type: SET_COMMON_POINTS, payload: response.data}))
+            .catch(err => console.log(err))
     }
 }
 //* *********************
@@ -69,11 +108,7 @@ export const setLoginRejected = (payload) => dispatch => {
 //* **********************
 
 export const setUserPoints = (payload) => dispatch => {
-    axios({
-        method: 'put',
-        url: '/api/userpoints',
-        data: payload
-    })
+    callApi('put', '/api/userpoints', payload)
         .catch(err => console.log(err))
     dispatch({type: SET_USER_POINTS, payload})
 }
@@ -86,11 +121,7 @@ export const setUserName = (name) => dispatch => {
 //* **********************
 
 export const setTrip = (trip) => dispatch => {
-    axios({
-        method: 'put',
-        url: '/api/trips',
-        data: trip
-    })
+    callApi('put', '/api/trips', trip)
         .then(res => console.log('usersCreators: ', res))
         .catch(err => console.log(err))
     dispatch({type: SET_TRIP, trip})
@@ -111,39 +142,34 @@ export const setMyCoordinates = coords => dispatch => {
 export const setErrorMessage = (message) => dispatch => {
     dispatch({type: SET_ERROR_MESSAGE, payload: message})
 }
-
-////setProfile datas to database
-export const setProfile = (state) => dispatch => {
-    axios({
-        method: 'put',
-        url: '/api/users',
-        data: state
-    })
-        .catch(err => console.log(err))
-    dispatch({type: SET_USER, state})
-}
 //* **********************
 
-export const fetchTripsHistory = (userId) => dispatch =>{
-    console.log(userId)
-    dispatch({type:TRIPS_HISTORY_REQUEST, payload: true})
-    axios.get(
-        // method:'get',
-        // url:
-        '/api/trips/list'
-        // data:userId
-    )
-        .then(resp=>{
-            console.log('response data',resp.data)
-            dispatch({type:TRIPS_HISTORY_REQUEST, payload: false})
-            dispatch({type:TRIPS_HISTORY_SUCCESS, payload: resp.data})
-        })
-        .catch(err => {
-            dispatch({type:TRIPS_HISTORY_REQUEST, payload: false})
-            dispatch({type:TRIPS_HISTORY_FAILURE, payload: 'error from history message'})
-        })
+////setProfile data to database
+export const setProfile = (profile) => dispatch => {
+    callApi('put', '/api/users', profile)
+        .catch(err => console.log(err))
+    dispatch({type: SET_USER, payload: profile})
 }
+//* **********************
+//
+// export const fetchTripsHistory = (userId) => dispatch =>{
+//     console.log(userId)
+//     dispatch({type:TRIPS_HISTORY_REQUEST, payload: true})
+//     callApi('get', '/api/trips/list', JSON.stringify({id:userId}))
+//         .then(resp=>{
+//             console.log('response data',resp.data)
+//             dispatch({type:TRIPS_HISTORY_REQUEST, payload: false})
+//             dispatch({type:TRIPS_HISTORY_SUCCESS, payload: resp.data})
+//         })
+//         .catch(err => {
+//             dispatch({type:TRIPS_HISTORY_REQUEST, payload: false})
+//             dispatch({type:TRIPS_HISTORY_FAILURE, payload: 'error from history message'})
+//         })
+// }
 
-export const setTripsHistory = (newTripsHistory) => dispatch=>{
-
+export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
+    dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
+    callApi('post','api/trips/delete')
+        .then(console.log)
+        .catch(err => console.log(err))
 }

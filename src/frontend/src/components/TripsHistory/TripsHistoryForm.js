@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import TripsHistory from './TripsHistory'
 import {withStyles} from "@material-ui/core/styles/index";
 import Button from '@material-ui/core/Button'
@@ -15,25 +15,6 @@ const styles = theme => ({
         padding: 0,
         width: '47%'
     },
-    // label: {
-    //     textTransform: 'capitalize'
-    // },
-    // root: {
-    //     width: '100%',
-    //     marginTop: 20,
-    //     background: 'transparent',
-    //     position: 'relative',
-    //     overflow: 'auto',
-    //     maxHeight: 135,
-    // },
-    // iconButton: {
-    //     padding: 0,
-    //
-    //     color: '#fff',
-    //     '&:focus': {
-    //         outline: 'none'
-    //     }
-    // }
 })
 
 class TripsHistoryForm extends Component {
@@ -56,9 +37,5 @@ class TripsHistoryForm extends Component {
         );
     }
 }
-
-TripsHistoryForm.propTypes = {
-
-};
 
 export default withStyles(styles)(connect()(TripsHistoryForm));
