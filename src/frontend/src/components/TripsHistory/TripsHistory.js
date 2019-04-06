@@ -48,10 +48,11 @@ class TripsHistory extends Component {
     }
 
     handleDelete = (id) => {
-        console.log('handle delete', id)
-        let newTripsHistory = this.props.tripsHistory.filter(
-            (item) => item.tripId !== id)
-        console.log('handle delete', newTripsHistory)
+        let newTripsHistory = this.state.tripsHistory.filter(
+            item =>{
+                return item.tripId !== id
+            }
+        )
         this.setState({
             tripsHistory: newTripsHistory
         })
@@ -60,8 +61,8 @@ class TripsHistory extends Component {
 
 
     render() {
-    console.log('state = ', this.state)
-    console.log('redux tripsHistory = ', this.props.tripsHistory)
+    // console.log('state = ', this.state)
+    // console.log('redux tripsHistory = ', this.props.tripsHistory)
         const { classes , tripsHistoryRequest } = this.props
 
         let nameOfPoint = ''
