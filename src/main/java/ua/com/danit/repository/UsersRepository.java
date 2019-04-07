@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ua.com.danit.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UsersRepository extends JpaRepository<User, Long> {
@@ -21,7 +22,10 @@ public interface UsersRepository extends JpaRepository<User, Long> {
 
   List<User> findByUserTokenExternal(String userMail);
 
+  //JwtAuth by @olegzip
   Boolean existsByUserName(String username);
 
   Boolean existsByUserMail(String email);
+
+  Optional<User> findByUserNameOrUserMail(String username, String email);
 }
