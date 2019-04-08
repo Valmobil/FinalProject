@@ -1,0 +1,7 @@
+.image-choose-button-container{
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    height: 30px;
+    margin: 20px auto;
+}

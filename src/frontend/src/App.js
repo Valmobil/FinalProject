@@ -10,8 +10,8 @@ import Header from './components/Header/Header'
 import PassRestoration from './components/PassRestoration'
 import ChangePassword from './components/ChangePassword'
 // import TripsHistory from "./components/TripsHistory/TripsHistory";
-
 import './App.css'
+
 
 class App extends Component {
   render () {

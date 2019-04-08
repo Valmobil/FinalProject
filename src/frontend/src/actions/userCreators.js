@@ -11,13 +11,13 @@ export const callApi = (method, url, data) => {
     if (window.localStorage.getItem('iTripper_access_token')){
         const expires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
 
-        if (Date.now() >= expires){
-            const refresh = { userTokenRefresh: window.localStorage.getItem('iTripper_refresh_token') }
-            axiosRequest('post', 'api/usertokens', refresh)
-                .then(response => {
-                    setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh, response.data.userTokenAccessTo, response.data.userTokenRefreshTo)
-                })
-        }
+        // if (Date.now() >= expires){
+        //     const refresh = { userTokenRefresh: window.localStorage.getItem('iTripper_refresh_token') }
+        //     axiosRequest('post', 'api/usertokens', refresh)
+        //         .then(response => {
+        //             setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh, response.data.userTokenAccessTo, response.data.userTokenRefreshTo)
+        //         })
+        // }
         headers = {
             Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}`,
         }
@@ -56,7 +56,24 @@ export const setAuthorization = (state, signType) => (dispatch) => {
             dispatch(setErrorMessage(response.data.message))
             if (response.data.user !== null) {
                 console.log('user = ',response.data.user)
-                setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh, response.data.user.userTokenAccessTo)
+
+
+                const accessTokenExpires = new Date(Date.now() + 60000).toISOString()
+
+                setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh, accessTokenExpires)
+
+
+                callApi('post', '/api/logins/signin', { userTokenAccess: response.data.user.userTokenAccess})
+                    .then(res => console.log(`authorized by token with auth header: ${response.data.user.userTokenAccess}`, res))
+                    .catch(console.log)
+
+                axios({
+                    method:'post',
+                    url: '/api/logins/signin',
+                    data: { userTokenAccess: response.data.user.userTokenAccess}})
+                    .then(res => console.log(`authorized by token: ${response.data.user.userTokenAccess}`, res))
+                    .catch(console.log)
+
 
                 dispatch({type: SET_AUTH, payload: true})
                 dispatch({type: SET_USER, payload: response.data.user})
@@ -167,3 +184,9 @@ export const fetchTripsHistory = (userId) => dispatch =>{
             dispatch({type:TRIPS_HISTORY_FAILURE, payload: 'error from history message'})
         })
 }
+//* **********************
+
+export const setPhoto = (image) => dispatch => {
+
+}
+
