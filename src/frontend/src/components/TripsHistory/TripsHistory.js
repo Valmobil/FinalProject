@@ -1,34 +1,18 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux'
-import Button from '@material-ui/core/Button'
+// import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
-import { fetchTripsHistory } from '../../actions/userCreators'
+import { deleteTripFromHistory, callApi } from '../../actions/userCreators'
 import PropTypes from 'prop-types'
-
 // import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 // import orange from "@material-ui/core/colors/orange";
 import './TripsHistory.css'
 
 const styles = theme => ({
-    typeButtons: {
-        borderRadius: 3,
-        border: '1px solid #fff',
-        color: '#fff',
-        height: 30,
-        padding: 0,
-        width: '47%'
-    },
-    // acceptButton: {
-    //     borderRadius: 3,
-    //     background: '#fff',
-    //     color: '#008000',
-    //     height: 30,
-    //     padding: 0,
-    //     width: '47%'
-    // },
+
     label: {
         textTransform: 'capitalize'
     },
@@ -50,41 +34,41 @@ const styles = theme => ({
     }
 })
 
-// const theme = createMuiTheme({
-//     palette: {
-//         primary: orange
-//     },
-//     typography: { useNextVariants: true }
-// })
-
 class TripsHistory extends Component {
+    state ={
+        tripsHistory: this.props.tripsHistory
+    }
 
     componentDidMount(){
-       this.props.fetchTripsHistory(1)
+        callApi('get', '/api/trips/list')
+            .then(resp => this.setState({
+                tripsHistory: resp.data
+            }))
+
     }
 
     handleDelete = (id) => {
-        let newTripsHistory = this.props.tripsHistory.map(item => {
-            if (item.userPointId === id) {
-                return {...item, tripPoint: [ ]}
-            } else {
-                return item
+        let newTripsHistory = this.state.tripsHistory.filter(
+            item =>{
+                return item.tripId !== id
             }
+        )
+        this.setState({
+            tripsHistory: newTripsHistory
         })
-        // this.props.setUserPoints(newUserPoints)
-        console.log(newTripsHistory)
+        this.props.deleteTripFromHistory(id);
     }
 
 
     render() {
-        const { tripsHistory, classes } = this.props
-        console.log(classes)
-        console.log(this.props)
+    // console.log('state = ', this.state)
+    // console.log('redux tripsHistory = ', this.props.tripsHistory)
+        const { classes , tripsHistoryRequest } = this.props
 
         let nameOfPoint = ''
-        let tripsHistoryPointList = tripsHistory.map(item => {
+        let tripsHistoryPointList = this.state.tripsHistory.map((item) => {
             return (
-                <li key={item.id}>
+                <li key={item.tripId}>
                     {
                         item.tripPoint.forEach((name) => {
                             nameOfPoint += name.tripPointName + ' - '
@@ -99,7 +83,7 @@ class TripsHistory extends Component {
                             <EditIcon />
                         </IconButton>
                         <IconButton
-                            onClick={() => this.handleDelete(item.tripPoint)}
+                            onClick={() => this.handleDelete(item.tripId)}
                             className={classes.iconButton}
                             aria-label="Delete">
                             <DeleteIcon />
@@ -110,19 +94,9 @@ class TripsHistory extends Component {
             )
         })
         return (
-            <div className='trip-history'>
-                <h3>TripsHistory</h3>
-                <div className="trip-button">
-                    <Button classes={{
-                        root: classes.typeButtons,
-                        label: classes.label
-                    }}
-                    >
-                        Add Trip
-                    </Button>
-                </div>
+            <div className='trip-history-list'>
                 <ul className='list-history'>
-                    {this.props.tripsHistoryRequest ? <li>Loading...</li> : tripsHistoryPointList}
+                    {tripsHistoryRequest ? <li>Loading...</li> : tripsHistoryPointList}
                 </ul>
             </div>
         );
@@ -138,16 +112,13 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchTripsHistory: (userId) => dispatch(fetchTripsHistory(userId))
+        deleteTripFromHistory: (newTripsHistory) => dispatch(deleteTripFromHistory(newTripsHistory))
     }
 }
-
 TripsHistory.propTypes ={
-    tripsHistory: PropTypes.object.isRequired,
+    tripsHistory: PropTypes.array.isRequired,
     tripsHistoryRequest: PropTypes.bool.isRequired,
-    fetchTripsHistory: PropTypes.func.isRequired,
 }
-
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TripsHistory))
 

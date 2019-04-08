@@ -31,7 +31,7 @@ import java.util.Objects;
 public class TripPoint {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long tripPointId;
+  private Long tripPointId;
   private String tripPointName;
   private double tripPointLongitude;
   private double tripPointLatitude;
