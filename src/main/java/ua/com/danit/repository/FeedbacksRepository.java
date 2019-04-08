@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 import ua.com.danit.entity.Feedback;
 import ua.com.danit.entity.User;
 import ua.com.danit.model.FeedbackInfo;
+import ua.com.danit.model.FeedbackInfo;
+
 
 import java.util.List;
 

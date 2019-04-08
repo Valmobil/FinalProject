@@ -1,0 +1,17 @@
+.trip-history{
+  display: block;
+  width: 70%;
+}
+.trip-history li{
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  list-style-type: none;
+  color: #ffffff;
+}
+.icon-trip{
+  display: flex;
+}
+.icon-trip button{
+  margin-left: 20px;
+}
