@@ -61,8 +61,8 @@ class Login extends Component {
       this.setState({ signType: event.target.value })
     };
 
-    handleInput = (e) => {
-      this.setState({user: {...this.state.user, [e.target.name]: e.target.value}})
+    handleInput = ({target: {name, value}}) => {
+      this.setState({user: {...this.state.user, [name]: value}})
     }
 
     handleAlertClose = () => {

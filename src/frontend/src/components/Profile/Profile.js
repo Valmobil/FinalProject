@@ -69,18 +69,18 @@ class Profile extends Component {
     }
 
 
-    componentDidMount() {
-        const oldCar = this.props.users.user.car
-        let car = []
-        oldCar.forEach(object => {
-            let newCar = {}
-            Object.keys(object).forEach(key => {
-                if (key !== 'user') newCar[key] = object[key]
-            })
-            car.push(newCar)
-        })
-        this.setState({user: {...this.state.user, car}})
-    }
+    // componentDidMount() {
+    //     const oldCar = this.props.users.user.car
+    //     let car = []
+    //     oldCar.forEach(object => {
+    //         let newCar = {}
+    //         Object.keys(object).forEach(key => {
+    //             if (key !== 'user') newCar[key] = object[key]
+    //         })
+    //         car.push(newCar)
+    //     })
+    //     this.setState({user: {...this.state.user, car}})
+    // }
 
   render () {
         const {classes} = this.props

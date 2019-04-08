@@ -1,6 +1,9 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY } from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY} from './users'
 import axios from 'axios'
+
+
+
 
 export const callApi = (method, url, data) => {
     let headers = null
@@ -52,7 +55,24 @@ export const setAuthorization = (state, signType) => (dispatch) => {
             dispatch(setErrorMessage(response.data.message))
             if (response.data.user !== null) {
                 console.log('user = ',response.data.user)
-                setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh, response.data.user.userTokenAccessTo)
+
+
+                const accessTokenExpires = new Date(Date.now() + 60000).toISOString()
+
+                setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh, accessTokenExpires)
+
+
+                callApi('post', '/api/logins/signin', { userTokenAccess: response.data.user.userTokenAccess})
+                    .then(res => console.log(`authorized by token with auth header: ${response.data.user.userTokenAccess}`, res))
+                    .catch(console.log)
+
+                axios({
+                    method:'post',
+                    url: '/api/logins/signin',
+                    data: { userTokenAccess: response.data.user.userTokenAccess}})
+                    .then(res => console.log(`authorized by token: ${response.data.user.userTokenAccess}`, res))
+                    .catch(console.log)
+
 
                 dispatch({type: SET_AUTH, payload: true})
                 dispatch({type: SET_USER, payload: response.data.user})
@@ -163,10 +183,16 @@ export const setProfile = (profile) => dispatch => {
 //             dispatch({type:TRIPS_HISTORY_FAILURE, payload: 'error from history message'})
 //         })
 // }
+//* **********************
 
 export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
     dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
     callApi('delete','api/trips/delete')
         .then(console.log)
         .catch(err => console.log(err))
+}
+//* **********************
+
+export const setPhoto = (image) => dispatch => {
+
 }
