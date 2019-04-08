@@ -8,7 +8,7 @@ import axios from 'axios'
 export const callApi = (method, url, data) => {
     let headers = null
     if (window.localStorage.getItem('iTripper_access_token')){
-        const expires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
+        // const expires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
 
         // if (Date.now() >= expires){
         //     const refresh = { userTokenRefresh: window.localStorage.getItem('iTripper_refresh_token') }
