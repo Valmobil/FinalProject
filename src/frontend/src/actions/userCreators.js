@@ -10,13 +10,13 @@ export const callApi = (method, url, data) => {
     if (window.localStorage.getItem('iTripper_access_token')){
         const expires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
 
-        if (Date.now() >= expires){
-            const refresh = { userTokenRefresh: window.localStorage.getItem('iTripper_refresh_token') }
-            axiosRequest('post', 'api/usertokens', refresh)
-                .then(response => {
-                    setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh, response.data.userTokenAccessTo, response.data.userTokenRefreshTo)
-                })
-        }
+        // if (Date.now() >= expires){
+        //     const refresh = { userTokenRefresh: window.localStorage.getItem('iTripper_refresh_token') }
+        //     axiosRequest('post', 'api/usertokens', refresh)
+        //         .then(response => {
+        //             setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh, response.data.userTokenAccessTo, response.data.userTokenRefreshTo)
+        //         })
+        // }
         headers = {
             Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}`,
         }
