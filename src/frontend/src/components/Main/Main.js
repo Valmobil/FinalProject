@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Link} from "react-router-dom";
 import { logOut, setUserPoints, setTrip, setMyCoordinates } from '../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles'
 import Radio from '@material-ui/core/Radio'
