@@ -166,7 +166,7 @@ export const setProfile = (profile) => dispatch => {
 
 export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
     dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
-    callApi('post','api/trips/delete')
+    callApi('delete','api/trips/delete')
         .then(console.log)
         .catch(err => console.log(err))
 }
