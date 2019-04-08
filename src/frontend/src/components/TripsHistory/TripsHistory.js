@@ -40,7 +40,7 @@ class TripsHistory extends Component {
     }
 
     componentDidMount(){
-        callApi('get', '/api/trips/list')
+        callApi('post', '/api/trips/list')
             .then(resp => this.setState({
                 tripsHistory: resp.data
             }))
