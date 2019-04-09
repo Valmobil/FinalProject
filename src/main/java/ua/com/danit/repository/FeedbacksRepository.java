@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import ua.com.danit.entity.Feedback;
 import ua.com.danit.entity.User;
 import ua.com.danit.model.FeedbackInfo;
+import ua.com.danit.model.FeedbackInfo;
 
 
 import java.util.List;
@@ -61,4 +62,5 @@ public interface FeedbacksRepository {
   //"   SELECT  concat(cast(feedback_driver_trip_id  as varchar(19)),'_',cast( feedback_passenger_trip_id  " +
   //"   as varchar(19))) from feedback where feedback_value <> 0)" +
   //"", FeedbackInfo.class).getResultList();
+
 }
