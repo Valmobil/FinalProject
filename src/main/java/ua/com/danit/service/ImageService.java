@@ -38,7 +38,7 @@ public class ImageService {
   public String saveNewImage(Blob imageBlob, String userTokenAccess) {
     Image image = new Image();
     image.setImageBlob(imageBlob);
-    User user = userTokensService.checkIfAccessTokenIsValid(userTokenAccess);
+    User user = userTokensService.findUserByAccessToken(userTokenAccess);
     if (user == null) {
       return null;
     }

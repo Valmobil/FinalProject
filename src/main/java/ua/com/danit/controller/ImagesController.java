@@ -25,12 +25,12 @@ public class ImagesController {
   }
 
   @PostMapping("")
-  public byte[] getImageController(Long imageId) throws IOException {
+  public byte[] getImageController(@RequestBody Long imageId) throws IOException {
     return imageService.getImageService(imageId);
   }
 
   @PutMapping("")
-  public String saveImageController(Blob imageBlob, @RequestHeader String userTokenAccess) {
+  public String saveImageController(@RequestBody Blob imageBlob, @RequestHeader String userTokenAccess) {
     return imageService.saveNewImage(imageBlob, userTokenAccess);
   }
 
