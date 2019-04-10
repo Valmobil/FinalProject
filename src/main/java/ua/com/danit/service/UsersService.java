@@ -14,10 +14,8 @@ import ua.com.danit.repository.UserPointsRepository;
 import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +47,10 @@ public class UsersService {
 
   @Autowired
   LoginsService loginService;
+
+  public User createNewUsers(User users) {
+    return usersRepository.save(users);
+  }
 
   public User getUserById(Long userId) {
     return usersRepository.getOne(userId);
@@ -192,6 +194,7 @@ public class UsersService {
   boolean checkForEmail(UserLogin userLogin) {
     return userLogin.getUserLogin().contains("@");
   }
+
 
   public UserInfo saveUserProfile(User user) {
     usersRepository.save(user);
