@@ -5,20 +5,19 @@ import axios from 'axios'
 
 
 
-export const callApi = (method, url, data) => {
+export const callApi = (method, url, data, config) => {
     let headers = null
     if (window.localStorage.getItem('iTripper_access_token')){
         const refreshTokenExpires = Date.parse(window.localStorage.getItem('iTripper_refresh_token_expires'))
         const accessTokenExpires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
         if (refreshTokenExpires && (Date.now() > refreshTokenExpires)){
-            removeTokens();
             logOut();
         } else if (Date.now() >= accessTokenExpires){
-            const refresh = { userTokenRefresh: window.localStorage.getItem('iTripper_refresh_token') };
+            const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token');
             axios({
                 method: 'post',
                 url: 'api/usertokens',
-                data: refresh
+                data: { userTokenRefresh }
             })
                 .then(response => {
                     if (response.data) {
@@ -26,9 +25,9 @@ export const callApi = (method, url, data) => {
                         headers = {
                             Authorization: `Bearer ${response.data.userTokenAccess}`,
                         }
-                        return axiosRequest(method, url, data, headers)
+                        headers = Object.assign({ Authorization: `Bearer ${response.data.userTokenAccess}` }, config)
+                        return axiosRequest(method, url, data, headers, config)
                     } else {
-                        removeTokens()
                         logOut()
                     }
                 })
@@ -36,18 +35,20 @@ export const callApi = (method, url, data) => {
         headers = {
             Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}`,
         }
+        headers = Object.assign({ Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}` }, config)
     }
-    return axiosRequest(method, url, data, headers)
+    return axiosRequest(method, url, data, headers, config)
 }
 
 //* *********************
 
-export const axiosRequest = (method, url, data, headers) => {
+export const axiosRequest = (method, url, data, headers, config) => {
     return axios({
         method,
         url,
         data,
-        headers
+        headers,
+        config,
     })
 }
 //* *********************
@@ -59,7 +60,6 @@ export const checkAuthorizationByToken = () => dispatch => {
         const refreshTokenExpires = window.localStorage.getItem('iTripper_refresh_token_expires')
         const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
         if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))) {
-            removeTokens();
             dispatch(logOut());
         } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
             axios({
@@ -68,17 +68,31 @@ export const checkAuthorizationByToken = () => dispatch => {
                 data: {userTokenRefresh}
             })
                 .then(response => {
-                    console.log('response = ', response)
                     if (response.data) {
                         setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
                     } else {
-                        removeTokens()
-                        dispatch(logOut())
+                        setTimeout(() => {
+                            const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
+                            axios({
+                                method: 'post',
+                                url: '/api/usertokens',
+                                data: {userTokenRefresh}
+                            })
+                                .then(response => {
+                                    if (response.data) {
+                                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                                    } else {
+                                        dispatch(logOut())
+                                    }
+                                })
+                                .catch(console.log)
+                        }, 50)
+
                     }
                 })
                 .catch(console.log)
         }
-    }
+    } else dispatch(logOut())
 }
 //* *********************
 
@@ -108,7 +122,6 @@ export const setAuthByToken = () => dispatch => {
         const refreshTokenExpires = window.localStorage.getItem('iTripper_refresh_token_expires')
         const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
         if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))){
-            removeTokens();
             dispatch(logOut());
         } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
             axios({
@@ -125,7 +138,6 @@ export const setAuthByToken = () => dispatch => {
                             })
                             .catch(console.log)
                     } else {
-                        removeTokens()
                         dispatch(logOut())
                     }
                 })
@@ -166,7 +178,6 @@ export const setAuthorization = (state, signType) => (dispatch) => {
 
                 setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh)
                 dispatch(authDispatches(response))
-
             } else {
                 dispatch(setLoginRejected(true))
             }
@@ -187,6 +198,7 @@ export const setSocialAuth = (auth) => dispatch => {
 
 export const logOut = () => dispatch => {
     dispatch({type: SET_AUTH, payload: false})
+    removeTokens()
 }
 
 //* **********************
@@ -283,7 +295,8 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
 
 export const setPhoto = (image) => dispatch => {
     console.log(image)
-   callApi('put', 'api/images', image)
+    const config = { 'Content-Type' : 'multipart/form-data' }
+   callApi('put', 'api/images', image, config)
        .then(response => console.log('image response: ', response))
        .catch(console.log)
 }
