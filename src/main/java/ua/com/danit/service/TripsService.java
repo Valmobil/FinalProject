@@ -29,9 +29,11 @@ public class TripsService {
     for (TripPoint point : trip.getTripPoint()) {
       point.setTrip(trip);
     }
-    //Remove Car in Car == null
-    if (trip.getCar().getCarId() == 0) {
-      trip.setCar(null);
+    //Remove Car if Car == null
+    if (trip.getCar() != null) {
+      if (trip.getCar().getCarId() == 0) {
+        trip.setCar(null);
+      }
     }
     if (tripsRepository.save(trip) != null) {
       return "Ok";
@@ -48,7 +50,7 @@ public class TripsService {
     tripsRepository.deleteById(tripId);
   }
 
-  public void copyTripById(long tripId) {
+  public void copyTripById(long tripId, String userTokenAccess) {
     Trip trip = tripsRepository.getOne(tripId);
     //create copy
     ObjectMapper objectMapper = new ObjectMapper();
@@ -60,7 +62,9 @@ public class TripsService {
     }
 
     //re-new some fields
-    tripDeepCopy.getUser().setUserId(null);
+    if (tripDeepCopy.getUser() != null) {
+      tripDeepCopy.getUser().setUserId(null);
+    }
     for (TripPoint tripPoint : tripDeepCopy.getTripPoint()) {
       tripPoint.setTripPointId(null);
       tripPoint.setTrip(trip);

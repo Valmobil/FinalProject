@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.Trip;
@@ -14,7 +15,7 @@ import ua.com.danit.service.TripsService;
 
 import java.util.List;
 
-@JsonView(View.Summary.class)
+//@JsonView(View.Summary.class)
 @RestController
 @RequestMapping("api/trips")
 public class TripsController {
@@ -40,14 +41,14 @@ public class TripsController {
     return tripsService.getTripListService();
   }
 
-  @DeleteMapping("delete")
-  public void deleteUserTrip(Trip trip) {
+  @PostMapping("delete")
+  public void deleteUserTrip(@RequestBody Trip trip) {
     tripsService.deleteTripById(trip.getTripId());
   }
 
-  @DeleteMapping("copy")
-  public List<Trip> copyUserTrip(Trip trip) {
-    tripsService.copyTripById(trip.getTripId());
+  @PostMapping("copy")
+  public List<Trip> copyUserTrip(@RequestBody Trip trip, @RequestHeader String userTokenAccess) {
+    tripsService.copyTripById(trip.getTripId(),userTokenAccess);
     return tripsService.getTripListService();
   }
 
