@@ -8,13 +8,29 @@ import axios from 'axios'
 export const callApi = (method, url, data) => {
     let headers = null
     if (window.localStorage.getItem('iTripper_access_token')){
-        const expires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
-
-        if (Date.now() >= expires){
-            const refresh = { userTokenRefresh: window.localStorage.getItem('iTripper_refresh_token') }
-            axiosRequest('post', 'api/usertokens', refresh)
+        const refreshTokenExpires = Date.parse(window.localStorage.getItem('iTripper_refresh_token_expires'))
+        const accessTokenExpires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
+        if (refreshTokenExpires && (Date.now() > refreshTokenExpires)){
+            removeTokens();
+            logOut();
+        } else if (Date.now() >= accessTokenExpires){
+            const refresh = { userTokenRefresh: window.localStorage.getItem('iTripper_refresh_token') };
+            axios({
+                method: 'post',
+                url: 'api/usertokens',
+                data: refresh
+            })
                 .then(response => {
-                    setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh, response.data.userTokenAccessTo, response.data.userTokenRefreshTo)
+                    if (response.data) {
+                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                        headers = {
+                            Authorization: `Bearer ${response.data.userTokenAccess}`,
+                        }
+                        return axiosRequest(method, url, data, headers)
+                    } else {
+                        removeTokens()
+                        logOut()
+                    }
                 })
         }
         headers = {
@@ -25,6 +41,7 @@ export const callApi = (method, url, data) => {
 }
 
 //* *********************
+
 export const axiosRequest = (method, url, data, headers) => {
     return axios({
         method,
@@ -33,8 +50,41 @@ export const axiosRequest = (method, url, data, headers) => {
         headers
     })
 }
+//* *********************
 
-const setLocalStorage = (accessToken, refreshToken, accessTokenExpires, refreshTokenExpires) => {
+export const checkAuthorizationByToken = () => dispatch => {
+    const accessToken = window.localStorage.getItem('iTripper_access_token');
+    if (accessToken) {
+        const accessTokenExpires = window.localStorage.getItem('iTripper_access_token_expires')
+        const refreshTokenExpires = window.localStorage.getItem('iTripper_refresh_token_expires')
+        const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
+        if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))) {
+            removeTokens();
+            dispatch(logOut());
+        } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
+            axios({
+                method: 'post',
+                url: '/api/usertokens',
+                data: {userTokenRefresh}
+            })
+                .then(response => {
+                    console.log('response = ', response)
+                    if (response.data) {
+                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                    } else {
+                        removeTokens()
+                        dispatch(logOut())
+                    }
+                })
+                .catch(console.log)
+        }
+    }
+}
+//* *********************
+
+const setLocalStorage = (accessToken, refreshToken) => {
+    const accessTokenExpires = new Date(Date.now() + 10000).toISOString()
+    const refreshTokenExpires = new Date(Date.now() + 2591900000).toISOString()
     window.localStorage.setItem('iTripper_access_token', accessToken)
     window.localStorage.setItem('iTripper_refresh_token', refreshToken)
     window.localStorage.setItem('iTripper_access_token_expires', accessTokenExpires)
@@ -42,6 +92,64 @@ const setLocalStorage = (accessToken, refreshToken, accessTokenExpires, refreshT
 }
 
 //* *********************
+
+const removeTokens = () => {
+    window.localStorage.removeItem('iTripper_access_token')
+    window.localStorage.removeItem('iTripper_access_token_expires')
+    window.localStorage.removeItem('iTripper_refresh_token')
+    window.localStorage.removeItem('iTripper_refresh_token_expires')
+}
+// * *********************
+
+export const setAuthByToken = () => dispatch => {
+    const userToken = window.localStorage.getItem('iTripper_access_token');
+    if (userToken) {
+        const accessTokenExpires = window.localStorage.getItem('iTripper_access_token_expires')
+        const refreshTokenExpires = window.localStorage.getItem('iTripper_refresh_token_expires')
+        const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
+        if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))){
+            removeTokens();
+            dispatch(logOut());
+        } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
+            axios({
+                method: 'post',
+                url: '/api/usertokens',
+                data: {userTokenRefresh}
+            })
+                .then(response => {
+                    if (response.data) {
+                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                        callApi('post', '/api/logins/signin', {userToken: response.data.userTokenAccess})
+                            .then(res => {
+                                dispatch(authDispatches(res))
+                            })
+                            .catch(console.log)
+                    } else {
+                        removeTokens()
+                        dispatch(logOut())
+                    }
+                })
+                .catch(console.log)
+        } else {
+            callApi('post', '/api/logins/signin', { userToken })
+                .then(response => {
+                    dispatch(authDispatches(response))
+                })
+                .catch(console.log)
+        }
+    }
+}
+
+// * *********************
+
+const authDispatches = (response) => dispatch => {
+    dispatch({type: SET_AUTH, payload: true})
+    dispatch({type: SET_USER, payload: response.data.user})
+    dispatch({type: SET_CARS, payload: response.data.cars})
+    dispatch(setUserPoints(response.data.userPoints))
+}
+
+// * *********************
 
 export const setAuthorization = (state, signType) => (dispatch) => {
     // console.log('state = ',getState())
@@ -56,28 +164,9 @@ export const setAuthorization = (state, signType) => (dispatch) => {
             if (response.data.user !== null) {
                 console.log('user = ',response.data.user)
 
+                setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh)
+                dispatch(authDispatches(response))
 
-                const accessTokenExpires = new Date(Date.now() + 60000).toISOString()
-
-                setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh, accessTokenExpires)
-
-
-                callApi('post', '/api/logins/signin', { userTokenAccess: response.data.user.userTokenAccess})
-                    .then(res => console.log(`authorized by token with auth header: ${response.data.user.userTokenAccess}`, res))
-                    .catch(console.log)
-
-                axios({
-                    method:'post',
-                    url: '/api/logins/signin',
-                    data: { userTokenAccess: response.data.user.userTokenAccess}})
-                    .then(res => console.log(`authorized by token: ${response.data.user.userTokenAccess}`, res))
-                    .catch(console.log)
-
-
-                dispatch({type: SET_AUTH, payload: true})
-                dispatch({type: SET_USER, payload: response.data.user})
-                dispatch({type: SET_CARS, payload: response.data.cars})
-                dispatch(setUserPoints(response.data.userPoints))
             } else {
                 dispatch(setLoginRejected(true))
             }
@@ -193,6 +282,9 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
 //* **********************
 
 export const setPhoto = (image) => dispatch => {
-
+    console.log(image)
+   callApi('put', 'api/images', image)
+       .then(response => console.log('image response: ', response))
+       .catch(console.log)
 }
 

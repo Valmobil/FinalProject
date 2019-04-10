@@ -3,9 +3,9 @@ import './AvatarProfile.css'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import Avatar from '@material-ui/core/Avatar'
-import Grid from '@material-ui/core/Grid'
-import IconAvatars from '../AvatarIconButton/AvatarIconButton'
+// import Avatar from '@material-ui/core/Avatar'
+// import Grid from '@material-ui/core/Grid'
+// import IconAvatars from '../AvatarIconButton/AvatarIconButton'
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { setPhoto} from '../../../actions/userCreators'
@@ -70,10 +70,13 @@ class AvatarProfile extends Component {
 
 
     saveImage = (e) => {
-      e.preventDefault()
+      // e.preventDefault()
         const { file, pixelCrop } = this.state
         this.getCroppedImg(file, pixelCrop, 'userPhoto')
-            .then(res => this.props.setPhoto(res))
+            .then(res => {
+                this.props.setPhoto(res)
+                this.rejectImage()
+            })
             .catch(console.log)
     }
 
@@ -124,11 +127,16 @@ class AvatarProfile extends Component {
   render(){
       const { classes } = this.props
       let conditionalInput = this.state.imgSrc === null ?
-          <input type="file"
+          <label className='photo-input-label'>
+              <input type="file"
+                 className='photo-input'
                  accept={acceptedFileTypes}
                  onChange={this.handleFile}
-          /> :
+          />
+              Choose file
+          </label> :
           <>
+              <span className='crop-label'>You can crop the photo</span>
               <ReactCrop
                   src={this.state.imgSrc}
                   onChange={this.onCropChange}

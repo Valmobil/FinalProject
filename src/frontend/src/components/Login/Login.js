@@ -5,7 +5,7 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import {connect} from 'react-redux'
-import { setAuthorization, setSocialAuth, setLoginRejected } from '../../actions/userCreators'
+import { setAuthorization, setSocialAuth, setLoginRejected, setAuthByToken } from '../../actions/userCreators'
 import './Login.css'
 import { withStyles } from '@material-ui/core/styles'
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -70,6 +70,7 @@ class Login extends Component {
     }
 
     componentDidMount () {
+      this.props.setAuthByToken();
       firebase.auth().onAuthStateChanged(authenticated => {
         if (authenticated) {
 
@@ -302,7 +303,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setAuthorization: (state, signType) => dispatch(setAuthorization(state, signType)),
     setSocialAuth: (auth) => dispatch(setSocialAuth(auth)),
-    setLoginRejected: (payload) => dispatch(setLoginRejected(payload))
+    setLoginRejected: (payload) => dispatch(setLoginRejected(payload)),
+    setAuthByToken: () => dispatch (setAuthByToken()),
   }
 }
 

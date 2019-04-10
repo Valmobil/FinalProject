@@ -5,3 +5,18 @@
     height: 30px;
     margin: 20px auto;
 }
+.photo-input{
+    display: none;
+}
+.photo-input-label{
+    background-color: #fff;
+    width: 40%;
+    height: 24px;
+    color: #f57c00;
+    line-height: 22px;
+    margin: 20px auto;
+    border-radius: 3px;
+}
+.crop-label{
+    color: #fff;
+}
