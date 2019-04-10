@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.Trip;
+import ua.com.danit.entity.User;
 import ua.com.danit.service.TripsService;
+import ua.com.danit.service.UserTokensService;
 
 import java.util.List;
 
@@ -20,10 +22,12 @@ import java.util.List;
 @RequestMapping("api/trips")
 public class TripsController {
   private TripsService tripsService;
+  private UserTokensService userTokensService;
 
   @Autowired
-  public TripsController(TripsService tripsService) {
+  public TripsController(TripsService tripsService, UserTokensService userTokensService) {
     this.tripsService = tripsService;
+    this.userTokensService = userTokensService;
   }
 
   @GetMapping("test")
@@ -37,19 +41,19 @@ public class TripsController {
   }
 
   @PostMapping("list")
-  public List<Trip> getUserTripList() {
-    return tripsService.getTripListService();
+  public List<Trip> getUserTripList(@RequestHeader String userTokenAccess) {
+    return tripsService.getTripListService(userTokensService.findUserByAccessToken(userTokenAccess));
   }
 
   @PostMapping("delete")
-  public void deleteUserTrip(@RequestBody Trip trip) {
-    tripsService.deleteTripById(trip.getTripId());
+  public void deleteUserTrip(@RequestBody Trip trip, @RequestHeader String userTokenAccess) {
+    tripsService.deleteTripById(trip.getTripId(), userTokensService.findUserByAccessToken(userTokenAccess));
   }
 
   @PostMapping("copy")
   public List<Trip> copyUserTrip(@RequestBody Trip trip, @RequestHeader String userTokenAccess) {
-    tripsService.copyTripById(trip.getTripId(),userTokenAccess);
-    return tripsService.getTripListService();
+    User user = userTokensService.findUserByAccessToken(userTokenAccess);
+    tripsService.copyTripById(trip.getTripId(), user);
+    return tripsService.getTripListService(user);
   }
-
 }

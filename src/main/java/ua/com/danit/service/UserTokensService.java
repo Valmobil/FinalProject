@@ -20,7 +20,7 @@ public class UserTokensService {
     this.userTokensRepository = userTokensRepository;
   }
 
-  User checkIfAccessTokenIsValid(String accessToken) {
+  public User findUserByAccessToken(String accessToken) {
     List<UserToken> userTokens = userTokensRepository.findByUserTokenAccess(accessToken);
     if (userTokens.size() != 1) {
       return null;
