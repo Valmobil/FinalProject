@@ -79,14 +79,11 @@ public class TripsService {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         Trip tripDeepCopy = new Trip();
         try {
-//          trip.setUser(null);
-          Car car = trip.getCar();
-//          trip.setCar(null);
           tripDeepCopy = objectMapper.readValue(objectMapper.writeValueAsString(trip), Trip.class);
           //re-new some fields
           tripDeepCopy.setTripId(null);
           tripDeepCopy.setUser(user);
-          tripDeepCopy.setCar(car);
+          tripDeepCopy.setCar(trip.getCar());
           for (TripPoint tripPoint : tripDeepCopy.getTripPoint()) {
             tripPoint.setTrip(tripDeepCopy);
             tripPoint.setTripPointId(null);
