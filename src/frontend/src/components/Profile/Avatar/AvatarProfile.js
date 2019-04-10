@@ -3,9 +3,9 @@ import './AvatarProfile.css'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import Avatar from '@material-ui/core/Avatar'
-import Grid from '@material-ui/core/Grid'
-import IconAvatars from '../AvatarIconButton/AvatarIconButton'
+// import Avatar from '@material-ui/core/Avatar'
+// import Grid from '@material-ui/core/Grid'
+// import IconAvatars from '../AvatarIconButton/AvatarIconButton'
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { setPhoto} from '../../../actions/userCreators'
