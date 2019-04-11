@@ -45,4 +45,8 @@ public class User extends Auditable {
   private String userPhoto;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
   private List<Car> car;
+  private Integer userIsOkUserPhoto;
+  private Integer userIsOkCarPhoto;
+  private Integer userIsConfirmedMail;
+  private Integer userIsConfirmedPhone;
 }

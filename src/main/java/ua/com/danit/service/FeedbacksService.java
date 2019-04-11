@@ -9,7 +9,7 @@ import ua.com.danit.repository.UsersRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Service
+@Service
 public class FeedbacksService {
 //  private FeedbacksRepository feedbacksRepository;
 //  private UsersRepository usersRepository;

@@ -12,16 +12,17 @@ import ua.com.danit.service.UsersService;
 
 import java.util.List;
 
-//@RestController
-//@RequestMapping("api/feedbacks")
+@RestController
+@RequestMapping("api/feedbacks")
 public class FeedbacksController {
   private FeedbacksService feedbacksService;
-  //  private UsersService usersService;
+    private UsersService usersService;
 
-  //  @Autowired
-  //  FeedbacksController(FeedbacksService feedbacksService) {
-  //    this.feedbacksService = feedbacksService;
-  //  }
+    @Autowired
+    FeedbacksController(FeedbacksService feedbacksService, UsersService usersService) {
+      this.feedbacksService = feedbacksService;
+      this.usersService = usersService;
+    }
 
   //  @PostMapping("")
   //  public List<FeedbackInfo> getFeedbackFromDb() {
