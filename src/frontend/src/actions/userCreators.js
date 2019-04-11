@@ -87,7 +87,6 @@ export const checkAuthorizationByToken = () => dispatch => {
                                 })
                                 .catch(console.log)
                         }, 50)
-
                     }
                 })
                 .catch(console.log)
@@ -97,7 +96,7 @@ export const checkAuthorizationByToken = () => dispatch => {
 //* *********************
 
 const setLocalStorage = (accessToken, refreshToken) => {
-    const accessTokenExpires = new Date(Date.now() + 10000).toISOString()
+    const accessTokenExpires = new Date(Date.now() + 880000).toISOString()
     const refreshTokenExpires = new Date(Date.now() + 2591900000).toISOString()
     window.localStorage.setItem('iTripper_access_token', accessToken)
     window.localStorage.setItem('iTripper_refresh_token', refreshToken)
@@ -138,7 +137,27 @@ export const setAuthByToken = () => dispatch => {
                             })
                             .catch(console.log)
                     } else {
-                        dispatch(logOut())
+                        setTimeout(() => {
+                            const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
+                            axios({
+                                method: 'post',
+                                url: '/api/usertokens',
+                                data: {userTokenRefresh}
+                            })
+                                .then(response => {
+                                    if (response.data) {
+                                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                                        callApi('post', '/api/logins/signin', {userToken: response.data.userTokenAccess})
+                                            .then(res => {
+                                                dispatch(authDispatches(res))
+                                            })
+                                            .catch(console.log)
+                                    } else {
+                                        dispatch(logOut())
+                                    }
+                                })
+                                .catch(console.log)
+                        }, 50)
                     }
                 })
                 .catch(console.log)
@@ -284,6 +303,7 @@ export const setProfile = (profile) => dispatch => {
 //             dispatch({type:TRIPS_HISTORY_FAILURE, payload: 'error from history message'})
 //         })
 // }
+//* **********************
 
 export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
     dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
@@ -295,7 +315,10 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
 
 export const setPhoto = (image) => dispatch => {
     console.log(image)
-    const config = { 'Content-Type' : 'multipart/form-data' }
+    // let data = new FormData();
+    // data.append('image', image);
+    const config = { 'Content-Type': `multipart/form-data}` }
+
    callApi('put', 'api/images', image, config)
        .then(response => console.log('image response: ', response))
        .catch(console.log)
