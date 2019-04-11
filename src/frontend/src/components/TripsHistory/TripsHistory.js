@@ -65,7 +65,7 @@ class TripsHistory extends Component {
     // console.log('redux tripsHistory = ', this.props.tripsHistory)
         const { classes , tripsHistoryRequest } = this.props
 
-        let nameOfPoint = ''
+        let nameOfPoint = '';
         let tripsHistoryPointList = this.state.tripsHistory.map((item) => {
             return (
                 <li key={item.tripId}>
@@ -96,7 +96,7 @@ class TripsHistory extends Component {
         return (
             <div className='trip-history-list'>
                 <ul className='list-history'>
-                    {tripsHistoryRequest ? <li>Loading...</li> : tripsHistoryPointList}
+                    {tripsHistoryPointList }
                 </ul>
             </div>
         );
