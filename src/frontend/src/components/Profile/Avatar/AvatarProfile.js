@@ -125,6 +125,7 @@ class AvatarProfile extends Component {
 
 
   render(){
+        // console.log('pixelCrop = ', this.state.pixelCrop)
       const { classes } = this.props
       let conditionalInput = this.state.imgSrc === null ?
           <label className='photo-input-label'>
