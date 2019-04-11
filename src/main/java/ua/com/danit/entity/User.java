@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,6 +26,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 @Entity
+@ToString
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User extends Auditable {
   @Id

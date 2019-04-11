@@ -48,7 +48,6 @@ class Profile extends Component {
     }*/
 
     handleChange = (e) => {
-        console.log(e.target.value)
             this.setState({user: {...this.state.user, [e.target.name]: e.target.value}, newCar: {...this.state.newCar, [e.target.name]:e.target.value}})
     }
 
