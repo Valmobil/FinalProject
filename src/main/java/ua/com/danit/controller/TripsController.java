@@ -41,18 +41,18 @@ public class TripsController {
   }
 
   @PostMapping("list")
-  public List<Trip> getUserTripList(@RequestHeader String userTokenAccess) {
-    return tripsService.getTripListService(userTokensService.findUserByAccessToken(userTokenAccess));
+  public List<Trip> getUserTripList(@RequestHeader String authorization) {
+    return tripsService.getTripListService(userTokensService.findUserByAccessToken(authorization));
   }
 
   @PostMapping("delete")
-  public void deleteUserTrip(@RequestBody Trip trip, @RequestHeader String userTokenAccess) {
-    tripsService.deleteTripById(trip.getTripId(), userTokensService.findUserByAccessToken(userTokenAccess));
+  public void deleteUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
+    tripsService.deleteTripById(trip.getTripId(), userTokensService.findUserByAccessToken(authorization));
   }
 
   @PostMapping("copy")
-  public List<Trip> copyUserTrip(@RequestBody Trip trip, @RequestHeader String userTokenAccess) {
-    User user = userTokensService.findUserByAccessToken(userTokenAccess);
+  public List<Trip> copyUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
+    User user = userTokensService.findUserByAccessToken(authorization);
     tripsService.copyTripById(trip.getTripId(), user);
     return tripsService.getTripListService(user);
   }

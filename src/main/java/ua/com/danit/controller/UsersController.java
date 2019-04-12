@@ -26,8 +26,8 @@ public class UsersController {
   }
 
   @PutMapping("")
-  public UserInfo saveUserProfile(@RequestBody User user, @RequestHeader String userTokenAccess) {
-    return usersService.saveUserProfile(user, userTokensService.findUserByAccessToken(userTokenAccess));
+  public UserInfo saveUserProfile(@RequestBody User user, @RequestHeader String authorization) {
+    return usersService.saveUserProfile(user, userTokensService.findUserByAccessToken(authorization));
   }
 
   @GetMapping("test")

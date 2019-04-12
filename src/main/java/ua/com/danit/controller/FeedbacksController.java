@@ -31,12 +31,12 @@ public class FeedbacksController {
   }
 
   @PostMapping("")
-  public List<FeedbackInfo> getFeedbackFromDb(@RequestHeader String userTokenAccess) {
-    return feedbacksService.getForNewListOfFeedback(userTokensService.findUserByAccessToken(userTokenAccess));
+  public List<FeedbackInfo> getFeedbackFromDb(@RequestHeader String authorization) {
+    return feedbacksService.getForNewListOfFeedback(userTokensService.findUserByAccessToken(authorization));
   }
 
   @PutMapping("")
-  public List<FeedbackInfo> saveFeedbackToDb(@RequestBody List<Feedback> feedbaks, @RequestHeader String userTokenAccess) {
-    return feedbacksService.saveForNewListOfFeedback(feedbaks, userTokensService.findUserByAccessToken(userTokenAccess));
+  public List<FeedbackInfo> saveFeedbackToDb(@RequestBody List<Feedback> feedbaks, @RequestHeader String authorization) {
+    return feedbacksService.saveForNewListOfFeedback(feedbaks, userTokensService.findUserByAccessToken(authorization));
   }
 }
