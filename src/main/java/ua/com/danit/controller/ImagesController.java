@@ -34,10 +34,8 @@ public class ImagesController {
   }
 
   @PutMapping("")
-  public String saveImageController(@RequestParam CommonsMultipartFile[] fileUpload, @RequestHeader String userTokenAccess) {
+  public String saveImageController(@RequestParam CommonsMultipartFile[] fileUpload, @RequestHeader String authorization) {
     Blob imageBlob = null;
-    return imageService.saveNewImage(imageBlob, userTokenAccess);
+    return imageService.saveNewImage(imageBlob, authorization);
   }
-
-
 }
