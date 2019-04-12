@@ -12,12 +12,12 @@ import { setPhoto} from '../../../actions/userCreators'
 import {connect} from 'react-redux'
 
 const styles = {
-  bigAvatar: {
-    margin: 10,
-    width: 130,
-    height: 130,
-    paddingTop: 20
-  },
+    bigAvatar: {
+        margin: 10,
+        width: 130,
+        height: 130,
+        paddingTop: 20
+    },
     acceptButton: {
         borderRadius: 3,
         background: '#fff',
@@ -43,20 +43,29 @@ const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/
 
 class AvatarProfile extends Component {
 
-        state = {
-            file: null,
-            imgSrc: null,
-            crop: {
-                aspect: 3 / 4
-            },
-            pixelCrop: null,
-        };
+    state = {
+        file: null,
+        imgSrc: null,
+        crop: {
+            aspect: 3 / 4
+        },
+        pixelCrop: null,
+    };
 
 
 
     handleFile = (e) => {
         const file = e.target.files[0]
-        this.setState({file})
+        const img = new Image();
+        img.src = window.URL.createObjectURL( file );
+
+        img.onload = () => {
+            const width = img.naturalWidth
+            const height = img.naturalHeight
+            this.setState({pixelCrop: {x: 0, y: 0, width, height}, file})
+        }
+
+        // this.setState({file})
         const reader = new FileReader();
         reader.addEventListener('load', () => {
             this.setState({imgSrc: reader.result})
@@ -70,7 +79,7 @@ class AvatarProfile extends Component {
 
 
     saveImage = (e) => {
-      // e.preventDefault()
+        // e.preventDefault()
         const { file, pixelCrop } = this.state
         this.getCroppedImg(file, pixelCrop, 'userPhoto')
             .then(res => {
@@ -124,57 +133,57 @@ class AvatarProfile extends Component {
     }
 
 
-  render(){
-        // console.log('pixelCrop = ', this.state.pixelCrop)
-      const { classes } = this.props
-      let conditionalInput = this.state.imgSrc === null ?
-          <label className='photo-input-label'>
-              <input type="file"
-                 className='photo-input'
-                 accept={acceptedFileTypes}
-                 onChange={this.handleFile}
-          />
-              Choose file
-          </label> :
-          <>
-              <span className='crop-label'>You can crop the photo</span>
-              <ReactCrop
-                  src={this.state.imgSrc}
-                  onChange={this.onCropChange}
-                  crop={this.state.crop}
-              />
-              <div className="image-choose-button-container">
-                  <Button onClick={this.saveImage}
-                          classes={{
-                              root: classes.acceptButton,
-                              label: classes.label
-                          }}
-                  >
-                      Submit
-                  </Button>
-                  <Button onClick={this.rejectImage}
-                      classes={{
-                      root: classes.rejectButton,
-                      label: classes.label
-                  }}
-                  >
-                      Reject
-                  </Button>
-              </div>
-          </>
-      return (
+    render(){
+        console.log('pixelCrop = ', this.state.pixelCrop)
+        const { classes } = this.props
+        let conditionalInput = this.state.imgSrc === null ?
+            <label className='photo-input-label'>
+                <input type="file"
+                       className='photo-input'
+                       accept={acceptedFileTypes}
+                       onChange={this.handleFile}
+                />
+                Choose file
+            </label> :
+            <>
+                <span className='crop-label'>You can crop the photo</span>
+                <ReactCrop
+                    src={this.state.imgSrc}
+                    onChange={this.onCropChange}
+                    crop={this.state.crop}
+                />
+                <div className="image-choose-button-container">
+                    <Button onClick={this.saveImage}
+                            classes={{
+                                root: classes.acceptButton,
+                                label: classes.label
+                            }}
+                    >
+                        Submit
+                    </Button>
+                    <Button onClick={this.rejectImage}
+                            classes={{
+                                root: classes.rejectButton,
+                                label: classes.label
+                            }}
+                    >
+                        Reject
+                    </Button>
+                </div>
+            </>
+        return (
 
-              conditionalInput
+            conditionalInput
 
-      // {/*// /!*<Grid container justify="center" alignItems="center">*!/*/}
-      // {/*// /!*<Avatar alt="Remy Sharp" className={classes.bigAvatar} />*!/*/}
-      //     {/*//     <IconAvatars/>*/}
-      //     {/*// </Grid>*/}
-      )
-  }
+            // {/*// /!*<Grid container justify="center" alignItems="center">*!/*/}
+            // {/*// /!*<Avatar alt="Remy Sharp" className={classes.bigAvatar} />*!/*/}
+            //     {/*//     <IconAvatars/>*/}
+            //     {/*// </Grid>*/}
+        )
+    }
 }
 AvatarProfile.propTypes = {
-  classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired
 }
 
 const mapDispatchToProps = (dispatch) => {

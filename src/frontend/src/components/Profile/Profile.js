@@ -55,10 +55,16 @@ class Profile extends Component {
     changePass = () => {
         const car = this.state.user.car;
         console.log(car)
-        car.push(this.state.newCar);
-        this.setState({...this.state.user, car});
-        this.props.setProfile(this.state.user);
-        console.log(this.state.user)
+        const {carName, carColour} = {...this.state.newCar}
+        console.log(carColour === Number)
+        if (carName !== '' && carColour !== '') {
+            car.push(this.state.newCar);
+            this.setState({...this.state.user, car});
+            this.props.setProfile(this.state.user);
+        }
+        else
+        {alert("Введи хоть что-то маньяк")}
+        console.log("From profile ", this.state.user)
     }
 
 
@@ -76,8 +82,9 @@ class Profile extends Component {
     // }
 
   render () {
-        const {classes} = this.props
 
+       // console.log(this.props.users.cars)
+        const {classes} = this.props
 
       // const { cars } = this.props.users
         // const { phone, userEmail } = this.state

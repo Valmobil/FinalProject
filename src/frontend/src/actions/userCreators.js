@@ -1,5 +1,5 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY } from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY, SET_PROFILE } from './users'
 import axios from 'axios'
 
 
@@ -284,8 +284,10 @@ export const setErrorMessage = (message) => dispatch => {
 ////setProfile data to database
 export const setProfile = (profile) => dispatch => {
     callApi('put', '/api/users', profile)
+        // then(response => dispatch({type: SET_PROFILE, payload: response.data}))
+        .then(res => console.log('cars from userCreators: ', res))
         .catch(err => console.log(err))
-    dispatch({type: SET_USER, payload: profile})
+        dispatch({type: SET_PROFILE, payload: profile})
 }
 //* **********************
 //
@@ -306,21 +308,21 @@ export const setProfile = (profile) => dispatch => {
 //* **********************
 
 export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
-    dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
     callApi('post','api/trips/delete')
         .then(console.log)
         .catch(err => console.log(err))
+    dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
 }
 //* **********************
 
 export const setPhoto = (image) => dispatch => {
     console.log(image)
-    // let data = new FormData();
-    // data.append('image', image);
-    const config = { 'Content-Type': `multipart/form-data}` }
+    let data = new FormData();
+    data.append('file', image);
 
-   callApi('put', 'api/images', image, config)
-       .then(response => console.log('image response: ', response))
-       .catch(console.log)
+
+    callApi('put', 'api/images', data)
+        .then(response => console.log('image response: ', response))
+        .catch(console.log)
 }
 
