@@ -39,7 +39,7 @@ class Button extends Component {
    componentDidMount () {
      callApi('post', '/api/feedbacks')
        .then(response =>
-         console.log('from feedback',response)
+         console.log('from feedback', response)
        )
        .catch(err => console.log(err))
    }

@@ -6,8 +6,9 @@ import {connect} from 'react-redux'
 
 class Header extends Component {
   render () {
+      let greeting = this.props.users.user ? `Welcome, ${this.props.users.user.userName}` : null
     return (
-      <div className="header">Welcome, {this.props.users.user.userName}
+        <div className="header"> {greeting}
         <DrawerButton/>
         <Drawer/>
       </div>

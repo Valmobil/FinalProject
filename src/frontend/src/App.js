@@ -9,7 +9,8 @@ import ProtectedRoute from './components/hoc/ProtectedRoute/ProtectedRoute'
 import Header from './components/Header/Header'
 import PassRestoration from './components/PassRestoration'
 import ChangePassword from './components/ChangePassword'
-// import TripsHistory from "./components/TripsHistory/TripsHistory";
+import TripsHistoryForm from "./components/TripsHistory/TripsHistoryForm";
+import NewTrip from './components/NewTrip/NewTrip'
 
 import './App.css'
 import FeedbackForms from './components/FeedbackForms'
@@ -28,6 +29,9 @@ class App extends Component {
             <Route exact path="/restore_password" component={PassRestoration}/>
             <Route exact path="/newpassword" component={ChangePassword} />
             <Route exact path="/feedback" component={FeedbackForms} />
+            <Route exact path="/C" component={ChangePassword} />
+            <Route exact path='/history' component={TripsHistoryForm}/>
+            <Route exact path='/newtrip' component={NewTrip}/>
             <Route path='*' component={NoMatch}/>
           </Switch>
         </div>

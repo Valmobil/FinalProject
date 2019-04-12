@@ -1,19 +1,10 @@
-*{
-  margin: 0;
-  padding: 0;
-}
-.trip-button{
-  justify-content: center;
-  width: 100%;
-  margin-top: 60px;
-  margin-bottom: 20px;
-}
 .trip-history{
   display: block;
-  width: 250px;
+  width: 70%;
 }
 .trip-history li{
   display: flex;
+  justify-content: center;
   margin-top: 10px;
   list-style-type: none;
   color: #ffffff;
