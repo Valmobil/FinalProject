@@ -1,10 +1,12 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE,
-    SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, TRIPS_HISTORY_REQUEST,
-    TRIPS_HISTORY_SUCCESS, TRIPS_HISTORY_FAILURE  } from '../actions/users'
+    SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
+    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR} from '../actions/users'
 
 const initialState = {
     tripsHistoryRequest: false,
     tripsHistory :[],
+    allPointRequest:false,
+    allPoints:[],
   user: {
     createdDate: '',
     modifiedDate: '',
@@ -66,12 +68,14 @@ function users (state = initialState, action) {
       return {...state, myCoordinates: action.payload}
     case SET_ERROR_MESSAGE:
       return {...state, errorMessage: action.payload}
-    case TRIPS_HISTORY_REQUEST:
-        return {...state, tripsHistoryRequest: action.payload}
-    case TRIPS_HISTORY_SUCCESS:
+    case DELETE_TRIP_FROM_HISTORY:
         return {...state, tripsHistory: action.payload}
-    case TRIPS_HISTORY_FAILURE:
-        return {...state, tripsHistory: action.payload}
+    case GET_LOCATION_REQUEST:
+        return{...state, allPointRequest: true}
+    case GET_LOCATION_SUCCESS:
+        return{...state, allPoints: action.payload, allPointRequest:false}
+    case GET_LOCATION_ERROR:
+        return{...state}
 
     default:
       return {...state}

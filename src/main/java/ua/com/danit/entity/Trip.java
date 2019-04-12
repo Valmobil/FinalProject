@@ -1,12 +1,15 @@
 package ua.com.danit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.lang.Nullable;
@@ -33,14 +36,17 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//@JsonIgnoreType()
+@ToString
 public class Trip extends Auditable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long tripId;
+  private Long tripId;
   @JsonView(View.Summary.class)
   @ManyToOne
   @JoinColumn(name = "TRIP_USER_ID", referencedColumnName = "userId")
   @JsonIgnoreProperties({"userName", "userPhone", "userMail", "userToken", "userTokenValidTo", "userPhoto"})
+  //  @JsonProperty("user")
   private User user;
   @ManyToOne
   @JoinColumn(name = "TRIP_CAR_ID", referencedColumnName = "carId")
@@ -49,9 +55,7 @@ public class Trip extends Auditable {
   private Car car;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "trip")
   private List<TripPoint> tripPoint;
-  //    @OneToMany(fetch = FetchType.EAGER)
-  //    private List<TripPassenger> tripPassengers;
   private LocalDateTime tripDateTime;
-  //  private boolean tripIsForDriver;
   private int tripSitsQty;
+  private int tripIsDeleted;
 }
