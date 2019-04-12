@@ -1,5 +1,6 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY } from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
+    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR} from './users'
 import axios from 'axios'
 
 
@@ -307,8 +308,8 @@ export const setProfile = (profile) => dispatch => {
 
 export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
     dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
-    callApi('post','api/trips/delete')
-        .then(console.log)
+    callApi('delete','api/trips/delete',tripId)
+        .then(resp=>console.log(resp))
         .catch(err => console.log(err))
 }
 //* **********************
@@ -323,4 +324,20 @@ export const setPhoto = (image) => dispatch => {
        .then(response => console.log('image response: ', response))
        .catch(console.log)
 }
+//* **********************
 
+export const getLocationFromDB = dispatch => {
+    dispatch({type: GET_LOCATION_REQUEST, payload: true})
+    callApi('get', 'api/points/test')
+        .then(resp => {
+
+        })
+        .then(resp => {
+            console.log(resp)
+            dispatch({type: GET_LOCATION_SUCCESS, payload:resp.data})
+            }
+        )
+        .catch(err=>{
+            dispatch({type: GET_LOCATION_ERROR, payload: 'choice place from map'})
+        })
+}

@@ -13,6 +13,8 @@ const Drawer = (props) => {
       <div style={{display: 'flex', flexDirection: 'column'}}>
         <Link to={'/main'} onClick={() => topMenuToggle(true)}>Main</Link>
         <Link to={'/profile'} onClick={() => topMenuToggle(true)}>Profile</Link>
+        <Link to={'/history'} onClick={() => topMenuToggle(true)}>History</Link>
+        <Link to={'/newtrip'} onClick={() => topMenuToggle(true)}>New Trip</Link>
         <Link to={'/'} onClick={() => { signOut(auth, props.logOut); topMenuToggle(true) }}>Sign out</Link>
       </div>
     </div>
