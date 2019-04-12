@@ -21,7 +21,7 @@ public class UserTokensController {
   }
 
   @PostMapping("")
-  public UserToken requestNewTocken(@RequestBody UserToken userToken) {
+  public UserToken requestNewToken(@RequestBody UserToken userToken) {
     return userTokensService.requestNewTokenService(userToken);
   }
 

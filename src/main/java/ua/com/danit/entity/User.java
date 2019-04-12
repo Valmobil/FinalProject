@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,6 +26,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 @Entity
+@ToString
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User extends Auditable {
   @Id
@@ -43,4 +45,8 @@ public class User extends Auditable {
   private String userPhoto;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
   private List<Car> car;
+  private Integer userIsOkUserPhoto;
+  private Integer userIsOkCarPhoto;
+  private Integer userIsConfirmedMail;
+  private Integer userIsConfirmedPhone;
 }

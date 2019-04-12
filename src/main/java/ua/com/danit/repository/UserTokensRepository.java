@@ -8,7 +8,9 @@ import ua.com.danit.entity.UserToken;
 import java.util.List;
 
 public interface UserTokensRepository extends JpaRepository<UserToken, Long> {
+
   UserToken findByUserTokenRefresh(String userTokenRefresh);
 
   List<UserToken> findByUserTokenAccess(String accessToken);
+
 }

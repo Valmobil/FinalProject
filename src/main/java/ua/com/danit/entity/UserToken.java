@@ -19,15 +19,13 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"user"})
 public class UserToken {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long userTokenId;
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "USER_TOKEN_USER_ID", referencedColumnName = "userId")
-  //  @JsonIgnoreProperties({"user", "userId", "userName", "userPhone",
-  //      "userMail", "userTokenRefresh", "userTokenAccess", "userTokenAccessTo",
-  //      "userPhoto", "car"})
   private User user;
   private String userTokenRefresh;
   private LocalDateTime userTokenRefreshTo;

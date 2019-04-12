@@ -2,6 +2,7 @@ package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.com.danit.entity.Car;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
@@ -14,10 +15,8 @@ import ua.com.danit.repository.UserPointsRepository;
 import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +48,10 @@ public class UsersService {
 
   @Autowired
   LoginsService loginService;
+
+  public User createNewUsers(User users) {
+    return usersRepository.save(users);
+  }
 
   public User getUserById(Long userId) {
     return usersRepository.getOne(userId);
@@ -193,7 +196,16 @@ public class UsersService {
     return userLogin.getUserLogin().contains("@");
   }
 
-  public UserInfo saveUserProfile(User user) {
+
+  public UserInfo saveUserProfile(User user, User userFromToken) {
+    //Update some fields
+    if (userFromToken == null) {
+      return null;
+    }
+    user.setUserId(userFromToken.getUserId());
+    for (Car car : user.getCar()) {
+      car.setUser(user);
+    }
     usersRepository.save(user);
     UserInfo userInfo = new UserInfo();
     userInfo.setUser(usersRepository.getOne(user.getUserId()));
