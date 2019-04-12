@@ -17,20 +17,20 @@ const styles = theme => ({
 
 function DateAndTimePickers(props) {
     const { classes } = props;
-    const time = new Date();
-    let currentTime = time.getHours() +':' + time.getMinutes();
-    const date = new Date();
-    let currentDate = date.getDay() + '.' + date.getMonth() +'.'+date.getFullYear();
+    // const time = new Date();
+    // let currentTime = time.getHours() +':' + time.getMinutes();
+    // const date = new Date();
+    // let currentDate = date.getDay() + '.' + date.getMonth() +'.'+date.getFullYear();
 
 
-    console.log(date);
+    // console.log(date);
     return (
         <form className={classes.container} noValidate>
             <TextField
                 id="datetime-local"
                 label="Next trip"
                 type="datetime-local"
-                defaultValue={date + time}
+                // defaultValue={date + time}
                 className={classes.textField}
                 InputLabelProps={{
                     shrink: true,

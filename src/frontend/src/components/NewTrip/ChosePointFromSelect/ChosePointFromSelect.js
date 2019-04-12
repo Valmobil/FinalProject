@@ -1,18 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDOM from 'react-dom';
-import { getLocationFromDB } from '../../../actions/userCreators';
-import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import FilledInput from '@material-ui/core/FilledInput';
-import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import NativeSelect from '@material-ui/core/NativeSelect';
+import axios from "axios/index";
 
 const styles = theme => ({
     root: {
@@ -30,12 +23,19 @@ const styles = theme => ({
 
 class ChosePointFromSelect extends React.Component {
     state = {
-        location:[],
+        location:'',
         from:'',
         to:''
     };
 
-
+    componentDidMount() {
+        axios.get('api/points/test')
+            .then(resp => {
+                console.log(resp.data.pointNameEn)
+                this.setState({
+                    location: resp.data.pointNameEn})
+            })
+    }
 
     handleChange = name => event => {
         this.setState({ [name]: event.target.value });
@@ -43,9 +43,11 @@ class ChosePointFromSelect extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const location = this.state.location.map(item=>{
-           return <option>{item.name}</option>
-        })
+        // const location = this.state.location.map(item=>{
+        //    return <option>{item.name}</option>
+        // })
+        const setLocation = this.state.location
+        console.log(this.state.location)
         return (
             <div>
                     <div className={classes.root}>
@@ -59,7 +61,7 @@ class ChosePointFromSelect extends React.Component {
                                 <option value="" disabled>
                                     Input Point
                                 </option>
-                                {location}
+                                <option>{setLocation}</option>
                             </NativeSelect>
                             <FormHelperText>From</FormHelperText>
                         </FormControl>
@@ -75,7 +77,8 @@ class ChosePointFromSelect extends React.Component {
                                 <option value="" disabled>
                                     Input Point
                                 </option>
-                                {location}
+                                <option>{setLocation}</option>
+
                             </NativeSelect>
                             <FormHelperText>To</FormHelperText>
                         </FormControl>

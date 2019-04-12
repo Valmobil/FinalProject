@@ -71,9 +71,9 @@ function users (state = initialState, action) {
     case DELETE_TRIP_FROM_HISTORY:
         return {...state, tripsHistory: action.payload}
     case GET_LOCATION_REQUEST:
-        return{...state, placesRequest: true}
+        return{...state, allPointRequest: true}
     case GET_LOCATION_SUCCESS:
-        return{...state, places: action.payload, placesRequest:false}
+        return{...state, allPoints: action.payload, allPointRequest:false}
     case GET_LOCATION_ERROR:
         return{...state}
 

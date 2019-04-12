@@ -36,15 +36,18 @@ const styles = theme => ({
 
 class TripsHistory extends Component {
     state ={
-        tripsHistory: this.props.tripsHistory
+        tripsHistory: this.props.tripsHistory,
+        fetchingTripsHistory: true,
+        error:''
     }
 
     componentDidMount(){
         callApi('post', '/api/trips/list')
             .then(resp => this.setState({
-                tripsHistory: resp.data
+                tripsHistory: resp.data,
+                fetchingTripsHistory: false
             }))
-
+            .catch(err => err.message)
     }
 
     handleDelete = (id) => {
@@ -54,17 +57,15 @@ class TripsHistory extends Component {
             }
         )
         this.setState({
-            tripsHistory: newTripsHistory
+            tripsHistory: newTripsHistory,
+            fetchingTripsHistory: false
         })
         this.props.deleteTripFromHistory(id);
     }
 
 
     render() {
-    // console.log('state = ', this.state)
-    // console.log('redux tripsHistory = ', this.props.tripsHistory)
-        const { classes , tripsHistoryRequest } = this.props
-
+        const { classes  } = this.props
         let nameOfPoint = '';
         let tripsHistoryPointList = this.state.tripsHistory.map((item) => {
             return (
@@ -96,7 +97,7 @@ class TripsHistory extends Component {
         return (
             <div className='trip-history-list'>
                 <ul className='list-history'>
-                    {tripsHistoryPointList }
+                    {this.state.fetchingTripsHistory ? 'Loading...' : tripsHistoryPointList }
                 </ul>
             </div>
         );
@@ -106,7 +107,6 @@ class TripsHistory extends Component {
 const mapStateToProps = (state) => {
     return {
         tripsHistory: state.users.tripsHistory,
-        tripsHistoryRequest: state.users.tripsHistoryRequest
     }
 }
 
@@ -117,7 +117,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 TripsHistory.propTypes ={
     tripsHistory: PropTypes.array.isRequired,
-    tripsHistoryRequest: PropTypes.bool.isRequired,
 }
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TripsHistory))
