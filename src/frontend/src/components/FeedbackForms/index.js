@@ -15,6 +15,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 // import Typography from '@material-ui/core/Typography'
 
 import './FeedbackForms.scss'
+import { callApi } from '../../actions/userCreators'
 
 const styles = theme => ({
   card: {
@@ -34,6 +35,13 @@ class Button extends Component {
      // disliked: false,
      initLike: 0,
      initDislike: 0
+   }
+   componentDidMount () {
+     callApi('post', '/api/feedbacks')
+       .then(response =>
+         console.log('from feedback',response)
+       )
+       .catch(err => console.log(err))
    }
    //
    //   // this.onLikeClick = this.onLikeClick.bind(this)
@@ -63,72 +71,47 @@ class Button extends Component {
      }))
    }
 
-  state = { expanded: false };
+   // state = { expanded: false };
 
-  render () {
-    const { classes } = this.props
-    console.log(this.props)
-    const tripList = this.props.lastsTrips.map(trip => {
-      return (
-        <Card className={classes.card} key={trip.id}>
-          <CardHeader
-            avatar={
-              <Avatar aria-label="Recipe" src={trip.img} className={classes.avatar}>
-                R
-              </Avatar>
-            }
-            title={trip.tripRoad}
-            subheader={trip.date}
-          />
-          <div className={classes.thumbUp}>
-            <button onClick={this.handleClick} ><i className="fas fa-thumbs-up">|</i> {trip.initLike}
-            </button>
-
-            <button onClick={this.handleClickDis}><i className="fas fa-thumbs-down">|</i> {trip.initDislike} </button>
-
-          </div>
-        </Card>
-      )
-    })
-    return (
-      <>
-        {tripList}
-      </>
-
-    )
-  }
+   render () {
+     // const { classes } = this.props
+     // console.log(this.props)
+     // const tripList = this.props.lastsTrips.map(trip => {
+     //   return (
+     //     <Card className={classes.card} key={trip.id}>
+     //       <CardHeader
+     //         avatar={
+     //           <Avatar aria-label="Recipe" src={trip.img} className={classes.avatar}>
+     //             R
+     //           </Avatar>
+     //         }
+     //         title={trip.tripRoad}
+     //         subheader={trip.date}
+     //       />
+     //       <div className={classes.thumbUp}>
+     //         <button onClick={this.handleClick} ><i className="fas fa-thumbs-up">|</i> {trip.initLike}
+     //         </button>
+     //
+     //         <button onClick={this.handleClickDis}><i className="fas fa-thumbs-down">|</i> {trip.initDislike} </button>
+     //
+     //       </div>
+     //     </Card>
+     //   )
+     // })
+     // return (
+     //   <>
+     //     {tripList}
+     //   </>
+     return (
+       <div>Feedback</div>
+     )
+   }
 }
 
 const mapStateToProps = state => {
   return {
-    lastsTrips: [
-      {
-        id: '1',
-        img: 'https://www.elastic.co/assets/bltada7771f270d08f6/enhanced-buzz-1492-1379411828-15.jpg',
-        tripRoad: 'From - To',
-        date: '01/04/19',
-        initLike: 0,
-        initDislike: 0
-      },
-      {id: '2',
-        img: 'https://www.elastic.co/assets/bltada7771f270d08f6/enhanced-buzz-1492-1379411828-15.jpg',
-        tripRoad: 'From2- To2',
-        date: '03/04/19',
-        initLike: 0,
-        initDislike: 0},
-      {id: '3',
-        img: 'https://www.elastic.co/assets/bltada7771f270d08f6/enhanced-buzz-1492-1379411828-15.jpg',
-        tripRoad: 'From3 - To3',
-        date: '02/04/19',
-        initLike: 0,
-        initDislike: 0},
-      {id: '4',
-        img: 'https://www.elastic.co/assets/bltada7771f270d08f6/enhanced-buzz-1492-1379411828-15.jpg',
-        tripRoad: 'From4 - To4',
-        date: '05/04/19',
-        initLike: 0,
-        initDislike: 0}
-    ]
+    // lastsTrips: state.props.lastsTrips
+
   }
 }
 
