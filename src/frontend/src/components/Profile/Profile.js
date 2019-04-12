@@ -22,7 +22,7 @@ class Profile extends Component {
             userPhoto:    this.props.users.user.userPhoto,
             userPhone:    this.props.users.user.userPhone,
             userMail:     this.props.users.user.userMail,
-            car: [],
+            car:[]
         },
     newCar: {
             carName: '',
@@ -30,6 +30,7 @@ class Profile extends Component {
             carPhoto: '/CarsPhotos/n_1.jpg',
             },
         }
+
 
 
 /*  handleChange = name => event => {
@@ -193,6 +194,7 @@ class Profile extends Component {
           </Button>
           </MuiThemeProvider>
       </form>
+
     )
   }
 }
