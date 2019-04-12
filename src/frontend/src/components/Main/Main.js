@@ -255,6 +255,7 @@ class Main extends Component {
   render () {
     // console.log(this.props.users)
     const { classes } = this.props
+      console.log('from main',classes)
     const { role, car, name, destination, editing, adding, creatingTrip, mapSwitch } = this.state
     const { cars, userPoints, commonPoints } = this.props.users
     let currentCar = cars.length === 1 ? cars[0] : car
