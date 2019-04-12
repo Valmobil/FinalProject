@@ -2,6 +2,7 @@ package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.com.danit.entity.Car;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
@@ -196,7 +197,15 @@ public class UsersService {
   }
 
 
-  public UserInfo saveUserProfile(User user) {
+  public UserInfo saveUserProfile(User user, User userFromToken) {
+    //Update some fields
+    if (userFromToken == null) {
+      return null;
+    }
+    user.setUserId(userFromToken.getUserId());
+    for (Car car : user.getCar()) {
+      car.setUser(user);
+    }
     usersRepository.save(user);
     UserInfo userInfo = new UserInfo();
     userInfo.setUser(usersRepository.getOne(user.getUserId()));
