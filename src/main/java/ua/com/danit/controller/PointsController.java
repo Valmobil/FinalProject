@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.Point;
@@ -46,5 +47,10 @@ public class PointsController {
       points.add(pointsService.getPointById(i));
     }
     return points;
+  }
+
+  @PostMapping("")
+  public List<Point> searchByPointName(@RequestHeader String searchText) {
+    return pointsService.getPointByName(searchText);
   }
 }

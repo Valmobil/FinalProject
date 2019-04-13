@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Point;
 import ua.com.danit.repository.PointsRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,10 +20,9 @@ public class PointsService {
     return pointsRepository.getOne(pointId);
   }
 
-  public List<Point> getPointByName(String pointName) {
-    //realization only for EN names, not tested yet
-    List<Point> listOfPoints = pointsRepository.findPointByPointNameEnLike(pointName + "%");
+  public List<Point> getPointByName(String searchText) {
+//    List<Point> listOfPoints = pointsRepository.findTop10ByPointNameEnIsLikeOrPointNameRuIsLikeOrPointNameUaIsLike("%" + searchText.toUpperCase() + "%");
+    List<Point> listOfPoints = pointsRepository.findTop10ByPointNameEnContaining("%" + searchText.toUpperCase() + "%");
     return listOfPoints;
   }
-
 }

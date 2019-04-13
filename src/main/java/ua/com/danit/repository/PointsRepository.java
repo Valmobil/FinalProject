@@ -13,4 +13,6 @@ public interface PointsRepository extends JpaRepository<Point, Long> {
 
   List<Point> findPointByPointNameEnLike(String pointNameEn);
 
+  List<Point> findTop10ByPointNameEnContaining(String searchPatern);
+
 }
