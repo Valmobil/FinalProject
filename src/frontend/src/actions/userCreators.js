@@ -1,5 +1,7 @@
-import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY } from './users'
+import {
+    SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
+    USER_LOGOUT, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, } from './users'
 import axios from 'axios'
 
 
@@ -170,7 +172,6 @@ export const setAuthByToken = () => dispatch => {
         }
     }
 }
-
 // * *********************
 
 const authDispatches = (response) => dispatch => {
@@ -216,7 +217,7 @@ export const setSocialAuth = (auth) => dispatch => {
 //* **********************
 
 export const logOut = () => dispatch => {
-    dispatch({type: SET_AUTH, payload: false})
+    dispatch({type: USER_LOGOUT})
     removeTokens()
 }
 
@@ -314,13 +315,20 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
 //* **********************
 
 export const setPhoto = (image) => dispatch => {
-    console.log(image)
-    // let data = new FormData();
-    // data.append('image', image);
-    const config = { 'Content-Type': `multipart/form-data}` }
-
-   callApi('put', 'api/images', image, config)
+    let data = new FormData();
+    data.append('file', image);
+   callApi('put', 'api/images', data)
        .then(response => console.log('image response: ', response))
        .catch(console.log)
+}
+//* **********************
+
+export const setSearchedLocation = (location) => dispatch => {
+    dispatch({type: SET_SEARCHED_LOCATION, payload: location})
+}
+//* **********************
+
+export const setTargetCoordinates = (coordinates) => dispatch => {
+    dispatch({type: SET_TARGET_COORDS, payload: coordinates})
 }
 
