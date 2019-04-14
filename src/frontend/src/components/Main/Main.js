@@ -689,7 +689,6 @@ class Main extends Component {
         selectedId: 1,
         car: '',
         name: '',
-        newName: '',
         destination: '',
         editing: '',
         adding: false,
@@ -697,8 +696,6 @@ class Main extends Component {
         creatingTrip: false,
         latitude: 0,
         longitude: 0,
-        mapSwitch: 'common',
-
 
         value: '',
         suggestions: [],
@@ -839,7 +836,7 @@ class Main extends Component {
     }
 
     handleEdit = (item) => {
-        this.setState({editing: item.userPointId, name: item.userPointName, destination: item.userPointAddress})
+        this.setState({editing: item.userPointId, name: item.userPointName, destination: item.userPointAddress, adding: false})
     }
 
     handleEditInput = (e) => {
@@ -854,7 +851,7 @@ class Main extends Component {
 
         let newUserPoints = this.props.users.userPoints.map(item => {
             if (item.userPointId === id) {
-                   return {...item, userPointName: this.state.newName, userPointAddress: this.props.users.searchedLocation}
+                   return {...item, userPointName: this.state.name, userPointAddress: this.props.users.searchedLocation}
             } else {
                 return item
             }
@@ -911,7 +908,7 @@ class Main extends Component {
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
-// console.log('targetCoordinates = ', this.props.users.targetCoordinates)
+console.log('targetCoordinates = ', this.props.users.targetCoordinates)
 // console.log('targetName = ', this.props.users.searchedLocation)
 
         const autosuggestProps = {

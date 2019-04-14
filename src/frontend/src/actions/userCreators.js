@@ -1,6 +1,7 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
-    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS,} from './users'
+    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS,
+    USER_LOGOUT, SET_TARGET_ADDRESS } from './users'
 import axios from 'axios'
 
 
@@ -267,7 +268,7 @@ export const setTrip = (trip) => dispatch => {
 //* **********************
 
 export const setAddress = (address) => dispatch => {
-    dispatch({type: SET_ADDRESS, payload: address})
+    dispatch({type: SET_SEARCHED_LOCATION, payload: address})
 }
 //* **********************
 
@@ -332,6 +333,11 @@ export const setTargetCoordinates = (coordinates) => dispatch => {
 }
 //* **********************
 
+export const setTargetAddress = (address) => dispatch => {
+    dispatch({type: SET_TARGET_ADDRESS, payload: address})
+}
+//* **********************
+
 export const getLocationFromDB = dispatch => {
     dispatch({type: GET_LOCATION_REQUEST, payload: true})
     callApi('get', 'api/points/test')
@@ -347,3 +353,5 @@ export const getLocationFromDB = dispatch => {
             dispatch({type: GET_LOCATION_ERROR, payload: 'choice place from map'})
         })
 }
+
+

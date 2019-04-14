@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './Map.css'
-import { setTargetCoordinates } from "../../actions/userCreators";
+import { setTargetCoordinates, setTargetAddress } from "../../actions/userCreators";
 import { connect } from "react-redux";
 
 
@@ -44,9 +44,14 @@ class Map extends Component {
     onFind = (result) => {
         const locations = result.response.view[0].result;
         this.addLocationsToMap(locations);
-        // const targetLocation = locations[0].location.displayPosition;
-        // this.setState({targetLatitude: targetLocation.latitude, targetLongitude: targetLocation.longitude})
+        const targetLocation = locations[0].location.displayPosition;
+
+        this.setState({targetLatitude: targetLocation.latitude, targetLongitude: targetLocation.longitude}, () => this.reverseGeocode())
         this.props.setTargetCoordinates(locations[0].location.displayPosition)
+        // this.ui.addBubble(new H.ui.InfoBubble({
+        //     lat: targetLocation.latitude,
+        //     lng: targetLocation.longitude
+        // }, { content: locations.Location.Address.Label }));
     }
 
     addLocationsToMap = (locations) => {
@@ -80,7 +85,8 @@ class Map extends Component {
 
         geocoder.reverseGeocode(parameters,
             (result) => {
-                this.props.setTargetCoordinates(result.Response.View[0].Result[0].Location.Address.Label);
+                this.props.setTargetAddress(result.Response.View[0].Result[0].Location.Address.Label);
+                this.props.setTargetCoordinates(result.Response.View[0].Result[0].Location.displayPosition);
             }, (error) => {
                 console.log(error);
             });
@@ -95,8 +101,7 @@ class Map extends Component {
             const currentMarker = new H.map.Marker({lat: latitude, lng: longitude});
             map.addObject(currentMarker);
             console.log('Clicked at ' + coord.lat.toFixed(6) + ' ' + coord.lng.toFixed(6));
-            // this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)}, () => this.myRoute())
-            // this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)})
+            this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)}, () => this.reverseGeocode())
             this.props.setTargetCoordinates({
                 latitude: coord.lat.toFixed(6),
                 longitude: coord.lng.toFixed(6),
@@ -189,7 +194,7 @@ class Map extends Component {
         // eslint-disable-next-line
         const behavior = new H.mapevents.Behavior(events);
         // eslint-disable-next-line
-        const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
+        this.ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
         this.setUpClickListener(this.map)
     }
 
@@ -221,6 +226,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         setTargetCoordinates: (coordinates) => dispatch(setTargetCoordinates(coordinates)),
+        setTargetAddress: (address) => dispatch(setTargetAddress(address))
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Map)
