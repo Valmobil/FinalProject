@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import ua.com.danit.entity.Image;
 import ua.com.danit.service.ImageService;
 
@@ -25,14 +29,13 @@ public class ImagesController {
   }
 
   @PostMapping("")
-  public byte[] getImageController(@RequestBody Long imageId) throws IOException {
-    return imageService.getImageService(imageId);
+  public byte[] getImageController(@RequestParam Long id) throws IOException {
+    return imageService.getImageService(id);
   }
 
   @PutMapping("")
-  public String saveImageController(@RequestBody Blob imageBlob, @RequestHeader String userTokenAccess) {
-    return imageService.saveNewImage(imageBlob, userTokenAccess);
+  public String saveImageController(@RequestParam CommonsMultipartFile[] fileUpload, @RequestHeader String authorization) {
+    Blob imageBlob = null;
+    return imageService.saveNewImage(imageBlob, authorization);
   }
-
-
 }

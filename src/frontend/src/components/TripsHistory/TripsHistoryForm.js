@@ -18,6 +18,7 @@ const styles = theme => ({
 })
 
 class TripsHistoryForm extends Component {
+
     render() {
         const { classes } = this.props
         return (
