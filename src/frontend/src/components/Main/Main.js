@@ -749,7 +749,7 @@ class Main extends Component {
                         },
                     }}
                     label='Place name'
-                    name='newName'
+                    name='name'
                     value={this.state.newName}
                     onChange={this.handleInput}
                 />
@@ -857,6 +857,7 @@ class Main extends Component {
             }
         })
         this.props.setUserPoints(newUserPoints)
+        // this.props.setSearchedLocation('')
         this.setState({editing: '', name: '', destination: '', adding: false})
     }
 
@@ -894,8 +895,8 @@ class Main extends Component {
     }
 
     componentDidUpdate (prevProps, prevState, snapshot) {
-        if (this.props.users.address !== prevProps.users.address) {
-            this.setState({destination: this.props.users.address})
+        if (this.props.users.searchedLocation !== prevProps.users.searchedLocation) {
+            this.setState({value: this.props.users.searchedLocation})
         }
     }
 
@@ -908,7 +909,7 @@ class Main extends Component {
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
-console.log('targetCoordinates = ', this.props.users.targetCoordinates)
+// console.log('targetCoordinates = ', this.props.users.targetCoordinates)
 // console.log('targetName = ', this.props.users.searchedLocation)
 
         const autosuggestProps = {

@@ -1,7 +1,6 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
-    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS,
-    USER_LOGOUT, SET_TARGET_ADDRESS, SET_PROFILE, SET_ROLE } from './users'
+    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT, SET_PROFILE, SET_ROLE } from './users'
 import axios from 'axios'
 
 
@@ -172,7 +171,6 @@ export const setAuthByToken = () => dispatch => {
         }
     }
 }
-
 // * *********************
 
 const authDispatches = (response) => dispatch => {
@@ -286,10 +284,10 @@ export const setErrorMessage = (message) => dispatch => {
 ////setProfile data to database
 export const setProfile = (profile) => dispatch => {
     callApi('put', '/api/users', profile)
-        // then(response => dispatch({type: SET_PROFILE, payload: response.data}))
+    // then(response => dispatch({type: SET_PROFILE, payload: response.data}))
         .then(res => console.log('cars from userCreators: ', res))
         .catch(err => console.log(err))
-        dispatch({type: SET_PROFILE, payload: profile})
+    dispatch({type: SET_USER, payload: profile})
 }
 //* **********************
 //
@@ -333,11 +331,6 @@ export const setSearchedLocation = (location) => dispatch => {
 
 export const setTargetCoordinates = (coordinates) => dispatch => {
     dispatch({type: SET_TARGET_COORDS, payload: coordinates})
-}
-//* **********************
-
-export const setTargetAddress = (address) => dispatch => {
-    dispatch({type: SET_TARGET_ADDRESS, payload: address})
 }
 //* **********************
 
