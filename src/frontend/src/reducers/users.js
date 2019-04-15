@@ -77,8 +77,6 @@ function users (state = initialState, action) {
         return {...state, searchedLocation: action.payload}
     case SET_TARGET_COORDS:
         return {...state, targetCoordinates: action.payload}
-    case SET_TARGET_ADDRESS:
-        return {...state, targetAddress: action.payload}
     case GET_LOCATION_REQUEST:
         return{...state, allPointRequest: true}
     case GET_LOCATION_SUCCESS:

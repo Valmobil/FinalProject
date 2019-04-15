@@ -44,7 +44,7 @@ class Map extends Component {
     onFind = (result) => {
         const locations = result.response.view[0].result;
         this.addLocationsToMap(locations);
-        const targetLocation = locations[0].location.displayPosition;
+        // const targetLocation = locations[0].location.displayPosition;
         // this.setState({targetLatitude: targetLocation.latitude, targetLongitude: targetLocation.longitude}, () => this.reverseGeocode())
         this.props.setTargetCoordinates(locations[0].location.displayPosition)
     }

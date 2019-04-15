@@ -909,7 +909,7 @@ class Main extends Component {
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
-// console.log('targetCoordinates = ', this.props.users.targetCoordinates)
+console.log('targetCoordinates = ', this.props.users.targetCoordinates)
 console.log('targetName = ', this.props.users.searchedLocation)
 
         const autosuggestProps = {
