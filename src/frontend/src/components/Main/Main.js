@@ -689,7 +689,6 @@ class Main extends Component {
         selectedId: 1,
         car: '',
         name: '',
-        newName: '',
         destination: '',
         editing: '',
         adding: false,
@@ -697,8 +696,6 @@ class Main extends Component {
         creatingTrip: false,
         latitude: 0,
         longitude: 0,
-        mapSwitch: 'common',
-
 
         value: '',
         suggestions: [],
@@ -752,7 +749,7 @@ class Main extends Component {
                         },
                     }}
                     label='Place name'
-                    name='newName'
+                    name='name'
                     value={this.state.newName}
                     onChange={this.handleInput}
                 />
@@ -839,7 +836,7 @@ class Main extends Component {
     }
 
     handleEdit = (item) => {
-        this.setState({editing: item.userPointId, name: item.userPointName, destination: item.userPointAddress})
+        this.setState({editing: item.userPointId, name: item.userPointName, destination: item.userPointAddress, adding: false})
     }
 
     handleEditInput = (e) => {
@@ -854,12 +851,13 @@ class Main extends Component {
 
         let newUserPoints = this.props.users.userPoints.map(item => {
             if (item.userPointId === id) {
-                   return {...item, userPointName: this.state.newName, userPointAddress: this.props.users.searchedLocation}
+                   return {...item, userPointName: this.state.name, userPointAddress: this.props.users.searchedLocation}
             } else {
                 return item
             }
         })
         this.props.setUserPoints(newUserPoints)
+        // this.props.setSearchedLocation('')
         this.setState({editing: '', name: '', destination: '', adding: false})
     }
 
@@ -897,8 +895,8 @@ class Main extends Component {
     }
 
     componentDidUpdate (prevProps, prevState, snapshot) {
-        if (this.props.users.address !== prevProps.users.address) {
-            this.setState({destination: this.props.users.address})
+        if (this.props.users.searchedLocation !== prevProps.users.searchedLocation) {
+            this.setState({value: this.props.users.searchedLocation})
         }
     }
 
@@ -912,7 +910,7 @@ class Main extends Component {
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
 // console.log('targetCoordinates = ', this.props.users.targetCoordinates)
-// console.log('targetName = ', this.props.users.searchedLocation)
+console.log('targetName = ', this.props.users.searchedLocation)
 
         const autosuggestProps = {
             renderInputComponent: this.renderInputComponent,
