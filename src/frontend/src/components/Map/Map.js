@@ -44,8 +44,8 @@ class Map extends Component {
     onFind = (result) => {
         const locations = result.response.view[0].result;
         this.addLocationsToMap(locations);
-        // const targetLocation = locations[0].location.displayPosition;
-        // this.setState({targetLatitude: targetLocation.latitude, targetLongitude: targetLocation.longitude}, () => this.reverseGeocode())
+        const targetLocation = locations[0].location.displayPosition;
+        this.setState({targetLatitude: targetLocation.latitude, targetLongitude: targetLocation.longitude}, () => this.reverseGeocode())
         this.props.setTargetCoordinates(locations[0].location.displayPosition)
     }
 
@@ -94,7 +94,7 @@ class Map extends Component {
             this.group.addObject(currentMarker);
             this.map.addObject(this.group);
             console.log('Clicked at ' + coord.lat.toFixed(6) + ' ' + coord.lng.toFixed(6));
-            // this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)}, () => this.reverseGeocode())
+            this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)}, () => this.reverseGeocode())
             this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)})
             this.props.setTargetCoordinates({
                 latitude: coord.lat.toFixed(6),
