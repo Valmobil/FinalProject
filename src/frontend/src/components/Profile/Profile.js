@@ -37,7 +37,7 @@ class Profile extends Component {
     this.setState({
       [name]: event.target.value
 5
-    })
+    })git
   };*/
 
    /* handleChangeCar = name => event => {
