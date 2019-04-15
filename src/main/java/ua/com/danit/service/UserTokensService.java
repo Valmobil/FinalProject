@@ -21,7 +21,12 @@ public class UserTokensService {
   }
 
   public User findUserByAccessToken(String accessToken) {
-    List<UserToken> userTokens = userTokensRepository.findByUserTokenAccess(accessToken);
+    List<UserToken> userTokens;
+    if (accessToken.substring(0,6).equals("Bearer")) {
+      userTokens = userTokensRepository.findByUserTokenAccess(accessToken.substring(7));
+    } else {
+      userTokens = userTokensRepository.findByUserTokenAccess(accessToken);
+    }
     if (userTokens.size() != 1) {
       return null;
     } else {
