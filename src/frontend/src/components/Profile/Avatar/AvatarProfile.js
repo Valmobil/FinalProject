@@ -159,7 +159,7 @@ class AvatarProfile extends Component {
                 Choose file
             </label>
                 <div >
-            <img src={this.state.myImageSrc} style={{height: 100}} alt=''/>
+                    <img src={this.state.myImageSrc} style={{height: 100}} alt=''/>
                 </div>
             </>
             :

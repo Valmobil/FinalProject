@@ -1,17 +1,23 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import {Route, Redirect} from 'react-router-dom'
-import { checkAuthorizationByToken } from "../../../actions/userCreators";
+import { checkAuthorizationByToken, setInitialLoadToFalse } from "../../../actions/userCreators";
 
 
 
 class ProtectedRoute extends Component {
     componentDidMount(){
-        this.props.checkAuthorizationByToken()
+        if (!this.props.users.initialLoad){
+            this.props.checkAuthorizationByToken()
+        } else {
+            this.props.setInitialLoadToFalse()
+        }
     }
 
     componentDidUpdate(prevProps){
-        if (prevProps.path !== this.props.path) this.props.checkAuthorizationByToken()
+        if (!this.props.users.initialLoad && prevProps.path !== this.props.path) {
+            this.props.checkAuthorizationByToken()
+        }
     }
 
     render() {
@@ -38,6 +44,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         checkAuthorizationByToken: () => dispatch(checkAuthorizationByToken()),
+        setInitialLoadToFalse: () => dispatch(setInitialLoadToFalse())
     }
 }
 

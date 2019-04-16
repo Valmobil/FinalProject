@@ -1,6 +1,7 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
-    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT } from './users'
+    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT,
+    INITIAL_LOAD } from './users'
 import axios from 'axios'
 
 
@@ -63,6 +64,7 @@ export const checkAuthorizationByToken = () => dispatch => {
         if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))) {
             dispatch(logOut());
         } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
+
             axios({
                 method: 'post',
                 url: '/api/usertokens',
@@ -77,7 +79,9 @@ export const checkAuthorizationByToken = () => dispatch => {
                 })
                 .catch(console.log)
         }
-    } else dispatch(logOut())
+    } else {
+        dispatch(logOut())
+    }
 }
 // export const checkAuthorizationByToken = () => dispatch => {
 //     const accessToken = window.localStorage.getItem('iTripper_access_token');
@@ -122,7 +126,7 @@ export const checkAuthorizationByToken = () => dispatch => {
 //* *********************
 
 const setLocalStorage = (accessToken, refreshToken) => {
-    const accessTokenExpires = new Date(Date.now() + 880000).toISOString()
+    const accessTokenExpires = new Date(Date.now() + 1000).toISOString()
     const refreshTokenExpires = new Date(Date.now() + 2591900000).toISOString()
     window.localStorage.setItem('iTripper_access_token', accessToken)
     window.localStorage.setItem('iTripper_refresh_token', refreshToken)
@@ -143,7 +147,7 @@ const removeTokens = () => {
 export const setAuthByToken = () => dispatch => {
     const userToken = window.localStorage.getItem('iTripper_access_token');
     if (userToken) {
-
+dispatch({type: INITIAL_LOAD, payload: true})
         const accessTokenExpires = window.localStorage.getItem('iTripper_access_token_expires')
         const refreshTokenExpires = window.localStorage.getItem('iTripper_refresh_token_expires')
         const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
@@ -156,10 +160,12 @@ export const setAuthByToken = () => dispatch => {
                 data: {userTokenRefresh}
             })
                 .then(response => {
+                    console.log('setAuthByToken: usertokens response.data = ', response.data)
                     if (response.data) {
                         setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
                         callApi('post', '/api/logins/signin', {userToken: response.data.userTokenAccess})
                             .then(res => {
+                                console.log('setAuthByToken: signin res.data = ', res.data)
                                 dispatch(authDispatches(res))
                             })
                             .catch(console.log)
@@ -260,6 +266,7 @@ export const setAuthorization = (state, signType) => (dispatch) => {
 
                 setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh)
                 dispatch(authDispatches(response))
+                dispatch({type: INITIAL_LOAD, payload: true})
             } else {
                 dispatch(setLoginRejected(true))
             }
@@ -326,11 +333,6 @@ export const setTrip = (trip) => dispatch => {
         .catch(err => console.log(err))
     dispatch({type: SET_TRIP, trip})
 
-}
-//* **********************
-
-export const setAddress = (address) => dispatch => {
-    dispatch({type: SET_SEARCHED_LOCATION, payload: address})
 }
 //* **********************
 
@@ -409,4 +411,9 @@ export const getLocationFromDB = dispatch => {
         .catch(err=>{
             dispatch({type: GET_LOCATION_ERROR, payload: 'choice place from map'})
         })
+}
+//* **********************
+
+export const setInitialLoadToFalse = () => dispatch => {
+    dispatch({type: INITIAL_LOAD, payload: false})
 }
