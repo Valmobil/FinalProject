@@ -1,13 +1,19 @@
 package ua.com.danit.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.Point;
+import ua.com.danit.model.PointSearch;
 import ua.com.danit.service.PointsService;
+import ua.com.danit.service.UserTokensService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +22,12 @@ import java.util.List;
 @RequestMapping("api/points")
 public class PointsController {
   private PointsService pointsService;
+  private UserTokensService userTokensService;
 
   @Autowired
-  public PointsController(PointsService pointsService) {
+  public PointsController(PointsService pointsService, UserTokensService userTokensService) {
     this.pointsService = pointsService;
+    this.userTokensService = userTokensService;
   }
 
   @PostMapping("{point_id}")
@@ -33,18 +41,11 @@ public class PointsController {
     return pointsService.getPointById(1L);
   }
 
-  @PostMapping("filter/{point_name_en}")
-  public List<Point> getPointByName(@PathVariable("point_name_en") String pointName) {
-    return pointsService.getPointByName(pointName);
-  }
-
-  //returns all hardcoded Points in data.sql
-  @GetMapping("filter/test")
-  public List<Point> getPointByName() {
-    List<Point> points = new ArrayList<>();
-    for (long i = 1; i < 9; i++) {
-      points.add(pointsService.getPointById(i));
+  @PostMapping("")
+  public List<Point> searchByPointName(@RequestBody PointSearch pointsSerch, @RequestHeader String authorization) {
+    if (userTokensService.findUserByAccessToken(authorization) != null) {
+      return pointsService.getPointByName(pointsSerch);
     }
-    return points;
+    return null;
   }
 }

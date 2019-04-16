@@ -15,11 +15,8 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Point extends Auditable {
+public class Point {
   @Id
-  //@ManyToMany
-  //@JoinTable(name="trip_point")
   private long pointId;
   private String pointNameEn;
   private String pointNameRu;
