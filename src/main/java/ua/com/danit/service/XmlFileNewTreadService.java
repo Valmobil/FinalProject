@@ -8,14 +8,13 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("prototype")
 public class XmlFileNewTreadService extends Thread {
-  private XmlFilesServices xmlFilesServices;
-
-  @Autowired
+  private XmlFilesService xmlFilesService;
   private Environment env;
 
   @Autowired
-  XmlFileNewTreadService(XmlFilesServices xmlFilesServices) {
-    this.xmlFilesServices = xmlFilesServices;
+  XmlFileNewTreadService(XmlFilesService xmlFilesService, Environment env) {
+    this.xmlFilesService = xmlFilesService;
+    this.env = env;
   }
 
   @Override
@@ -23,7 +22,7 @@ public class XmlFileNewTreadService extends Thread {
     System.out.println(getName() + " for Map Points export from XML is running");
     String xmlFileName = env.getProperty("application.map.xmlsource");
     String xmlFileReadRowsQty = env.getProperty("application.map.xmlsourcesavetodbqty");
-    xmlFilesServices.loadXmlFile(xmlFileName, xmlFileReadRowsQty);
+    xmlFilesService.loadXmlFile(xmlFileName, xmlFileReadRowsQty);
     System.out.println(getName() + " is finished");
   }
 

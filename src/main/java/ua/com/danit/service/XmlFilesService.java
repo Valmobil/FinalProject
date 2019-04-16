@@ -22,11 +22,11 @@ import java.io.File;
 import java.io.IOException;
 
 @Service
-public class XmlFilesServices {
+public class XmlFilesService {
   private XmlFilePointSaveCashService xmlFilePointSaveCashService;
 
   @Autowired
-  public XmlFilesServices(XmlFilePointSaveCashService xmlFilePointSaveCashService) {
+  public XmlFilesService(XmlFilePointSaveCashService xmlFilePointSaveCashService) {
     this.xmlFilePointSaveCashService = xmlFilePointSaveCashService;
   }
 
@@ -103,11 +103,11 @@ public class XmlFilesServices {
       //Read attributes for Type == 0
       String nodeAttributeValue = getAttrValue(node, "k");
       if (!"".equals(nodeAttributeValue)) {
-        for (int j = 0; j < attr.length; j++) {
-          if (attr[j][0].equals(nodeAttributeValue)) {
+        for (String[] strings : attr) {
+          if (strings[0].equals(nodeAttributeValue)) {
             nodeAttributeValue = getAttrValue(node, "v");
             if (!"".equals(nodeAttributeValue)) {
-              point.setPropertyValue(attr[j][1], nodeAttributeValue);
+              point.setPropertyValue(strings[1], nodeAttributeValue);
               foundedAtribute = true;
             }
           }
@@ -116,18 +116,17 @@ public class XmlFilesServices {
     } else {
       //Read attributes for Type == 1
 
-      for (int j = 0; j < attr.length; j++) {
-        String nodeAttribute = getAttrValue(node, attr[j][0]);
-        if ("".equals(nodeAttribute)) {
-          continue;
-        } else {
-          point.setPropertyValue(attr[j][1], nodeAttribute);
+      for (String[] strings : attr) {
+        String nodeAttribute = getAttrValue(node, strings[0]);
+        if (!"".equals(nodeAttribute)) {
+          point.setPropertyValue(strings[1], nodeAttribute);
           foundedAtribute = true;
         }
       }
     }
     return foundedAtribute;
   }
+
 
   private String getAttrValue(Node node, String attrName) {
     if (!node.hasAttributes()) {
