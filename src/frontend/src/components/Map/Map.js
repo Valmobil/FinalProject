@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './Map.css'
-import { setTargetCoordinates } from "../../actions/userCreators";
+import { setTargetCoordinates, setSearchedLocation } from "../../actions/userCreators";
 import { connect } from "react-redux";
 
 
@@ -44,29 +44,26 @@ class Map extends Component {
     onFind = (result) => {
         const locations = result.response.view[0].result;
         this.addLocationsToMap(locations);
-        // const targetLocation = locations[0].location.displayPosition;
-        // this.setState({targetLatitude: targetLocation.latitude, targetLongitude: targetLocation.longitude})
+        const targetLocation = locations[0].location.displayPosition;
+        this.setState({targetLatitude: targetLocation.latitude, targetLongitude: targetLocation.longitude}, () => this.reverseGeocode())
         this.props.setTargetCoordinates(locations[0].location.displayPosition)
     }
 
     addLocationsToMap = (locations) => {
-        let group = new H.map.Group(),
-            position,
-            i;
 
-        for (i = 0;  i < locations.length; i += 1) {
-            position = {
+        for (let i = 0;  i < locations.length; i += 1) {
+            let position = {
                 lat: locations[i].location.displayPosition.latitude,
                 lng: locations[i].location.displayPosition.longitude
             };
             const marker = new H.map.Marker(position);
             marker.label = locations[i].location.address.label;
-            group.addObject(marker);
+            this.group.addObject(marker);
         }
 
         // Add the locations group to the map
-        this.map.addObject(group);
-        this.map.setCenter(group.getBounds().getCenter());
+        this.map.addObject(this.group);
+        this.map.setCenter(this.group.getBounds().getCenter());
     }
 
 
@@ -80,23 +77,25 @@ class Map extends Component {
 
         geocoder.reverseGeocode(parameters,
             (result) => {
-                this.props.setTargetCoordinates(result.Response.View[0].Result[0].Location.Address.Label);
+                this.props.setSearchedLocation(result.Response.View[0].Result[0].Location.Address.Label);
             }, (error) => {
                 console.log(error);
             });
     }
 
-    setUpClickListener = (map) => {
-        map.addEventListener('tap', (evt) => {
-            let coord = map.screenToGeo(evt.currentPointer.viewportX,
+    setUpClickListener = () => {
+        this.map.addEventListener('tap', (evt) => {
+            let coord = this.map.screenToGeo(evt.currentPointer.viewportX,
                 evt.currentPointer.viewportY);
             let latitude = coord.lat.toFixed(6)
             let longitude = coord.lng.toFixed(6)
+            this.group.removeAll()
             const currentMarker = new H.map.Marker({lat: latitude, lng: longitude});
-            map.addObject(currentMarker);
+            this.group.addObject(currentMarker);
+            this.map.addObject(this.group);
             console.log('Clicked at ' + coord.lat.toFixed(6) + ' ' + coord.lng.toFixed(6));
-            // this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)}, () => this.myRoute())
-            // this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)})
+            this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)}, () => this.reverseGeocode())
+            this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)})
             this.props.setTargetCoordinates({
                 latitude: coord.lat.toFixed(6),
                 longitude: coord.lng.toFixed(6),
@@ -185,12 +184,13 @@ class Map extends Component {
             center: platform.center,
             zoom: platform.zoom,
         })
+        this.group = new H.map.Group();
         const events = new H.mapevents.MapEvents(this.map);
         // eslint-disable-next-line
         const behavior = new H.mapevents.Behavior(events);
         // eslint-disable-next-line
         const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
-        this.setUpClickListener(this.map)
+        this.setUpClickListener()
     }
 
     componentDidUpdate(prevProps) {
@@ -221,6 +221,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         setTargetCoordinates: (coordinates) => dispatch(setTargetCoordinates(coordinates)),
+        setSearchedLocation: (location) => dispatch(setSearchedLocation(location)),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Map)
