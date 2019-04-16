@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import { DateTime } from 'luxon'
 
 const styles = theme => ({
     container: {
@@ -17,20 +18,14 @@ const styles = theme => ({
 
 function DateAndTimePickers(props) {
     const { classes } = props;
-    // const time = new Date();
-    // let currentTime = time.getHours() +':' + time.getMinutes();
-    // const date = new Date();
-    // let currentDate = date.getDay() + '.' + date.getMonth() +'.'+date.getFullYear();
-
-
-    // console.log(date);
+    const date = DateTime.local();
     return (
         <form className={classes.container} noValidate>
             <TextField
                 id="datetime-local"
                 label="Next trip"
                 type="datetime-local"
-                // defaultValue={date + time}
+                defaultValue={date.c.year}
                 className={classes.textField}
                 InputLabelProps={{
                     shrink: true,

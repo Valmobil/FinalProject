@@ -5,7 +5,10 @@ import { withStyles } from '@material-ui/core/styles';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import NativeSelect from '@material-ui/core/NativeSelect';
+import TextField from '@material-ui/core/TextField';
 import axios from "axios/index";
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
+import orange from '@material-ui/core/colors/orange'
 
 const styles = theme => ({
     root: {
@@ -20,6 +23,19 @@ const styles = theme => ({
         marginTop: theme.spacing.unit * 2,
     },
 });
+
+const theme = createMuiTheme({
+  palette: {
+    primary: orange
+  },
+  typography: { useNextVariants: true }
+})
+
+const style={
+    input:{
+      width: '70%',
+    }
+}
 
 class ChosePointFromSelect extends React.Component {
     state = {
@@ -50,39 +66,69 @@ class ChosePointFromSelect extends React.Component {
         console.log(this.state.location)
         return (
             <div>
-                    <div className={classes.root}>
-                        <FormControl className={classes.formControl}>
-                            <NativeSelect
-                                className={classes.selectEmpty}
-                                value={this.state.from}
-                                name="from"
-                                onChange={this.handleChange('from')}
-                            >
-                                <option value="" disabled>
-                                    Input Point
-                                </option>
-                                <option>{setLocation}</option>
-                            </NativeSelect>
-                            <FormHelperText>From</FormHelperText>
-                        </FormControl>
-                    </div>
-                    <div className={classes.root}>
-                        <FormControl className={classes.formControl}>
-                            <NativeSelect
-                                className={classes.selectEmpty}
-                                value={this.state.to}
-                                name="to"
-                                onChange={this.handleChange('to')}
-                            >
-                                <option value="" disabled>
-                                    Input Point
-                                </option>
-                                <option>{setLocation}</option>
+              <TextField
+                label="Search for location From"
+                id="mui-theme-provider-standard-input"
+                autoComplete="off"
+                name='search'
+                // value={this.state.search}
+                onChange={this.handleInput}
+                style={style.input}
+                InputProps={{
+                  classes: {
+                    input: classes.inputColor
+                  }
+                }}
+              />
+              <TextField
+                label="Search for location To"
+                id="mui-theme-provider-standard-input"
+                autoComplete="off"
+                name='search'
+                // value={this.state.search}
+                onChange={this.handleInput}
+                style={style.input}
+                InputProps={{
+                  classes: {
+                    input: classes.inputColor
+                  }
+                }}
+              />
+                    {/*<div className={classes.root}>*/}
+                        {/*<FormControl className={classes.formControl}>*/}
+                            {/*<NativeSelect*/}
+                                {/*className={classes.selectEmpty}*/}
+                                {/*value={this.state.from}*/}
+                                {/*style = {style.input}*/}
+                                {/*name="from"*/}
+                                {/*onChange={this.handleChange('from')}*/}
+                            {/*>*/}
+                                {/*<option value="" disabled>*/}
+                                    {/*Input Point*/}
+                                {/*</option>*/}
+                                {/*<option>{setLocation}</option>*/}
+                            {/*</NativeSelect>*/}
+                            {/*<FormHelperText>From</FormHelperText>*/}
+                        {/*</FormControl>*/}
+                    {/*</div>*/}
+                    {/*<div className={classes.root}>*/}
+                        {/*<FormControl className={classes.formControl}>*/}
+                            {/*<NativeSelect*/}
+                                {/*className={classes.selectEmpty}*/}
+                                {/*value={this.state.to}*/}
+                                {/*style={style.input}*/}
+                                {/*name="to"*/}
+                                {/*onChange={this.handleChange('to')}*/}
+                            {/*>*/}
+                                {/*<option value="" disabled>*/}
+                                    {/*Input Point*/}
+                                {/*</option>*/}
+                                {/*<option>{setLocation}</option>*/}
 
-                            </NativeSelect>
-                            <FormHelperText>To</FormHelperText>
-                        </FormControl>
-                    </div>
+                            {/*</NativeSelect>*/}
+                            {/*<FormHelperText>To</FormHelperText>*/}
+                        {/*</FormControl>*/}
+                    {/*</div>*/}
             </div>
         );
     }
