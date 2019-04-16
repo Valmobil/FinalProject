@@ -9,6 +9,8 @@ import ua.com.danit.entity.Point;
 public class XmlFilePointSaveCashService {
   private PointsRepository pointsRepository;
 
+
+
   @Autowired
   public XmlFilePointSaveCashService(PointsRepository pointsRepository) {
     this.pointsRepository = pointsRepository;
