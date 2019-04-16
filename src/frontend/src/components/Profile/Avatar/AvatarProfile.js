@@ -151,14 +151,15 @@ class AvatarProfile extends Component {
             <>
             <label className='photo-input-label'>
                 <input type="file"
+                       name="fileUpload"
                        className='photo-input'
                        accept={acceptedFileTypes}
                        onChange={this.handleFile}
                 />
                 Choose file
             </label>
-                <div style={{height: 100}}>
-            <img src={this.state.myImageSrc} alt=''/>
+                <div >
+                    <img src={this.state.myImageSrc} style={{height: 100}} alt=''/>
                 </div>
             </>
             :
