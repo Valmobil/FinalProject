@@ -14,11 +14,11 @@ public interface PointsRepository extends JpaRepository<Point, Long> {
 
   List<Point> findPointByPointNameEnLike(String pointNameEn);
 
-  @Query (value = "SELECT TOP 10 * FROM POINT "+
-      " WHERE   "+
-      " UCASE(POINT_NAME_UA) LIKE ?1"+
-      " OR UCASE(POINT_NAME_EN) LIKE ?1"+
-      " OR UCASE(POINT_NAME_RU) LIKE ?1", nativeQuery = true)
+  @Query(value = "SELECT TOP 10 * FROM POINT "
+      + " WHERE   "
+      + " UCASE(POINT_NAME_UA) LIKE ?1"
+      + " OR UCASE(POINT_NAME_EN) LIKE ?1"
+      + " OR UCASE(POINT_NAME_RU) LIKE ?1", nativeQuery = true)
   List<Point> findMyTop10ByName(String searchPattern);
 
 }

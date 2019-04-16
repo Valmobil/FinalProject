@@ -130,11 +130,17 @@ public class XmlFilesServices {
   }
 
   private String getAttrValue(Node node, String attrName) {
-    if (!node.hasAttributes()) return "";
+    if (!node.hasAttributes()) {
+      return "";
+    }
     NamedNodeMap nmap = node.getAttributes();
-    if (nmap == null) return "";
+    if (nmap == null) {
+      return "";
+    }
     Node n = nmap.getNamedItem(attrName);
-    if (n == null) return "";
+    if (n == null) {
+      return "";
+    }
     return n.getNodeValue();
   }
 }

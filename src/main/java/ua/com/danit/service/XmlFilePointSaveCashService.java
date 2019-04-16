@@ -5,9 +5,6 @@ import org.springframework.stereotype.Service;
 import ua.com.danit.repository.PointsRepository;
 import ua.com.danit.entity.Point;
 
-import java.awt.*;
-import java.util.LinkedList;
-
 @Service
 public class XmlFilePointSaveCashService {
   private PointsRepository pointsRepository;
