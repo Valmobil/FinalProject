@@ -22,12 +22,12 @@ class Profile extends Component {
             userPhoto:    this.props.users.user.userPhoto,
             userPhone:    this.props.users.user.userPhone,
             userMail:     this.props.users.user.userMail,
-            car:          '',
+            car: [],
         },
-            newCar: {
-                carName: '',
-                carColor: '',
-                carPhoto: '/CarsPhotos/n_1.jpg',
+    newCar: {
+            carName: '',
+            carColour: '',
+            carPhoto: '/CarsPhotos/n_1.jpg',
             },
         }
 
@@ -35,52 +35,45 @@ class Profile extends Component {
 /*  handleChange = name => event => {
     this.setState({
       [name]: event.target.value
-
+5
     })
   };*/
 
-    handleChangeCar = name => event => {
+   /* handleChangeCar = name => event => {
         this.setState({ [name]: event.target.value });
     };
-
-    handleCar = (e) => {
+*/
+    /*handleCar = (e) => {
     this.setState({newCar: {...this.state.newCar, [e.target.name]: e.target.value}})
-    }
+    }*/
 
     handleChange = (e) => {
-        if(e.target.name === 'sits' && e.target.value > 5){
-            return ""
-        }
-        else{
-            this.setState({user: {...this.state.user, [e.target.name]: e.target.value}, cars: {...this.state.cars, [e.target.name]:e.target.value}})
-        }
+            this.setState({user: {...this.state.user, [e.target.name]: e.target.value}, newCar: {...this.state.newCar, [e.target.name]:e.target.value}})
     }
-    setProfileToReference = () => {
-    this.props.setProfile(this.state)
-  };
 
 
     changePass = () => {
-        const car = this.state.user.car
-        car.push(this.state.newCar)
-        this.setState({...this.state.user, car})
-        this.props.setProfile(this.state.user)
+        const car = this.state.user.car;
+        console.log(car)
+        car.push(this.state.newCar);
+        this.setState({...this.state.user, car});
+        this.props.setProfile(this.state.user);
         console.log(this.state.user)
     }
 
 
-    componentDidMount() {
-        const oldCar = this.props.users.user.car
-        let car = []
-        oldCar.forEach(object => {
-            let newCar = {}
-            Object.keys(object).forEach(key => {
-                if (key !== 'user') newCar[key] = object[key]
-            })
-            car.push(newCar)
-        })
-        this.setState({user: {...this.state.user, car}})
-    }
+    // componentDidMount() {
+    //     const oldCar = this.props.users.user.car
+    //     let car = []
+    //     oldCar.forEach(object => {
+    //         let newCar = {}
+    //         Object.keys(object).forEach(key => {
+    //             if (key !== 'user') newCar[key] = object[key]
+    //         })
+    //         car.push(newCar)
+    //     })
+    //     this.setState({user: {...this.state.user, car}})
+    // }
 
   render () {
         const {classes} = this.props
@@ -159,7 +152,7 @@ class Profile extends Component {
               autoComplete="off"
               name='carName'
               value={this.state.newCar.carName}
-              onChange={this.handleCar}
+              onChange={this.handleChange}
               InputProps={{
                   classes: {
                       input: classes.inputColor
@@ -170,9 +163,9 @@ class Profile extends Component {
               label="Car color"
               style={style.input}
               autoComplete="off"
-              name='carColor'
-              value={this.state.newCar.carColor}
-              onChange={this.handleCar}
+              name='carColour'
+              value={this.state.newCar.carColour}
+              onChange={this.handleChange}
               margin="normal"
               InputProps={{
                   classes: {

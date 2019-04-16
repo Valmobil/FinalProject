@@ -1,37 +1,104 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_ADDRESS, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY } from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
+    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT } from './users'
 import axios from 'axios'
 
-export const callApi = (method, url, data) => {
+
+
+
+export const callApi = (method, url, data, config) => {
     let headers = null
     if (window.localStorage.getItem('iTripper_access_token')){
-        const expires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
-
-        if (Date.now() >= expires){
-            const refresh = { userTokenRefresh: window.localStorage.getItem('iTripper_refresh_token') }
-            axiosRequest('post', 'api/usertokens', refresh)
+        const refreshTokenExpires = Date.parse(window.localStorage.getItem('iTripper_refresh_token_expires'))
+        const accessTokenExpires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
+        if (refreshTokenExpires && (Date.now() > refreshTokenExpires)){
+            logOut();
+        } else if (Date.now() >= accessTokenExpires){
+            const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token');
+            axios({
+                method: 'post',
+                url: 'api/usertokens',
+                data: { userTokenRefresh }
+            })
                 .then(response => {
-                    setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh, response.data.userTokenAccessTo, response.data.userTokenRefreshTo)
+                    if (response.data) {
+                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                        headers = {
+                            Authorization: `Bearer ${response.data.userTokenAccess}`,
+                        }
+                        headers = Object.assign({ Authorization: `Bearer ${response.data.userTokenAccess}` }, config)
+                        return axiosRequest(method, url, data, headers, config)
+                    } else {
+                        logOut()
+                    }
                 })
         }
         headers = {
             Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}`,
         }
+        headers = Object.assign({ Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}` }, config)
     }
-    return axiosRequest(method, url, data, headers)
+    return axiosRequest(method, url, data, headers, config)
 }
 
 //* *********************
-export const axiosRequest = (method, url, data, headers) => {
+
+export const axiosRequest = (method, url, data, headers, config) => {
     return axios({
         method,
         url,
         data,
-        headers
+        headers,
+        config,
     })
 }
+//* *********************
 
-const setLocalStorage = (accessToken, refreshToken, accessTokenExpires, refreshTokenExpires) => {
+export const checkAuthorizationByToken = () => dispatch => {
+    const accessToken = window.localStorage.getItem('iTripper_access_token');
+    if (accessToken) {
+        const accessTokenExpires = window.localStorage.getItem('iTripper_access_token_expires')
+        const refreshTokenExpires = window.localStorage.getItem('iTripper_refresh_token_expires')
+        const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
+        if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))) {
+            dispatch(logOut());
+        } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
+            axios({
+                method: 'post',
+                url: '/api/usertokens',
+                data: {userTokenRefresh}
+            })
+                .then(response => {
+                    if (response.data) {
+                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                    } else {
+                        setTimeout(() => {
+                            const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
+                            axios({
+                                method: 'post',
+                                url: '/api/usertokens',
+                                data: {userTokenRefresh}
+                            })
+                                .then(response => {
+                                    if (response.data) {
+                                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                                    } else {
+                                        dispatch(logOut())
+                                    }
+                                })
+                                .catch(console.log)
+                        }, 50)
+                    }
+                })
+                .catch(console.log)
+        }
+    } else dispatch(logOut())
+}
+//* *********************
+
+const setLocalStorage = (accessToken, refreshToken) => {
+    const accessTokenExpires = new Date(Date.now() + 880000).toISOString()
+    const refreshTokenExpires = new Date(Date.now() + 2591900000).toISOString()
     window.localStorage.setItem('iTripper_access_token', accessToken)
     window.localStorage.setItem('iTripper_refresh_token', refreshToken)
     window.localStorage.setItem('iTripper_access_token_expires', accessTokenExpires)
@@ -39,6 +106,81 @@ const setLocalStorage = (accessToken, refreshToken, accessTokenExpires, refreshT
 }
 
 //* *********************
+
+const removeTokens = () => {
+    window.localStorage.removeItem('iTripper_access_token')
+    window.localStorage.removeItem('iTripper_access_token_expires')
+    window.localStorage.removeItem('iTripper_refresh_token')
+    window.localStorage.removeItem('iTripper_refresh_token_expires')
+}
+// * *********************
+
+export const setAuthByToken = () => dispatch => {
+    const userToken = window.localStorage.getItem('iTripper_access_token');
+    if (userToken) {
+        const accessTokenExpires = window.localStorage.getItem('iTripper_access_token_expires')
+        const refreshTokenExpires = window.localStorage.getItem('iTripper_refresh_token_expires')
+        const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
+        if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))){
+            dispatch(logOut());
+        } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
+            axios({
+                method: 'post',
+                url: '/api/usertokens',
+                data: {userTokenRefresh}
+            })
+                .then(response => {
+                    if (response.data) {
+                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                        callApi('post', '/api/logins/signin', {userToken: response.data.userTokenAccess})
+                            .then(res => {
+                                dispatch(authDispatches(res))
+                            })
+                            .catch(console.log)
+                    } else {
+                        setTimeout(() => {
+                            const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
+                            axios({
+                                method: 'post',
+                                url: '/api/usertokens',
+                                data: {userTokenRefresh}
+                            })
+                                .then(response => {
+                                    if (response.data) {
+                                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                                        callApi('post', '/api/logins/signin', {userToken: response.data.userTokenAccess})
+                                            .then(res => {
+                                                dispatch(authDispatches(res))
+                                            })
+                                            .catch(console.log)
+                                    } else {
+                                        dispatch(logOut())
+                                    }
+                                })
+                                .catch(console.log)
+                        }, 50)
+                    }
+                })
+                .catch(console.log)
+        } else {
+            callApi('post', '/api/logins/signin', { userToken })
+                .then(response => {
+                    dispatch(authDispatches(response))
+                })
+                .catch(console.log)
+        }
+    }
+}
+// * *********************
+
+const authDispatches = (response) => dispatch => {
+    dispatch({type: SET_AUTH, payload: true})
+    dispatch({type: SET_USER, payload: response.data.user})
+    dispatch({type: SET_CARS, payload: response.data.cars})
+    dispatch(setUserPoints(response.data.userPoints))
+}
+
+// * *********************
 
 export const setAuthorization = (state, signType) => (dispatch) => {
     // console.log('state = ',getState())
@@ -52,12 +194,9 @@ export const setAuthorization = (state, signType) => (dispatch) => {
             dispatch(setErrorMessage(response.data.message))
             if (response.data.user !== null) {
                 console.log('user = ',response.data.user)
-                setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh, response.data.user.userTokenAccessTo)
 
-                dispatch({type: SET_AUTH, payload: true})
-                dispatch({type: SET_USER, payload: response.data.user})
-                dispatch({type: SET_CARS, payload: response.data.cars})
-                dispatch(setUserPoints(response.data.userPoints))
+                setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh)
+                dispatch(authDispatches(response))
             } else {
                 dispatch(setLoginRejected(true))
             }
@@ -77,7 +216,8 @@ export const setSocialAuth = (auth) => dispatch => {
 //* **********************
 
 export const logOut = () => dispatch => {
-    dispatch({type: SET_AUTH, payload: false})
+    dispatch({type: USER_LOGOUT})
+    removeTokens()
 }
 
 //* **********************
@@ -127,7 +267,7 @@ export const setTrip = (trip) => dispatch => {
 //* **********************
 
 export const setAddress = (address) => dispatch => {
-    dispatch({type: SET_ADDRESS, payload: address})
+    dispatch({type: SET_SEARCHED_LOCATION, payload: address})
 }
 //* **********************
 
@@ -163,10 +303,47 @@ export const setProfile = (profile) => dispatch => {
 //             dispatch({type:TRIPS_HISTORY_FAILURE, payload: 'error from history message'})
 //         })
 // }
+//* **********************
 
 export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
     dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
-    callApi('post','api/trips/delete')
-        .then(console.log)
+    callApi('delete','api/trips/delete',tripId)
+        .then(resp=>console.log(resp))
         .catch(err => console.log(err))
+}
+//* **********************
+
+export const setPhoto = (image) => dispatch => {
+    let data = new FormData();
+    data.append('file', image);
+   callApi('put', 'api/images', data)
+       .then(response => console.log('image response: ', response))
+       .catch(console.log)
+}
+//* **********************
+
+export const setSearchedLocation = (location) => dispatch => {
+    dispatch({type: SET_SEARCHED_LOCATION, payload: location})
+}
+//* **********************
+
+export const setTargetCoordinates = (coordinates) => dispatch => {
+    dispatch({type: SET_TARGET_COORDS, payload: coordinates})
+}
+//* **********************
+
+export const getLocationFromDB = dispatch => {
+    dispatch({type: GET_LOCATION_REQUEST, payload: true})
+    callApi('get', 'api/points/test')
+        .then(resp => {
+
+        })
+        .then(resp => {
+            console.log(resp)
+            dispatch({type: GET_LOCATION_SUCCESS, payload:resp.data})
+            }
+        )
+        .catch(err=>{
+            dispatch({type: GET_LOCATION_ERROR, payload: 'choice place from map'})
+        })
 }

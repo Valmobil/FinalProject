@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 import ua.com.danit.model.Role;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -43,6 +44,7 @@ import java.util.Set;
         "usermail"
     })
 })
+@ToString
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User extends Auditable {
   @Id
@@ -86,4 +88,8 @@ public class User extends Auditable {
     this.userMail = userMail;
     this.userPassword = userPassword;
   }
+  private Integer userIsOkUserPhoto;
+  private Integer userIsOkCarPhoto;
+  private Integer userIsConfirmedMail;
+  private Integer userIsConfirmedPhone;
 }

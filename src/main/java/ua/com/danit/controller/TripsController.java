@@ -7,22 +7,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.Trip;
+import ua.com.danit.entity.User;
 import ua.com.danit.service.TripsService;
+import ua.com.danit.service.UserTokensService;
 
 import java.util.List;
 
-@JsonView(View.Summary.class)
+//@JsonView(View.Summary.class)
 @RestController
 @RequestMapping("api/trips")
 public class TripsController {
   private TripsService tripsService;
+  private UserTokensService userTokensService;
 
   @Autowired
-  public TripsController(TripsService tripsService) {
+  public TripsController(TripsService tripsService, UserTokensService userTokensService) {
     this.tripsService = tripsService;
+    this.userTokensService = userTokensService;
   }
 
   @GetMapping("test")
@@ -36,19 +41,19 @@ public class TripsController {
   }
 
   @PostMapping("list")
-  public List<Trip> getUserTripList() {
-    return tripsService.getTripListService();
+  public List<Trip> getUserTripList(@RequestHeader String authorization) {
+    return tripsService.getTripListService(userTokensService.findUserByAccessToken(authorization));
   }
 
-  @DeleteMapping("delete")
-  public void deleteUserTrip(Trip trip) {
-    tripsService.deleteTripById(trip.getTripId());
+  @PostMapping("delete")
+  public void deleteUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
+    tripsService.deleteTripById(trip.getTripId(), userTokensService.findUserByAccessToken(authorization));
   }
 
-  @DeleteMapping("copy")
-  public List<Trip> copyUserTrip(Trip trip) {
-    tripsService.copyTripById(trip.getTripId());
-    return tripsService.getTripListService();
+  @PostMapping("copy")
+  public List<Trip> copyUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
+    User user = userTokensService.findUserByAccessToken(authorization);
+    tripsService.copyTripById(trip.getTripId(), user);
+    return tripsService.getTripListService(user);
   }
-
 }

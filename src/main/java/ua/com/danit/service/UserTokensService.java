@@ -20,8 +20,13 @@ public class UserTokensService {
     this.userTokensRepository = userTokensRepository;
   }
 
-  User checkIfAccessTokenIsValid(String accessToken) {
-    List<UserToken> userTokens = userTokensRepository.findByUserTokenAccess(accessToken);
+  public User findUserByAccessToken(String accessToken) {
+    List<UserToken> userTokens;
+    if (accessToken.substring(0,6).equals("Bearer")) {
+      userTokens = userTokensRepository.findByUserTokenAccess(accessToken.substring(7));
+    } else {
+      userTokens = userTokensRepository.findByUserTokenAccess(accessToken);
+    }
     if (userTokens.size() != 1) {
       return null;
     } else {
@@ -50,7 +55,6 @@ public class UserTokensService {
       return null;
     }
 
-    //    if (userToken.getUserTokenAccess().equals(userTokenDb.getUserTokenAccess())) {
     if (userTokenDb.getUserTokenRefreshTo().isAfter(LocalDateTime.now())) {
       //If Refresh token are valid
       generateNewSessionToken("Refresh", userTokenDb);
@@ -58,9 +62,9 @@ public class UserTokensService {
       userTokenDb = userTokensRepository.save(userTokenDb);
       return userTokenDb;
     } else {
+      //if Refresh token is expired
       userTokensRepository.delete(userTokenDb);
       return null;
-      //    return generateInitialTokinSet(new User());
     }
   }
 
