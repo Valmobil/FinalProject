@@ -706,7 +706,7 @@ class Main extends Component {
         const inputValue = value.trim().toLowerCase();
         const inputLength = inputValue.length;
 
-        return inputLength === 0 ? [] : suggestions.filter(lang =>
+        return inputLength < 4 ? [] : suggestions.filter(lang =>
             lang.pointNameEn.toLowerCase().slice(0, inputLength) === inputValue
         );
     };
@@ -857,7 +857,7 @@ class Main extends Component {
             }
         })
         this.props.setUserPoints(newUserPoints)
-        // this.props.setSearchedLocation('')
+        this.props.setSearchedLocation('')
         this.setState({editing: '', name: '', destination: '', adding: false})
     }
 
@@ -1069,7 +1069,7 @@ class Main extends Component {
                             {...autosuggestProps}
                             inputProps={{
                                 classes,
-                                label: 'Find place',
+                                label: 'Search',
                                 value,
                                 onChange: this.onSuggestionChange,
                             }}

@@ -1,15 +1,17 @@
 package ua.com.danit.service;
 
-import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ua.com.danit.entity.Image;
 import ua.com.danit.entity.User;
 import ua.com.danit.repository.ImageRepository;
 
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.SQLException;
 
 @Service
@@ -19,7 +21,7 @@ public class ImageService {
 
 
   @Autowired
-  public ImageService(ImageRepository imageRepository) {
+  public ImageService(ImageRepository imageRepository, UserTokensService userTokensService) {
     this.imageRepository = imageRepository;
     this.userTokensService = userTokensService;
   }
@@ -32,13 +34,26 @@ public class ImageService {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+    if (in == null) {
+      return null;
+    }
     return IOUtils.toByteArray(in);
   }
 
-  public String saveNewImage(Blob imageBlob, String userTokenAccess) {
+  public String saveNewImage(MultipartFile file, User user) {
     Image image = new Image();
-    image.setImageBlob(imageBlob);
-    User user = userTokensService.findUserByAccessToken(userTokenAccess);
+    SerialBlob blob = null;
+    try {
+      byte[] inputStream = file.getBytes();
+      blob = new SerialBlob(inputStream);
+    } catch (SerialException e) {
+      e.printStackTrace();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    image.setImageBlob(blob);
     if (user == null) {
       return null;
     }

@@ -17,6 +17,11 @@ spring:
             enable: true
         debug: true
 
+application:
+  map:
+    xmlsource: src/main/resources/maps/map.xml
+    xmlsourcesavetodbqty: 10
+
 ---
 
 spring:
