@@ -4,20 +4,20 @@ import TimePicker from './TimePicker/TimePicker'
 import ChosePointFromSelect from './ChosePointFromSelect/ChosePointFromSelect'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
-import orange from '@material-ui/core/colors/orange'
+// import TextField from '@material-ui/core/TextField'
+// import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+// import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
+// import orange from '@material-ui/core/colors/orange'
 
 import './NewTrip.css'
 import Map from '../Map/Map';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: orange
-  },
-  typography: { useNextVariants: true }
-})
+// const theme = createMuiTheme({
+//   palette: {
+//     primary: orange
+//   },
+//   typography: { useNextVariants: true }
+// })
 
 const styles = theme => ({
     acceptButton: {
@@ -49,12 +49,6 @@ const styles = theme => ({
     }
 })
 
-const style = {
-  input: {
-    width: '50%',
-  },
-}
-
 class NewTrip extends Component {
 
     render() {
@@ -66,21 +60,6 @@ class NewTrip extends Component {
                 {/*<DateAndTimePickers/>*/}
                 <DatePicker/>
                 <TimePicker/>
-                {/*<div style={{width:'100%', margin:'20px 0'}}>*/}
-                {/*<TextField*/}
-                  {/*label="Search for location"*/}
-                  {/*id="mui-theme-provider-standard-input"*/}
-                  {/*autoComplete="off"*/}
-                  {/*name='search'*/}
-                  {/*// value={this.state.search}*/}
-                  {/*onChange={this.handleInput}*/}
-                  {/*style={style.input}*/}
-                  {/*InputProps={{*/}
-                    {/*classes: {*/}
-                      {/*input: classes.inputColor*/}
-                    {/*}*/}
-                  {/*}}*/}
-                {/*/></div>*/}
                 <ChosePointFromSelect/>
                 <Map/>
                 <div className="trip-btn-container">

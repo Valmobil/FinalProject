@@ -2,13 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
 import TextField from '@material-ui/core/TextField';
 import axios from "axios/index";
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
-import orange from '@material-ui/core/colors/orange'
+// import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
+// import orange from '@material-ui/core/colors/orange'
 
 const styles = theme => ({
     root: {
@@ -24,12 +21,12 @@ const styles = theme => ({
     },
 });
 
-const theme = createMuiTheme({
-  palette: {
-    primary: orange
-  },
-  typography: { useNextVariants: true }
-})
+// const theme = createMuiTheme({
+//   palette: {
+//     primary: orange
+//   },
+//   typography: { useNextVariants: true }
+// })
 
 const style={
     input:{
@@ -62,8 +59,8 @@ class ChosePointFromSelect extends React.Component {
         // const location = this.state.location.map(item=>{
         //    return <option>{item.name}</option>
         // })
-        const setLocation = this.state.location
-        console.log(this.state.location)
+        // const setLocation = this.state.location
+        // console.log(this.state.location)
         return (
             <div>
               <TextField
@@ -94,41 +91,6 @@ class ChosePointFromSelect extends React.Component {
                   }
                 }}
               />
-                    {/*<div className={classes.root}>*/}
-                        {/*<FormControl className={classes.formControl}>*/}
-                            {/*<NativeSelect*/}
-                                {/*className={classes.selectEmpty}*/}
-                                {/*value={this.state.from}*/}
-                                {/*style = {style.input}*/}
-                                {/*name="from"*/}
-                                {/*onChange={this.handleChange('from')}*/}
-                            {/*>*/}
-                                {/*<option value="" disabled>*/}
-                                    {/*Input Point*/}
-                                {/*</option>*/}
-                                {/*<option>{setLocation}</option>*/}
-                            {/*</NativeSelect>*/}
-                            {/*<FormHelperText>From</FormHelperText>*/}
-                        {/*</FormControl>*/}
-                    {/*</div>*/}
-                    {/*<div className={classes.root}>*/}
-                        {/*<FormControl className={classes.formControl}>*/}
-                            {/*<NativeSelect*/}
-                                {/*className={classes.selectEmpty}*/}
-                                {/*value={this.state.to}*/}
-                                {/*style={style.input}*/}
-                                {/*name="to"*/}
-                                {/*onChange={this.handleChange('to')}*/}
-                            {/*>*/}
-                                {/*<option value="" disabled>*/}
-                                    {/*Input Point*/}
-                                {/*</option>*/}
-                                {/*<option>{setLocation}</option>*/}
-
-                            {/*</NativeSelect>*/}
-                            {/*<FormHelperText>To</FormHelperText>*/}
-                        {/*</FormControl>*/}
-                    {/*</div>*/}
             </div>
         );
     }
