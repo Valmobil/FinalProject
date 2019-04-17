@@ -43,10 +43,13 @@ class TripsHistory extends Component {
 
     componentDidMount(){
         callApi('post', '/api/trips/list')
-            .then(resp => this.setState({
+            .then(resp => {
+              console.log(resp.data)
+                this.setState({
                 tripsHistory: resp.data,
                 fetchingTripsHistory: false
-            }))
+              })
+            })
             .catch(err => err.message)
     }
 
@@ -63,11 +66,13 @@ class TripsHistory extends Component {
         this.props.deleteTripFromHistory(id);
     }
 
-
     render() {
         const { classes  } = this.props
         let nameOfPoint = '';
-        let tripsHistoryPointList = this.state.tripsHistory.map((item) => {
+        const tripsHistoryPointArray = this.state.tripsHistory;
+        let tripsHistoryList = null;
+        if (tripsHistoryPointArray.length > 0) {
+          tripsHistoryList = this.state.tripsHistory.map((item) => {
             return (
                 <li key={item.tripId}>
                     {
@@ -93,11 +98,13 @@ class TripsHistory extends Component {
                     {nameOfPoint=''}
                 </li>
             )
-        })
+        })} else{
+          tripsHistoryList = 'Not History Yet'
+        }
         return (
             <div className='trip-history-list'>
                 <ul className='list-history'>
-                    {this.state.fetchingTripsHistory ? 'Loading...' : tripsHistoryPointList }
+                    {this.state.fetchingTripsHistory ? 'Loading...' : tripsHistoryList }
                 </ul>
             </div>
         );
