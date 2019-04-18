@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { logOut, setUserPoints, setTrip, setMyCoordinates, setSearchedLocation } from '../../actions/userCreators'
+import { setUserPoints, setTrip} from '../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
@@ -118,7 +118,7 @@ const styles = theme => ({
         }
     },
 })
-const style = {
+/*const style = {
     input: {
         width: '100%'
     },
@@ -126,7 +126,7 @@ const style = {
         display: 'flex',
         justifyContent: 'center'
     }
-}
+}*/
 
 const theme = createMuiTheme({
     palette: {

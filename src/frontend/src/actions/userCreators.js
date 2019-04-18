@@ -348,11 +348,13 @@ export const setErrorMessage = (message) => dispatch => {
 ////setProfile data to database
 export const setProfile = (profile) => dispatch => {
     callApi('put', '/api/users', profile)
-    // then(response => dispatch({type: SET_PROFILE, payload: response.data}))
+        // .then(response => dispatch({type: SET_PROFILE, payload: response.data}))
         .then(res => console.log('cars from userCreators: ', res))
         .catch(err => console.log(err))
-    dispatch({type: SET_USER, payload: profile})
+    // dispatch({type: SET_USER, payload: profile})
+    dispatch({type: SET_PROFILE, payload: profile})
 }
+
 //* **********************
 //
 // export const fetchTripsHistory = (userId) => dispatch =>{
