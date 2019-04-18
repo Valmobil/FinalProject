@@ -29,12 +29,6 @@ public class LoginsController {
     this.mailSenderService = mailSenderService;
   }
 
-  //  @Autowired
-  //  private HttpServletRequest request;
-
-  //  @PostMapping("session")
-  //  public
-
   @PostMapping("signin")
   public UserInfo postLoginSignIn(@RequestBody UserLogin userLogin) {
     return loginsService.checkLoginSignInCredentials(userLogin);
