@@ -1,5 +1,6 @@
 package ua.com.danit.service;
 
+import com.ibm.icu.text.Transliterator;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,8 +93,19 @@ public class XmlFilesService {
       //Read attributes
       getListOfAttributes(attr2, pointBw, node, 1);
 
+      //If English name not present
+      Point point = (Point) pointBw.getWrappedInstance();
+      if (point.getPointNameEn() == null) {
+        if (point.getPointNameUa() != null) {
+          Transliterator ukrainianToLatin = Transliterator.getInstance("Ukrainian-Latin/BGN");
+          point.setPointNameEn(ukrainianToLatin.transliterate(point.getPointNameUa()));
+        } else if (point.getPointNameRu() != null) {
+          Transliterator russianToLatin = Transliterator.getInstance("Russian-Latin/BGN");
+          point.setPointNameEn(russianToLatin.transliterate(point.getPointNameRu()));
+        }
+      }
       //Save points to DB
-      xmlFilePointSaveCashService.savePointsToDb((Point) pointBw.getWrappedInstance());
+      xmlFilePointSaveCashService.savePointsToDb(point);
     }
   }
 
