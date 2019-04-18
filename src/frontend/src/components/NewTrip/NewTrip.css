@@ -1,3 +1,6 @@
+.trip-container{
+    width: 100%;
+}
 .trip-btn-container{
     display: flex;
     justify-content: space-between;

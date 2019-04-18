@@ -60,6 +60,9 @@ public class ImageService {
   //  //    multipartFile.transferTo(file);
   //  //  }
 
+    //return IOUtils.toByteArray(in);
+  //}
+
   public String saveNewImage(MultipartFile file, User user) {
     Image image = new Image();
     SerialBlob blob = null;
