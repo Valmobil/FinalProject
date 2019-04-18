@@ -216,28 +216,26 @@ class AddCar extends Component {
     render () {
         // console.log(this.props.users)
         const { classes } = this.props
-        const { role, car, name, destination, editing, adding, creatingTrip, value, suggestions } = this.state
+        const { car, name, destination, editing, adding} = this.state
         const { cars, userPoints } = this.props.users
         let currentCar = cars.length === 1 ? cars[0] : car
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
-        console.log('targetCoordinates = ', this.props.users.targetCoordinates)
-// console.log('targetName = ', this.props.users.searchedLocation)
 
 
 
 
 
-        const placesList = userPoints.map((item) => {
+        const placesList = cars.map((item) => {
             let output = null
-            if (item.userPointId === editing) {
+            if (item.carId === editing) {
                 output = (
-                    <EditSmart key = {item.userPointId}
+                    <EditSmart key = {item.carId}
                                handleEditInput={this.handleEditInput}
                                editName={name}
                                editDestination={destination}
-                               editClose={() => this.editClose(item.userPointId)}
+                               editClose={() => this.editClose(item.carId)}
                     />
                 )
             } else {
