@@ -211,11 +211,18 @@ class Main extends Component {
         let newUserPoints = this.props.users.userPoints.map(item => {
             if (item.userPointId === id) {
                    let pointAddress = this.props.users.searchedLocation || this.state.value
-                   return {...item, userPointName: this.state.name, userPointAddress: pointAddress}
+                   return {...item,
+                       userPointName: this.state.name,
+                       userPointAddress: pointAddress,
+                       userPointLatitude: this.props.users.targetCoordinates.latitude,
+                       userPointLongitude: this.props.users.targetCoordinates.longitude,
+                       pointNameEn: this.state.name,
+                   }
             } else {
                 return item
             }
         })
+        console.log(newUserPoints)
         this.props.setUserPoints(newUserPoints)
         this.props.setSearchedLocation('')
         this.setState({editing: '', name: '', destination: '', adding: false})

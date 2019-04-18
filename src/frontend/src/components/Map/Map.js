@@ -99,7 +99,6 @@ class Map extends Component {
             let longitude = coord.lng.toFixed(6)
             this.setMarker(latitude, longitude)
             console.log('Clicked at ' + coord.lat.toFixed(6) + ' ' + coord.lng.toFixed(6));
-            debugger
             this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)}, () => this.reverseGeocode())
             // this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)})
             this.props.setTargetCoordinates({
