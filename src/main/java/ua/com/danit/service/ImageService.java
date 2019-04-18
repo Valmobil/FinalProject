@@ -41,7 +41,7 @@ public class ImageService {
   //    return IOUtils.toByteArray(in);
   //  }
 
-  public InputStream getImageService(Long imageId) throws IOException {
+  public InputStream getImageService(Long imageId) {
     InputStream in = null;
     try {
       in = imageRepository.getOne(imageId).getImageBlob().getBinaryStream();
@@ -59,8 +59,7 @@ public class ImageService {
   //  //    File file = new File(destination);
   //  //    multipartFile.transferTo(file);
   //  //  }
-
-    //return IOUtils.toByteArray(in);
+  //return IOUtils.toByteArray(in);
   //}
 
   public String saveNewImage(MultipartFile file, User user) {
