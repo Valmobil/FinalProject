@@ -300,7 +300,7 @@ export const setProfile = (profile) => dispatch => {
 
 export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
     dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
-    callApi('delete','api/trips/delete',tripId)
+    callApi('post','api/trips/delete',{tripId})
         .then(resp=>console.log(resp))
         .catch(err => console.log(err))
 }

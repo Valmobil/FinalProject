@@ -10,6 +10,7 @@
     "aws-amplify": "^1.1.24",
     "axios": "^0.18.0",
     "firebase": "^5.9.3",
+    "luxon": "^1.12.1",
     "mongodb": "^3.2.3",
     "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.5",
