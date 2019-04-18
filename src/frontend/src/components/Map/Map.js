@@ -83,19 +83,25 @@ class Map extends Component {
             });
     }
 
+    setMarker = (lat, lng) => {
+        this.group.removeAll()
+        const currentMarker = new H.map.Marker({lat, lng});
+        this.group.addObject(currentMarker);
+        this.map.addObject(this.group);
+        this.map.setCenter(this.group.getBounds().getCenter());
+    }
+
     setUpClickListener = () => {
         this.map.addEventListener('tap', (evt) => {
             let coord = this.map.screenToGeo(evt.currentPointer.viewportX,
                 evt.currentPointer.viewportY);
             let latitude = coord.lat.toFixed(6)
             let longitude = coord.lng.toFixed(6)
-            this.group.removeAll()
-            const currentMarker = new H.map.Marker({lat: latitude, lng: longitude});
-            this.group.addObject(currentMarker);
-            this.map.addObject(this.group);
+            this.setMarker(latitude, longitude)
             console.log('Clicked at ' + coord.lat.toFixed(6) + ' ' + coord.lng.toFixed(6));
+            debugger
             this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)}, () => this.reverseGeocode())
-            this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)})
+            // this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)})
             this.props.setTargetCoordinates({
                 latitude: coord.lat.toFixed(6),
                 longitude: coord.lng.toFixed(6),
@@ -194,8 +200,8 @@ class Map extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.searchedLocation !== prevProps.searchedLocation){
-            this.geocode(this.props.searchedLocation)
+        if (this.props.targetCoordinates !== prevProps.targetCoordinates){
+            this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
         }
     }
 
@@ -203,7 +209,6 @@ class Map extends Component {
       return (
             <div style={{width: '100%', margin: '20px 0' }}>
             <div id="here-map" style={{width: '100%', height: '400px', background: 'grey', marginTop: 15}} />
-
             </div>
         );
     }
@@ -214,7 +219,7 @@ class Map extends Component {
 const mapStateToProps = (state) => {
     return {
         coords: state.users.myCoordinates,
-        searchedLocation: state.users.searchedLocation,
+        targetCoordinates: state.users.targetCoordinates,
     }
 }
 

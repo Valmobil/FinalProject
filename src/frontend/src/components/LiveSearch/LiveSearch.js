@@ -1,0 +1,227 @@
+import React, { Component } from 'react'
+import { withStyles } from '@material-ui/core/styles';
+import Autosuggest from 'react-autosuggest';
+import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button'
+import MenuItem from '@material-ui/core/MenuItem'
+import match from 'autosuggest-highlight/match';
+import parse from 'autosuggest-highlight/parse';
+import {callApi} from "../../utils/utils";
+import orange from "@material-ui/core/colors/orange";
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+
+const theme = createMuiTheme({
+    palette: {
+        primary: orange
+    },
+    typography: { useNextVariants: true }
+})
+
+const styles = theme => ({
+    root: {
+        height: 250,
+        flexGrow: 1,
+    },
+    container: {
+        position: 'relative',
+        width: '90%',
+    },
+    suggestionsContainerOpen: {
+        position: 'absolute',
+        zIndex: 1,
+        marginTop: theme.spacing.unit,
+        left: 0,
+        right: 0,
+    },
+    suggestion: {
+        display: 'block',
+    },
+    suggestionsList: {
+        margin: 0,
+        padding: 0,
+        listStyleType: 'none',
+    },
+    inputColor: {
+        color: '#fff',
+        width: '100%'
+    },
+    label: {
+        textTransform: 'capitalize'
+    },
+    submit: {
+        background: '#fff',
+        borderRadius: 3,
+        border: 0,
+        color: '#f57c00',
+        height: 25,
+        padding: '0 10px',
+        marginLeft: 10,
+        marginTop: 20,
+        '&:focus':{
+            background: '#fff',
+            outline: 'none',
+            color: '#008000',
+        }
+    },
+})
+
+class LiveSearch extends Component {
+
+    state = {
+        value: '',
+        suggestions: [],
+    };
+
+    getSuggestionValue = suggestion => suggestion.pointNameEn ? suggestion.pointNameEn : null;
+
+    renderSuggestion = (suggestion, { query, isHighlighted }) => {
+        if (isHighlighted) {
+            this.props.setCoordinates({
+                latitude: suggestion.pointLatitude.toFixed(6),
+                longitude: suggestion.pointLongitude.toFixed(6)
+            })
+        }
+        const matches = match(suggestion.pointNameEn, query);
+        const parts = parse(suggestion.pointNameEn, matches);
+
+        return (
+            <MenuItem selected={isHighlighted} component="div">
+                <div>
+                    {parts.map((part, index) =>
+                            part.highlight ? (
+                                <span key={String(index)} style={{ fontWeight: 500 }}>
+              {part.text}
+            </span>
+                            ) : (
+                                <strong key={String(index)} style={{ fontWeight: 300 }}>
+                                    {part.text}
+                                </strong>
+                            ),
+                    )}
+                </div>
+            </MenuItem>
+        );
+    }
+
+    onSuggestionsFetchRequested = async ({ value }) => {
+        const inputValue = value.trim().toLowerCase();
+        const inputLength = inputValue.length;
+
+        let suggestionsList = []
+        const data = {
+            pointSearchText: value,
+        }
+        if (inputLength >= 4){
+            // let response = await callApi('post', '/api/points/', data)
+            let response = await callApi(this.props.method, this.props.url, data)
+            suggestionsList = response.data
+        }
+        this.setState({
+            suggestions: suggestionsList
+        });
+    };
+
+    onSuggestionsClearRequested = () => {
+        this.setState({
+            suggestions: []
+        });
+    };
+
+    onSuggestionChange = (event, { newValue }) => {
+        this.setState({
+            value: newValue
+        });
+        this.props.setValue(newValue)
+    };
+
+    onSuggestionSelected = () => {
+        // setTimeout(() => {
+        //     this.props.setSearchedLocation(this.state.value)
+        //     console.log(this.state.value)
+        // }, 50)
+    }
+
+    renderInputComponent = (inputProps) => {
+        const { classes, inputRef = () => {}, ref, ...other } = inputProps;
+        return (
+                <MuiThemeProvider theme={theme}>
+                <TextField
+                    fullWidth
+                    InputProps={{
+                        classes: {
+                            input: classes.inputColor,
+                        },
+                    }}
+                    label='Place name'
+                    name='name'
+                    value={this.props.name}
+                    onChange={this.props.handleInput}
+                />
+                <TextField
+                    fullWidth
+                    InputProps={{
+                        inputRef: node => {
+                            ref(node);
+                            inputRef(node);
+                        },
+                        classes: {
+                            input: classes.inputColor,
+                        },
+                    }}
+                    {...other}
+                />
+
+                <Button
+                    onClick={() => this.props.editClose(null)}
+                    classes={{
+                        root: classes.submit,
+                        label: classes.label
+                    }}
+                >
+                    Submit
+                </Button>
+                </MuiThemeProvider>
+        );
+    }
+
+    render(){
+        const { classes } = this.props
+
+
+        const autosuggestProps = {
+            renderInputComponent: this.renderInputComponent,
+            suggestions: this.state.suggestions,
+            onSuggestionsFetchRequested: this.onSuggestionsFetchRequested,
+            onSuggestionsClearRequested: this.onSuggestionsClearRequested,
+            getSuggestionValue: this.getSuggestionValue,
+            renderSuggestion: this.renderSuggestion,
+            onSuggestionSelected: this.onSuggestionSelected,
+        };
+        return(
+            <Autosuggest
+                {...autosuggestProps}
+                inputProps={{
+                    classes,
+                    label: 'Search',
+                    value: this.state.value,
+                    onChange: this.onSuggestionChange,
+                }}
+                theme={{
+                    container: classes.container,
+                    suggestionsContainerOpen: classes.suggestionsContainerOpen,
+                    suggestionsList: classes.suggestionsList,
+                    suggestion: classes.suggestion,
+                }}
+                renderSuggestionsContainer={options => (
+                    <Paper {...options.containerProps} square>
+                        {options.children}
+                    </Paper>
+                )}
+            />
+        )
+    }
+}
+
+export default withStyles(styles)(LiveSearch)
