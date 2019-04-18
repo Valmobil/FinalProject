@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { setUserPoints, setTrip} from '../../actions/userCreators'
+import {setUserPoints, setTrip, setProfile, setCar} from '../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
@@ -143,15 +143,15 @@ class AddCar extends Component {
             userPhoto:    this.props.users.user.userPhoto,
             userPhone:    this.props.users.user.userPhone,
             userMail:     this.props.users.user.userMail,
-            car:[]
         },
+        // car:[],
         newCar: {
             carName: '',
             carColour: '',
             carPhoto: '/CarsPhotos/n_1.jpg',
         },
         selectedId: 1,
-        car: '',
+        // car: '',
         name: '',
         color: '',
         editing: '',
@@ -159,54 +159,50 @@ class AddCar extends Component {
 
     }
 
-
-
-
-
-
     handleInput = ({target: {name, value}}) => {
             this.setState({[name]: value})
     }
 
-
     handleEdit = (item) => {
-        this.setState({editing: item.userPointId, name: item.userPointName, adding: false})
+        console.log("hi")
+        this.setState({editing: item.carId, carName: item.carName, carColour: item.carColour, adding: false})
     }
 
     handleEditInput = (e) => {
         this.setState({[e.target.name]: e.target.value})
     }
 
-    editClose = (pointId) => {
+    editSubmit = (carId) => {
+        console.log("HELLO")
+        let id = this.props.users.cars.length > 0 ?
+            this.props.users.cars.find(item => item.carName === '<no point>').carId : 1
+        if (carId) id = carId
 
-        let id = this.props.users.userPoints.length > 0 ?
-            this.props.users.userPoints.find(item => item.userPointName === '<no point>').userPointId : 1
-        if (pointId) id = pointId
-
-        let newUserPoints = this.props.users.userPoints.map(item => {
-            if (item.userPointId === id) {
-                return {...item, userPointName: this.state.name, userPointAddress: this.props.users.searchedLocation}
+        let newUserPoints = this.props.users.cars.map(item => {
+            if (item.carId === id) {
+                return {...item, carName: this.state.name, carColour: this.props.users.searchedLocation}
             } else {
                 return item
             }
         })
-        this.props.setUserPoints(newUserPoints)
+        this.props.setProfile(newUserPoints)
         this.setState({editing: '', name: '', color: '', adding: false})
     }
 
     addNewPoint = () => {
-        this.setState({adding: true, editing: '', name: '', destination: ''})
+        this.setState({adding: true, editing: '', carName: '', carColour: ''})
     }
 
     handleDelete = (id) => {
-        let newUserPoints = this.props.users.userPoints.map(item => {
-            if (item.userPointId === id) {
-                return {...item, userPointName: '<no point>', userPointAddress: ''}
+        console.log(this.props)
+        let newCarsArr = this.props.users.cars.map(item => {
+            if (item.carId === id) {
+                return {...item, carName: '<no point>', carColour: ''}
             } else {
                 return item
             }
         })
-        this.props.setUserPoints(newUserPoints)
+        this.props.setCar(newCarsArr)
     }
 
 
@@ -216,9 +212,10 @@ class AddCar extends Component {
     render () {
         // console.log(this.props.users)
         const { classes } = this.props
-        const { car, name, destination, editing, adding} = this.state
-        const { cars, userPoints } = this.props.users
-        let currentCar = cars.length === 1 ? cars[0] : car
+        const {  name, destination, editing, adding} = this.state
+        const { cars , userPoints } = this.props.users;
+        console.log(cars)
+        // let currentCar = cars.length === 1 ? cars[0] : car
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
@@ -235,20 +232,20 @@ class AddCar extends Component {
                                handleEditInput={this.handleEditInput}
                                editName={name}
                                editDestination={destination}
-                               editClose={() => this.editClose(item.carId)}
+                               editSubmit={() => this.editSubmit(item.carId)}
                     />
                 )
             } else {
                 output = (
-                    item.userPointName !== '<no point>' &&
-                    <div key = {item.userPointId} style={{display: 'flex', width: '100%'}}>
+                    item.carName !== '<no point>' &&
+                    <div key = {item.carId} style={{display: 'flex', width: '100%'}}>
                         <Button
                                 variant="contained"
                                 color="primary"
                                 className={classes.smartRoute}
                                 classes={{ label: classes.label }}
                         >
-                            {item.userPointName}
+                            {item.carName}
                         </Button>
                         <div className="icon-container">
                             <IconButton
@@ -258,7 +255,7 @@ class AddCar extends Component {
                                 <EditIcon />
                             </IconButton>
                             <IconButton
-                                onClick={() => this.handleDelete(item.userPointId)}
+                                onClick={() => this.handleDelete(item.carId)}
                                 className={classes.iconButton}
                                 aria-label="Delete">
                                 <DeleteIcon />
@@ -329,7 +326,7 @@ class AddCar extends Component {
                             />
 
                             <Button
-                                onClick={() => this.editClose(null)}
+                                onClick={() => this.editSubmit(null)}
                                 classes={{
                                     root: classes.submit,
                                     label: classes.label
@@ -354,7 +351,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         setUserPoints: (payload) => dispatch(setUserPoints(payload)),
-        setTrip: (trip) => dispatch(setTrip(trip))
+        setTrip: (trip) => dispatch(setTrip(trip)),
+        setProfile: (state) => dispatch(setProfile(state)),
+        setCar: (cars) => dispatch(setCar(cars))
     }
 }
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(AddCar))

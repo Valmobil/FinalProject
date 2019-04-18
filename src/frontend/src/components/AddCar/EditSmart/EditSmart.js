@@ -54,7 +54,7 @@ class EditSmart extends Component{
                     id="mui-theme-provider-standard-input"
                     style={style.input}
                     autoComplete="off"
-                    name='name'
+                    name='carName'
                     value={editName}
                     onChange={handleEditInput}
                     InputProps={{
@@ -69,7 +69,7 @@ class EditSmart extends Component{
                     id="mui-theme-provider-standard-input"
                     style={style.input}
                     autoComplete="off"
-                    name='destination'
+                    name='carColour'
                     value={editDestination}
                     onChange={handleEditInput}
                     InputProps={{
