@@ -222,7 +222,6 @@ class Main extends Component {
                 return item
             }
         })
-        console.log(newUserPoints)
         this.props.setUserPoints(newUserPoints)
         this.props.setSearchedLocation('')
         this.setState({editing: '', name: '', destination: '', adding: false})
@@ -430,6 +429,7 @@ class Main extends Component {
                             setValue={this.setValue}
                             method='post'
                             url='/api/points/'
+                            data={{ pointSearchText: this.state.value }}
                         />
 
 
