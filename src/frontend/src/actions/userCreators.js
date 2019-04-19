@@ -1,7 +1,7 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
     GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT,
-    INITIAL_LOAD } from './users'
+    INITIAL_LOAD, SET_PROFILE } from './users'
 import axios from 'axios'
 
 
@@ -64,7 +64,6 @@ export const checkAuthorizationByToken = () => dispatch => {
         if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))) {
             dispatch(logOut());
         } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
-
             axios({
                 method: 'post',
                 url: '/api/usertokens',
@@ -319,6 +318,11 @@ export const setUserPoints = (payload) => dispatch => {
         .catch(err => console.log(err))
     dispatch({type: SET_USER_POINTS, payload})
 }
+export const setCar = (payload) => dispatch => {
+    callApi('put', '/api/users', payload)
+        .catch(err => console.log(err))
+    dispatch({type: SET_CARS, payload})
+}
 //* **********************
 
 //from /profile
@@ -349,9 +353,13 @@ export const setErrorMessage = (message) => dispatch => {
 ////setProfile data to database
 export const setProfile = (profile) => dispatch => {
     callApi('put', '/api/users', profile)
+        // .then(response => dispatch({type: SET_PROFILE, payload: response.data}))
+        .then(res => console.log('cars from userCreators: ', res))
         .catch(err => console.log(err))
-    dispatch({type: SET_USER, payload: profile})
+    // dispatch({type: SET_USER, payload: profile})
+    dispatch({type: SET_PROFILE, payload: profile})
 }
+
 //* **********************
 //
 // export const fetchTripsHistory = (userId) => dispatch =>{
