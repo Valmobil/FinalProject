@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DateTime } from 'luxon'
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-// import orange from "@material-ui/core/colors/orange";
-
+import moment from 'moment'
 
 const styles = theme => ({
   container: {
@@ -16,36 +14,43 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 120,
+    width: 130,
   },
 });
 
-class TimePickers extends Component{
-  render() {
-    const {classes} = this.props;
+class TimePickers extends Component {
 
-    const time = DateTime.local();
-    console.log(time)
-    let defaultValueHours = (time.c.hours < 10) ? "0" + time.c.hours : time.c.hour
-    let defaultValueMinutes = (time.c.minute < 10) ? "0" + time.c.minute : time.c.minute
-    let defaultValueTime = defaultValueHours + ':' + defaultValueMinutes
-    return (
-      <form className={classes.container} noValidate>
-        <TextField
-          id="time"
-          label="Set trip time"
-          type="time"
-          defaultValue={defaultValueTime}
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          inputProps={{
-            step: 300,
-          }}
-        />
-      </form>
-    );
+  state={
+    time: moment().format('HH:mm')
+  }
+
+  handleChange = e => {
+    this.setState({
+      time: e.target.value
+    })
+  }
+
+  render(){
+  const { classes } = this.props;
+  console.log(this.state.time)
+  return (
+    <form className={classes.container}>
+      <TextField
+        id="time"
+        label="Start time"
+        type="time"
+        value={this.state.time}
+        onChange = {this.handleChange}
+        className={classes.textField}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        inputProps={{
+          step: 300, // 5 min
+        }}
+      />
+    </form>
+  );
   }
 }
 

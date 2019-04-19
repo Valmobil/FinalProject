@@ -273,7 +273,7 @@ export const setAuthorization = (state, signType) => (dispatch) => {
         })
         .catch(err => console.log(err))
     if (signType === 'log-in') {
-        callApi('get', '/api/points/filter/test')
+        callApi('post', '/api/points/filter/test')
             .then(response => dispatch({type: SET_COMMON_POINTS, payload: response.data}))
             .catch(err => console.log(err))
     }

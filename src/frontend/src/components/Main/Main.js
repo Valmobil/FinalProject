@@ -900,10 +900,13 @@ class Main extends Component {
         }
     }
 
+    // Date.parse(Date.now());
+
     render () {
         // console.log(this.props.users)
         const { classes } = this.props
         const { role, car, name, destination, editing, adding, creatingTrip, value, suggestions } = this.state
+      console.log('state from main',this.state)
         const { cars, userPoints } = this.props.users
         let currentCar = cars.length === 1 ? cars[0] : car
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')

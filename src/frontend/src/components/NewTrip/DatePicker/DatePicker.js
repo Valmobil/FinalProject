@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DateTime } from 'luxon';
-
+import moment from 'moment'
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 // import orange from "@material-ui/core/colors/orange";
@@ -15,39 +14,34 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 120,
+    width: 130,
   },
 });
 
 class DatePickers extends Component {
   state = {
-    date: "yyyy-mm-dd",
+    date: moment().format('YYYY-MM-DD')
   }
 
-  componentDidMount(){
-    // let date = DateTime.local();
-    // let defaultValueMonth = (date.c.month < 10) ? "0"+ date.c.month : date.c.month
-    // let defaultValueDay = (date.c.day < 10) ? date.c.day : date.c.day
-    // let defaultValueDate = date.c.year + "-" +defaultValueMonth + "-" +defaultValueDay
-    // this.setState({
-    //   date: defaultValueDate,
-    // })
+  handleChange = e => {
+    console.log(e.target)
+    this.setState({
+      date: e.target.value
+    })
   }
+
   render(){
     const { classes } = this.props;
-    let date = DateTime.local();
-    let defaultValueMonth = (date.c.month < 10) ? "0"+ date.c.month : date.c.month
-    let defaultValueDay = (date.c.day < 10) ? date.c.day : date.c.day
-    let defaultValueDate = date.c.year + "-" +defaultValueMonth + "-" +defaultValueDay
-    console.log('from component day',this.state.date)
+    console.log('from date picker',this.state.date)
     return (
       <form className={classes.container} noValidate>
         <TextField
           id="date"
-          label="Set trip date"
+          label="Start date"
           type="date"
           // defaultValue= {this.state.date}
-          defaultValue= {defaultValueDate}
+          value= {this.state.date}
+          onChange={date => this.handleChange(date)}
           className={classes.textField}
           InputLabelProps={{
             shrink: true,

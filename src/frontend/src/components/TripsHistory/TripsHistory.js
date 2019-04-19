@@ -6,7 +6,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
 import { deleteTripFromHistory, callApi } from '../../actions/userCreators'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 // import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 // import orange from "@material-ui/core/colors/orange";
 import './TripsHistory.css'
@@ -122,9 +122,9 @@ const mapDispatchToProps = (dispatch) => {
         deleteTripFromHistory: (newTripsHistory) => dispatch(deleteTripFromHistory(newTripsHistory))
     }
 }
-TripsHistory.propTypes ={
-    tripsHistory: PropTypes.array.isRequired,
-}
+// TripsHistory.propTypes ={
+//     tripsHistory: PropTypes.array.isRequired,
+// }
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TripsHistory))
 

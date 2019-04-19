@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { callApi} from '../../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import axios from "axios/index";
+// import axios from "axios/index";
 // import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 // import orange from '@material-ui/core/colors/orange'
 
@@ -30,7 +30,7 @@ const styles = theme => ({
 
 const style={
     input:{
-      width: '70%',
+      width: '80%',
     }
 }
 
@@ -42,7 +42,7 @@ class ChosePointFromSelect extends React.Component {
     };
 
     componentDidMount() {
-        axios.get('api/points/test')
+        callApi('get','api/points/test')
             .then(resp => {
                 console.log(resp.data.pointNameEn)
                 this.setState({
