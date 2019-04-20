@@ -1,5 +1,7 @@
 package ua.com.danit.service;
 
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +12,6 @@ import ua.com.danit.repository.ImageRepository;
 
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -67,12 +68,14 @@ public class ImageService {
     SerialBlob blob = null;
     try {
       byte[] inputStream = file.getBytes();
-      blob = new SerialBlob(inputStream);
+      blob = new SerialBlob(Base64.decode(inputStream));
     } catch (SerialException e) {
       e.printStackTrace();
     } catch (SQLException e) {
       e.printStackTrace();
     } catch (IOException e) {
+      e.printStackTrace();
+    } catch (Base64DecodingException e) {
       e.printStackTrace();
     }
     image.setImageBlob(blob);
