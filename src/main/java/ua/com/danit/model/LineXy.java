@@ -9,8 +9,9 @@ public class LineXy {
   private PointXy start;
   private PointXy end;
 
-  public Double getDistance(PointXy start, PointXy end) {
-    return Math.sqrt(Math.pow(start.getX() - end.getX(), 2) + Math.pow(start.getY() - end.getY(), 2));
+  private Double getDistance(PointXy start, PointXy end) {
+    //    return Math.sqrt(Math.pow(start.getX() - end.getX(), 2) + Math.pow(start.getY() - end.getY(), 2));
+    return 0.0;
   }
 
   public Double distBetweenPointAndLine(PointXy pointXy) {
@@ -25,7 +26,7 @@ public class LineXy {
 
     // Heron's formula
     Double s = (Ab + Bc + Ac) / 2;
-    Double area = (Double) Math.sqrt(s * (s - Ab) * (s - Bc) * (s - Ac));
+    Double area = Math.sqrt(s * (s - Ab) * (s - Bc) * (s - Ac));
 
     // but also area == (BC * AD) / 2
     // BC * AD == 2 * area
@@ -34,8 +35,7 @@ public class LineXy {
     if (Bc == 0) {
       return Ab;
     } else {
-      Double Ad = (2 * area) / Bc;
-      return Ad;
+      return ((2 * area) / Bc);
     }
   }
 }
