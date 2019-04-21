@@ -9,6 +9,7 @@ import ua.com.danit.entity.User;
 import ua.com.danit.repository.ImageRepository;
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
