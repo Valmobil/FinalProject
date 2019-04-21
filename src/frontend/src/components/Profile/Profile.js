@@ -8,22 +8,19 @@ import AvatarProfile from './Avatar/AvatarProfile'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import { connect } from 'react-redux'
-import {setProfile} from '../../actions/userCreators'
+import {setProfile, updateProfile} from '../../actions/userCreators'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
-
-
-
-
+import AddCar from "../AddCar/AddCar";
 
 
 class Profile extends Component {
 
     state = {
      user: {
-            userName:     this.props.users.user.userName,
+            userName:     '',
             userPhoto:    this.props.users.user.userPhoto,
-            userPhone:    this.props.users.user.userPhone,
-            userMail:     this.props.users.user.userMail,
+            userPhone:    '',
+            userMail:     '',
             car:[]
         },
     newCar: {
@@ -32,23 +29,6 @@ class Profile extends Component {
             carPhoto: '/CarsPhotos/n_1.jpg',
             },
         }
-
-
-
-/*  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value
-5
-    })git
-  };*/
-
-   /* handleChangeCar = name => event => {
-        this.setState({ [name]: event.target.value });
-    };
-*/
-    /*handleCar = (e) => {
-    this.setState({newCar: {...this.state.newCar, [e.target.name]: e.target.value}})
-    }*/
 
     handleChange = (e) => {
             this.setState({user: {...this.state.user, [e.target.name]: e.target.value}, newCar: {...this.state.newCar, [e.target.name]:e.target.value}})
@@ -65,36 +45,21 @@ class Profile extends Component {
             this.setState({...this.state.user, car});
             this.props.setProfile(this.state.user);
         }
-        else
-        {alert("Введи хоть что-то маньяк")}
         console.log("From profile ", this.state.user)
     }
-
-
-    // componentDidMount() {
-    //     const oldCar = this.props.users.user.car
-    //     let car = []
-    //     oldCar.forEach(object => {
-    //         let newCar = {}
-    //         Object.keys(object).forEach(key => {
-    //             if (key !== 'user') newCar[key] = object[key]
-    //         })
-    //         car.push(newCar)
-    //     })
-    //     this.setState({user: {...this.state.user, car}})
-    // }
 
   render () {
 
        // console.log(this.props.users.cars)
         const {classes} = this.props
 
-      // const { cars } = this.props.users
-        // const { phone, userEmail } = this.state
-        /*const phoneNumber = /^\+?[0-9]{10}/;
-        const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;*/
-        //const { userName } = this.props.users.user
-        // console.log(userName)
+      const userInformation = {
+              userName:     this.props.users.user.userName,
+              userPhoto:    this.props.users.user.userPhoto,
+              userPhone:    this.props.users.user.userPhone,
+              userMail:     this.props.users.user.userMail,
+              cars: this.props.users.cars
+      }
     return (
       <form className="form-container" noValidate autoComplete="off">
         <AvatarProfile/>
@@ -107,7 +72,7 @@ class Profile extends Component {
           type='text'
           onChange={this.handleChange}
           margin="normal"
-          value={this.state.user.userName}
+          value={this.props.users.user.userName}
           InputProps={{
               classes: {
                   input: classes.inputColor
@@ -121,7 +86,7 @@ class Profile extends Component {
           placeholder= '+38'
           onChange={this.handleChange}
           margin="normal"
-          value={this.state.user.userPhone}
+          value={this.props.users.user.userPhone}
           InputProps={{
               classes: {
                   input: classes.inputColor
@@ -138,7 +103,7 @@ class Profile extends Component {
           onChange={this.handleChange}
           autoComplete="email"
           margin="normal"
-          value={this.state.user.userMail}
+          value={this.props.users.user.userMail}
           InputProps={{
               classes: {
                   input: classes.inputColor
@@ -156,36 +121,8 @@ class Profile extends Component {
         >
           Change Password
         </Button>
-              {/*<AddCar/>*/}
-          <TextField
-              label="Enter car model"
-              style={style.input}
-              autoComplete="off"
-              name='carName'
-              value={this.state.newCar.carName}
-              onChange={this.handleChange}
-              InputProps={{
-                  classes: {
-                      input: classes.inputColor
-                  }
-              }}
-          />
-
-          <TextField
-              label="Car color"
-              style={style.input}
-              autoComplete="off"
-              name='carColour'
-              value={this.state.newCar.carColour}
-              onChange={this.handleChange}
-              margin="normal"
-              InputProps={{
-                  classes: {
-                      input: classes.inputColor
-                  }
-              }}
-          />
-          <Button onClick={this.changePass}
+              <AddCar/>
+           <Button onClick={ () => this.props.updateProfile(userInformation)}
                   color="primary"
                   style={style.button}
                   classes={{
@@ -267,7 +204,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setProfile: (state) => dispatch(setProfile(state)),
-    // setUserName: (name) => dispatch(setUserName(name))
+      updateProfile: (userInfo) => {dispatch(updateProfile(userInfo))}
   }
 }
 
