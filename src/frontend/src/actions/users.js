@@ -25,6 +25,8 @@ export const GET_LOCATION_SUCCESS ='GET_LOCATION_SUCCESS'
 export const GET_LOCATION_ERROR = 'GET_LOCATION_ERROR'
 export const INITIAL_LOAD = 'INITIAL_LOAD'
 export const SET_USER_PHOTO = 'SET_USER_PHOTO'
+export const ADD_CAR = 'ADD_CAR'
+
 
 
 
