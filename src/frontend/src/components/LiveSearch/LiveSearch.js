@@ -53,20 +53,21 @@ const styles = theme => ({
     label: {
         textTransform: 'capitalize'
     },
-    submit: {
-        background: '#fff',
+    acceptButton: {
         borderRadius: 3,
-        border: 0,
-        color: '#f57c00',
-        height: 25,
-        padding: '0 10px',
-        marginLeft: 10,
-        marginTop: 20,
-        '&:focus':{
-            background: '#fff',
-            outline: 'none',
-            color: '#008000',
-        }
+        background: '#fff',
+        color: '#008000',
+        height: 30,
+        padding: 0,
+        width: '47%'
+    },
+    rejectButton: {
+        borderRadius: 3,
+        background: '#fff',
+        color: '#FC2847',
+        height: 30,
+        padding: 0,
+        width: '47%'
     },
 })
 
@@ -159,6 +160,7 @@ class LiveSearch extends Component {
                     name='name'
                     value={this.props.name}
                     onChange={this.props.handleInput}
+                    autoComplete="off"
                 />
                 <TextField
                     fullWidth
@@ -173,16 +175,26 @@ class LiveSearch extends Component {
                     }}
                     {...other}
                 />
-
+                <div style={{display: 'flex', justifyContent: 'space-between', width: '80%', margin: '20px auto'}}>
                 <Button
                     onClick={this.props.editClose}
                     classes={{
-                        root: classes.submit,
+                        root: classes.acceptButton,
                         label: classes.label
                     }}
                 >
                     Submit
                 </Button>
+                <Button
+                        onClick={this.props.rejectEdit}
+                        classes={{
+                            root: classes.rejectButton,
+                            label: classes.label
+                        }}
+                    >
+                        Reject
+                </Button>
+                </div>
                 </MuiThemeProvider>
         );
     }

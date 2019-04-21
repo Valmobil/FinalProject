@@ -176,7 +176,6 @@ class Map extends Component {
     }
 
     componentDidMount() {
-
         if (this.props.coords) {
             platform.center = {
                 lat: this.props.coords.latitude,

@@ -154,7 +154,6 @@ class AvatarProfile extends Component {
 
 
     render(){
-        console.log('photo = ', this.props.photo)
         const { classes } = this.props
         let conditionalInput = this.state.imgSrc === null ?
             <>

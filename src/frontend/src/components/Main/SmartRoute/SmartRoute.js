@@ -14,7 +14,10 @@ const styles = theme => ({
         color: 'white',
         height: 40,
         padding: 0,
-        width: 250
+        width: 250,
+        '&:focus': {
+            outline: 'none',
+        },
     },
     iconButton: {
         padding: 0,
@@ -47,6 +50,11 @@ class SmartRoute extends Component {
             clearTimeout(this.state.timeout)
         }
     }
+    contextMenuDisable = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
 
     render(){
         const { classes } = this.props
@@ -64,6 +72,7 @@ class SmartRoute extends Component {
                 }
 
                 <Button
+                        onContextMenu={this.contextMenuDisable}
                         onTouchStart={this.touchStart}
                         onTouchEnd={this.touchEnd}
                         variant="contained"

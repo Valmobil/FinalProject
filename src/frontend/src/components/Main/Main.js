@@ -212,6 +212,10 @@ class Main extends Component {
             }
         })
         this.props.setUserPoints(newUserPoints)
+        this.rejectEdit()
+    }
+
+    rejectEdit = () => {
         this.props.setSearchedLocation('')
         this.setState({editing: '', name: '', value: '', adding: false})
     }
@@ -284,6 +288,7 @@ class Main extends Component {
                                     url='/api/points/'
                                     data={{ pointSearchText: value }}
                                     value={value}
+                                    rejectEdit={this.rejectEdit}
                         />
                         <Map />
                     </div>
@@ -415,15 +420,11 @@ class Main extends Component {
                             url='/api/points/'
                             data={{ pointSearchText: this.state.value }}
                             value={value}
+                            rejectEdit={this.rejectEdit}
                         />
-
-
                         <Map/>
                            </>
                         }
-
-
-
 
                         {this.state.role === 'driver' &&
                         <FormControl required className={classes.formControl}>
