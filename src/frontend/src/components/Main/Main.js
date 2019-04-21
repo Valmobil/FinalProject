@@ -750,7 +750,7 @@ class Main extends Component {
                     }}
                     label='Place name'
                     name='name'
-                    value={this.state.newName}
+                    value={this.state.name}
                     onChange={this.handleInput}
                 />
                 <TextField
