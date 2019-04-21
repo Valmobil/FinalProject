@@ -204,6 +204,7 @@ class Main extends Component {
 
     editClose = (pointId) => {
 
+
         let id = this.props.users.userPoints.length > 0 ?
             this.props.users.userPoints.find(item => item.userPointName === '<no point>').userPointId : 1
         if (pointId) id = pointId

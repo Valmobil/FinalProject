@@ -35,6 +35,7 @@
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
+      <version>1.4.199</version>
       <artifactId>h2</artifactId>
     </dependency>
     <dependency>
@@ -80,7 +81,18 @@
       <artifactId>maven-site-plugin</artifactId>
       <version>3.7.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>58.1</version>
+    </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.osmdroid/OpenStreetMapViewer -->
+    <!--<dependency>-->
+      <!--<groupId>org.osmdroid</groupId>-->
+      <!--<artifactId>OpenStreetMapViewer</artifactId>-->
+      <!--<version>6.1.0</version>-->
+    <!--</dependency>-->
 
   </dependencies>
 

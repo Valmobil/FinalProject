@@ -1,6 +1,8 @@
 package ua.com.danit.controller;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.Mapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -33,14 +36,14 @@ public class ImagesController {
     this.userTokensService = userTokensService;
   }
 
-  @PostMapping("")
-  public byte[] getImageControllerPost(@RequestParam Long id) throws IOException {
-    return imageService.getImageService(id);
-  }
+  //  @PostMapping("")
+  //  public Image getImageControllerPost(@RequestParam Long id) throws IOException {
+  //    return imageService.getImageService(id);
+  //  }
 
-  @GetMapping("")
+  @GetMapping(value = "",produces = MediaType.IMAGE_JPEG_VALUE)
   public byte[] getImageControllerGet(@RequestParam Long id) throws IOException {
-    return imageService.getImageService(id);
+    return IOUtils.toByteArray(imageService.getImageService(id));
   }
 
   @PutMapping("")

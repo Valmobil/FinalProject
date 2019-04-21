@@ -1,0 +1,37 @@
+.welcome-user{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+    color: #fff;
+}
+.logout-button{
+    margin-top: 30px;
+}
+.welcome-span{
+    color: #fff;
+    margin: 10px auto 10px auto;
+}
+.role-question{
+    margin-top: 40px;
+}
+.type-button-container{
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    height: 40px;
+    margin-top: 10px;
+}
+.dependent-button-container{
+    margin-top: 30px;
+}
+.icon-container {
+    display: flex;
+    justify-content: space-between;
+    width: 70px;
+    margin-bottom: -15px;
+    margin-right: 0;
+    margin-left: auto;
+}

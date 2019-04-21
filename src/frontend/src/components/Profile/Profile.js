@@ -14,6 +14,8 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
 
 
+
+
 class Profile extends Component {
 
     state = {
@@ -22,7 +24,7 @@ class Profile extends Component {
             userPhoto:    this.props.users.user.userPhoto,
             userPhone:    this.props.users.user.userPhone,
             userMail:     this.props.users.user.userMail,
-            car: [],
+            car:[]
         },
     newCar: {
             carName: '',
@@ -32,11 +34,12 @@ class Profile extends Component {
         }
 
 
+
 /*  handleChange = name => event => {
     this.setState({
       [name]: event.target.value
 5
-    })
+    })git
   };*/
 
    /* handleChangeCar = name => event => {
@@ -55,10 +58,16 @@ class Profile extends Component {
     changePass = () => {
         const car = this.state.user.car;
         console.log(car)
-        car.push(this.state.newCar);
-        this.setState({...this.state.user, car});
-        this.props.setProfile(this.state.user);
-        console.log(this.state.user)
+        const {carName, carColour} = {...this.state.newCar}
+        console.log(carColour === Number)
+        if (carName !== '' && carColour !== '') {
+            car.push(this.state.newCar);
+            this.setState({...this.state.user, car});
+            this.props.setProfile(this.state.user);
+        }
+        else
+        {alert("Введи хоть что-то маньяк")}
+        console.log("From profile ", this.state.user)
     }
 
 
@@ -76,8 +85,9 @@ class Profile extends Component {
     // }
 
   render () {
-        const {classes} = this.props
 
+       // console.log(this.props.users.cars)
+        const {classes} = this.props
 
       // const { cars } = this.props.users
         // const { phone, userEmail } = this.state
@@ -146,6 +156,7 @@ class Profile extends Component {
         >
           Change Password
         </Button>
+              {/*<AddCar/>*/}
           <TextField
               label="Enter car model"
               style={style.input}
@@ -159,6 +170,7 @@ class Profile extends Component {
                   }
               }}
           />
+
           <TextField
               label="Car color"
               style={style.input}
@@ -186,6 +198,7 @@ class Profile extends Component {
           </Button>
           </MuiThemeProvider>
       </form>
+
     )
   }
 }

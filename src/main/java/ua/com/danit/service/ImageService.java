@@ -9,6 +9,7 @@ import ua.com.danit.entity.User;
 import ua.com.danit.repository.ImageRepository;
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -25,8 +26,21 @@ public class ImageService {
     this.userTokensService = userTokensService;
   }
 
-  public byte[] getImageService(Long imageId) throws IOException {
+  //  public Byte[] getImageService(Long imageId) throws IOException {
+  //
+  //    InputStream in = null;
+  //    try {
+  //      in = imageRepository.getOne(imageId).getImageBlob().getBinaryStream();
+  //    } catch (SQLException e) {
+  //      e.printStackTrace();
+  //    }
+  //    if (in == null) {
+  //      return null;
+  //    }
+  //    return IOUtils.toByteArray(in);
+  //  }
 
+  public InputStream getImageService(Long imageId) {
     InputStream in = null;
     try {
       in = imageRepository.getOne(imageId).getImageBlob().getBinaryStream();
@@ -36,8 +50,16 @@ public class ImageService {
     if (in == null) {
       return null;
     }
-    return IOUtils.toByteArray(in);
+    return in;
   }
+
+  //  private void saveFile(MultipartFile multipartFile, int id) throws Exception {
+  //  //    String destination = "C:/Users/vtrapezn/IdeaProjects/FinalProject/src/main/resources/UsersPhotos/5.jpg";
+  //  //    File file = new File(destination);
+  //  //    multipartFile.transferTo(file);
+  //  //  }
+  //return IOUtils.toByteArray(in);
+  //}
 
   public String saveNewImage(MultipartFile file, User user) {
     Image image = new Image();
@@ -57,9 +79,13 @@ public class ImageService {
       return null;
     }
     image.setUser(user);
+    //    try {
+    //      saveFile(file,1);
+    //    } catch (Exception e) {
+    //      e.printStackTrace();
+    //    }
     image = imageRepository.save(image);
     return image.getImageId().toString();
-//    return image.getUser().getUserId().toString() +"_"+ image.getImageId().toString();
   }
 
 }
