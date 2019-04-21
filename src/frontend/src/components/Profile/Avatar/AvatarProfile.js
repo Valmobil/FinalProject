@@ -83,13 +83,15 @@ class AvatarProfile extends Component {
         // e.preventDefault()
         const { file, pixelCrop } = this.state
 
-        this.getCroppedImg(file, pixelCrop, 'userPhoto')
-            .then(res => {
-                // this.setState({myImageSrc: URL.createObjectURL(res)})
-                this.props.setUserPhoto(res)
-                this.rejectImage()
-            })
-            .catch(console.log)
+        // this.getCroppedImg(file, pixelCrop, 'userPhoto')
+        this.props.setUserPhoto(this.getCroppedImg(file, pixelCrop, 'userPhoto'))
+        this.rejectImage()
+            // .then(res => {
+            //     // this.setState({myImageSrc: URL.createObjectURL(res)})
+            //     this.props.setUserPhoto(res)
+            //     this.rejectImage()
+            // })
+            // .catch(console.log)
     }
 
     rejectImage = () => {
@@ -132,10 +134,14 @@ class AvatarProfile extends Component {
             // const base64Image = canvas.toDataURL('image/jpeg');
 
             // As a blob
-            this.setState({myImageSrc: canvas.toDataURL("image/png")})
-            console.log(canvas.toDataURL("image/png"))
+            // this.setState({myImageSrc: canvas.toDataURL("image/png")})
+            // console.log(canvas.toDataURL("image/png"))
 
         }
+
+        return canvas.toDataURL("image/png")
+
+
         // return new Promise((resolve, reject) => {
         //     canvas.toBlob(blob => {
         //         blob.name = fileName;
@@ -144,6 +150,7 @@ class AvatarProfile extends Component {
         // });
 
     }
+
 
 
     render(){
