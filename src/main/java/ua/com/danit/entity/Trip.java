@@ -45,12 +45,13 @@ public class Trip extends Auditable {
   @JsonView(View.Summary.class)
   @ManyToOne
   @JoinColumn(name = "TRIP_USER_ID", referencedColumnName = "userId")
-  @JsonIgnoreProperties({"userName", "userPhone", "userMail", "userToken", "userTokenValidTo", "userPhoto"})
-  //  @JsonProperty("user")
+  @JsonIgnoreProperties({"userMail", "userTokenRefresh", "userTokenAccess",
+      "userIsOkUserPhoto", "userIsOkCarPhoto", "userIsConfirmedMail",
+      "userIsConfirmedPhone","car"})
   private User user;
   @ManyToOne
   @JoinColumn(name = "TRIP_CAR_ID", referencedColumnName = "carId")
-  @JsonIgnoreProperties({"carName", "carColour", "carPhoto", "user"})
+  @JsonIgnoreProperties({"user"})
   @Nullable
   private Car car;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "trip")

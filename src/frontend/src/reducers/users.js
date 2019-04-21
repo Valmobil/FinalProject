@@ -89,6 +89,8 @@ function users (state = initialState, action) {
         return{...state, user: {...state.user, userPhoto: action.payload}}
     case GET_LOCATION_ERROR:
         return{...state}
+      case SET_PROFILE:
+          return {...state, user: Object.assign({...state.user}, {...state.cars}, action.payload)}
 
     default:
       return {...state}

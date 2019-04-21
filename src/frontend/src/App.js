@@ -11,6 +11,7 @@ import PassRestoration from './components/PassRestoration'
 import ChangePassword from './components/ChangePassword'
 import TripsHistoryForm from "./components/TripsHistory/TripsHistoryForm";
 import NewTrip from './components/NewTrip/NewTrip'
+import AddCar from './components/AddCar/AddCar'
 
 import './App.css'
 
@@ -29,6 +30,7 @@ class App extends Component {
             <Route exact path="/C" component={ChangePassword} />
             <ProtectedRoute exact path='/history' component={TripsHistoryForm}/>
             <ProtectedRoute exact path='/newtrip' component={NewTrip}/>
+              <ProtectedRoute exact path='/ac' component={AddCar}/>
             <Route path='*' component={NoMatch}/>
           </Switch>
         </div>
