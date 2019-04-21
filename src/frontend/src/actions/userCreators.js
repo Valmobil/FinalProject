@@ -1,58 +1,12 @@
-import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
+import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
     GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT,
-    INITIAL_LOAD, SET_PROFILE, ADD_CAR } from './users'
+    INITIAL_LOAD, SET_PROFILE, SET_USER_PHOTO, ADD_CAR } from './users'
+
+import { callApi, setLocalStorage, removeTokens } from '../utils/utils'
+
 import axios from 'axios'
 
-
-
-
-export const callApi = (method, url, data, config) => {
-    let headers = null
-    if (window.localStorage.getItem('iTripper_access_token')){
-        const refreshTokenExpires = Date.parse(window.localStorage.getItem('iTripper_refresh_token_expires'))
-        const accessTokenExpires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
-        if (refreshTokenExpires && (Date.now() > refreshTokenExpires)){
-            logOut();
-        } else if (Date.now() >= accessTokenExpires){
-            const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token');
-            axios({
-                method: 'post',
-                url: 'api/usertokens',
-                data: { userTokenRefresh }
-            })
-                .then(response => {
-                    if (response.data) {
-                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-                        headers = {
-                            Authorization: `Bearer ${response.data.userTokenAccess}`,
-                        }
-                        headers = Object.assign({ Authorization: `Bearer ${response.data.userTokenAccess}` }, config)
-                        return axiosRequest(method, url, data, headers, config)
-                    } else {
-                        logOut()
-                    }
-                })
-        }
-        headers = {
-            Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}`,
-        }
-        headers = Object.assign({ Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}` }, config)
-    }
-    return axiosRequest(method, url, data, headers, config)
-}
-
-//* *********************
-
-export const axiosRequest = (method, url, data, headers, config) => {
-    return axios({
-        method,
-        url,
-        data,
-        headers,
-        config,
-    })
-}
 //* *********************
 
 export const checkAuthorizationByToken = () => dispatch => {
@@ -122,25 +76,6 @@ export const checkAuthorizationByToken = () => dispatch => {
 //         }
 //     } else dispatch(logOut())
 // }
-//* *********************
-
-const setLocalStorage = (accessToken, refreshToken) => {
-    const accessTokenExpires = new Date(Date.now() + 1000).toISOString()
-    const refreshTokenExpires = new Date(Date.now() + 2591900000).toISOString()
-    window.localStorage.setItem('iTripper_access_token', accessToken)
-    window.localStorage.setItem('iTripper_refresh_token', refreshToken)
-    window.localStorage.setItem('iTripper_access_token_expires', accessTokenExpires)
-    window.localStorage.setItem('iTripper_refresh_token_expires', refreshTokenExpires)
-}
-
-//* *********************
-
-const removeTokens = () => {
-    window.localStorage.removeItem('iTripper_access_token')
-    window.localStorage.removeItem('iTripper_access_token_expires')
-    window.localStorage.removeItem('iTripper_refresh_token')
-    window.localStorage.removeItem('iTripper_refresh_token_expires')
-}
 // * *********************
 
 export const setAuthByToken = () => dispatch => {
@@ -159,12 +94,10 @@ dispatch({type: INITIAL_LOAD, payload: true})
                 data: {userTokenRefresh}
             })
                 .then(response => {
-                    console.log('setAuthByToken: usertokens response.data = ', response.data)
                     if (response.data) {
                         setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
                         callApi('post', '/api/logins/signin', {userToken: response.data.userTokenAccess})
                             .then(res => {
-                                console.log('setAuthByToken: signin res.data = ', res.data)
                                 dispatch(authDispatches(res))
                             })
                             .catch(console.log)
@@ -245,7 +178,7 @@ const authDispatches = (response) => dispatch => {
     dispatch({type: SET_AUTH, payload: true})
     dispatch({type: SET_USER, payload: response.data.user})
     dispatch({type: SET_CARS, payload: response.data.cars})
-    dispatch(setUserPoints(response.data.userPoints))
+    dispatch({type: SET_USER_POINTS, payload: response.data.userPoints})
 }
 
 // * *********************
@@ -271,11 +204,6 @@ export const setAuthorization = (state, signType) => (dispatch) => {
             }
         })
         .catch(err => console.log(err))
-    if (signType === 'log-in') {
-        callApi('get', '/api/points/filter/test')
-            .then(response => dispatch({type: SET_COMMON_POINTS, payload: response.data}))
-            .catch(err => console.log(err))
-    }
 }
 //* *********************
 
@@ -379,11 +307,14 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
 }
 //* **********************
 
-export const setPhoto = (image) => dispatch => {
+export const setUserPhoto = (image) => dispatch => {
+    console.log('userCreators: image', image)
     let data = new FormData();
     data.append('fileUpload', image);
    callApi('put', 'api/images', data)
-       .then(response => console.log('image response: ', response))
+       .then(response => {
+           dispatch({type: SET_USER_PHOTO, payload: response.data})
+       })
        .catch(console.log)
 }
 //* **********************
@@ -419,6 +350,8 @@ export const setInitialLoadToFalse = () => dispatch => {
     dispatch({type: INITIAL_LOAD, payload: false})
 }
 
+//* **********************
+
 export const updateProfile = (userInfo) => dispatch =>{
     console.log('updateProfile', userInfo)
     callApi('put', '/api/users', userInfo)
@@ -429,3 +362,4 @@ export const updateProfile = (userInfo) => dispatch =>{
             console.log(err)
         })
 }
+
