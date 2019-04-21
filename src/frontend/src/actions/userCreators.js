@@ -1,7 +1,7 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
     GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT,
-    INITIAL_LOAD } from './users'
+    INITIAL_LOAD, SET_USER_PHOTO } from './users'
 import { callApi, setLocalStorage, removeTokens } from '../utils/utils'
 import axios from 'axios'
 
@@ -306,11 +306,13 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
 }
 //* **********************
 
-export const setPhoto = (image) => dispatch => {
+export const setUserPhoto = (image) => dispatch => {
     let data = new FormData();
     data.append('fileUpload', image);
    callApi('put', 'api/images', data)
-       .then(response => console.log('image response: ', response))
+       .then(response => {
+           dispatch({type: SET_USER_PHOTO, payload: response.data})
+       })
        .catch(console.log)
 }
 //* **********************

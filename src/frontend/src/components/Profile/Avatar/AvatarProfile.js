@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button'
 // import IconAvatars from '../AvatarIconButton/AvatarIconButton'
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import { setPhoto} from '../../../actions/userCreators'
+import { setUserPhoto} from '../../../actions/userCreators'
 import {connect} from 'react-redux'
 
 const styles = {
@@ -86,7 +86,7 @@ class AvatarProfile extends Component {
         this.getCroppedImg(file, pixelCrop, 'userPhoto')
             .then(res => {
                 // this.setState({myImageSrc: URL.createObjectURL(res)})
-                this.props.setPhoto(res)
+                this.props.setUserPhoto(res)
                 this.rejectImage()
             })
             .catch(console.log)
@@ -132,20 +132,22 @@ class AvatarProfile extends Component {
             // const base64Image = canvas.toDataURL('image/jpeg');
 
             // As a blob
-            this.setState({myImageSrc: canvas.toDataURL("image/jpeg")})
+            this.setState({myImageSrc: canvas.toDataURL("image/png")})
+            console.log(canvas.toDataURL("image/png"))
 
         }
-        return new Promise((resolve, reject) => {
-            canvas.toBlob(blob => {
-                blob.name = fileName;
-                resolve(blob);
-            }, 'image/jpeg');
-        });
+        // return new Promise((resolve, reject) => {
+        //     canvas.toBlob(blob => {
+        //         blob.name = fileName;
+        //         resolve(blob);
+        //     }, 'image/png');
+        // });
 
     }
 
 
     render(){
+        console.log('photo = ', this.props.photo)
         const { classes } = this.props
         let conditionalInput = this.state.imgSrc === null ?
             <>
@@ -159,7 +161,9 @@ class AvatarProfile extends Component {
                 Choose file
             </label>
                 <div >
-                    <img src={this.state.myImageSrc} style={{height: 100}} alt=''/>
+                    {/*<img src={this.state.myImageSrc} style={{height: 100}} alt=''/>*/}
+                    <img src={`/api/images/?id=${this.props.photo}`} style={{height: 100}} alt=''/>
+
                 </div>
             </>
             :
@@ -204,9 +208,15 @@ AvatarProfile.propTypes = {
     classes: PropTypes.object.isRequired
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
     return {
-        setPhoto: (image) => dispatch(setPhoto(image))
+        photo: state.users.user.userPhoto
     }
 }
-export default withStyles(styles)(connect(null, mapDispatchToProps)(AvatarProfile))
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setUserPhoto: (image) => dispatch(setUserPhoto(image))
+    }
+}
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(AvatarProfile))

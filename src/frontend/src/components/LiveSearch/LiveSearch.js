@@ -12,6 +12,8 @@ import orange from "@material-ui/core/colors/orange";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
+import {connect} from "react-redux";
+
 const theme = createMuiTheme({
     palette: {
         primary: orange
@@ -27,6 +29,7 @@ const styles = theme => ({
     container: {
         position: 'relative',
         width: '90%',
+        margin: 'auto',
     },
     suggestionsContainerOpen: {
         position: 'absolute',
@@ -172,7 +175,7 @@ class LiveSearch extends Component {
                 />
 
                 <Button
-                    onClick={() => this.props.editClose(null)}
+                    onClick={this.props.editClose}
                     classes={{
                         root: classes.submit,
                         label: classes.label
@@ -182,6 +185,16 @@ class LiveSearch extends Component {
                 </Button>
                 </MuiThemeProvider>
         );
+    }
+
+    componentDidMount(){
+        this.setState({value: this.props.value})
+    }
+
+    componentDidUpdate(prevProps){
+        if (this.props.searchedLocation !== prevProps.searchedLocation){
+            this.setState({value: this.props.searchedLocation})
+        }
     }
 
     render(){
@@ -222,4 +235,10 @@ class LiveSearch extends Component {
     }
 }
 
-export default withStyles(styles)(LiveSearch)
+const mapStateToProps = (state) => {
+    return {
+        searchedLocation: state.users.searchedLocation
+    }
+}
+
+export default withStyles(styles)(connect(mapStateToProps, null)(LiveSearch))
