@@ -19,16 +19,16 @@ const styles = theme => ({
 });
 
 class DatePickers extends Component {
-  state = {
-    date: moment().format('YYYY-MM-DD')
-  }
+  // state = {
+  //   date: moment().format('YYYY-MM-DD')
+  // }
 
-  handleChange = e => {
-    console.log(e.target)
-    this.setState({
-      date: e.target.value
-    })
-  }
+  // handleChange = e => {
+  //   console.log(e.target)
+  //   this.setState({
+  //     date: e.target.value
+  //   })
+  // }
 
   render(){
     const { classes } = this.props;
@@ -41,7 +41,8 @@ class DatePickers extends Component {
           type="date"
           // defaultValue= {this.state.date}
           value= {this.state.date}
-          onChange={date => this.handleChange(date)}
+          // onChange={date => this.handleChange(date)}
+
           className={classes.textField}
           InputLabelProps={{
             shrink: true,

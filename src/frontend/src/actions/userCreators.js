@@ -1,7 +1,7 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
     GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT,
-    INITIAL_LOAD } from './users'
+    INITIAL_LOAD, ADD_NEW_TRIP } from './users'
 import axios from 'axios'
 
 
@@ -416,4 +416,13 @@ export const getLocationFromDB = dispatch => {
 
 export const setInitialLoadToFalse = () => dispatch => {
     dispatch({type: INITIAL_LOAD, payload: false})
+}
+
+export const addNewTrip = newTrip => dispatch => {
+  dispatch(
+    {type: ADD_NEW_TRIP,payload: newTrip}
+    )
+    callApi('put','api/trips', newTrip)
+      .then(resp => console.log(resp))
+      .catch(err => console.log(err))
 }

@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import DatePicker from './DatePicker/DatePicker'
 import TimePicker from './TimePicker/TimePicker'
+import moment from 'luxon'
 import ChosePointFromSelect from './ChosePointFromSelect/ChosePointFromSelect'
 import { withStyles } from '@material-ui/core/styles'
+import { addNewTrip } from '../../actions/userCreators'
 import Button from '@material-ui/core/Button'
+import { connect } from 'react-redux'
 // import TextField from '@material-ui/core/TextField'
 // import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 // import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
@@ -51,19 +54,26 @@ const styles = theme => ({
 
 class NewTrip extends Component {
 
+    state = {
+      newTrip: {
+        date: moment.format('YYYY-MM-DD'),
+        time: moment.format('HH:mm'),
+        from: ''
+      }
+    }
+
     render() {
-        const { classes } = this.props
-        console.log(classes)
+        const { classes, newTrip, setNewTrip } = this.props
+        console.log(this.props)
         return (
-            <div className='trip-container'>
+            <form className='trip-container' onSubmit={this.submit}>
                 <h1>New Trip</h1>
-                {/*<DateAndTimePickers/>*/}
-                <DatePicker/>
-                <TimePicker/>
-                <ChosePointFromSelect/>
+                <DatePicker date={this.state.newTrip.date}/>
+                <TimePicker time={this.state.newTrip.time}/>
+                <ChosePointFromSelect location={this.props.newTrip}/>
                 <Map/>
                 <div className="trip-btn-container">
-                    <Button onClick={this.submitRoute}
+                    <Button onClick={setNewTrip}
                          classes={{
                              root: classes.acceptButton,
                              label: classes.label
@@ -80,9 +90,21 @@ class NewTrip extends Component {
                         Reject trip
                     </Button>
                 </div>
-            </div>
+            </form>
         );
     }
 }
 
-export default withStyles(styles)(NewTrip);
+const mapStateToProps = state => {
+  return{
+    newTrip: state.users.newTrip
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setNewTrip: (newTrip) => dispatch(addNewTrip(newTrip))
+  }
+}
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(NewTrip));

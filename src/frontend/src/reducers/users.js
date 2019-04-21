@@ -1,6 +1,6 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE,
     SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
-    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, INITIAL_LOAD } from '../actions/users'
+    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, INITIAL_LOAD, ADD_NEW_TRIP } from '../actions/users'
 
 
 const initialState = {
@@ -28,6 +28,11 @@ const initialState = {
   auth: null,
   topMenuOpen: false,
   loginRejected: false,
+  newTrip:{
+    car:'',
+    tripDateTime:'',
+    tripPoint:[],
+  },
   trip: {},
   address: '',
   myCoordinates: {
@@ -86,6 +91,8 @@ function users (state = initialState, action) {
         return{...state, initialLoad: action.payload}
     case GET_LOCATION_ERROR:
         return{...state}
+    case ADD_NEW_TRIP:
+        return{...state, newTrip: action.payload}
 
     default:
       return {...state}
