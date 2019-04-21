@@ -48,6 +48,16 @@ public class TripsService {
     }
   }
 
+
+  public List<Trip> getOwnAndOtherTrips(User user) {
+    List<Trip> trips = new LinkedList<>();
+    trips.add(getTripById(1L));
+    trips.add(getTripById(3L));
+    trips.add(getTripById(4L));
+    return trips;
+  }
+
+
   public List<Trip> getTripListService(User user) {
     List<Trip> trips = new LinkedList<>();
     //Get list of trips except deleted ones

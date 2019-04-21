@@ -26,7 +26,7 @@ import java.util.Objects;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 @Entity
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","user"})
 public class Car extends Auditable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
