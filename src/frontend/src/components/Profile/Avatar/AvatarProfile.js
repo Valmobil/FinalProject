@@ -8,6 +8,7 @@ import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 import './AvatarProfile.css'
 
+
 const styles = {
     bigAvatar: {
         margin: 10,
@@ -97,7 +98,8 @@ class AvatarProfile extends Component {
                     Choose file
                 </label>
                 <div>
-                    <img src={`/api/images/?id=${this.props.photo}`} style={{height: 100}} alt=''/>
+
+                    <img src={`/api/images/${this.props.photo}`} style={{height: 100}} alt=''/>
                 </div>
             </>
             :
