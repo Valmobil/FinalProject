@@ -19,8 +19,12 @@ public class ImageService {
     this.userTokensService = userTokensService;
   }
 
-  public byte[] getImageService(Long imageId) {
-    return imageRepository.getOne(imageId).getImageData();
+  public byte[] getImageService(String imageId) {
+    String[] parameters = imageId.split("_");
+    if (parameters.length < 1) {
+      return null;
+    }
+    return imageRepository.getOne(Long.valueOf(parameters[1])).getImageData();
   }
 
   public String saveNewImage(byte[] file, User user) {
