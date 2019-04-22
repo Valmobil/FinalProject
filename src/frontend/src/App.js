@@ -30,7 +30,7 @@ class App extends Component {
             <Route exact path="/C" component={ChangePassword} />
             <ProtectedRoute exact path='/history' component={TripsHistoryForm}/>
             <ProtectedRoute exact path='/newtrip' component={NewTrip}/>
-              <ProtectedRoute exact path='/ac' component={AddCar}/>
+            <ProtectedRoute exact path='/ac' component={AddCar}/>
             <Route path='*' component={NoMatch}/>
           </Switch>
         </div>

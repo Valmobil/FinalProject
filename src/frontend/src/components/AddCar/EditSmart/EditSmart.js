@@ -44,7 +44,7 @@ const styles = theme => ({
 
 class EditSmart extends Component{
     render(){
-        const { handleEditInput, editName, editDestination, editClose } = this.props
+        const { handleEditInput, editName, editColour, editSubmit } = this.props
         const { classes } = this.props;
         return(
 
@@ -70,7 +70,7 @@ class EditSmart extends Component{
                     style={style.input}
                     autoComplete="off"
                     name='carColour'
-                    value={editDestination}
+                    value={editColour}
                     onChange={handleEditInput}
                     InputProps={{
                         classes: {
@@ -79,7 +79,7 @@ class EditSmart extends Component{
                     }}
                 />
 
-                <Button onClick={editClose}
+                <Button onClick={editSubmit}
                         style={style.button}
                         classes={{
                             root: classes.root,

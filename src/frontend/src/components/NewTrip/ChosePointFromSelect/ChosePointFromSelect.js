@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { callApi} from '../../../actions/userCreators'
+import { callApi} from '../../../utils/utils'
 import { withStyles } from '@material-ui/core/styles';
+import LiveSearch from '../../LiveSearch/LiveSearch'
 import TextField from '@material-ui/core/TextField';
 // import axios from "axios/index";
 // import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
@@ -63,33 +64,45 @@ class ChosePointFromSelect extends React.Component {
         // console.log(this.state.location)
         return (
             <div>
-              <TextField
-                label="Search for location From"
-                id="mui-theme-provider-standard-input"
-                autoComplete="off"
-                name='search'
-                // value={this.state.search}
-                onChange={this.handleInput}
-                style={style.input}
-                InputProps={{
-                  classes: {
-                    input: classes.inputColor
-                  }
-                }}
-              />
-              <TextField
-                label="Search for location To"
-                id="mui-theme-provider-standard-input"
-                autoComplete="off"
-                name='search'
-                // value={this.state.search}
-                onChange={this.handleInput}
-                style={style.input}
-                InputProps={{
-                  classes: {
-                    input: classes.inputColor
-                  }
-                }}
+              {/*<TextField*/}
+                {/*label="Search for location From"*/}
+                {/*id="mui-theme-provider-standard-input"*/}
+                {/*autoComplete="off"*/}
+                {/*name='search'*/}
+                {/*// value={this.state.search}*/}
+                {/*onChange={this.handleInput}*/}
+                {/*style={style.input}*/}
+                {/*InputProps={{*/}
+                  {/*classes: {*/}
+                    {/*input: classes.inputColor*/}
+                  {/*}*/}
+                {/*}}*/}
+              {/*/>*/}
+              {/*<TextField*/}
+                {/*label="Search for location To"*/}
+                {/*id="mui-theme-provider-standard-input"*/}
+                {/*autoComplete="off"*/}
+                {/*name='search'*/}
+                {/*// value={this.state.search}*/}
+                {/*onChange={this.handleInput}*/}
+                {/*style={style.input}*/}
+                {/*InputProps={{*/}
+                  {/*classes: {*/}
+                    {/*input: classes.inputColor*/}
+                  {/*}*/}
+                {/*}}*/}
+
+              <LiveSearch
+                name={name}
+                handleInput={this.handleInput}
+                editClose={() => this.editClose(item.userPointId)}
+                setCoordinates={this.props.setTargetCoordinates}
+                setValue={this.setValue}
+                method='post'
+                url='/api/points/'
+                data={{ pointSearchText: value }}
+                value={value}
+                rejectEdit={this.rejectEdit}
               />
             </div>
         );

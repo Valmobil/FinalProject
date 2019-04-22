@@ -5,7 +5,8 @@ import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
-import { deleteTripFromHistory, callApi } from '../../actions/userCreators'
+import { deleteTripFromHistory } from '../../actions/userCreators'
+import { callApi } from '../../utils/utils'
 // import PropTypes from 'prop-types'
 // import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 // import orange from "@material-ui/core/colors/orange";

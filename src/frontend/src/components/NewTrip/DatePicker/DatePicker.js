@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import{ connect } from 'react-redux';
 import { addTripDate} from '../../../actions/userCreators'
 import moment from 'moment';
-// import { addNewTrip } from '../../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 // import orange from "@material-ui/core/colors/orange";
@@ -27,7 +26,7 @@ class DatePickers extends Component {
     const { classes, newTrip } = this.props;
     console.log('from date picker',this.props)
     return (
-      <form className={classes.container} noValidate>
+      <div className={classes.container} noValidate>
         <TextField
           id="date"
           label="Start date"
@@ -56,7 +55,7 @@ class DatePickers extends Component {
             step: 300, // 5 min
           }}
         />
-      </form>
+      </div>
     );
   }
 }
