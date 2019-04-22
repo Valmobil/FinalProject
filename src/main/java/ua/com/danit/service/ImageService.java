@@ -1,13 +1,12 @@
 package ua.com.danit.service;
 
-import org.apache.commons.io.IOUtils;
+import org.codehaus.plexus.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.com.danit.entity.Image;
 import ua.com.danit.entity.User;
 import ua.com.danit.repository.ImageRepository;
-
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
 import java.io.File;
@@ -67,7 +66,7 @@ public class ImageService {
     SerialBlob blob = null;
     try {
       byte[] inputStream = file.getBytes();
-      blob = new SerialBlob(inputStream);
+      blob = new SerialBlob(Base64.decodeBase64(inputStream));
     } catch (SerialException e) {
       e.printStackTrace();
     } catch (SQLException e) {

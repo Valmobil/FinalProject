@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import DatePicker from './DatePicker/DatePicker'
 import TimePicker from './TimePicker/TimePicker'
-import moment from 'luxon'
+import moment from 'moment'
 import ChosePointFromSelect from './ChosePointFromSelect/ChosePointFromSelect'
 import { withStyles } from '@material-ui/core/styles'
 import { addNewTrip } from '../../actions/userCreators'
@@ -56,20 +56,32 @@ class NewTrip extends Component {
 
     state = {
       newTrip: {
-        date: moment.format('YYYY-MM-DD'),
-        time: moment.format('HH:mm'),
-        from: ''
+        date: moment().format('YYYY-MM-DD'),
+        time: moment().format('HH:mm'),
+        from: '',
+        to:''
       }
+    }
+
+    addTripDate = tripDate =>{
+      this.setState({
+        date: tripDate.date,
+        time: tripDate.time,
+      })
+    }
+
+    submitTrip = (newTrip) =>{
+      this.props.addNewTrip(newTrip)
     }
 
     render() {
         const { classes, newTrip, setNewTrip } = this.props
         console.log(this.props)
         return (
-            <form className='trip-container' onSubmit={this.submit}>
+            <form className='trip-container' onSubmit={this.submitTrip}>
                 <h1>New Trip</h1>
-                <DatePicker date={this.state.newTrip.date}/>
-                <TimePicker time={this.state.newTrip.time}/>
+                <DatePicker tripDate={this.state.newTrip} onChange={this.addTripDate}/>
+                {/*<TimePicker time={this.state.newTrip.time}/>*/}
                 <ChosePointFromSelect location={this.props.newTrip}/>
                 <Map/>
                 <div className="trip-btn-container">
@@ -103,7 +115,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    setNewTrip: (newTrip) => dispatch(addNewTrip(newTrip))
+    addNewTrip: (newTrip) => dispatch(addNewTrip(newTrip))
   }
 }
 

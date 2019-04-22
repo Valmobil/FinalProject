@@ -45,6 +45,11 @@ public class TripsController {
     return tripsService.getTripListService(userTokensService.findUserByAccessToken(authorization));
   }
 
+  @PostMapping("others")
+  public List<Trip> getOtherUsersTripList(@RequestHeader String authorization) {
+    return tripsService.getOwnAndOtherTrips(userTokensService.findUserByAccessToken(authorization));
+  }
+
   @PostMapping("delete")
   public void deleteUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
     tripsService.deleteTripById(trip.getTripId(), userTokensService.findUserByAccessToken(authorization));

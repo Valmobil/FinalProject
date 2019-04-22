@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment'
+import{ connect } from 'react-redux';
+import { addTripDate} from '../../../actions/userCreators'
+import moment from 'moment';
+// import { addNewTrip } from '../../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 // import orange from "@material-ui/core/colors/orange";
@@ -19,28 +22,18 @@ const styles = theme => ({
 });
 
 class DatePickers extends Component {
-  // state = {
-  //   date: moment().format('YYYY-MM-DD')
-  // }
-
-  // handleChange = e => {
-  //   console.log(e.target)
-  //   this.setState({
-  //     date: e.target.value
-  //   })
-  // }
 
   render(){
-    const { classes } = this.props;
-    console.log('from date picker',this.state.date)
+    const { classes, newTrip } = this.props;
+    console.log('from date picker',this.props)
     return (
       <form className={classes.container} noValidate>
         <TextField
           id="date"
           label="Start date"
           type="date"
-          // defaultValue= {this.state.date}
-          value= {this.state.date}
+          defaultValue= {newTrip}
+          value= {this.props.date}
           // onChange={date => this.handleChange(date)}
 
           className={classes.textField}
@@ -48,8 +41,35 @@ class DatePickers extends Component {
             shrink: true,
           }}
         />
+
+        <TextField
+          id="time"
+          label="Start time"
+          type="time"
+          value={this.props.time}
+          onChange = {this.handleChange}
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{
+            step: 300, // 5 min
+          }}
+        />
       </form>
     );
+  }
+}
+
+const mapStateToProps = state =>{
+  return {
+    newDate: state.users.newTrip.date
+  }
+
+}
+const mapDispatchToProps = dispath => {
+  return {
+    addTripDate: (date) => dispath(addTripDate(date))
   }
 }
 
@@ -57,4 +77,4 @@ DatePickers.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(DatePickers);
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(DatePickers));

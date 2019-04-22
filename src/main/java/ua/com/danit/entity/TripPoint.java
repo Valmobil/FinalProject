@@ -26,6 +26,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","trip"})
 //@EqualsAndHashCode(exclude={"trip"})
 //@ToString(exclude={"trip"})
 public class TripPoint {
@@ -39,7 +40,7 @@ public class TripPoint {
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @NonNull
   @JoinColumn(name = "TRIP_POINT_TRIP_ID", referencedColumnName = "tripId")
-  @JsonIgnoreProperties({"user","car", "tripPoint", "tripDateTime"})
+  @JsonIgnoreProperties({"user","car"})
   private Trip trip;
 
 }

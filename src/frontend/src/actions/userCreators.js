@@ -1,7 +1,7 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
     GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT,
-    INITIAL_LOAD, ADD_NEW_TRIP } from './users'
+    INITIAL_LOAD, SET_PROFILE, ADD_TRIP_DATE,ADD_NEW_TRIP } from './users'
 import axios from 'axios'
 
 
@@ -64,7 +64,6 @@ export const checkAuthorizationByToken = () => dispatch => {
         if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))) {
             dispatch(logOut());
         } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
-
             axios({
                 method: 'post',
                 url: '/api/usertokens',
@@ -273,7 +272,7 @@ export const setAuthorization = (state, signType) => (dispatch) => {
         })
         .catch(err => console.log(err))
     if (signType === 'log-in') {
-        callApi('post', '/api/points/filter/test')
+        callApi('get', '/api/points/filter/test')
             .then(response => dispatch({type: SET_COMMON_POINTS, payload: response.data}))
             .catch(err => console.log(err))
     }
@@ -319,6 +318,11 @@ export const setUserPoints = (payload) => dispatch => {
         .catch(err => console.log(err))
     dispatch({type: SET_USER_POINTS, payload})
 }
+export const setCar = (payload) => dispatch => {
+    callApi('put', '/api/users', payload)
+        .catch(err => console.log(err))
+    dispatch({type: SET_CARS, payload})
+}
 //* **********************
 
 //from /profile
@@ -349,9 +353,13 @@ export const setErrorMessage = (message) => dispatch => {
 ////setProfile data to database
 export const setProfile = (profile) => dispatch => {
     callApi('put', '/api/users', profile)
+        // .then(response => dispatch({type: SET_PROFILE, payload: response.data}))
+        .then(res => console.log('cars from userCreators: ', res))
         .catch(err => console.log(err))
-    dispatch({type: SET_USER, payload: profile})
+    // dispatch({type: SET_USER, payload: profile})
+    dispatch({type: SET_PROFILE, payload: profile})
 }
+
 //* **********************
 //
 // export const fetchTripsHistory = (userId) => dispatch =>{
@@ -418,10 +426,11 @@ export const setInitialLoadToFalse = () => dispatch => {
     dispatch({type: INITIAL_LOAD, payload: false})
 }
 
+export const addTripDate = newDate => dispatch =>{
+  dispatch({ type: ADD_TRIP_DATE, payload: newDate})
+}
+
 export const addNewTrip = newTrip => dispatch => {
-  dispatch(
-    {type: ADD_NEW_TRIP,payload: newTrip}
-    )
     callApi('put','api/trips', newTrip)
       .then(resp => console.log(resp))
       .catch(err => console.log(err))
