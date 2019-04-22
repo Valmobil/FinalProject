@@ -28,7 +28,7 @@ public class ImagesController {
   }
 
   @GetMapping(value = "",produces = MediaType.IMAGE_JPEG_VALUE)
-  public byte[] getImageControllerGet(@RequestParam Long id) {
+  public byte[] getImageControllerGet(@RequestParam String id) {
     return imageService.getImageService(id);
   }
 
