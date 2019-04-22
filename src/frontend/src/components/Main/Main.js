@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import { logOut, setUserPoints, setTrip, setMyCoordinates, setSearchedLocation, setTargetCoordinates } from '../../actions/userCreators'
+import SmartRoute from './SmartRoute/SmartRoute'
 import { withStyles } from '@material-ui/core/styles'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -8,36 +9,21 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
-import './Main.css'
 import Button from '@material-ui/core/Button'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import InputLabel from '@material-ui/core/InputLabel'
-import IconButton from '@material-ui/core/IconButton'
-import EditIcon from '@material-ui/icons/Edit'
-import DeleteIcon from '@material-ui/icons/Delete'
-import EditSmart from './EditSmart/EditSmart'
 import Map from '../Map/Map'
 import LiveSearch from'../LiveSearch/LiveSearch'
-
+import './Main.css'
 
 const windowWidth = window.innerWidth <= 380 ? window.innerWidth : 380
 
 
 
 const styles = theme => ({
-    smartRoute: {
-        background: '#ff9800',
-        borderRadius: 3,
-        border: 0,
-        color: 'white',
-        height: 40,
-        padding: 0,
-        marginLeft: (window.innerWidth - 200) / 2,
-        marginTop: 20,
-        width: 200
-    },
+
     typeButtons: {
         borderRadius: 3,
         border: '1px solid #fff',
@@ -82,13 +68,6 @@ const styles = theme => ({
         // color: '#fff',
         textAlign: 'center'
     },
-    iconButton: {
-        padding: 0,
-        color: '#fff',
-        '&:focus': {
-            outline: 'none'
-        }
-    },
     submit: {
         background: '#fff',
         borderRadius: 3,
@@ -103,6 +82,11 @@ const styles = theme => ({
             outline: 'none',
             color: '#008000',
         }
+    },
+    rightIcon: {
+        position: 'absolute',
+        zIndex: 5,
+        right: 20,
     },
 })
 const style = {
@@ -129,7 +113,6 @@ class Main extends Component {
         selectedId: 1,
         car: '',
         name: '',
-        destination: '',
         editing: '',
         adding: false,
         trip: [],
@@ -195,7 +178,11 @@ class Main extends Component {
     }
 
     handleEdit = (item) => {
-        this.setState({editing: item.userPointId, name: item.userPointName, destination: item.userPointAddress, adding: false})
+        this.setState({editing: item.userPointId, name: item.userPointName, value: item.userPointAddress, adding: false})
+        this.props.setTargetCoordinates({
+            latitude: item.userPointLatitude,
+            longitude: item.userPointLongitude,
+        })
     }
 
     handleEditInput = (e) => {
@@ -203,27 +190,38 @@ class Main extends Component {
     }
 
     editClose = (pointId) => {
-
-
-        let id = this.props.users.userPoints.length > 0 ?
-            this.props.users.userPoints.find(item => item.userPointName === '<no point>').userPointId : 1
-        if (pointId) id = pointId
-
+        let id = null
+        if (pointId) {
+            id = pointId
+        } else {
+            id = this.props.users.userPoints.length > 0 ?
+                this.props.users.userPoints.find(item => item.userPointName === '<no point>').userPointId : 1
+        }
         let newUserPoints = this.props.users.userPoints.map(item => {
             if (item.userPointId === id) {
                    let pointAddress = this.props.users.searchedLocation || this.state.value
-                   return {...item, userPointName: this.state.name, userPointAddress: pointAddress}
+                   return {...item,
+                       userPointName: this.state.name,
+                       userPointAddress: pointAddress,
+                       userPointLatitude: this.props.users.targetCoordinates.latitude,
+                       userPointLongitude: this.props.users.targetCoordinates.longitude,
+                       pointNameEn: this.state.name,
+                   }
             } else {
                 return item
             }
         })
         this.props.setUserPoints(newUserPoints)
+        this.rejectEdit()
+    }
+
+    rejectEdit = () => {
         this.props.setSearchedLocation('')
-        this.setState({editing: '', name: '', destination: '', adding: false})
+        this.setState({editing: '', name: '', value: '', adding: false})
     }
 
     addNewPoint = () => {
-        this.setState({adding: true, editing: '', name: '', destination: ''})
+        this.setState({adding: true, editing: '', name: '', value: ''})
     }
 
     handleDelete = (id) => {
@@ -264,7 +262,7 @@ class Main extends Component {
     render () {
         // console.log(this.props.users)
         const { classes } = this.props
-        const { role, car, name, destination, editing, adding, creatingTrip } = this.state
+        const { role, car, name, value, editing, adding, creatingTrip } = this.state
         const { cars, userPoints } = this.props.users
         let currentCar = cars.length === 1 ? cars[0] : car
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
@@ -279,39 +277,35 @@ class Main extends Component {
             let output = null
             if (item.userPointId === editing) {
                 output = (
-                    <EditSmart key = {item.userPointId}
-                               handleEditInput={this.handleEditInput}
-                               editName={name}
-                               editDestination={destination}
-                               editClose={() => this.editClose(item.userPointId)}
-                    />
+                    <div key={ item.userPointId }>
+                        <LiveSearch
+                                    name={name}
+                                    handleInput={this.handleInput}
+                                    editClose={() => this.editClose(item.userPointId)}
+                                    setCoordinates={this.props.setTargetCoordinates}
+                                    setValue={this.setValue}
+                                    method='post'
+                                    url='/api/points/'
+                                    data={{ pointSearchText: value }}
+                                    value={value}
+                                    rejectEdit={this.rejectEdit}
+                        />
+                        <Map />
+                    </div>
                 )
             } else {
                 output = (
                     item.userPointName !== '<no point>' &&
-                    <div key = {item.userPointId} style={{display: 'flex', width: '100%'}}>
-                        <Button onClick={() => this.handleRoute(item)}
-                                variant="contained"
-                                color="primary"
-                                className={classes.smartRoute}
-                                classes={{ label: classes.label }}
-                        >
-                            {item.userPointName}
-                        </Button>
-                        <div className="icon-container">
-                            <IconButton
-                                onClick={() => this.handleEdit(item)}
-                                className={classes.iconButton}
-                                aria-label="Edit">
-                                <EditIcon />
-                            </IconButton>
-                            <IconButton
-                                onClick={() => this.handleDelete(item.userPointId)}
-                                className={classes.iconButton}
-                                aria-label="Delete">
-                                <DeleteIcon />
-                            </IconButton>
-                        </div>
+
+                    <div key = {item.userPointId} style={{display: 'flex', justifyContent: 'space-around', width: '100%', marginTop: 20}}>
+
+                         <SmartRoute
+                         item={item}
+                         handleDelete={this.handleDelete}
+                         handleEdit={this.handleEdit}
+                         handleRoute={this.handleRoute}
+                         />
+
                     </div>
                 )
             }
@@ -419,20 +413,18 @@ class Main extends Component {
                         <LiveSearch
                             name={this.state.name}
                             handleInput={this.handleInput}
-                            editClose={this.editClose}
+                            editClose={() => this.editClose(null)}
                             setCoordinates={this.props.setTargetCoordinates}
                             setValue={this.setValue}
                             method='post'
                             url='/api/points/'
+                            data={{ pointSearchText: this.state.value }}
+                            value={value}
+                            rejectEdit={this.rejectEdit}
                         />
-
-
                         <Map/>
                            </>
                         }
-
-
-
 
                         {this.state.role === 'driver' &&
                         <FormControl required className={classes.formControl}>

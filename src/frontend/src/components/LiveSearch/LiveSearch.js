@@ -12,6 +12,8 @@ import orange from "@material-ui/core/colors/orange";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
+import {connect} from "react-redux";
+
 const theme = createMuiTheme({
     palette: {
         primary: orange
@@ -27,6 +29,7 @@ const styles = theme => ({
     container: {
         position: 'relative',
         width: '90%',
+        margin: 'auto',
     },
     suggestionsContainerOpen: {
         position: 'absolute',
@@ -50,20 +53,21 @@ const styles = theme => ({
     label: {
         textTransform: 'capitalize'
     },
-    submit: {
-        background: '#fff',
+    acceptButton: {
         borderRadius: 3,
-        border: 0,
-        color: '#f57c00',
-        height: 25,
-        padding: '0 10px',
-        marginLeft: 10,
-        marginTop: 20,
-        '&:focus':{
-            background: '#fff',
-            outline: 'none',
-            color: '#008000',
-        }
+        background: '#fff',
+        color: '#008000',
+        height: 30,
+        padding: 0,
+        width: '47%'
+    },
+    rejectButton: {
+        borderRadius: 3,
+        background: '#fff',
+        color: '#FC2847',
+        height: 30,
+        padding: 0,
+        width: '47%'
     },
 })
 
@@ -110,12 +114,10 @@ class LiveSearch extends Component {
         const inputLength = inputValue.length;
 
         let suggestionsList = []
-        const data = {
-            pointSearchText: value,
-        }
+
         if (inputLength >= 4){
             // let response = await callApi('post', '/api/points/', data)
-            let response = await callApi(this.props.method, this.props.url, data)
+            let response = await callApi(this.props.method, this.props.url, this.props.data)
             suggestionsList = response.data
         }
         this.setState({
@@ -158,6 +160,7 @@ class LiveSearch extends Component {
                     name='name'
                     value={this.props.name}
                     onChange={this.props.handleInput}
+                    autoComplete="off"
                 />
                 <TextField
                     fullWidth
@@ -172,18 +175,38 @@ class LiveSearch extends Component {
                     }}
                     {...other}
                 />
-
+                <div style={{display: 'flex', justifyContent: 'space-between', width: '80%', margin: '20px auto'}}>
                 <Button
-                    onClick={() => this.props.editClose(null)}
+                    onClick={this.props.editClose}
                     classes={{
-                        root: classes.submit,
+                        root: classes.acceptButton,
                         label: classes.label
                     }}
                 >
                     Submit
                 </Button>
+                <Button
+                        onClick={this.props.rejectEdit}
+                        classes={{
+                            root: classes.rejectButton,
+                            label: classes.label
+                        }}
+                    >
+                        Reject
+                </Button>
+                </div>
                 </MuiThemeProvider>
         );
+    }
+
+    componentDidMount(){
+        this.setState({value: this.props.value})
+    }
+
+    componentDidUpdate(prevProps){
+        if (this.props.searchedLocation !== prevProps.searchedLocation){
+            this.setState({value: this.props.searchedLocation})
+        }
     }
 
     render(){
@@ -224,4 +247,10 @@ class LiveSearch extends Component {
     }
 }
 
-export default withStyles(styles)(LiveSearch)
+const mapStateToProps = (state) => {
+    return {
+        searchedLocation: state.users.searchedLocation
+    }
+}
+
+export default withStyles(styles)(connect(mapStateToProps, null)(LiveSearch))

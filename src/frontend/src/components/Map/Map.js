@@ -177,7 +177,7 @@ class Map extends Component {
     }
 
     componentDidMount() {
-        if (this.props.coords.latitude !== 0) {
+        if (this.props.coords) {
             platform.center = {
                 lat: this.props.coords.latitude,
                 lng: this.props.coords.longitude,
@@ -197,6 +197,13 @@ class Map extends Component {
         // eslint-disable-next-line
         const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
         this.setUpClickListener()
+
+
+        if (this.props.targetCoordinates.latitude){
+            this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
+        }
+
+
     }
 
     componentDidUpdate(prevProps) {

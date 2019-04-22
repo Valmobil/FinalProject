@@ -1,12 +1,11 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
     GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT,
-    INITIAL_LOAD } from './users'
+    INITIAL_LOAD, SET_PROFILE, SET_USER_PHOTO, ADD_CAR } from './users'
+
 import { callApi, setLocalStorage, removeTokens } from '../utils/utils'
-    INITIAL_LOAD, SET_PROFILE } from './users'
+
 import axios from 'axios'
-
-
 
 //* *********************
 
@@ -225,12 +224,6 @@ export const topMenuToggle = (topMenuOpen) => dispatch => {
 
 //* **********************
 
-export const deleteCar = (carList, car) => dispatch => {
-    const newCarList = carList.filter(item => item !== car)
-    dispatch({type: SET_CAR_LIST, payload: newCarList})
-}
-//* **********************
-
 export const addNewCar = (carList, car) => dispatch => {
     const newCarList = [...carList, car]
     dispatch({type: SET_CAR_LIST, payload: newCarList})
@@ -247,11 +240,7 @@ export const setUserPoints = (payload) => dispatch => {
         .catch(err => console.log(err))
     dispatch({type: SET_USER_POINTS, payload})
 }
-export const setCar = (payload) => dispatch => {
-    callApi('put', '/api/users', payload)
-        .catch(err => console.log(err))
-    dispatch({type: SET_CARS, payload})
-}
+
 //* **********************
 
 //from /profile
@@ -259,7 +248,10 @@ export const setUserName = (name) => dispatch => {
     dispatch({type: SET_USER_NAME, payload: name})
 }
 //* **********************
+export const setCar = (newCar) => dispatch => {
+    dispatch({type: ADD_CAR, payload: newCar})
 
+}
 export const setTrip = (trip) => dispatch => {
     callApi('put', '/api/trips', trip)
         .then(res => console.log('usersCreators: ', res))
@@ -282,7 +274,7 @@ export const setErrorMessage = (message) => dispatch => {
 ////setProfile data to database
 export const setProfile = (profile) => dispatch => {
     callApi('put', '/api/users', profile)
-        // .then(response => dispatch({type: SET_PROFILE, payload: response.data}))
+        .then(response => dispatch({type: SET_PROFILE, payload: response.data}))
         .then(res => console.log('cars from userCreators: ', res))
         .catch(err => console.log(err))
     // dispatch({type: SET_USER, payload: profile})
@@ -315,11 +307,14 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
 }
 //* **********************
 
-export const setPhoto = (image) => dispatch => {
+export const setUserPhoto = (image) => dispatch => {
+    console.log('userCreators: image', image)
     let data = new FormData();
     data.append('fileUpload', image);
    callApi('put', 'api/images', data)
-       .then(response => console.log('image response: ', response))
+       .then(response => {
+           dispatch({type: SET_USER_PHOTO, payload: response.data})
+       })
        .catch(console.log)
 }
 //* **********************
@@ -354,5 +349,17 @@ export const getLocationFromDB = dispatch => {
 export const setInitialLoadToFalse = () => dispatch => {
     dispatch({type: INITIAL_LOAD, payload: false})
 }
+
 //* **********************
+
+export const updateProfile = (userInfo) => dispatch =>{
+    console.log('updateProfile', userInfo)
+    callApi('put', '/api/users', userInfo)
+        .then( resp => {
+            dispatch({type: 'UPDATED_PROFILE'})
+        })
+        .catch( err => {
+            console.log(err)
+        })
+}
 
