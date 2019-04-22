@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {setUserPoints, setTrip,  setCar} from '../../actions/userCreators'
+import {setUserPoints, setTrip,  setCar, updateCars} from '../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
@@ -162,18 +162,20 @@ class AddCar extends Component {
         })
     }
 
-   /* handleDelete = (id) => {
-        console.log(this.props)
-        let newCarsArr = this.props.users.cars.map(item => {
-            if (item.carId !== id) {
-                return {
-                    ...item
-                }
+   handleDelete = (id) => {
+        // console.log(this.props)
+        // let newCarsArr = this.props.users.cars.map(item => {
+        //     if (item.carId !== id) {
+        //         return {
+        //             ...item
+        //         }
+        //
+        //     }
+        // })
+       const newCarList = this.props.users.cars.filter(item => item.carId !== id)
+       this.props.updateCars(newCarList)
 
-            }
-        })
-
-    }*/
+    }
 
     render () {
         const { classes } = this.props
@@ -303,7 +305,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setUserPoints: (payload) => dispatch(setUserPoints(payload)),
         setTrip: (trip) => dispatch(setTrip(trip)),
-        setCar: (newCarAdded) => dispatch(setCar(newCarAdded))
+        setCar: (newCarAdded) => dispatch(setCar(newCarAdded)),
+        updateCars: (newCarList) => dispatch(updateCars(newCarList))
     }
 }
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(AddCar))

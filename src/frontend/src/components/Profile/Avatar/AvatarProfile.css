@@ -16,6 +16,7 @@
     line-height: 22px;
     margin: 20px auto;
     border-radius: 3px;
+    cursor: pointer;
 }
 .crop-label{
     color: #fff;

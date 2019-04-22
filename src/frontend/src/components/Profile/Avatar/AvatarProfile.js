@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
-import './AvatarProfile.css'
+import {connect} from 'react-redux'
+import { setUserPhoto} from '../../../actions/userCreators'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-// import Avatar from '@material-ui/core/Avatar'
-// import Grid from '@material-ui/core/Grid'
-// import IconAvatars from '../AvatarIconButton/AvatarIconButton'
-import ReactCrop from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
-import { setUserPhoto} from '../../../actions/userCreators'
-import {connect} from 'react-redux'
+import Cropper from 'react-cropper';
+import 'cropperjs/dist/cropper.css';
+import './AvatarProfile.css'
 
 const styles = {
     bigAvatar: {
@@ -43,30 +40,23 @@ const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/
 
 class AvatarProfile extends Component {
 
-    state = {
-        file: null,
-        imgSrc: null,
-        crop: {
-            aspect: 3 / 4
-        },
-        pixelCrop: null,
-        myImageSrc: '',
-    };
-
-
+    constructor(props){
+        super(props)
+        this.state = {
+            file: null,
+            imgSrc: null,
+            base64: '',
+        };
+        this.cropper = React.createRef();
+}
 
     handleFile = (e) => {
         const file = e.target.files[0]
         const img = new Image();
         img.src = window.URL.createObjectURL( file );
-
         img.onload = () => {
-            const width = img.naturalWidth
-            const height = img.naturalHeight
-            this.setState({pixelCrop: {x: 0, y: 0, width, height}, file})
+            this.setState({file})
         }
-
-        // this.setState({file})
         const reader = new FileReader();
         reader.addEventListener('load', () => {
             this.setState({imgSrc: reader.result})
@@ -74,81 +64,21 @@ class AvatarProfile extends Component {
         if (file) reader.readAsDataURL(file);
     }
 
-    onCropChange = (crop, pixelCrop) => {
-        this.setState({ crop, pixelCrop });
-    }
 
-
-    saveImage = (e) => {
-        // e.preventDefault()
-        const { file, pixelCrop } = this.state
-
-        // this.getCroppedImg(file, pixelCrop, 'userPhoto')
-        this.props.setUserPhoto(this.getCroppedImg(file, pixelCrop, 'userPhoto'))
+    saveImage = () => {
         this.rejectImage()
-            // .then(res => {
-            //     // this.setState({myImageSrc: URL.createObjectURL(res)})
-            //     this.props.setUserPhoto(res)
-            //     this.rejectImage()
-            // })
-            // .catch(console.log)
+        this.props.setUserPhoto(this.state.base64)
     }
 
     rejectImage = () => {
         this.setState({
             file: null,
             imgSrc: null,
-            crop: {
-                aspect: 3 / 4
-            },
-            pixelCrop: null,
         })
     }
 
-
-    getCroppedImg = (source, pixelCrop, fileName) => {
-        const canvas = document.createElement('canvas');
-        canvas.width = pixelCrop.width;
-        canvas.height = pixelCrop.height;
-        const ctx = canvas.getContext('2d');
-        let image = new Image();
-        let binaryData = [];
-        binaryData.push(source);
-        image.src = window.URL.createObjectURL(new Blob(binaryData, {type: "application/zip"}))
-
-        // image.src = window.URL.createObjectURL(source);
-        image.onload = () => {
-            ctx.drawImage(
-                image,
-                pixelCrop.x,
-                pixelCrop.y,
-                pixelCrop.width,
-                pixelCrop.height,
-                0,
-                0,
-                pixelCrop.width,
-                pixelCrop.height
-            );
-
-            // As Base64 string
-            // const base64Image = canvas.toDataURL('image/jpeg');
-
-            // As a blob
-            // this.setState({myImageSrc: canvas.toDataURL("image/png")})
-            // console.log(canvas.toDataURL("image/png"))
-
-        }
-
-        return canvas.toDataURL("image/png")
-
-
-        // return new Promise((resolve, reject) => {
-        //     canvas.toBlob(blob => {
-        //         blob.name = fileName;
-        //         resolve(blob);
-        //     }, 'image/png');
-        // });
-
+    crop(){
+        this.setState({base64: this.cropper.current.getCroppedCanvas().toDataURL()})
     }
 
 
@@ -157,29 +87,30 @@ class AvatarProfile extends Component {
         const { classes } = this.props
         let conditionalInput = this.state.imgSrc === null ?
             <>
-            <label className='photo-input-label'>
-                <input type="file"
-                       name="fileUpload"
-                       className='photo-input'
-                       accept={acceptedFileTypes}
-                       onChange={this.handleFile}
-                />
-                Choose file
-            </label>
-                <div >
-                    {/*<img src={this.state.myImageSrc} style={{height: 100}} alt=''/>*/}
+                <label className='photo-input-label'>
+                    <input type="file"
+                           name="fileUpload"
+                           className='photo-input'
+                           accept={acceptedFileTypes}
+                           onChange={this.handleFile}
+                    />
+                    Choose file
+                </label>
+                <div>
                     <img src={`/api/images/?id=${this.props.photo}`} style={{height: 100}} alt=''/>
-
                 </div>
             </>
             :
             <>
-                <span className='crop-label'>You can crop the photo</span>
-                <ReactCrop
+                <Cropper
+                    ref={this.cropper}
                     src={this.state.imgSrc}
-                    onChange={this.onCropChange}
-                    crop={this.state.crop}
-                />
+                    style={{height: 300, width: '100%'}}
+                    aspectRatio={3 / 4}
+                    guides={false}
+                    crop={this.crop.bind(this)} />
+
+
                 <div className="image-choose-button-container">
                     <Button onClick={this.saveImage}
                             classes={{
@@ -203,10 +134,6 @@ class AvatarProfile extends Component {
 
             conditionalInput
 
-            // {/*// /!*<Grid container justify="center" alignItems="center">*!/*/}
-            // {/*// /!*<Avatar alt="Remy Sharp" className={classes.bigAvatar} />*!/*/}
-            //     {/*//     <IconAvatars/>*/}
-            //     {/*// </Grid>*/}
         )
     }
 }
