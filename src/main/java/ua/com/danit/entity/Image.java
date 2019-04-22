@@ -31,7 +31,7 @@ public class Image extends Auditable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long imageId;
   @Lob
-  private Blob imageBlob;
+  private byte[] imageData;
   @NotNull
   @ManyToOne
 
