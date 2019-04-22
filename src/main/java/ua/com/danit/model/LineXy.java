@@ -2,40 +2,38 @@ package ua.com.danit.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import sun.nio.cs.ext.MacArabic;
 
 @Data
 @AllArgsConstructor
 public class LineXy {
-  private PointXy start;
-  private PointXy end;
+  private PointXy point1;
+  private PointXy point2;
+  private static final double kyivKhreschatikLatitude = 50.448228;
+  private static final double meters_per_deg_lat = 111132.954 - 559.822 * Math.cos( 2 * kyivKhreschatikLatitude ) + 1.175 * Math.cos( 4 * kyivKhreschatikLatitude);
+  private static final double meters_per_deg_lon = 111132.954 * Math.cos ( kyivKhreschatikLatitude );
 
-  private Double getDistance(PointXy start, PointXy end) {
-    //    return Math.sqrt(Math.pow(start.getX() - end.getX(), 2) + Math.pow(start.getY() - end.getY(), 2));
-    return 0.0;
+  private double distanceOfTwoPoints(PointXy pp1, PointXy pp2) {
+    double result;
+    result = Math.sqrt(Math.pow((pp2.getX() - pp1.getX()), 2) + Math.pow((pp2.getY() - pp1.getY()), 2));
+    return result;
   }
 
-  public Double distBetweenPointAndLine(PointXy pointXy) {
-    // A - the standalone point (x, y)
-    // B - start point of the line segment (x1, y1)
-    // C - end point of the line segment (x2, y2)
-    // D - the crossing point between line from A to BC
-
-    Double Ab = getDistance(pointXy, this.start);
-    Double Bc = getDistance(this.start, this.end);
-    Double Ac = getDistance(pointXy, this.end);
-
-    // Heron's formula
-    Double s = (Ab + Bc + Ac) / 2;
-    Double area = Math.sqrt(s * (s - Ab) * (s - Bc) * (s - Ac));
-
-    // but also area == (BC * AD) / 2
-    // BC * AD == 2 * area
-    // AD == (2 * area) / BC
-    // TODO: check if BC == 0
-    if (Bc == 0) {
-      return Ab;
+  public void distanceToPoint(PointXy p) {
+    double distance;
+    distance = Math.pow((this.point2.getX() - this.point1.getX()), 2) - Math.pow((this.point2.getY() - this.point1.getY()), 2);
+    if (distance == 0) {
+      distanceOfTwoPoints(p, this.point1);
     } else {
-      return ((2 * area) / Bc);
+      double tx = (((p.getX() - point1.getX()) * (point2.getX() - point1.getX()) + (p.getY() - point1.getY()) * (point2.getY() - point1.getY())) / distance);
+      if (tx < 0)
+        distanceOfTwoPoints(point1, p);
+      else if (tx > 1)
+        distanceOfTwoPoints(point2, p);
+      else {
+        PointXy pp = new PointXy(point1.getX() + tx * (point2.getX() - point1.getX()), point1.getY() + tx * (point2.getY() - point1.getY()));
+        distanceOfTwoPoints(pp, p);
+      }
     }
   }
 }

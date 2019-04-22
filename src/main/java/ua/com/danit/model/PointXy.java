@@ -5,9 +5,10 @@ import lombok.Data;
 import java.awt.geom.Point2D;
 
 @Data
-@AllArgsConstructor class PointXy {
-  //  private double x;
-  //  private double y;
+@AllArgsConstructor
+class PointXy {
+    private double x;
+    private double y;
 
   //  getSquareBySize(double sizeInMetter) {
   //    double earthRadius = 6371000; //meters
