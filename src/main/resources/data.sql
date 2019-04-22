@@ -37,3 +37,7 @@ insert into trip_point (TRIP_POINT_ID, TRIP_POINT_NAME, TRIP_POINT_LONGITUDE, TR
 insert into TRIP_PASSENGER (TRIP_PASSENGER_ID, TRIP_PASSENGER_DRIVER_TRIP_ID,  	TRIP_PASSENGER_TRIP_ID,trip_Passenger_Empty_Sits_Qty) values (1, 1, 4, 1)
 insert into TRIP_PASSENGER (TRIP_PASSENGER_ID, TRIP_PASSENGER_DRIVER_TRIP_ID,  	TRIP_PASSENGER_TRIP_ID,trip_Passenger_Empty_Sits_Qty) values (2, 2, 3, 2)
 -- insert into feedback (FEEDBACK_ID, FEEDBACK_VALUE, FEEDBACK_DRIVER_TRIP_ID, FEEDBACK_PASSENGER_TRIP_ID) values (1, 1, 1, 4)
+insert into roles (name) values ('ROLE_USER');
+insert into roles (name) values ('ROLE_ADMIN');
+insert into roles (name) values ('ROLE_PASSENGER');
+insert into roles (name) values ('ROLE_DRIVER');
