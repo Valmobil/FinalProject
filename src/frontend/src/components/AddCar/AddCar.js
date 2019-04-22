@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {setUserPoints, setTrip, setProfile, setCar} from '../../actions/userCreators'
+import {setUserPoints, setTrip,  setCar} from '../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
@@ -8,10 +8,11 @@ import orange from '@material-ui/core/colors/orange'
 import './AddCar.css'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
-import EditIcon from '@material-ui/icons/Edit'
+
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditSmart from './EditSmart/EditSmart'
 import TextField from '@material-ui/core/TextField';
+
 
 
 const windowWidth = window.innerWidth <= 380 ? window.innerWidth : 380
@@ -118,15 +119,7 @@ const styles = theme => ({
         }
     },
 })
-/*const style = {
-    input: {
-        width: '100%'
-    },
-    radio: {
-        display: 'flex',
-        justifyContent: 'center'
-    }
-}*/
+
 
 const theme = createMuiTheme({
     palette: {
@@ -138,90 +131,56 @@ const theme = createMuiTheme({
 
 class AddCar extends Component {
     state = {
-        user: {
-            userName:     this.props.users.user.userName,
-            userPhoto:    this.props.users.user.userPhoto,
-            userPhone:    this.props.users.user.userPhone,
-            userMail:     this.props.users.user.userMail,
-        },
-        // car:[],
         newCar: {
             carName: '',
             carColour: '',
             carPhoto: '/CarsPhotos/n_1.jpg',
         },
         selectedId: 1,
-        // car: '',
-        name: '',
-        color: '',
         editing: '',
         adding: false,
-
     }
 
     handleInput = ({target: {name, value}}) => {
-            this.setState({[name]: value})
-    }
-
-    handleEdit = (item) => {
-        console.log("hi")
-        this.setState({editing: item.carId, carName: item.carName, carColour: item.carColour, adding: false})
+        let updCar = {...this.state.newCar}
+        updCar[name] = value;
+            this.setState({newCar: updCar})
     }
 
     handleEditInput = (e) => {
         this.setState({[e.target.name]: e.target.value})
     }
 
-    editSubmit = (carId) => {
-        console.log("HELLO")
-        let id = this.props.users.cars.length > 0 ?
-            this.props.users.cars.find(item => item.carName === '<no point>').carId : 1
-        if (carId) id = carId
+    showAddedForm = () => {
+        this.setState({adding: true})
+    }
 
-        let newUserPoints = this.props.users.cars.map(item => {
-            if (item.carId === id) {
-                return {...item, carName: this.state.name, carColour: this.props.users.searchedLocation}
-            } else {
-                return item
-            }
+    sendNewCarData = () => {
+        this.props.setCar({
+            carName: this.state.newCar.carName,
+            carColour: this.state.newCar.carColour
         })
-        this.props.setProfile(newUserPoints)
-        this.setState({editing: '', name: '', color: '', adding: false})
     }
 
-    addNewPoint = () => {
-        this.setState({adding: true, editing: '', carName: '', carColour: ''})
-    }
-
-    handleDelete = (id) => {
+   /* handleDelete = (id) => {
         console.log(this.props)
         let newCarsArr = this.props.users.cars.map(item => {
-            if (item.carId === id) {
-                return {...item, carName: '<no point>', carColour: ''}
-            } else {
-                return item
+            if (item.carId !== id) {
+                return {
+                    ...item
+                }
+
             }
         })
-        this.props.setCar(newCarsArr)
-    }
 
-
-
-
+    }*/
 
     render () {
-        // console.log(this.props.users)
         const { classes } = this.props
-        const {  name, destination, editing, adding} = this.state
-        const { cars , userPoints } = this.props.users;
-        console.log(cars)
-        // let currentCar = cars.length === 1 ? cars[0] : car
-        const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
-        let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
-
-
-
-
+        const { editing, adding} = this.state
+        const { carName, carColour} = this.state.newCar
+        const { cars  } = this.props.users;
+        console.log('CARS', cars)
 
 
         const placesList = cars.map((item) => {
@@ -230,8 +189,8 @@ class AddCar extends Component {
                 output = (
                     <EditSmart key = {item.carId}
                                handleEditInput={this.handleEditInput}
-                               editName={name}
-                               editDestination={destination}
+                               editName={carName}
+                               editColour={carColour}
                                editSubmit={() => this.editSubmit(item.carId)}
                     />
                 )
@@ -249,12 +208,6 @@ class AddCar extends Component {
                         </Button>
                         <div className="icon-container">
                             <IconButton
-                                onClick={() => this.handleEdit(item)}
-                                className={classes.iconButton}
-                                aria-label="Edit">
-                                <EditIcon />
-                            </IconButton>
-                            <IconButton
                                 onClick={() => this.handleDelete(item.carId)}
                                 className={classes.iconButton}
                                 aria-label="Delete">
@@ -271,10 +224,9 @@ class AddCar extends Component {
         let dependentButton = null
          if ( !adding ){
             dependentButton = (
-                <Button onClick={this.addNewPoint}
+                <Button onClick={this.showAddedForm}
                         type="raised"
                         color="primary"
-                        disabled={adDisable}
                         classes={{
                             root: classes.typeButtons,
                             label: classes.label
@@ -289,7 +241,6 @@ class AddCar extends Component {
         }
         return (
             <>
-
                 <div className="welcome-user">
                     <span className="welcome-span role-question">Edit or set your car</span>
                     <MuiThemeProvider theme={theme}>
@@ -307,8 +258,8 @@ class AddCar extends Component {
                                     },
                                 }}
                                 label='Car name'
-                                name='name'
-                                value={this.state.name}
+                                name='carName'
+                                value={this.state.newCar.carName}
                                 onChange={this.handleInput}
                             />
                             <TextField
@@ -319,14 +270,14 @@ class AddCar extends Component {
                                     },
                                 }}
                                 label='Car color'
-                                name='color'
-                                value={this.state.color}
+                                name='carColour'
+                                value={this.state.newCar.carColour}
                                 onChange={this.handleInput}
 
                             />
 
                             <Button
-                                onClick={() => this.editSubmit(null)}
+                                onClick={this.sendNewCarData}
                                 classes={{
                                     root: classes.submit,
                                     label: classes.label
@@ -352,8 +303,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setUserPoints: (payload) => dispatch(setUserPoints(payload)),
         setTrip: (trip) => dispatch(setTrip(trip)),
-        setProfile: (state) => dispatch(setProfile(state)),
-        setCar: (cars) => dispatch(setCar(cars))
+        setCar: (newCarAdded) => dispatch(setCar(newCarAdded))
     }
 }
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(AddCar))

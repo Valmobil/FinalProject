@@ -27,11 +27,3 @@
 .dependent-button-container{
     margin-top: 30px;
 }
-.icon-container {
-    display: flex;
-    justify-content: space-between;
-    width: 70px;
-    margin-bottom: -15px;
-    margin-right: 0;
-    margin-left: auto;
-}
