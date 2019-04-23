@@ -23,17 +23,17 @@ const styles = theme => ({
 class DatePickers extends Component {
 
   render(){
-    const { classes, newTrip } = this.props;
-    console.log('from date picker',this.props)
+    const { classes, tripDate } = this.props;
+    console.log('props from date picker',this.props)
     return (
       <div className={classes.container} noValidate>
         <TextField
           id="date"
           label="Start date"
           type="date"
-          defaultValue= {newTrip}
-          value= {this.props.date}
-          // onChange={date => this.handleChange(date)}
+          // defaultValue= {newTrip}
+          value= {tripDate.date}
+          onChange={(newDate) => addTripDate(newDate)}
 
           className={classes.textField}
           InputLabelProps={{
@@ -45,14 +45,14 @@ class DatePickers extends Component {
           id="time"
           label="Start time"
           type="time"
-          value={this.props.time}
+          value={tripDate.time}
           onChange = {this.handleChange}
           className={classes.textField}
           InputLabelProps={{
             shrink: true,
           }}
           inputProps={{
-            step: 300, // 5 min
+            step: 300,
           }}
         />
       </div>
