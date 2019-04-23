@@ -98,8 +98,9 @@ class AvatarProfile extends Component {
                     Choose file
                 </label>
                 <div>
-
-                    <img src={`/api/images/${this.props.photo}`} style={{height: 100}} alt=''/>
+                    {this.props.photo.split('_')[1] &&
+                    <img src={`/api/images/?id=${this.props.photo}`} style={{height: 100}} alt=''/>
+                    }
                 </div>
             </>
             :
