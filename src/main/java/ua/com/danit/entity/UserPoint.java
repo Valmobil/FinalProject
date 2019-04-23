@@ -29,7 +29,6 @@ public class UserPoint {
   private String userPointAddress;
   @ManyToOne
   @JoinColumn(name = "USER_POINT_USER_ID", referencedColumnName = "userId")
-  //  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   @NonNull
   @JsonIgnoreProperties({"user","userName", "userPhone", "userMail", "userToken", "userTokenValidTo", "userPhoto"})
   private User user;

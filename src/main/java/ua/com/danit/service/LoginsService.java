@@ -121,11 +121,6 @@ public class LoginsService {
               saveLoginToMailOrPhone(userInfo, userLogin);
               userInfo.getUser().setUserPassword(usersService.passwordEncrypt(userLogin.getUserPassword()));
               usersService.updateUserTokenInUserEntity(userInfo.getUser());
-              //              UserToken userToken = userTokensService.generateInitialTokinSet(userInfo.getUser());
-              //              userInfo.getUser().setUserTokenRefresh(userToken.getUserTokenRefresh());
-              //              userInfo.getUser().setUserTokenAccess(userToken.getUserTokenAccess());
-              //              userInfo.setUser(usersRepository.save(userInfo.getUser()));
-              //              userToken = userTokensRepository.save(userToken);
               userInfo.setMessage("Ok! User was created!");
             } else {
               userInfo = new UserInfo();

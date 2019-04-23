@@ -17,7 +17,6 @@ import ua.com.danit.service.UserTokensService;
 
 import java.util.List;
 
-//@JsonView(View.Summary.class)
 @RestController
 @RequestMapping("api/trips")
 public class TripsController {

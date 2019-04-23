@@ -51,8 +51,6 @@ public class LoginsController {
 
   @PostMapping("email")
   public String checkUserByEmail(@RequestBody UserLogin userLogin, @RequestHeader(value = "Host") String host) {
-    //https://www.baeldung.com/spring-security-registration-i-forgot-my-password
-    //    return pswdResetTokenService.checkUserByEmail(userLogin, request.getContextPath());
     return mailSenderService.checkUserByEmail(userLogin, host);
   }
 

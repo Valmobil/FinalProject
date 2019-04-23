@@ -19,13 +19,4 @@ public class CurrentUsersController {
     this.usersRepository = usersRepository;
   }
 
-  //  public User getCurrentUserByToken(String token) {
-  //    //Ask HashMap for current user
-  //    Long userId = listOfActiveUsers.get(token);
-  //    if (userId == null) {
-  ////      checkIfAccessTokenIsValid
-  //    }
-  //    return new User();
-  //  }
-
 }

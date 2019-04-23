@@ -86,8 +86,7 @@ public class MailSenderService {
       helper.setTo(to);
       helper.setText(msg, true);
       return message;
-    } catch (MessagingException ex) {
-//      Logger.getLogger(HTMLMail.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (MessagingException ignored) {
     }
     return null;
   }
