@@ -36,7 +36,7 @@ public class UserTokensServiceTest {
     userToken.setUserTokenRefresh(userInfo.getUser().getUserTokenRefresh());
 
     for (int i = 0; i < 10; i++) {
-      UserToken userTokenNext = userTokensService.requestNewTokenService(userToken);
+      UserToken userTokenNext = (UserToken) userTokensService.requestNewTokenService(userToken).getBody();
       //Check result
       Assert.assertNotEquals(userToken.getUserTokenRefresh(),userTokenNext.getUserTokenRefresh());
       Assert.assertNotEquals(userToken.getUserTokenAccess(),userTokenNext.getUserTokenAccess());

@@ -29,8 +29,6 @@ public class UsersService {
   private UserTokensService userTokensService;
   private UserTokensRepository userTokensRepository;
 
-  private static final int dateShift = 30;
-
   @Autowired
   public UsersService(UsersRepository usersRepository,
                       UserPointsRepository userPointRepository,
@@ -57,7 +55,7 @@ public class UsersService {
     return usersRepository.getOne(userId);
   }
 
-  public String passwordEncrypt(String userPasswordNew) {
+  String passwordEncrypt(String userPasswordNew) {
     //!!!!! Write password encryption procedure
     return userPasswordNew;
   }
@@ -176,7 +174,7 @@ public class UsersService {
     return matcher.find();
   }
 
-  public static String normalizeMobilePhone(String userPhone) {
+  static String normalizeMobilePhone(String userPhone) {
     String phone = userPhone.replace("(", "")
         .replace(")", "")
         .replace(" ", "")

@@ -21,7 +21,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPoint {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class UserPoint extends Auditable{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long userPointId;
