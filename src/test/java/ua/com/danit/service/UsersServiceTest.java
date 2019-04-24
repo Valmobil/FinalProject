@@ -1,11 +1,6 @@
 package ua.com.danit.service;
 
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import ua.com.danit.entity.User;
-import ua.com.danit.model.UserLogin;
-import ua.com.danit.repository.UsersRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

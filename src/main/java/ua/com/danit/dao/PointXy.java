@@ -1,9 +1,7 @@
-package ua.com.danit.model;
+package ua.com.danit.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.awt.geom.Point2D;
 
 @Data
 @AllArgsConstructor

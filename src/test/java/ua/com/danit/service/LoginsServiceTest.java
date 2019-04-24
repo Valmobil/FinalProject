@@ -1,18 +1,15 @@
 package ua.com.danit.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.com.danit.model.UserInfo;
-import ua.com.danit.model.UserLogin;
+import ua.com.danit.dao.UserInfo;
+import ua.com.danit.dao.UserLogin;
 import ua.com.danit.repository.UsersRepository;
-import ua.com.danit.service.LoginsService;
-import ua.com.danit.service.UsersService;
 
 import java.util.UUID;
 

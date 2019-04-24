@@ -22,19 +22,8 @@ public class UserTokensController {
     this.userTokensService = userTokensService;
   }
 
-  @PostMapping("")
+  @PostMapping
   public ResponseEntity requestNewToken(@RequestBody UserToken userToken) {
     return userTokensService.requestNewTokenService(userToken);
-  }
-
-  @GetMapping("test")
-  public ResponseEntity testNewToken() {
-    User user = new User();
-
-    UserToken userToken = userTokensService.generateInitialTokinSet(user);
-    if (userToken == null || userToken.getUserTokenRefresh() == null) {
-      return new ResponseEntity<>("Error message!!!!!!!!!!!!!", HttpStatus.NOT_ACCEPTABLE);
-    }
-    return new ResponseEntity<>(userToken, HttpStatus.OK);
   }
 }

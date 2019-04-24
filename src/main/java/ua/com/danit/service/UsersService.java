@@ -7,8 +7,8 @@ import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
 import ua.com.danit.entity.UserToken;
-import ua.com.danit.model.UserInfo;
-import ua.com.danit.model.UserLogin;
+import ua.com.danit.dao.UserInfo;
+import ua.com.danit.dao.UserLogin;
 import ua.com.danit.repository.CarsRepository;
 import ua.com.danit.repository.PointsRepository;
 import ua.com.danit.repository.UserPointsRepository;
@@ -49,10 +49,6 @@ public class UsersService {
 
   public User createNewUsers(User users) {
     return usersRepository.save(users);
-  }
-
-  public User getUserById(Long userId) {
-    return usersRepository.getOne(userId);
   }
 
   String passwordEncrypt(String userPasswordNew) {

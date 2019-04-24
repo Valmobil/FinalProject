@@ -1,4 +1,4 @@
-package ua.com.danit.model;
+package ua.com.danit.dao;
 
 //@Projection
 public interface FeedbackInfo {

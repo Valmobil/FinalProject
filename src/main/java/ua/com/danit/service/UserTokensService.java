@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserToken;
-import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.UserTokensRepository;
 
 import java.time.LocalDateTime;
@@ -43,7 +42,7 @@ public class UserTokensService {
   }
 
 
-  public UserToken generateInitialTokinSet(User user) {
+  UserToken generateInitialTokinSet(User user) {
     UserToken userToken = new UserToken();
     userToken.setUser(user);
     generateNewSessionToken("Refresh", userToken);

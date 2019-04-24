@@ -12,8 +12,6 @@ import java.util.List;
 
 public interface PointsRepository extends JpaRepository<Point, Long> {
 
-  List<Point> findPointByPointNameEnLike(String pointNameEn);
-
   @Query(value = "SELECT TOP 10 POINT.* FROM POINT "
       + " INNER JOIN "
       + " (SELECT ROW_NUMBER() OVER (PARTITION BY POINT_NAME_EN ORDER BY POINT_NAME_EN) AS Rank,"
@@ -25,5 +23,4 @@ public interface PointsRepository extends JpaRepository<Point, Long> {
       + " OR UCASE(POINT.POINT_NAME_EN) LIKE ?1"
       + " OR UCASE(POINT.POINT_NAME_RU) LIKE ?1", nativeQuery = true)
   List<Point> findMyTop10ByName(String searchPattern);
-
 }
