@@ -1,6 +1,8 @@
 package ua.com.danit.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,14 +22,8 @@ public class UserTokensController {
     this.userTokensService = userTokensService;
   }
 
-  @PostMapping("")
-  public UserToken requestNewToken(@RequestBody UserToken userToken) {
+  @PostMapping
+  public ResponseEntity requestNewToken(@RequestBody UserToken userToken) {
     return userTokensService.requestNewTokenService(userToken);
-  }
-
-  @GetMapping("test")
-  public UserToken testNewToken() {
-    User user = new User();
-    return userTokensService.generateInitialTokinSet(user);
   }
 }

@@ -27,8 +27,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler","trip"})
-//@EqualsAndHashCode(exclude={"trip"})
-//@ToString(exclude={"trip"})
 public class TripPoint {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

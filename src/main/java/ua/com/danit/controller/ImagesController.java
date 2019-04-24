@@ -27,12 +27,12 @@ public class ImagesController {
     this.userTokensService = userTokensService;
   }
 
-  @GetMapping(value = "",produces = MediaType.IMAGE_JPEG_VALUE)
+  @GetMapping(value = "",produces = MediaType.IMAGE_PNG_VALUE)
   public byte[] getImageControllerGet(@RequestParam String id) {
     return imageService.getImageService(id);
   }
 
-  @PutMapping("")
+  @PutMapping
   public String saveImageController(@RequestParam("fileUpload") byte[] file,
                                     ModelMap modelMap, @RequestHeader String authorization) {
     return linkToPicture + imageService.saveNewImage(file, userTokensService.findUserByAccessToken(authorization));

@@ -7,8 +7,8 @@ import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
 import ua.com.danit.entity.UserToken;
-import ua.com.danit.model.UserInfo;
-import ua.com.danit.model.UserLogin;
+import ua.com.danit.dao.UserInfo;
+import ua.com.danit.dao.UserLogin;
 import ua.com.danit.repository.CarsRepository;
 import ua.com.danit.repository.PointsRepository;
 import ua.com.danit.repository.UserPointsRepository;
@@ -28,8 +28,6 @@ public class UsersService {
   private PointsRepository pointsRepository;
   private UserTokensService userTokensService;
   private UserTokensRepository userTokensRepository;
-
-  private static final int dateShift = 30;
 
   @Autowired
   public UsersService(UsersRepository usersRepository,
@@ -53,11 +51,7 @@ public class UsersService {
     return usersRepository.save(users);
   }
 
-  public User getUserById(Long userId) {
-    return usersRepository.getOne(userId);
-  }
-
-  public String passwordEncrypt(String userPasswordNew) {
+  String passwordEncrypt(String userPasswordNew) {
     //!!!!! Write password encryption procedure
     return userPasswordNew;
   }
@@ -176,7 +170,7 @@ public class UsersService {
     return matcher.find();
   }
 
-  public static String normalizeMobilePhone(String userPhone) {
+  static String normalizeMobilePhone(String userPhone) {
     String phone = userPhone.replace("(", "")
         .replace(")", "")
         .replace(" ", "")

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.Feedback;
-import ua.com.danit.model.FeedbackInfo;
+import ua.com.danit.dao.FeedbackInfo;
 import ua.com.danit.service.FeedbacksService;
 import ua.com.danit.service.UserTokensService;
 import ua.com.danit.service.UsersService;
@@ -30,12 +30,12 @@ public class FeedbacksController {
     this.userTokensService = userTokensService;
   }
 
-  @PostMapping("")
+  @PostMapping
   public List<FeedbackInfo> getFeedbackFromDb(@RequestHeader String authorization) {
     return feedbacksService.getForNewListOfFeedback(userTokensService.findUserByAccessToken(authorization));
   }
 
-  @PutMapping("")
+  @PutMapping
   public List<FeedbackInfo> saveFeedbackToDb(@RequestBody List<Feedback> feedbaks, @RequestHeader String authorization) {
     return feedbacksService.saveForNewListOfFeedback(feedbaks, userTokensService.findUserByAccessToken(authorization));
   }

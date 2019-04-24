@@ -16,10 +16,7 @@ public class XmlFilePointSaveCashService {
     this.pointsRepository = pointsRepository;
   }
 
-  public void savePointsToDb(Point pointNew) {
-    //    this.points.add(pointNew);
-    //    if (this.points.size() > stackQty) {
+  void savePointsToDb(Point pointNew) {
     Point point = pointsRepository.save(pointNew);
-    //    }
   }
 }
