@@ -252,6 +252,13 @@ export const setCar = (newCar) => dispatch => {
     dispatch({type: ADD_CAR, payload: newCar})
 
 }
+//* **********************
+export const updateCars = (newCarList) => dispatch => {
+    dispatch({type: SET_CARS, payload: newCarList})
+}
+
+//* **********************
+
 export const setTrip = (trip) => dispatch => {
     callApi('put', '/api/trips', trip)
         .then(res => console.log('usersCreators: ', res))
