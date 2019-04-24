@@ -3,8 +3,8 @@ package ua.com.danit.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.User;
-import ua.com.danit.model.UserInfo;
-import ua.com.danit.model.UserLogin;
+import ua.com.danit.dao.UserInfo;
+import ua.com.danit.dao.UserLogin;
 import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
@@ -27,16 +27,6 @@ public class LoginsService {
     this.usersService = usersService;
     this.userTokensService = userTokensService;
     this.userTokensRepository = userTokensRepository;
-  }
-
-  public UserLogin loginServiceTest() {
-    User user = usersRepository.getOne(1L);
-    UserLogin userLogin = new UserLogin();
-    userLogin.setUserLogin(user.getUserPhone());
-    userLogin.setUserPassword(user.getUserPassword());
-    userLogin.setUserPasswordNew("54321");
-    //    userLogin.setUserToken(user.getUserToken());
-    return userLogin;
   }
 
   public String checkPasswordRestore(UserLogin userLogin) {
@@ -121,11 +111,6 @@ public class LoginsService {
               saveLoginToMailOrPhone(userInfo, userLogin);
               userInfo.getUser().setUserPassword(usersService.passwordEncrypt(userLogin.getUserPassword()));
               usersService.updateUserTokenInUserEntity(userInfo.getUser());
-              //              UserToken userToken = userTokensService.generateInitialTokinSet(userInfo.getUser());
-              //              userInfo.getUser().setUserTokenRefresh(userToken.getUserTokenRefresh());
-              //              userInfo.getUser().setUserTokenAccess(userToken.getUserTokenAccess());
-              //              userInfo.setUser(usersRepository.save(userInfo.getUser()));
-              //              userToken = userTokensRepository.save(userToken);
               userInfo.setMessage("Ok! User was created!");
             } else {
               userInfo = new UserInfo();

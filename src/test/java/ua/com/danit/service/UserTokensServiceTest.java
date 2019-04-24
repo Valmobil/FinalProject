@@ -1,7 +1,5 @@
 package ua.com.danit.service;
 
-import org.assertj.core.internal.bytebuddy.implementation.bytecode.Throw;
-import org.hibernate.cfg.Environment;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.com.danit.entity.UserToken;
-import ua.com.danit.model.UserInfo;
-import ua.com.danit.model.UserLogin;
-
-import java.util.UUID;
+import ua.com.danit.dao.UserInfo;
+import ua.com.danit.dao.UserLogin;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -36,7 +32,7 @@ public class UserTokensServiceTest {
     userToken.setUserTokenRefresh(userInfo.getUser().getUserTokenRefresh());
 
     for (int i = 0; i < 10; i++) {
-      UserToken userTokenNext = userTokensService.requestNewTokenService(userToken);
+      UserToken userTokenNext = (UserToken) userTokensService.requestNewTokenService(userToken).getBody();
       //Check result
       Assert.assertNotEquals(userToken.getUserTokenRefresh(),userTokenNext.getUserTokenRefresh());
       Assert.assertNotEquals(userToken.getUserTokenAccess(),userTokenNext.getUserTokenAccess());

@@ -30,7 +30,15 @@ public class UserPointsService {
     return userPointsRepository.findByUser(user);
   }
 
-  public String saveUserPoints(List<UserPoint> userPoints) {
+  public String saveUserPoints(List<UserPoint> userPoints, User user) {
+    //Update userPoint with userInfo
+    if (user == null) {
+      return "Fail";
+    }
+    for (UserPoint userPoint : userPoints) {
+      userPoint.setUser(user);
+    }
+
     List<UserPoint> userPointsResult = userPointsRepository.saveAll(userPoints);
     if (userPointsResult.size() > 0) {
       return "Ok";
