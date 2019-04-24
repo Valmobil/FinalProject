@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import{ connect } from 'react-redux';
 import { addTripDate} from '../../../actions/userCreators'
-import moment from 'moment';
+// import moment from 'moment';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 // import orange from "@material-ui/core/colors/orange";
@@ -11,7 +11,7 @@ const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   textField: {
     marginLeft: theme.spacing.unit,

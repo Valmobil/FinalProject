@@ -26,7 +26,7 @@ export const ADD_CAR = 'ADD_CAR'
 
 export const ADD_TRIP_DATE = 'ADD_TRIP_DATE'
 export const ADD_NEW_TRIP = 'ADD_NEW_TRIP'
-
+export const LIVE_SEARCH_SHOW = 'LIVE_SEARCH_SHOW'
 
 
 

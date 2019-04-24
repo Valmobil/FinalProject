@@ -7,7 +7,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
 import { deleteTripFromHistory } from '../../actions/userCreators'
 import { callApi } from '../../utils/utils'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 // import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 // import orange from "@material-ui/core/colors/orange";
 import './TripsHistory.css'
@@ -45,7 +45,7 @@ class TripsHistory extends Component {
     componentDidMount(){
         callApi('post', '/api/trips/list')
             .then(resp => {
-              console.log(resp.data)
+              console.log('response data from trips history',resp.data)
                 this.setState({
                 tripsHistory: resp.data,
                 fetchingTripsHistory: false
@@ -100,7 +100,7 @@ class TripsHistory extends Component {
                 </li>
             )
         })} else{
-          tripsHistoryList = 'Not History Yet'
+          tripsHistoryList = 'No Trips Yet'
         }
         return (
             <div className='trip-history-list'>
@@ -123,9 +123,9 @@ const mapDispatchToProps = (dispatch) => {
         deleteTripFromHistory: (newTripsHistory) => dispatch(deleteTripFromHistory(newTripsHistory))
     }
 }
-// TripsHistory.propTypes ={
-//     tripsHistory: PropTypes.array.isRequired,
-// }
+TripsHistory.propTypes ={
+    tripsHistory: PropTypes.array.isRequired,
+}
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TripsHistory))
 

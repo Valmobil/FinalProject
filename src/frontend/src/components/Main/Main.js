@@ -1,8 +1,16 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { logOut, setUserPoints, setTrip, setMyCoordinates, setSearchedLocation, setTargetCoordinates } from '../../actions/userCreators'
+import {
+  logOut,
+  setUserPoints,
+  setTrip,
+  setMyCoordinates,
+  setSearchedLocation,
+  setTargetCoordinates,
+  showLiveSearch
+} from '../../actions/userCreators'
 import SmartRoute from './SmartRoute/SmartRoute'
-import TripsHistory from '../TripsHistory/TripsHistory'
+// import TripsHistory from '../TripsHistory/TripsHistory'
 import { withStyles } from '@material-ui/core/styles'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -251,7 +259,7 @@ class Main extends Component {
     }
 
     tripsHistoryRedirect = () =>{
-        this.props.history.push('/history')
+        this.props.history.push('/mytrips')
     }
 
     newTripRedirect = () =>{
@@ -263,7 +271,9 @@ class Main extends Component {
         const options = {
             enableHighAccuracy: true
         };
-        navigator.geolocation.getCurrentPosition(this.locationFetchSuccess, this.locationFetchError, options)
+        navigator.geolocation.getCurrentPosition(this.locationFetchSuccess, this.locationFetchError, options);
+        let liveSearchShow = true;
+        this.props.showLiveSearch(liveSearchShow);
     }
 
 
@@ -466,7 +476,8 @@ class Main extends Component {
 }
 const mapStateToProps = (state) => {
     return {
-        users: state.users
+        users: state.users,
+      liveSearchShow: state.users.liveSearchShow
     }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -477,6 +488,7 @@ const mapDispatchToProps = (dispatch) => {
         setMyCoordinates: (coords) => dispatch(setMyCoordinates(coords)),
         setTargetCoordinates: (coords) => dispatch(setTargetCoordinates(coords)),
         setSearchedLocation: (location) => dispatch(setSearchedLocation(location)),
+        showLiveSearch: (liveSearchShow) => dispatch(showLiveSearch(liveSearchShow))
     }
 }
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Main))

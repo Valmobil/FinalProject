@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import DatePicker from './DatePicker/DatePicker'
 // import TimePicker from './TimePicker/TimePicker'
-import moment from 'moment';
+// import moment from 'moment';
 import LiveSearch from '../LiveSearch/LiveSearch';
-import ChosePointFromSelect from './ChosePointFromSelect/ChosePointFromSelect'
 import { withStyles } from '@material-ui/core/styles'
-import { addNewTrip, setTargetCoordinates } from '../../actions/userCreators'
+import { addNewTrip, setTargetCoordinates, showLiveSearch } from '../../actions/userCreators'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 // import TextField from '@material-ui/core/TextField'
@@ -55,24 +54,44 @@ const styles = theme => ({
 
 class NewTrip extends Component {
 
-    //
-    // state = {
-    //   newTrip: {
-    //     role: 'passenger',
-    //     selectedId: 1,
-    //     car:'',
-    //     name:'',
-    //     editing: '',
-    //     adding: false,
-    //     trip: [],
-    //     creatingTrip: false,
-    //     latitude: 0,
-    //     longitude: 0,
-    //     value: '',
-    //     date: moment().format('YYYY-MM-DD'),
-    //     time: moment().format('HH:mm'),
-    //   }
-    // }
+   state = {
+    value:''
+  }
+
+    editClose = (pointId) => {
+      let id = null
+      if (pointId) {
+        id = pointId
+      } else {
+        id = this.props.users.userPoints.length > 0 ?
+          this.props.users.userPoints.find(item => item.userPointName === '<no point>').userPointId : 1
+      }
+      let newUserPoints = this.props.users.userPoints.map(item => {
+        if (item.userPointId === id) {
+          let pointAddress = this.props.users.searchedLocation || this.state.value
+          return {...item,
+            userPointName: this.state.name,
+            userPointAddress: pointAddress,
+            userPointLatitude: this.props.users.targetCoordinates.latitude,
+            userPointLongitude: this.props.users.targetCoordinates.longitude,
+            pointNameEn: this.state.name,
+          }
+        } else {
+          return item
+        }
+      })
+      this.props.setUserPoints(newUserPoints)
+      this.rejectEdit()
+    }
+
+    setValue = (value) => {
+      this.setState({value})
+    }
+
+    rejectEdit = () => {
+      this.props.setSearchedLocation('')
+      this.setState({ value: ''})
+    }
 
     addTripDate = (tripDate)=>{
       this.setState({
@@ -82,36 +101,45 @@ class NewTrip extends Component {
     }
 
     submitTrip = (newTrip) =>{
+      let liveSearchShow = true;
+      this.props.showLiveSearch(liveSearchShow);
       // this.props.addNewTrip(newTrip),
       this.props.history.push('/main')
+
+    }
+
+    componentDidMount(){
+      let liveSearchShow = false;
+      this.props.showLiveSearch(liveSearchShow);
     }
 
     render() {
-        const { classes, newTrip, setNewTrip } = this.props
-        // const { userPoints } = this.props.users
-        // console.log('new trip user points', userPoints)
-        // const { role, car, name, value, editing, adding, creatingTrip } = this.state
-        console.log('props from new  trip',this.props)
+      const { classes, newTrip} = this.props
 
       return (
             <form className='trip-container' onSubmit={this.submitTrip}>
                 <h1>New Trip</h1>
                 <DatePicker tripDate={newTrip} addTripDate={this.addTripDate}/>
-                {/*<TimePicker time={this.state.newTrip.time}/>*/}
-                <ChosePointFromSelect location={this.props.newTrip}/>
-                {/*{placesList}*/}
-                {/*<LiveSearch*/}
-                  {/*// name={this.state.name}*/}
-                  {/*// handleInput={this.handleInput}*/}
-                  {/*editClose={() => this.editClose(null)}*/}
-                  {/*setCoordinates={this.props.setTargetCoordinates}*/}
-                  {/*setValue={this.setValue}*/}
-                  {/*method='put'*/}
-                  {/*url='/api/trips'*/}
-                  {/*data={{ pointSearchText: this.state.value }}*/}
-                  {/*value={value}*/}
-                  {/*rejectEdit={this.rejectEdit}*/}
-                {/*/>*/}
+                <LiveSearch
+                  editClose={() => this.editClose(null)}
+                  setCoordinates={this.props.setTargetCoordinates}
+                  setValue={this.setValue}
+                  method='post'
+                  url='/api/points'
+                  data={{ pointSearchText: this.state.value }}
+                  value={this.state.value}
+                  rejectEdit={this.rejectEdit}
+                />
+                <LiveSearch
+                  editClose={() => this.editClose(null)}
+                  setCoordinates={this.props.setTargetCoordinates}
+                  setValue={this.setValue}
+                  method='post'
+                  url='/api/points'
+                  data={{ pointSearchText: this.state.value }}
+                  value={this.state.value}
+                  rejectEdit={this.rejectEdit}
+                />
                 <Map />
                 <div className="trip-btn-container">
                     <Button
@@ -139,6 +167,7 @@ class NewTrip extends Component {
 const mapStateToProps = state => {
   return{
     users: state.users,
+    liveSearchShow: state.users.liveSearchShow,
     newTrip: state.users.newTrip
   }
 }
@@ -147,6 +176,7 @@ const mapDispatchToProps = dispatch => {
   return {
     addNewTrip: (newTrip) => dispatch(addNewTrip(newTrip)),
     setTargetCoordinates: (coords) => dispatch(setTargetCoordinates(coords)),
+    showLiveSearch: (liveSearchShow) => dispatch(showLiveSearch(liveSearchShow))
   }
 }
 
