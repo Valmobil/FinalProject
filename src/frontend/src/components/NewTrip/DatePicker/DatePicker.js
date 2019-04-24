@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DateTime } from 'luxon';
-
+import{ connect } from 'react-redux';
+import { addTripDate} from '../../../actions/userCreators'
+// import moment from 'moment';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 // import orange from "@material-ui/core/colors/orange";
@@ -10,51 +11,64 @@ const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 120,
+    width: 130,
   },
 });
 
 class DatePickers extends Component {
-  state = {
-    date: "yyyy-mm-dd",
-  }
 
-  componentDidMount(){
-    // let date = DateTime.local();
-    // let defaultValueMonth = (date.c.month < 10) ? "0"+ date.c.month : date.c.month
-    // let defaultValueDay = (date.c.day < 10) ? date.c.day : date.c.day
-    // let defaultValueDate = date.c.year + "-" +defaultValueMonth + "-" +defaultValueDay
-    // this.setState({
-    //   date: defaultValueDate,
-    // })
-  }
   render(){
-    const { classes } = this.props;
-    let date = DateTime.local();
-    let defaultValueMonth = (date.c.month < 10) ? "0"+ date.c.month : date.c.month
-    let defaultValueDay = (date.c.day < 10) ? date.c.day : date.c.day
-    let defaultValueDate = date.c.year + "-" +defaultValueMonth + "-" +defaultValueDay
-    console.log('from component day',this.state.date)
+    const { classes, tripDate } = this.props;
+    console.log('props from date picker',this.props)
     return (
-      <form className={classes.container} noValidate>
+      <div className={classes.container} noValidate>
         <TextField
           id="date"
-          label="Set trip date"
+          label="Start date"
           type="date"
-          // defaultValue= {this.state.date}
-          defaultValue= {defaultValueDate}
+          // defaultValue= {newTrip}
+          value= {tripDate.date}
+          onChange={(newDate) => addTripDate(newDate)}
+
           className={classes.textField}
           InputLabelProps={{
             shrink: true,
           }}
         />
-      </form>
+
+        <TextField
+          id="time"
+          label="Start time"
+          type="time"
+          value={tripDate.time}
+          onChange = {this.handleChange}
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{
+            step: 300,
+          }}
+        />
+      </div>
     );
+  }
+}
+
+const mapStateToProps = state =>{
+  return {
+    newDate: state.users.newTrip.date
+  }
+
+}
+const mapDispatchToProps = dispath => {
+  return {
+    addTripDate: (date) => dispath(addTripDate(date))
   }
 }
 
@@ -62,4 +76,4 @@ DatePickers.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(DatePickers);
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(DatePickers));

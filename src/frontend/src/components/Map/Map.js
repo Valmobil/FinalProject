@@ -12,7 +12,7 @@ let platform = {
     app_code: '2AQJFcfRqLmLZPd0q0hz7g',
     center: {
         lat: 50.428765,
-        lng: 30.593888,
+        lng: -12.593888,
     },
     zoom: 15,
     useHTTPS: true,

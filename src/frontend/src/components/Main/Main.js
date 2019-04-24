@@ -1,7 +1,16 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { logOut, setUserPoints, setTrip, setMyCoordinates, setSearchedLocation, setTargetCoordinates } from '../../actions/userCreators'
+import {
+  logOut,
+  setUserPoints,
+  setTrip,
+  setMyCoordinates,
+  setSearchedLocation,
+  setTargetCoordinates,
+  showLiveSearch
+} from '../../actions/userCreators'
 import SmartRoute from './SmartRoute/SmartRoute'
+// import TripsHistory from '../TripsHistory/TripsHistory'
 import { withStyles } from '@material-ui/core/styles'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -249,15 +258,27 @@ class Main extends Component {
         this.setState({value})
     }
 
+    tripsHistoryRedirect = () =>{
+        this.props.history.push('/mytrips')
+    }
+
+    newTripRedirect = () =>{
+      this.props.history.push('/newtrip')
+    }
+
     componentDidMount () {
         if (this.props.users.cars.length === 1) this.setState({car: this.props.users.cars[0]})
         const options = {
             enableHighAccuracy: true
         };
-        navigator.geolocation.getCurrentPosition(this.locationFetchSuccess, this.locationFetchError, options)
+        navigator.geolocation.getCurrentPosition(this.locationFetchSuccess, this.locationFetchError, options);
+        let liveSearchShow = true;
+        this.props.showLiveSearch(liveSearchShow);
     }
 
 
+
+    // Date.parse(Date.now());
 
     render () {
         // console.log(this.props.users)
@@ -270,8 +291,6 @@ class Main extends Component {
 
 // console.log('targetCoordinates = ', this.props.users.targetCoordinates)
 // console.log('this.props.users.searchedLocation = ', this.props.users.searchedLocation)
-
-
 
         const placesList = userPoints.map((item) => {
             let output = null
@@ -386,16 +405,18 @@ class Main extends Component {
                             />
                         </RadioGroup>
                         <div className="type-button-container">
-                            <Button classes={{
+                            <Button onClick={this.newTripRedirect}
+                                classes={{
                                 root: classes.typeButtons,
                                 label: classes.label
                             }}
                             >
                                 Plan new trip
                             </Button>
-                            <Button classes={{
+                            <Button onClick ={this.tripsHistoryRedirect}
+                                classes={{
                                 root: classes.typeButtons,
-                                label: classes.label
+                                label: classes.label,
                             }}
                             >
                                 Trip history
@@ -455,7 +476,8 @@ class Main extends Component {
 }
 const mapStateToProps = (state) => {
     return {
-        users: state.users
+        users: state.users,
+      liveSearchShow: state.users.liveSearchShow
     }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -466,6 +488,7 @@ const mapDispatchToProps = (dispatch) => {
         setMyCoordinates: (coords) => dispatch(setMyCoordinates(coords)),
         setTargetCoordinates: (coords) => dispatch(setTargetCoordinates(coords)),
         setSearchedLocation: (location) => dispatch(setSearchedLocation(location)),
+        showLiveSearch: (liveSearchShow) => dispatch(showLiveSearch(liveSearchShow))
     }
 }
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Main))

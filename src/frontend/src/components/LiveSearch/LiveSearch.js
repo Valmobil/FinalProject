@@ -147,6 +147,10 @@ class LiveSearch extends Component {
 
     renderInputComponent = (inputProps) => {
         const { classes, inputRef = () => {}, ref, ...other } = inputProps;
+        const liveSearchExtended = this.props.liveSearchShow;
+        console.log('from render input component live search', inputProps)
+        if (liveSearchExtended) {
+
         return (
                 <MuiThemeProvider theme={theme}>
                 <TextField
@@ -197,7 +201,47 @@ class LiveSearch extends Component {
                 </div>
                 </MuiThemeProvider>
         );
+        }else {
+          return (
+            <MuiThemeProvider theme={theme}>
+              <TextField
+                fullWidth
+                InputProps={{
+                  inputRef: node => {
+                    ref(node);
+                    inputRef(node);
+                  },
+                  classes: {
+                    input: classes.inputColor,
+                  },
+                }}
+                {...other}
+              />
+            </MuiThemeProvider>
+          );
+        }
     }
+
+  // renderComponentNewTrip = (inputProps) => {
+  //   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
+  //   return (
+  //     <MuiThemeProvider>
+  //       <TextField
+  //         fullWidth
+  //         InputProps={{
+  //           inputRef: node => {
+  //             ref(node);
+  //             inputRef(node);
+  //           },
+  //           classes: {
+  //             input: classes.inputColor,
+  //           },
+  //         }}
+  //         {...other}
+  //       />
+  //     </MuiThemeProvider>
+  //   );
+  // }
 
     componentDidMount(){
         this.setState({value: this.props.value})
@@ -210,8 +254,8 @@ class LiveSearch extends Component {
     }
 
     render(){
-        const { classes } = this.props
-
+        const { classes, liveSearchShow } = this.props
+        console.log('from live search', liveSearchShow)
 
         const autosuggestProps = {
             renderInputComponent: this.renderInputComponent,
@@ -222,6 +266,8 @@ class LiveSearch extends Component {
             renderSuggestion: this.renderSuggestion,
             onSuggestionSelected: this.onSuggestionSelected,
         };
+
+
         return(
             <Autosuggest
                 {...autosuggestProps}
@@ -249,7 +295,8 @@ class LiveSearch extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        searchedLocation: state.users.searchedLocation
+        searchedLocation: state.users.searchedLocation,
+        liveSearchShow: state.users.liveSearchShow
     }
 }
 

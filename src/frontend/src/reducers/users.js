@@ -1,7 +1,31 @@
-import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE,
-    SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
-    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS,
-    INITIAL_LOAD, SET_USER_PHOTO, SET_PROFILE, ADD_CAR } from '../actions/users'
+import { SET_AUTH,
+  SET_USER,
+  SET_CARS,
+  SET_USER_POINTS,
+  SET_COMMON_POINTS,
+  SET_ROLE,
+  SET_SOCIAL_AUTH,
+  MENU_TOGGLE,
+    SET_CAR_LIST,
+  LOGIN_REJECTED,
+  SET_USER_NAME,
+  SET_TRIP,
+  SET_MY_COORDS,
+  SET_ERROR_MESSAGE,
+  DELETE_TRIP_FROM_HISTORY,
+    GET_LOCATION_REQUEST,
+  GET_LOCATION_SUCCESS,
+  GET_LOCATION_ERROR,
+  SET_SEARCHED_LOCATION,
+  SET_TARGET_COORDS,
+    INITIAL_LOAD,
+  SET_USER_PHOTO,
+  SET_PROFILE,
+  ADD_CAR,
+  ADD_TRIP_DATE,
+  ADD_NEW_TRIP,
+  LIVE_SEARCH_SHOW
+} from '../actions/users'
 
 
 const initialState = {
@@ -9,6 +33,7 @@ const initialState = {
     tripsHistory :[],
     allPointRequest:false,
     allPoints:[],
+    liveSearchShow: true,
   user: {
     createdDate: '',
     modifiedDate: '',
@@ -29,6 +54,11 @@ const initialState = {
   auth: null,
   topMenuOpen: false,
   loginRejected: false,
+  newTrip:{
+    car:'',
+    tripDateTime:'',
+    tripPoint:[],
+  },
   trip: {},
   address: '',
   myCoordinates: {
@@ -95,6 +125,12 @@ function users (state = initialState, action) {
         return{...state}
       case SET_PROFILE:
           return {...state, user: Object.assign({...state.user}, {...state.cars}, action.payload)}
+    case ADD_TRIP_DATE:
+        return {...state, newTrip: {...state.newTrip, tripDate:action.payload}}
+    case ADD_NEW_TRIP:
+        return{...state, newTrip: action.payload}
+    case LIVE_SEARCH_SHOW:
+      return {...state, liveSearchShow: action.payload}
 
     default:
       return {...state}
