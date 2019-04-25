@@ -117,8 +117,7 @@ class Main extends Component {
         adding: false,
         trip: [],
         creatingTrip: false,
-        latitude: 0,
-        longitude: 0,
+        id: null,
         value: '',
     };
 
@@ -139,22 +138,48 @@ class Main extends Component {
     }
 
     setRoute = (userPoint) => {
-        const { userPointName, userPointLatitude, userPointLongitude } = userPoint
+        console.log('userPoint: ', userPoint)
+        const { userPointLatitude, userPointLongitude } = userPoint
+        this.props.setTargetCoordinates({
+            latitude: userPointLatitude,
+            longitude: userPointLongitude,
+        })
+
         const tripPoint = {
-            tripPointName: userPointName,
+            tripPointName: 'manual',
             tripPointLatitude: userPointLatitude,
             tripPointLongitude: userPointLongitude,
             tripPointSequence: this.state.trip.length,
         }
-        this.setState({trip: [...this.state.trip, tripPoint]})
+
+
+        this.getIntermediate()
+            .then(res => {
+                let points = this.props.users.intermediatePoints
+                points.push(tripPoint)
+                this.setState({trip: [...this.state.trip, ...points]}, () => console.log('Trip = ', this.state.trip))
+            })
     }
 
+     getIntermediate = () => new Promise((resolve) => {
+         let check = () => {
+             if (this.props.users.intermediatePoints.length > 0){
+                 resolve()
+             } else {
+                 setTimeout(check, 50)
+             }
+         }
+         setTimeout(check, 50)
+     })
+
+
     setStartRoute = (userPoint) => {
-        this.setState({creatingTrip: true})
+        this.setState({creatingTrip: true, id: userPoint.userPointId})
+
         const tripPoint = {
-            tripPointName: 'Here',
-            tripPointLatitude: this.state.latitude,
-            tripPointLongitude: this.state.longitude,
+            tripPointName: 'manual',
+            tripPointLatitude: this.props.users.myCoordinates.latitude,
+            tripPointLongitude: this.props.users.myCoordinates.longitude,
             tripPointSequence: 0,
         }
         this.setState({trip: [tripPoint]}, () => this.setRoute(userPoint))
@@ -169,7 +194,11 @@ class Main extends Component {
             tripDateTime: new Date().toISOString(),
         }
         this.props.setTrip(trip)
-        this.setState({creatingTrip: false, trip: []})
+        this.rejectRoute()
+    }
+
+    rejectRoute = () => {
+        this.setState({creatingTrip: false, trip: [], id: null})
     }
 
     signOut = (auth) => {
@@ -268,47 +297,95 @@ class Main extends Component {
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
-// console.log('targetCoordinates = ', this.props.users.targetCoordinates)
-// console.log('this.props.users.searchedLocation = ', this.props.users.searchedLocation)
+console.log('targetCoordinates = ', this.props.users.targetCoordinates)
+console.log('myCoordinates = ', this.props.users.myCoordinates)
+// console.log('Render: this.props.users.intermediatePoints = ', this.props.users.intermediatePoints)
 
 
 
-        const placesList = userPoints.map((item) => {
+        let placesList = null
+        if (adding){
+            placesList = (
+                <>
+                    <LiveSearch
+                        name={this.state.name}
+                        handleInput={this.handleInput}
+                        editClose={() => this.editClose(null)}
+                        setCoordinates={this.props.setTargetCoordinates}
+                        setValue={this.setValue}
+                        method='post'
+                        url='/api/points/'
+                        data={{ pointSearchText: this.state.value }}
+                        value={value}
+                        rejectEdit={this.rejectEdit}
+                    />
+                    <Map/>
+                </>
+            )
+
+        } else placesList = userPoints.map((item) => {
             let output = null
-            if (item.userPointId === editing) {
-                output = (
-                    <div key={ item.userPointId }>
-                        <LiveSearch
-                                    name={name}
-                                    handleInput={this.handleInput}
-                                    editClose={() => this.editClose(item.userPointId)}
-                                    setCoordinates={this.props.setTargetCoordinates}
-                                    setValue={this.setValue}
-                                    method='post'
-                                    url='/api/points/'
-                                    data={{ pointSearchText: value }}
-                                    value={value}
-                                    rejectEdit={this.rejectEdit}
-                        />
-                        <Map />
-                    </div>
-                )
-            } else {
-                output = (
-                    item.userPointName !== '<no point>' &&
-
-                    <div key = {item.userPointId} style={{display: 'flex', justifyContent: 'space-around', width: '100%', marginTop: 20}}>
-
-                         <SmartRoute
-                         item={item}
-                         handleDelete={this.handleDelete}
-                         handleEdit={this.handleEdit}
-                         handleRoute={this.handleRoute}
-                         />
-
-                    </div>
-                )
-            }
+                if (item.userPointId === editing) {
+                    output = (
+                        <div key={item.userPointId} style={{width: '100%'}}>
+                            <LiveSearch
+                                name={name}
+                                handleInput={this.handleInput}
+                                editClose={() => this.editClose(item.userPointId)}
+                                setCoordinates={this.props.setTargetCoordinates}
+                                setValue={this.setValue}
+                                method='post'
+                                url='/api/points/'
+                                data={{pointSearchText: value}}
+                                value={value}
+                                rejectEdit={this.rejectEdit}
+                            />
+                            <Map/>
+                        </div>
+                    )
+                } else {
+                    if (creatingTrip) {
+                        output = (
+                            item.userPointName !== '<no point>' && item.userPointId === this.state.id &&
+                            <div key={item.userPointId}>
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-around',
+                                    width: windowWidth,
+                                    marginTop: 20
+                                }}>
+                                    <SmartRoute
+                                        item={item}
+                                        handleDelete={this.handleDelete}
+                                        handleEdit={this.handleEdit}
+                                        handleRoute={this.handleRoute}
+                                    />
+                                </div>
+                                <Map
+                                    height={200}
+                                    showRoute={true}
+                                />
+                            </div>
+                        )
+                    } else {
+                        output = (
+                            item.userPointName !== '<no point>' &&
+                            <div key={item.userPointId} style={{
+                                display: 'flex',
+                                justifyContent: 'space-around',
+                                width: '100%',
+                                marginTop: 20
+                            }}>
+                                <SmartRoute
+                                    item={item}
+                                    handleDelete={this.handleDelete}
+                                    handleEdit={this.handleEdit}
+                                    handleRoute={this.handleRoute}
+                                />
+                            </div>
+                        )
+                    }
+                }
             return output
         })
 
@@ -330,7 +407,9 @@ class Main extends Component {
                     >
                         Submit trip
                     </Button>
-                    <Button classes={{
+                    <Button
+                        onClick={this.rejectRoute}
+                        classes={{
                         root: classes.rejectButton,
                         label: classes.label
                     }}
@@ -407,24 +486,6 @@ class Main extends Component {
 
                         {dependentButton}
 
-
-                        {adding &&
-                            <>
-                        <LiveSearch
-                            name={this.state.name}
-                            handleInput={this.handleInput}
-                            editClose={() => this.editClose(null)}
-                            setCoordinates={this.props.setTargetCoordinates}
-                            setValue={this.setValue}
-                            method='post'
-                            url='/api/points/'
-                            data={{ pointSearchText: this.state.value }}
-                            value={value}
-                            rejectEdit={this.rejectEdit}
-                        />
-                        <Map/>
-                           </>
-                        }
 
                         {this.state.role === 'driver' &&
                         <FormControl required className={classes.formControl}>

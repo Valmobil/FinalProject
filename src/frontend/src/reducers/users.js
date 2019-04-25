@@ -1,7 +1,7 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE,
     SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
     GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS,
-    INITIAL_LOAD, SET_USER_PHOTO, SET_PROFILE, ADD_CAR } from '../actions/users'
+    INITIAL_LOAD, SET_USER_PHOTO, SET_PROFILE, ADD_CAR, SET_INTERMEDIATE_POINTS } from '../actions/users'
 
 
 const initialState = {
@@ -31,14 +31,12 @@ const initialState = {
   loginRejected: false,
   trip: {},
   address: '',
-  myCoordinates: {
-    latitude: 0,
-    longitude: 0,
-  },
+  myCoordinates: {},
   errorMessage: null,
   searchedLocation: '',
   targetCoordinates: {},
   initialLoad: true,
+  intermediatePoints: [],
 }
 
 function users (state = initialState, action) {
@@ -89,8 +87,10 @@ function users (state = initialState, action) {
         return{...state, allPoints: action.payload, allPointRequest: false}
     case INITIAL_LOAD:
         return{...state, initialLoad: action.payload}
-      case SET_USER_PHOTO:
+    case SET_USER_PHOTO:
         return{...state, user: {...state.user, userPhoto: action.payload}}
+    case SET_INTERMEDIATE_POINTS:
+        return{...state, intermediatePoints: action.payload}
     case GET_LOCATION_ERROR:
         return{...state}
       case SET_PROFILE:
