@@ -1,14 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {
-  logOut,
-  setUserPoints,
-  setTrip,
-  setMyCoordinates,
-  setSearchedLocation,
-  setTargetCoordinates,
-  showLiveSearch
-} from '../../actions/userCreators'
+import { logOut, setUserPoints, setTrip, setMyCoordinates, setSearchedLocation, setTargetCoordinates, showLiveSearch } from '../../actions/userCreators'
 import SmartRoute from './SmartRoute/SmartRoute'
 import { withStyles } from '@material-ui/core/styles'
 import Radio from '@material-ui/core/Radio'

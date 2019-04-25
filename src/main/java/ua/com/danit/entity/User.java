@@ -40,7 +40,7 @@ public class User extends Auditable {
   private String userTokenRefresh;
   private String userTokenAccess;
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-  @Column(length = 1200)
+  @Column(length = 1400)
   private String userTokenExternal;
   private String userPhoto;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
