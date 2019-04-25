@@ -1,30 +1,7 @@
-import { SET_AUTH,
-  SET_USER,
-  SET_CARS,
-  SET_USER_POINTS,
-  SET_SOCIAL_AUTH,
-  MENU_TOGGLE,
-  SET_CAR_LIST,
-    LOGIN_REJECTED,
-  SET_USER_NAME,
-  SET_TRIP,
-  SET_MY_COORDS,
-  SET_ERROR_MESSAGE,
-  DELETE_TRIP_FROM_HISTORY,
-    GET_LOCATION_REQUEST,
-  GET_LOCATION_SUCCESS,
-  GET_LOCATION_ERROR,
-  SET_SEARCHED_LOCATION,
-  SET_TARGET_COORDS,
-  USER_LOGOUT,
-    INITIAL_LOAD,
-  SET_PROFILE,
-  ADD_TRIP_DATE,
-  // ADD_NEW_TRIP ,
-  SET_USER_PHOTO,
-  ADD_CAR,
-  LIVE_SEARCH_SHOW
-} from './users'
+import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
+    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
+    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT,
+    INITIAL_LOAD, SET_PROFILE, SET_USER_PHOTO, ADD_CAR, SET_INTERMEDIATE_POINTS, ADD_TRIP_DATE, LIVE_SEARCH_SHOW } from './users'
 
 import { callApi, setLocalStorage, removeTokens } from '../utils/utils'
 
@@ -59,46 +36,7 @@ export const checkAuthorizationByToken = () => dispatch => {
         dispatch(logOut())
     }
 }
-// export const checkAuthorizationByToken = () => dispatch => {
-//     const accessToken = window.localStorage.getItem('iTripper_access_token');
-//     if (accessToken) {
-//         const accessTokenExpires = window.localStorage.getItem('iTripper_access_token_expires')
-//         const refreshTokenExpires = window.localStorage.getItem('iTripper_refresh_token_expires')
-//         const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
-//         if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))) {
-//             dispatch(logOut());
-//         } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
-//             axios({
-//                 method: 'post',
-//                 url: '/api/usertokens',
-//                 data: {userTokenRefresh}
-//             })
-//                 .then(response => {
-//                     if (response.data) {
-//                         setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-//                     } else {
-//                         setTimeout(() => {
-//                             const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
-//                             axios({
-//                                 method: 'post',
-//                                 url: '/api/usertokens',
-//                                 data: {userTokenRefresh}
-//                             })
-//                                 .then(response => {
-//                                     if (response.data) {
-//                                         setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-//                                     } else {
-//                                         dispatch(logOut())
-//                                     }
-//                                 })
-//                                 .catch(console.log)
-//                         }, 50)
-//                     }
-//                 })
-//                 .catch(console.log)
-//         }
-//     } else dispatch(logOut())
-// }
+
 // * *********************
 
 export const setAuthByToken = () => dispatch => {
@@ -138,63 +76,7 @@ dispatch({type: INITIAL_LOAD, payload: true})
         }
     }
 }
-// export const setAuthByToken = () => dispatch => {
-//     const userToken = window.localStorage.getItem('iTripper_access_token');
-//     if (userToken) {
-//
-//         const accessTokenExpires = window.localStorage.getItem('iTripper_access_token_expires')
-//         const refreshTokenExpires = window.localStorage.getItem('iTripper_refresh_token_expires')
-//         const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
-//         if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))){
-//             dispatch(logOut());
-//         } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
-//             axios({
-//                 method: 'post',
-//                 url: '/api/usertokens',
-//                 data: {userTokenRefresh}
-//             })
-//                 .then(response => {
-//                     if (response.data) {
-//                         setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-//                         callApi('post', '/api/logins/signin', {userToken: response.data.userTokenAccess})
-//                             .then(res => {
-//                                 dispatch(authDispatches(res))
-//                             })
-//                             .catch(console.log)
-//                     } else {
-//                         setTimeout(() => {
-//                             const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
-//                             axios({
-//                                 method: 'post',
-//                                 url: '/api/usertokens',
-//                                 data: {userTokenRefresh}
-//                             })
-//                                 .then(response => {
-//                                     if (response.data) {
-//                                         setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-//                                         callApi('post', '/api/logins/signin', {userToken: response.data.userTokenAccess})
-//                                             .then(res => {
-//                                                 dispatch(authDispatches(res))
-//                                             })
-//                                             .catch(console.log)
-//                                     } else {
-//                                         dispatch(logOut())
-//                                     }
-//                                 })
-//                                 .catch(console.log)
-//                         }, 50)
-//                     }
-//                 })
-//                 .catch(console.log)
-//         } else {
-//             callApi('post', '/api/logins/signin', { userToken })
-//                 .then(response => {
-//                     dispatch(authDispatches(response))
-//                 })
-//                 .catch(console.log)
-//         }
-//     }
-// }
+
 // * *********************
 
 const authDispatches = (response) => dispatch => {
@@ -284,7 +166,7 @@ export const updateCars = (newCarList) => dispatch => {
 
 export const setTrip = (trip) => dispatch => {
     callApi('put', '/api/trips', trip)
-        .then(res => console.log('usersCreators: ', res))
+        .then(res => console.log('setTrip: ', res))
         .catch(err => console.log(err))
     dispatch({type: SET_TRIP, trip})
 
@@ -338,10 +220,9 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
 //* **********************
 
 export const setUserPhoto = (image) => dispatch => {
-    console.log('userCreators: image', image)
     let data = new FormData();
     data.append('fileUpload', image);
-   callApi('put', 'api/images', data)
+    callApi('put', 'api/images', data)
        .then(response => {
            dispatch({type: SET_USER_PHOTO, payload: response.data})
        })
@@ -391,6 +272,11 @@ export const updateProfile = (userInfo) => dispatch =>{
         .catch( err => {
             console.log(err)
         })
+}
+//* **********************
+
+export const setIntermediatePoints = (points) => dispatch => {
+    dispatch({type: SET_INTERMEDIATE_POINTS, payload: points})
 }
 
 
