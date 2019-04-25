@@ -138,7 +138,6 @@ class Main extends Component {
     }
 
     setRoute = (userPoint) => {
-        console.log('userPoint: ', userPoint)
         const { userPointLatitude, userPointLongitude } = userPoint
         this.props.setTargetCoordinates({
             latitude: userPointLatitude,
@@ -168,16 +167,16 @@ class Main extends Component {
             })
     }
 
-     getIntermediate = () => new Promise((resolve) => {
-         let check = () => {
-             if (this.props.users.intermediatePoints.length > 0){
-                 resolve()
-             } else {
-                 setTimeout(check, 50)
-             }
-         }
-         setTimeout(check, 50)
-     })
+    getIntermediate = () => new Promise((resolve) => {
+        let check = () => {
+            if (this.props.users.intermediatePoints.length > 0){
+                resolve()
+            } else {
+                setTimeout(check, 50)
+            }
+        }
+        setTimeout(check, 50)
+    })
 
 
     setStartRoute = (userPoint) => {
@@ -235,14 +234,14 @@ class Main extends Component {
         }
         let newUserPoints = this.props.users.userPoints.map(item => {
             if (item.userPointId === id) {
-                   let pointAddress = this.props.users.searchedLocation || this.state.value
-                   return {...item,
-                       userPointName: this.state.name,
-                       userPointAddress: pointAddress,
-                       userPointLatitude: this.props.users.targetCoordinates.latitude,
-                       userPointLongitude: this.props.users.targetCoordinates.longitude,
-                       pointNameEn: this.state.name,
-                   }
+                let pointAddress = this.props.users.searchedLocation || this.state.value
+                return {...item,
+                    userPointName: this.state.name,
+                    userPointAddress: pointAddress,
+                    userPointLatitude: this.props.users.targetCoordinates.latitude,
+                    userPointLongitude: this.props.users.targetCoordinates.longitude,
+                    pointNameEn: this.state.name,
+                }
             } else {
                 return item
             }
@@ -291,7 +290,7 @@ class Main extends Component {
     }
 
     newTripRedirect = () =>{
-      this.props.history.push('/newtrip')
+        this.props.history.push('/newtrip')
     }
 
     componentDidMount () {
@@ -343,55 +342,33 @@ class Main extends Component {
 
         } else placesList = userPoints.map((item) => {
             let output = null
-                if (item.userPointId === editing) {
+            if (item.userPointId === editing) {
+                output = (
+                    <div key={item.userPointId} style={{width: '100%'}}>
+                        <LiveSearch
+                            name={name}
+                            handleInput={this.handleInput}
+                            editClose={() => this.editClose(item.userPointId)}
+                            setCoordinates={this.props.setTargetCoordinates}
+                            setValue={this.setValue}
+                            method='post'
+                            url='/api/points/'
+                            data={{pointSearchText: value}}
+                            value={value}
+                            rejectEdit={this.rejectEdit}
+                        />
+                        <Map/>
+                    </div>
+                )
+            } else {
+                if (creatingTrip) {
                     output = (
-                        <div key={item.userPointId} style={{width: '100%'}}>
-                            <LiveSearch
-                                name={name}
-                                handleInput={this.handleInput}
-                                editClose={() => this.editClose(item.userPointId)}
-                                setCoordinates={this.props.setTargetCoordinates}
-                                setValue={this.setValue}
-                                method='post'
-                                url='/api/points/'
-                                data={{pointSearchText: value}}
-                                value={value}
-                                rejectEdit={this.rejectEdit}
-                            />
-                            <Map/>
-                        </div>
-                    )
-                } else {
-                    if (creatingTrip) {
-                        output = (
-                            item.userPointName !== '<no point>' && item.userPointId === this.state.id &&
-                            <div key={item.userPointId}>
-                                <div style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-around',
-                                    width: windowWidth,
-                                    marginTop: 20
-                                }}>
-                                    <SmartRoute
-                                        item={item}
-                                        handleDelete={this.handleDelete}
-                                        handleEdit={this.handleEdit}
-                                        handleRoute={this.handleRoute}
-                                    />
-                                </div>
-                                <Map
-                                    height={200}
-                                    showRoute={true}
-                                />
-                            </div>
-                        )
-                    } else {
-                        output = (
-                            item.userPointName !== '<no point>' &&
-                            <div key={item.userPointId} style={{
+                        item.userPointName !== '<no point>' && item.userPointId === this.state.id &&
+                        <div key={item.userPointId}>
+                            <div style={{
                                 display: 'flex',
                                 justifyContent: 'space-around',
-                                width: '100%',
+                                width: windowWidth,
                                 marginTop: 20
                             }}>
                                 <SmartRoute
@@ -401,9 +378,31 @@ class Main extends Component {
                                     handleRoute={this.handleRoute}
                                 />
                             </div>
-                        )
-                    }
+                            <Map
+                                height={200}
+                                showRoute={true}
+                            />
+                        </div>
+                    )
+                } else {
+                    output = (
+                        item.userPointName !== '<no point>' &&
+                        <div key={item.userPointId} style={{
+                            display: 'flex',
+                            justifyContent: 'space-around',
+                            width: '100%',
+                            marginTop: 20
+                        }}>
+                            <SmartRoute
+                                item={item}
+                                handleDelete={this.handleDelete}
+                                handleEdit={this.handleEdit}
+                                handleRoute={this.handleRoute}
+                            />
+                        </div>
+                    )
                 }
+            }
             return output
         })
 
@@ -428,9 +427,9 @@ class Main extends Component {
                     <Button
                         onClick={this.rejectRoute}
                         classes={{
-                        root: classes.rejectButton,
-                        label: classes.label
-                    }}
+                            root: classes.rejectButton,
+                            label: classes.label
+                        }}
                     >
                         Reject trip
                     </Button>
@@ -484,18 +483,18 @@ class Main extends Component {
                         </RadioGroup>
                         <div className="type-button-container">
                             <Button onClick={this.newTripRedirect}
-                                classes={{
-                                root: classes.typeButtons,
-                                label: classes.label
-                            }}
+                                    classes={{
+                                        root: classes.typeButtons,
+                                        label: classes.label
+                                    }}
                             >
                                 Plan new trip
                             </Button>
                             <Button onClick ={this.tripsHistoryRedirect}
-                                classes={{
-                                root: classes.typeButtons,
-                                label: classes.label,
-                            }}
+                                    classes={{
+                                        root: classes.typeButtons,
+                                        label: classes.label,
+                                    }}
                             >
                                 Trip history
                             </Button>
