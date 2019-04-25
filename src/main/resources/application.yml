@@ -22,6 +22,13 @@ application:
     xmlsource: src/main/resources/maps/map.xml
     xmlsourcesavetodbqty: 10
 
+
+amazonProperties:
+  endpointUrl: https://s3.us-east-2.amazonaws.com
+  accessKey: XXXXXXXXXXXXXXXXX
+  secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXX
+  bucketName: your-bucket-name
+
 ---
 
 spring:

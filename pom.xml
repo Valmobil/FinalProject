@@ -87,14 +87,12 @@
       <version>58.1</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.osmdroid/OpenStreetMapViewer -->
-<!--    <dependency>-->
-<!--      <groupId>org.osmdroid</groupId>-->
-<!--      <artifactId>OpenStreetMapViewer</artifactId>-->
-<!--      <version>6.1.0</version>-->
-<!--    </dependency>-->
-
-
+    <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+      <version>1.11.538</version>
+    </dependency>
 
   </dependencies>
 
@@ -126,10 +124,6 @@
           </execution>
         </executions>
       </plugin>
-
-
     </plugins>
   </build>
-
-
 </project>
