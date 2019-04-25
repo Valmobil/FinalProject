@@ -21,7 +21,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPoint {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class UserPoint extends Auditable{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long userPointId;
@@ -29,7 +30,6 @@ public class UserPoint {
   private String userPointAddress;
   @ManyToOne
   @JoinColumn(name = "USER_POINT_USER_ID", referencedColumnName = "userId")
-  //  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   @NonNull
   @JsonIgnoreProperties({"user","userName", "userPhone", "userMail", "userToken", "userTokenValidTo", "userPhoto"})
   private User user;

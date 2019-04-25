@@ -21,7 +21,7 @@ public class AppRunner {
     ctx = SpringApplication.run(AppRunner.class, args);
 
 
-    //Start new tread for XML upload to DB
+    //Start new tread for OpenStreet Points upload from XML to DB
     XmlFileNewTreadService readXml = (XmlFileNewTreadService) ctx.getBean("xmlFileNewTreadService");
     readXml.setName("Thread 1");
 

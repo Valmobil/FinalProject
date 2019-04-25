@@ -1,10 +1,11 @@
 package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserToken;
-import ua.com.danit.model.UserLogin;
 import ua.com.danit.repository.UserTokensRepository;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,9 @@ import java.util.UUID;
 @Service
 public class UserTokensService {
   private UserTokensRepository userTokensRepository;
+
+  private static final int refreshTokenExpirationMin = 30 * 24 * 60;
+  private static final int accessTokenExpirationMin = 15;
 
   @Autowired
   public UserTokensService(UserTokensRepository userTokensRepository) {
@@ -38,7 +42,7 @@ public class UserTokensService {
   }
 
 
-  public UserToken generateInitialTokinSet(User user) {
+  UserToken generateInitialTokinSet(User user) {
     UserToken userToken = new UserToken();
     userToken.setUser(user);
     generateNewSessionToken("Refresh", userToken);
@@ -46,13 +50,13 @@ public class UserTokensService {
     return userToken;
   }
 
-  public UserToken requestNewTokenService(UserToken userToken) {
+  public ResponseEntity requestNewTokenService(UserToken userToken) {
     if (userToken == null) {
-      return null;
+      return new ResponseEntity<>("Error! Empty input JSON!", HttpStatus.NOT_ACCEPTABLE);
     }
     UserToken userTokenDb = userTokensRepository.findByUserTokenRefresh(userToken.getUserTokenRefresh());
     if (userTokenDb == null) {
-      return null;
+      return new ResponseEntity<>("Error! Incorrect Refresh Token!",HttpStatus.NOT_ACCEPTABLE);
     }
 
     if (userTokenDb.getUserTokenRefreshTo().isAfter(LocalDateTime.now())) {
@@ -60,11 +64,11 @@ public class UserTokensService {
       generateNewSessionToken("Refresh", userTokenDb);
       generateNewSessionToken("Access", userTokenDb);
       userTokenDb = userTokensRepository.save(userTokenDb);
-      return userTokenDb;
+      return new ResponseEntity<>(userTokenDb,HttpStatus.OK);
     } else {
       //if Refresh token is expired
       userTokensRepository.delete(userTokenDb);
-      return null;
+      return new ResponseEntity<>("Error! Refresh Token has expired! Please login again!",HttpStatus.NOT_ACCEPTABLE);
     }
   }
 
@@ -73,12 +77,12 @@ public class UserTokensService {
     LocalDateTime date = LocalDateTime.now();
     if (stype.equals("Refresh")) {
       userToken.setUserTokenAccess(UUID.randomUUID().toString());
-      dateShift = 15;
+      dateShift = accessTokenExpirationMin;
       date = date.plusMinutes(dateShift);
       userToken.setUserTokenAccessTo(date);
     } else {
       userToken.setUserTokenRefresh(UUID.randomUUID().toString());
-      dateShift = 60 * 24 * 30;
+      dateShift = refreshTokenExpirationMin;
       date = date.plusMinutes(dateShift);
       userToken.setUserTokenRefreshTo(date);
     }

@@ -17,7 +17,6 @@ import ua.com.danit.service.UserTokensService;
 
 import java.util.List;
 
-//@JsonView(View.Summary.class)
 @RestController
 @RequestMapping("api/trips")
 public class TripsController {
@@ -30,12 +29,7 @@ public class TripsController {
     this.userTokensService = userTokensService;
   }
 
-  @GetMapping("test")
-  public Trip getTripById() {
-    return tripsService.getTripById(1L);
-  }
-
-  @PutMapping("")
+  @PutMapping
   public String saveTripToDb(@RequestBody Trip trip) {
     return tripsService.saveTripToDb(trip);
   }
@@ -50,15 +44,16 @@ public class TripsController {
     return tripsService.getOwnAndOtherTrips(userTokensService.findUserByAccessToken(authorization));
   }
 
-  @PostMapping("delete")
-  public void deleteUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
-    tripsService.deleteTripById(trip.getTripId(), userTokensService.findUserByAccessToken(authorization));
-  }
-
   @PostMapping("copy")
   public List<Trip> copyUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
     User user = userTokensService.findUserByAccessToken(authorization);
     tripsService.copyTripById(trip.getTripId(), user);
     return tripsService.getTripListService(user);
   }
+
+  @DeleteMapping
+  public void deleteUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
+    tripsService.deleteTripById(trip.getTripId(), userTokensService.findUserByAccessToken(authorization));
+  }
+
 }

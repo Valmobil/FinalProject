@@ -45,7 +45,7 @@ class TripsHistory extends Component {
     componentDidMount(){
         callApi('post', '/api/trips/list')
             .then(resp => {
-              console.log(resp.data)
+              console.log('response data from trips history',resp.data)
                 this.setState({
                 tripsHistory: resp.data,
                 fetchingTripsHistory: false
@@ -100,7 +100,7 @@ class TripsHistory extends Component {
                 </li>
             )
         })} else{
-          tripsHistoryList = 'Not History Yet'
+          tripsHistoryList = 'No Trips Yet'
         }
         return (
             <div className='trip-history-list'>

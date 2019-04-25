@@ -2,6 +2,33 @@ import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TO
     LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
     GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT,
     INITIAL_LOAD, SET_PROFILE, SET_USER_PHOTO, ADD_CAR, SET_INTERMEDIATE_POINTS } from './users'
+import { SET_AUTH,
+  SET_USER,
+  SET_CARS,
+  SET_USER_POINTS,
+  SET_SOCIAL_AUTH,
+  MENU_TOGGLE,
+  SET_CAR_LIST,
+    LOGIN_REJECTED,
+  SET_USER_NAME,
+  SET_TRIP,
+  SET_MY_COORDS,
+  SET_ERROR_MESSAGE,
+  DELETE_TRIP_FROM_HISTORY,
+    GET_LOCATION_REQUEST,
+  GET_LOCATION_SUCCESS,
+  GET_LOCATION_ERROR,
+  SET_SEARCHED_LOCATION,
+  SET_TARGET_COORDS,
+  USER_LOGOUT,
+    INITIAL_LOAD,
+  SET_PROFILE,
+  ADD_TRIP_DATE,
+  // ADD_NEW_TRIP ,
+  SET_USER_PHOTO,
+  ADD_CAR,
+  LIVE_SEARCH_SHOW
+} from './users'
 
 import { callApi, setLocalStorage, removeTokens } from '../utils/utils'
 
@@ -308,7 +335,7 @@ export const setProfile = (profile) => dispatch => {
 
 export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
     dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
-    callApi('post','api/trips/delete',{tripId})
+    callApi('delete','api/trips',{tripId})
         .then(resp=>console.log(resp))
         .catch(err => console.log(err))
 }
@@ -374,3 +401,17 @@ export const setIntermediatePoints = (points) => dispatch => {
     dispatch({type: SET_INTERMEDIATE_POINTS, payload: points})
 }
 
+
+export const addTripDate = newDate => dispatch =>{
+  dispatch({ type: ADD_TRIP_DATE, payload: newDate})
+}
+
+export const addNewTrip = newTrip => dispatch => {
+    callApi('put','api/trips', newTrip)
+      .then(resp => console.log(resp))
+      .catch(err => console.log(err))
+}
+
+export const showLiveSearch = liveSearchShow => dispatch =>{
+    dispatch({ type: LIVE_SEARCH_SHOW, payload: liveSearchShow})
+}
