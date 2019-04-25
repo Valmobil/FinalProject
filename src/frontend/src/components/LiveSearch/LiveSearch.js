@@ -148,7 +148,6 @@ class LiveSearch extends Component {
     renderInputComponent = (inputProps) => {
         const { classes, inputRef = () => {}, ref, ...other } = inputProps;
         const liveSearchExtended = this.props.liveSearchShow;
-        console.log('from render input component live search', inputProps)
         if (liveSearchExtended) {
 
         return (
@@ -195,8 +194,8 @@ class LiveSearch extends Component {
                             root: classes.rejectButton,
                             label: classes.label
                         }}
-                    >
-                        Reject
+                >
+                    Reject
                 </Button>
                 </div>
                 </MuiThemeProvider>
@@ -222,26 +221,6 @@ class LiveSearch extends Component {
         }
     }
 
-  // renderComponentNewTrip = (inputProps) => {
-  //   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
-  //   return (
-  //     <MuiThemeProvider>
-  //       <TextField
-  //         fullWidth
-  //         InputProps={{
-  //           inputRef: node => {
-  //             ref(node);
-  //             inputRef(node);
-  //           },
-  //           classes: {
-  //             input: classes.inputColor,
-  //           },
-  //         }}
-  //         {...other}
-  //       />
-  //     </MuiThemeProvider>
-  //   );
-  // }
 
     componentDidMount(){
         this.setState({value: this.props.value})
@@ -254,8 +233,7 @@ class LiveSearch extends Component {
     }
 
     render(){
-        const { classes, liveSearchShow } = this.props
-        console.log('from live search', liveSearchShow)
+        const { classes } = this.props
 
         const autosuggestProps = {
             renderInputComponent: this.renderInputComponent,
