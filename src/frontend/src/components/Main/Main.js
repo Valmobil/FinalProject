@@ -138,7 +138,6 @@ class Main extends Component {
     }
 
     setRoute = (userPoint) => {
-        console.log('userPoint: ', userPoint)
         const { userPointLatitude, userPointLongitude } = userPoint
         this.props.setTargetCoordinates({
             latitude: userPointLatitude,
@@ -168,16 +167,16 @@ class Main extends Component {
             })
     }
 
-     getIntermediate = () => new Promise((resolve) => {
-         let check = () => {
-             if (this.props.users.intermediatePoints.length > 0){
-                 resolve()
-             } else {
-                 setTimeout(check, 50)
-             }
-         }
-         setTimeout(check, 50)
-     })
+    getIntermediate = () => new Promise((resolve) => {
+        let check = () => {
+            if (this.props.users.intermediatePoints.length > 0){
+                resolve()
+            } else {
+                setTimeout(check, 50)
+            }
+        }
+        setTimeout(check, 50)
+    })
 
 
     setStartRoute = (userPoint) => {
@@ -240,14 +239,14 @@ class Main extends Component {
         }
         let newUserPoints = this.props.users.userPoints.map(item => {
             if (item.userPointId === id) {
-                   let pointAddress = this.props.users.searchedLocation || this.state.value
-                   return {...item,
-                       userPointName: this.state.name,
-                       userPointAddress: pointAddress,
-                       userPointLatitude: this.props.users.targetCoordinates.latitude,
-                       userPointLongitude: this.props.users.targetCoordinates.longitude,
-                       pointNameEn: this.state.name,
-                   }
+                let pointAddress = this.props.users.searchedLocation || this.state.value
+                return {...item,
+                    userPointName: this.state.name,
+                    userPointAddress: pointAddress,
+                    userPointLatitude: this.props.users.targetCoordinates.latitude,
+                    userPointLongitude: this.props.users.targetCoordinates.longitude,
+                    pointNameEn: this.state.name,
+                }
             } else {
                 return item
             }
@@ -296,7 +295,7 @@ class Main extends Component {
     }
 
     newTripRedirect = () =>{
-      this.props.history.push('/newtrip')
+        this.props.history.push('/newtrip')
     }
 
     componentDidMount () {
@@ -433,9 +432,9 @@ class Main extends Component {
                     <Button
                         onClick={this.rejectRoute}
                         classes={{
-                        root: classes.rejectButton,
-                        label: classes.label
-                    }}
+                            root: classes.rejectButton,
+                            label: classes.label
+                        }}
                     >
                         Reject trip
                     </Button>
@@ -490,18 +489,18 @@ class Main extends Component {
 
                         <div className="type-button-container">
                             <Button onClick={this.newTripRedirect}
-                                classes={{
-                                root: classes.typeButtons,
-                                label: classes.label
-                            }}
+                                    classes={{
+                                        root: classes.typeButtons,
+                                        label: classes.label
+                                    }}
                             >
                                 Plan new trip
                             </Button>
                             <Button onClick ={this.tripsHistoryRedirect}
-                                classes={{
-                                root: classes.typeButtons,
-                                label: classes.label,
-                            }}
+                                    classes={{
+                                        root: classes.typeButtons,
+                                        label: classes.label,
+                                    }}
                             >
                                 Trip history
                             </Button>
