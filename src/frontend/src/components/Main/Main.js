@@ -151,6 +151,14 @@ class Main extends Component {
             tripPointSequence: this.state.trip.length,
         }
 
+
+        this.getIntermediate()
+            .then(res => {
+                let points = this.props.users.intermediatePoints
+                points.push(tripPoint)
+                this.setState({trip: [...this.state.trip, ...points]}, () => console.log('Trip = ', this.state.trip))
+            })
+
         this.getIntermediate()
             .then(res => {
                 let points = this.props.users.intermediatePoints
@@ -172,15 +180,21 @@ class Main extends Component {
 
 
     setStartRoute = (userPoint) => {
-        this.setState({creatingTrip: true, id: userPoint.userPointId})
+        console.log('userPoint = ', userPoint)
+        if (!userPoint.userPointLatitude || !userPoint.userPointLongitude || userPoint.userPointLatitude === 0 || userPoint.userPointLongitude === 0){
+            this.handleEdit(userPoint)
+        } else {
+            this.setState({creatingTrip: true, id: userPoint.userPointId})
 
-        const tripPoint = {
-            tripPointName: 'manual',
-            tripPointLatitude: this.props.users.myCoordinates.latitude,
-            tripPointLongitude: this.props.users.myCoordinates.longitude,
-            tripPointSequence: 0,
+            const tripPoint = {
+                tripPointName: 'manual',
+                tripPointLatitude: this.props.users.myCoordinates.latitude,
+                tripPointLongitude: this.props.users.myCoordinates.longitude,
+                tripPointSequence: 0,
+            }
+            this.setState({trip: [tripPoint]}, () => this.setRoute(userPoint))
         }
-        this.setState({trip: [tripPoint]}, () => this.setRoute(userPoint))
+
     }
 
     submitRoute = () => {
@@ -315,7 +329,8 @@ class Main extends Component {
         let placesList = null
         if (adding){
             placesList = (
-                <>
+                <div style={{width: '100%', marginTop: 70}}>
+                    <span>add new smart route</span>
                     <LiveSearch
                         name={this.state.name}
                         handleInput={this.handleInput}
@@ -329,38 +344,60 @@ class Main extends Component {
                         rejectEdit={this.rejectEdit}
                     />
                     <Map/>
-                </>
+                </div>
             )
-
-        } else placesList = userPoints.map((item) => {
+        } else if (editing) {
+            placesList = (
+                <div style={{width: '100%', marginTop: 70}}>
+                    <span>edit this smart route</span>
+                    <LiveSearch
+                        name={name}
+                        handleInput={this.handleInput}
+                        editClose={() => this.editClose(editing)}
+                        setCoordinates={this.props.setTargetCoordinates}
+                        setValue={this.setValue}
+                        method='post'
+                        url='/api/points/'
+                        data={{pointSearchText: value}}
+                        value={value}
+                        rejectEdit={this.rejectEdit}
+                    />
+                    <Map/>
+                </div>
+            )
+        }
+           else placesList = userPoints.map((item) => {
             let output = null
-            if (item.userPointId === editing) {
-                output = (
-                    <div key={item.userPointId} style={{width: '100%'}}>
-                        <LiveSearch
-                            name={name}
-                            handleInput={this.handleInput}
-                            editClose={() => this.editClose(item.userPointId)}
-                            setCoordinates={this.props.setTargetCoordinates}
-                            setValue={this.setValue}
-                            method='post'
-                            url='/api/points/'
-                            data={{pointSearchText: value}}
-                            value={value}
-                            rejectEdit={this.rejectEdit}
-                        />
-                        <Map/>
-                    </div>
-                )
-            } else {
-                if (creatingTrip) {
-                    output = (
-                        item.userPointName !== '<no point>' && item.userPointId === this.state.id &&
-                        <div key={item.userPointId}>
-                            <div style={{
+                    if (creatingTrip) {
+                        output = (
+                            item.userPointName !== '<no point>' && item.userPointId === this.state.id &&
+                            <div key={item.userPointId}>
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-around',
+                                    width: windowWidth,
+                                    marginTop: 20
+                                }}>
+                                    <SmartRoute
+                                        item={item}
+                                        handleDelete={this.handleDelete}
+                                        handleEdit={this.handleEdit}
+                                        handleRoute={this.handleRoute}
+                                    />
+                                </div>
+                                <Map
+                                    height={200}
+                                    showRoute={true}
+                                />
+                            </div>
+                        )
+                    } else {
+                        output = (
+                            item.userPointName !== '<no point>' &&
+                            <div key={item.userPointId} style={{
                                 display: 'flex',
                                 justifyContent: 'space-around',
-                                width: windowWidth,
+                                width: '100%',
                                 marginTop: 20
                             }}>
                                 <SmartRoute
@@ -370,31 +407,8 @@ class Main extends Component {
                                     handleRoute={this.handleRoute}
                                 />
                             </div>
-                            <Map
-                                height={200}
-                                showRoute={true}
-                            />
-                        </div>
-                    )
-                } else {
-                    output = (
-                        item.userPointName !== '<no point>' &&
-                        <div key={item.userPointId} style={{
-                            display: 'flex',
-                            justifyContent: 'space-around',
-                            width: '100%',
-                            marginTop: 20
-                        }}>
-                            <SmartRoute
-                                item={item}
-                                handleDelete={this.handleDelete}
-                                handleEdit={this.handleEdit}
-                                handleRoute={this.handleRoute}
-                            />
-                        </div>
-                    )
-                }
-            }
+                        )
+                    }
             return output
         })
 
@@ -447,11 +461,11 @@ class Main extends Component {
         }
 
         return (
-            <>
-
+            <MuiThemeProvider theme={theme}>
                 <div className="welcome-user">
+                    {!adding && !editing &&
+                    <>
                     <span className="welcome-span role-question">what is your today's role?</span>
-                    <MuiThemeProvider theme={theme}>
                         <RadioGroup
                             aria-label="position"
                             name="position"
@@ -473,6 +487,7 @@ class Main extends Component {
                                 labelPlacement="top" color="primary"
                             />
                         </RadioGroup>
+
                         <div className="type-button-container">
                             <Button onClick={this.newTripRedirect}
                                     classes={{
@@ -492,6 +507,8 @@ class Main extends Component {
                             </Button>
                         </div>
                         <span className="welcome-span">Choose from quick trips:</span>
+                        </>
+                        }
 
                         {placesList}
 
@@ -518,16 +535,15 @@ class Main extends Component {
                             </Select>
                         </FormControl>
                         }
-                    </MuiThemeProvider>
+
                 </div>
-            </>
+            </MuiThemeProvider>
         )
     }
 }
 const mapStateToProps = (state) => {
     return {
-        users: state.users,
-        liveSearchShow: state.users.liveSearchShow
+        users: state.users
     }
 }
 const mapDispatchToProps = (dispatch) => {
