@@ -180,7 +180,8 @@ class Main extends Component {
 
 
     setStartRoute = (userPoint) => {
-        if (!userPoint.userPointLatitude || !userPoint.userPointLongitude){
+        console.log('userPoint = ', userPoint)
+        if (!userPoint.userPointLatitude || !userPoint.userPointLongitude || userPoint.userPointLatitude === 0 || userPoint.userPointLongitude === 0){
             this.handleEdit(userPoint)
         } else {
             this.setState({creatingTrip: true, id: userPoint.userPointId})

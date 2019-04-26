@@ -71,6 +71,7 @@ class Map extends Component {
 
 
     reverseGeocode = () => {
+        console.log('targetCoordinates = ', this.props.targetCoordinates)
         const geocoder = this.platform.getGeocodingService(),
             parameters = {
                 prox: this.props.targetCoordinates.latitude + ',' + this.props.targetCoordinates.longitude + ',250',
@@ -196,8 +197,11 @@ class Map extends Component {
         // eslint-disable-next-line
         const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
         this.setUpClickListener()
-        if (this.props.targetCoordinates.latitude){
-            this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
+        if (this.props.targetCoordinates.latitude === 0 || Object.keys(this.props.targetCoordinates).length === 0){
+            this.props.setTargetCoordinates({
+                latitude: 50.449394,
+                longitude: 30.525433,
+            })
         }
     }
 
