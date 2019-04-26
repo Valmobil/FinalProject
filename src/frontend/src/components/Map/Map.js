@@ -223,7 +223,7 @@ class Map extends Component {
 
     render() {
 
-        let height = this.props.height ? this.props.height : 400
+        let height = this.props.height ? this.props.height : 350
 
 
       return (
