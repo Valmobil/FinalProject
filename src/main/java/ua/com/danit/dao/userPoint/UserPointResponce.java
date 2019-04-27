@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPointRequest{
+public class UserPointResponce {
   private Long userPointId;
   private String userPointName;
   private String userPointAddress;

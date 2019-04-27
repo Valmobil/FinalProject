@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.com.danit.dao.userPoint.UserPointRequest;
+import ua.com.danit.dao.userPoint.UserPointResponce;
 import ua.com.danit.facade.UserPointsFacade;
 import ua.com.danit.service.UserPointsService;
 import ua.com.danit.service.UserTokensService;
@@ -32,10 +32,10 @@ public class UserPointsController {
   }
 
   @PutMapping()
-  public ResponseEntity<String> saveUserPoints(@RequestBody List<UserPointRequest> userPointRequests,
+  public ResponseEntity<String> saveUserPoints(@RequestBody List<UserPointResponce> pointResponses,
                                                @RequestHeader String authorization) {
-    userPointsFacade.getAll()
-    return new ResponseEntity<>(userPointsFacade.saveUserPoints(userPointRequests,
+//    userPointsFacade.getAll();
+    return new ResponseEntity<>(userPointsFacade.saveUserPoints(pointResponses,
         userTokensService.findUserByAccessToken(authorization)), HttpStatus.OK);
   }
 }

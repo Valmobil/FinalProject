@@ -1,15 +1,11 @@
 package ua.com.danit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
-import org.springframework.lang.Nullable;
-import ua.com.danit.dao.userPoint.UserPointRequest;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,14 +13,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.List;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserPoint extends Auditable{
   @Id
@@ -39,3 +34,5 @@ public class UserPoint extends Auditable{
   private double userPointLatitude;
 
 }
+
+
