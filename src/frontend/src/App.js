@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import Main from './components/Main/Main'
+import Smart from './components/Smart/Smart'
 import Login from './components/Login/Login'
 import Profile from './components/Profile/Profile'
 import NoMatch from './components/NoMatch/NoMatch'
@@ -12,8 +12,9 @@ import ChangePassword from './components/ChangePassword'
 import TripsHistoryForm from "./components/TripsHistory/TripsHistoryForm";
 import NewTrip from './components/NewTrip/NewTrip'
 import AddCar from './components/AddCar/AddCar'
-
+import Main from "./components/Main/Main";
 import './App.css'
+
 
 class App extends Component {
   render () {
@@ -25,6 +26,7 @@ class App extends Component {
           <Switch>
             <Route exact path='/' component={Login}/>
             <ProtectedRoute exact path="/main" component={Main}/>
+            <ProtectedRoute exact path="/smart" component={Smart}/>
             <ProtectedRoute exact path="/profile" component={Profile}/>
             <Route exact path="/restore_password" component={PassRestoration}/>
             <Route exact path="/C" component={ChangePassword} />

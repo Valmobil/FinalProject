@@ -118,13 +118,24 @@ class Map extends Component {
     }
 
     calculateRouteFromAtoB = () => {
-        // set marker on starting point
-        const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
-        this.map.addObject(currentMarker);
+        if (this.props.showSmartRoute){
+            const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
+            this.map.addObject(currentMarker);
+        }
+        if (this.props.showMainRoute && this.props.mainTripParams){
+            const params = this.props.mainTripParams
+            for (let key in params){
+                if (params.hasOwnProperty(key) && key.substring(0, 8) === 'waypoint'){
+                    let value = params[key].split(',')
+                    const currentMarker = new H.map.Marker({lat: value[0], lng: value[1]});
+                    this.map.addObject(currentMarker);
+                }
+            }
+        }
+
 
         const router = this.platform.getRoutingService(),
-
-            routeRequestParams = {
+            routeRequestParams = this.props.mainTripParams ? this.props.mainTripParams : {
                 mode: 'fastest;car',
                 representation: 'display',
                 routeattributes : 'waypoints,summary,shape,legs',
@@ -132,6 +143,7 @@ class Map extends Component {
                 waypoint0: this.props.coords.latitude + ',' + this.props.coords.longitude,
                 waypoint1: Number(this.props.targetCoordinates.latitude) + ',' + Number(this.props.targetCoordinates.longitude),
             };
+
         router.calculateRoute(
             routeRequestParams,
             this.onSuccess,
@@ -207,11 +219,16 @@ class Map extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.targetCoordinates !== prevProps.targetCoordinates){
-            this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
-            if (Object.keys(this.props.coords).length > 0 && Object.keys(this.props.targetCoordinates).length > 0 && this.props.showRoute && !this.state.calculationRoute){
+            if (Object.keys(this.props.coords).length > 0 && Object.keys(this.props.targetCoordinates).length > 0 && this.props.showSmartRoute && !this.state.calculationRoute){
+                this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
                 this.calculateRouteFromAtoB()
                 this.setState({calculationRoute: true})
             }
+        }
+
+        if (this.props.mainTripParams !== prevProps.mainTripParams && this.props.showMainRoute && !this.state.calculationRoute){
+            this.calculateRouteFromAtoB()
+            this.setState({calculationRoute: true})
         }
     }
 
@@ -241,6 +258,7 @@ const mapStateToProps = (state) => {
     return {
         coords: state.users.myCoordinates,
         targetCoordinates: state.users.targetCoordinates,
+        mainTripParams: state.users.mainTripParams,
     }
 }
 
