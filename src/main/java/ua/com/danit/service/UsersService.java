@@ -82,21 +82,21 @@ public class UsersService {
     List<UserPoint> userPoints = userPointsRepository.findByUser(user);
     if (userPoints.size() < 5) {
       if (userPoints.size() < 1) {
-        UserPoint pointHome = new UserPoint(null, "Home", "adress", user, 0, 0, null);
+        UserPoint pointHome = new UserPoint(null, "Home", "adress", user, 0, 0);
         userPoints.add(pointHome);
       }
       if (userPoints.size() < 2) {
-        UserPoint pointWork = new UserPoint(null, "Work", "Kyivska obl.", user, 50.570425, 30.2637260, null);
+        UserPoint pointWork = new UserPoint(null, "Work", "Kyivska obl.", user, 50.570425, 30.2637260);
         userPoints.add(pointWork);
       }
       //for test purposes
       if (userPoints.size() < 3) {
         Point point = pointsRepository.getOne(4L);
-        UserPoint pointWork = new UserPoint(null, "Boryspil", "Kyivska obl.", user, 0, 0, point);
+        UserPoint pointWork = new UserPoint(null, "Boryspil", "Kyivska obl.", user, 0, 0);
         userPoints.add(pointWork);
       }
       for (int i = userPoints.size(); i < 5; i++) {
-        UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0, null);
+        UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0);
         userPoints.add(pointOther);
       }
       userPoints = userPointsRepository.saveAll(userPoints);

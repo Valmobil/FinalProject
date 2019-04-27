@@ -2,6 +2,7 @@ package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.com.danit.dao.userPoint.UserPointRequest;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
 import ua.com.danit.repository.UserPointsRepository;
@@ -30,20 +31,20 @@ public class UserPointsService {
     return userPointsRepository.findByUser(user);
   }
 
-  public String saveUserPoints(List<UserPoint> userPoints, User user) {
+  public String saveUserPoints(List<UserPointRequest> userPointsRequests, User user) {
     //Update userPoint with userInfo
-    if (user == null) {
-      return "Fail";
-    }
-    for (UserPoint userPoint : userPoints) {
-      userPoint.setUser(user);
-    }
+    if (userPointsRequests != null || user != null) {
+      for (UserPointRequest userPointRequest : userPointsRequests) {
+        UserPoint userPoint = new UserPoint(userPointRequest);
+        userPoint.setUser(user);
+      }
 
-    List<UserPoint> userPointsResult = userPointsRepository.saveAll(userPoints);
-    if (userPointsResult.size() > 0) {
-      return "Ok";
-    } else {
-      return "Fail";
+      List<UserPoint> userPointsResult = userPointsRepository.saveAll(userPoints);
+      if (userPointsResult.size() > 0) {
+        return "Ok";
+      } else {
+        return "Fail";
+      }
     }
   }
 }

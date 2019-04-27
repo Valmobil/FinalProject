@@ -134,7 +134,7 @@ class AddCar extends Component {
         newCar: {
             carName: '',
             carColour: '',
-            carPhoto: '/CarsPhotos/n_1.jpg',
+            carPhoto: '/carsPhotos/n_1.jpg',
         },
         selectedId: 1,
         editing: '',
