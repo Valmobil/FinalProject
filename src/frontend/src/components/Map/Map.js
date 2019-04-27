@@ -27,7 +27,7 @@ class Map extends Component {
     }
 
     listen = null;
-
+    counter = 0;
 
     geocode = (searchPoint) => {
         const geocoder = this.platform.getGeocodingService(),
@@ -117,13 +117,13 @@ class Map extends Component {
         // this.reverseGeocode()
     }
 
-    calculateRouteFromAtoB = () => {
+    calculateRouteFromAtoB = (index) => {
         if (this.props.showSmartRoute){
             const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
             this.map.addObject(currentMarker);
         }
         if (this.props.showMainRoute && this.props.mainTripParams){
-            const params = this.props.mainTripParams
+            const params = this.props.mainTripParams[index]
             for (let key in params){
                 if (params.hasOwnProperty(key) && key.substring(0, 8) === 'waypoint'){
                     let value = params[key].split(',')
@@ -132,10 +132,8 @@ class Map extends Component {
                 }
             }
         }
-
-
         const router = this.platform.getRoutingService(),
-            routeRequestParams = this.props.mainTripParams ? this.props.mainTripParams : {
+            routeRequestParams = this.props.mainTripParams ? this.props.mainTripParams[index] : {
                 mode: 'fastest;car',
                 representation: 'display',
                 routeattributes : 'waypoints,summary,shape,legs',
@@ -152,6 +150,7 @@ class Map extends Component {
     }
 
     onSuccess = (result) => {
+        this.counter++;
         const route = result.response.route[0];
         this.addRouteShapeToMap(route);
         this.props.setIntermediatePoints(route.leg[0].maneuver.map(item => item.position))
@@ -170,11 +169,24 @@ class Map extends Component {
             let parts = point.split(',');
             lineString.pushLatLngAlt(parts[0], parts[1]);
         });
+        let strokeColor;
+        switch (this.counter){
+            case 1: strokeColor = 'rgba(0, 128, 255, 0.7)'
+                break;
+            case 2: strokeColor = 'green'
+                break;
+            case 3: strokeColor = 'aqua'
+                break;
+            case 4: strokeColor = 'steelblue'
+                break;
+            default: strokeColor = 'rgba(0, 128, 255, 0.7)'
+        }
 
+        console.log('strokeColor = ', strokeColor)
         polyline = new H.map.Polyline(lineString, {
             style: {
                 lineWidth: 4,
-                strokeColor: 'rgba(0, 128, 255, 0.7)'
+                strokeColor,
             }
         });
         // Add the polyline to the map
@@ -217,6 +229,7 @@ class Map extends Component {
         }
     }
 
+
     componentDidUpdate(prevProps) {
         if (this.props.targetCoordinates !== prevProps.targetCoordinates){
             if (Object.keys(this.props.coords).length > 0 && Object.keys(this.props.targetCoordinates).length > 0 && this.props.showSmartRoute && !this.state.calculationRoute){
@@ -227,7 +240,7 @@ class Map extends Component {
         }
 
         if (this.props.mainTripParams !== prevProps.mainTripParams && this.props.showMainRoute && !this.state.calculationRoute){
-            this.calculateRouteFromAtoB()
+            this.props.mainTripParams.forEach((item, index) => this.calculateRouteFromAtoB(index))
             this.setState({calculationRoute: true})
         }
     }
@@ -236,7 +249,6 @@ class Map extends Component {
         if (this.listen){
             this.map.removeEventListener(this.listen)
         }
-
     }
 
     render() {
