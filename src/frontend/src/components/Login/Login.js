@@ -71,13 +71,17 @@ class Login extends Component {
 
     componentDidMount () {
       this.props.setAuthByToken();
+
       firebase.auth().onAuthStateChanged(authenticated => {
         if (authenticated) {
-
+          let token = null
+          firebase.auth().currentUser.getIdToken()
+                .then(result => token = result)
+                .catch(console.log)
           authenticated.getIdToken()
             .then(res => {
-              const user = {login: firebase.auth().currentUser.email, password: 'signed-in-by-social', confirmPassword: 'signed-in-by-social'}
-              this.setState({ user }, () => this.setAuth())
+              const user = {login: firebase.auth().currentUser.email, token}
+              this.setAuth(user)
             })
           // console.log("authenticated", authenticated)
         }
@@ -91,8 +95,8 @@ class Login extends Component {
       }
     }
 
-    setAuth = () => {
-      this.props.setAuthorization(this.state.user, this.state.signType)
+    setAuth = (user) => {
+      this.props.setAuthorization(user, this.state.signType)
       if (firebase.auth()) this.props.setSocialAuth(firebase.auth())
     }
 
@@ -211,7 +215,7 @@ class Login extends Component {
                       }}
                     />
             }
-            <Button onClick={this.setAuth}
+            <Button onClick={() => this.setAuth(this.state.user)}
               disabled={!allChecks}
               style={style.button}
               classes={{
