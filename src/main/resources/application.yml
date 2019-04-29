@@ -29,6 +29,7 @@ amazonProperties:
   secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXX
   bucketName: your-bucket-name
 
+
 ---
 
 spring:

@@ -16,12 +16,18 @@ import java.util.stream.Collectors;
 @Transactional
 @SuppressWarnings("unchecked")
 public abstract class AbstractDtoFacade<E, I, O> {
+  protected CrudService<E> crudService;
+  protected ModelMapper modelMapper;
 
   @Autowired
-  protected ModelMapper modelMapper;
-  @Autowired
-  @SuppressWarnings("ALL")
-  protected CrudService<E> crudService;
+  public AbstractDtoFacade(CrudService<E> crudService,
+                           ModelMapper modelMapper) {
+    this.crudService = crudService;
+    this.modelMapper = modelMapper;
+  }
+
+  protected AbstractDtoFacade() {
+  }
 
   public O getById(Long id) {
     return mapEntityToResponseDto(crudService.getById(id));

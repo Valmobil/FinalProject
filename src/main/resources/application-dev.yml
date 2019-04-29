@@ -1,0 +1,5 @@
+aws:
+  s3:
+    credentials:
+      path:
+        src/main/resources/aws/s3/credentials

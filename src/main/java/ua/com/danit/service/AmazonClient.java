@@ -11,6 +11,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -22,6 +23,7 @@ import java.util.Date;
 
 import static com.amazonaws.services.elasticbeanstalk.model.SourceRepository.S3;
 
+@Service
 public class AmazonClient {
   private AmazonS3 s3client;
 

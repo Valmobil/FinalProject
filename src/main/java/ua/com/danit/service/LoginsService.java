@@ -3,8 +3,8 @@ package ua.com.danit.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.User;
-import ua.com.danit.dao.UserInfo;
-import ua.com.danit.dao.UserLogin;
+import ua.com.danit.dto.UserInfo;
+import ua.com.danit.dto.UserLogin;
 import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 

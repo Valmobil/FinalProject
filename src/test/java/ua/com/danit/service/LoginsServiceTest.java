@@ -7,8 +7,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.com.danit.dao.UserInfo;
-import ua.com.danit.dao.UserLogin;
+import ua.com.danit.dto.UserInfo;
+import ua.com.danit.dto.UserLogin;
 import ua.com.danit.repository.UsersRepository;
 
 import java.util.UUID;
@@ -42,7 +42,7 @@ public class LoginsServiceTest {
   }
 
   @Test
-  public void createNewUserAndCheckIt() throws Exception {
+  public void createNewUserAndCheckIt() {
     //Check not existing user
     UserLogin userLogin = new UserLogin();
     userLogin.setUserLogin("068-068-68-68");

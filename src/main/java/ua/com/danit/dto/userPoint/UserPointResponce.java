@@ -1,4 +1,4 @@
-package ua.com.danit.dao.userPoint;
+package ua.com.danit.dto.userPoint;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

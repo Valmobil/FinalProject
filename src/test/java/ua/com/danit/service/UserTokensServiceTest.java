@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.com.danit.entity.UserToken;
-import ua.com.danit.dao.UserInfo;
-import ua.com.danit.dao.UserLogin;
+import ua.com.danit.dto.UserInfo;
+import ua.com.danit.dto.UserLogin;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
