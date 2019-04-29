@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './Map.css'
-import { setTargetCoordinates, setSearchedLocation } from "../../actions/userCreators";
+import { setTargetCoordinates, setSearchedLocation, setIntermediatePoints } from "../../actions/userCreators";
 import { connect } from "react-redux";
 
 
@@ -23,8 +23,10 @@ class Map extends Component {
     state = {
         targetLatitude: 0,
         targetLongitude: 0,
-        search: '',
+        calculationRoute: false,
     }
+
+    listen = null;
 
 
     geocode = (searchPoint) => {
@@ -47,6 +49,7 @@ class Map extends Component {
         const targetLocation = locations[0].location.displayPosition;
         this.setState({targetLatitude: targetLocation.latitude, targetLongitude: targetLocation.longitude}, () => this.reverseGeocode())
         this.props.setTargetCoordinates(locations[0].location.displayPosition)
+        this.setState({calculationRoute: false})
     }
 
     addLocationsToMap = (locations) => {
@@ -68,9 +71,10 @@ class Map extends Component {
 
 
     reverseGeocode = () => {
+        console.log('targetCoordinates = ', this.props.targetCoordinates)
         const geocoder = this.platform.getGeocodingService(),
             parameters = {
-                prox: this.state.targetLatitude + ',' + this.state.targetLongitude + ',250',
+                prox: this.props.targetCoordinates.latitude + ',' + this.props.targetCoordinates.longitude + ',250',
                 mode: 'retrieveAddresses',
                 maxresults: '1',
                 gen: '9'};
@@ -92,14 +96,13 @@ class Map extends Component {
     }
 
     setUpClickListener = () => {
-        this.map.addEventListener('tap', (evt) => {
+        this.listen = this.map.addEventListener('tap', (evt) => {
             let coord = this.map.screenToGeo(evt.currentPointer.viewportX,
                 evt.currentPointer.viewportY);
             let latitude = coord.lat.toFixed(6)
             let longitude = coord.lng.toFixed(6)
             this.setMarker(latitude, longitude)
             console.log('Clicked at ' + coord.lat.toFixed(6) + ' ' + coord.lng.toFixed(6));
-            debugger
             this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)}, () => this.reverseGeocode())
             // this.setState({targetLatitude: coord.lat.toFixed(6), targetLongitude: coord.lng.toFixed(6)})
             this.props.setTargetCoordinates({
@@ -111,7 +114,7 @@ class Map extends Component {
 
     myRoute = () => {
         this.calculateRouteFromAtoB ();
-        this.reverseGeocode()
+        // this.reverseGeocode()
     }
 
     calculateRouteFromAtoB = () => {
@@ -119,15 +122,15 @@ class Map extends Component {
         const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
         this.map.addObject(currentMarker);
 
-
         const router = this.platform.getRoutingService(),
+
             routeRequestParams = {
                 mode: 'fastest;car',
                 representation: 'display',
                 routeattributes : 'waypoints,summary,shape,legs',
                 maneuverattributes: 'direction,action',
                 waypoint0: this.props.coords.latitude + ',' + this.props.coords.longitude,
-                waypoint1: this.state.targetLatitude + ',' + this.state.targetLongitude,
+                waypoint1: Number(this.props.targetCoordinates.latitude) + ',' + Number(this.props.targetCoordinates.longitude),
             };
         router.calculateRoute(
             routeRequestParams,
@@ -139,7 +142,7 @@ class Map extends Component {
     onSuccess = (result) => {
         const route = result.response.route[0];
         this.addRouteShapeToMap(route);
-        console.log('route = ', route.leg[0].maneuver);
+        this.props.setIntermediatePoints(route.leg[0].maneuver.map(item => item.position))
     }
 
     onError = (error) => {
@@ -172,9 +175,6 @@ class Map extends Component {
         this.setState({[e.target.name]: e.target.value})
     }
 
-    submitSearch = () => {
-        this.geocode(this.state.search)
-    }
 
     componentDidMount() {
         if (this.props.coords) {
@@ -197,25 +197,39 @@ class Map extends Component {
         // eslint-disable-next-line
         const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
         this.setUpClickListener()
-
-
-        if (this.props.targetCoordinates.latitude){
-            this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
+        if (this.props.targetCoordinates.latitude === 0 || Object.keys(this.props.targetCoordinates).length === 0){
+            this.props.setTargetCoordinates({
+                latitude: 50.449394,
+                longitude: 30.525433,
+            })
         }
-
-
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.targetCoordinates !== prevProps.targetCoordinates){
             this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
+            if (Object.keys(this.props.coords).length > 0 && Object.keys(this.props.targetCoordinates).length > 0 && this.props.showRoute && !this.state.calculationRoute){
+                this.calculateRouteFromAtoB()
+                this.setState({calculationRoute: true})
+            }
         }
     }
 
+    componentWillUnmount(){
+        if (this.listen){
+            this.map.removeEventListener(this.listen)
+        }
+
+    }
+
     render() {
+
+        let height = this.props.height ? this.props.height : 350
+
+
       return (
             <div style={{width: '100%', margin: '20px 0' }}>
-            <div id="here-map" style={{width: '100%', height: '400px', background: 'grey', marginTop: 15}} />
+            <div id="here-map" style={{width: '100%', height, background: 'grey', marginTop: 15}} />
             </div>
         );
     }
@@ -234,6 +248,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setTargetCoordinates: (coordinates) => dispatch(setTargetCoordinates(coordinates)),
         setSearchedLocation: (location) => dispatch(setSearchedLocation(location)),
+        setIntermediatePoints: (points) => dispatch(setIntermediatePoints(points)),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Map)
