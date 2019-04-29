@@ -147,9 +147,6 @@ class LiveSearch extends Component {
 
     renderInputComponent = (inputProps) => {
         const { classes, inputRef = () => {}, ref, ...other } = inputProps;
-        const liveSearchExtended = this.props.liveSearchShow;
-        if (liveSearchExtended) {
-
         return (
                 <MuiThemeProvider theme={theme}>
                 <TextField
@@ -194,33 +191,13 @@ class LiveSearch extends Component {
                             root: classes.rejectButton,
                             label: classes.label
                         }}
-                >
-                    Reject
+                    >
+                        Reject
                 </Button>
                 </div>
                 </MuiThemeProvider>
         );
-        }else {
-          return (
-            <MuiThemeProvider theme={theme}>
-              <TextField
-                fullWidth
-                InputProps={{
-                  inputRef: node => {
-                    ref(node);
-                    inputRef(node);
-                  },
-                  classes: {
-                    input: classes.inputColor,
-                  },
-                }}
-                {...other}
-              />
-            </MuiThemeProvider>
-          );
-        }
     }
-
 
     componentDidMount(){
         this.setState({value: this.props.value})
@@ -235,6 +212,7 @@ class LiveSearch extends Component {
     render(){
         const { classes } = this.props
 
+
         const autosuggestProps = {
             renderInputComponent: this.renderInputComponent,
             suggestions: this.state.suggestions,
@@ -244,8 +222,6 @@ class LiveSearch extends Component {
             renderSuggestion: this.renderSuggestion,
             onSuggestionSelected: this.onSuggestionSelected,
         };
-
-
         return(
             <Autosuggest
                 {...autosuggestProps}
@@ -273,8 +249,7 @@ class LiveSearch extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        searchedLocation: state.users.searchedLocation,
-        liveSearchShow: state.users.liveSearchShow
+        searchedLocation: state.users.searchedLocation
     }
 }
 
