@@ -300,8 +300,6 @@ class Main extends Component {
             enableHighAccuracy: true
         };
         navigator.geolocation.getCurrentPosition(this.locationFetchSuccess, this.locationFetchError, options);
-        let liveSearchShow = true;
-        this.props.showLiveSearch(liveSearchShow);
     }
 
 
@@ -497,7 +495,7 @@ class Main extends Component {
                                 label: classes.label,
                             }}
                             >
-                                Trip history
+                                My trips
                             </Button>
                         </div>
                         <span className="welcome-span">Choose from quick trips:</span>
