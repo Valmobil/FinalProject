@@ -91,11 +91,21 @@ const authDispatches = (response) => dispatch => {
 export const setAuthorization = (state, signType) => (dispatch) => {
     // console.log('state = ',getState())
     let route = signType === 'log-in' ? 'signin' : 'signup'
-    axios.post('/api/logins/' + route, {
-        userLogin: state.login,
-        userPassword: state.password,
-        userPasswordNew: state.confirmPassword
-    })
+    let data = null
+    if (state.password) {
+        data = {
+            userLogin: state.login,
+            userPassword: state.password,
+            userPasswordNew: state.confirmPassword
+        }
+    }
+    else {
+        data = {
+            userLogin: state.login,
+            userToken: state.token,
+        }
+    }
+    axios.post('/api/logins/' + route, data)
         .then(response => {
             dispatch(setErrorMessage(response.data.message))
             if (response.data.user !== null) {

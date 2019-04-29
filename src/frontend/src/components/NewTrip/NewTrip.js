@@ -54,9 +54,13 @@ const styles = theme => ({
 
 class NewTrip extends Component {
 
-   state = {
-    value:''
-  }
+     state = {
+       car: '',
+       tripDateTime: '',
+       tripPoint: [],
+       valueFrom:'',
+       valueTo:''
+     }
 
     editClose = (pointId) => {
       let id = null
@@ -84,8 +88,12 @@ class NewTrip extends Component {
       this.rejectEdit()
     }
 
-    setValue = (value) => {
-      this.setState({value})
+    setValueFrom = (valueFrom) => {
+      this.setState({valueFrom})
+    }
+
+    setValueTo = (valueTo) => {
+      this.setState({valueTo})
     }
 
     rejectEdit = () => {
@@ -95,8 +103,8 @@ class NewTrip extends Component {
 
     addTripDate = (tripDate)=>{
       this.setState({
-        date: tripDate.date,
-        time: tripDate.time,
+        date: tripDate.date.format('YYYY-MM-DD'),
+        time: tripDate.time.format('HH:mm'),
       })
     }
 
@@ -105,11 +113,15 @@ class NewTrip extends Component {
       this.props.showLiveSearch(liveSearchShow);
       // this.props.addNewTrip(newTrip),
       this.props.history.push('/main')
-
     }
 
     componentDidMount(){
       let liveSearchShow = false;
+      this.props.showLiveSearch(liveSearchShow);
+    }
+
+    componentWillUnmount(){
+      let liveSearchShow = true;
       this.props.showLiveSearch(liveSearchShow);
     }
 
@@ -123,21 +135,21 @@ class NewTrip extends Component {
                 <LiveSearch
                   editClose={() => this.editClose(null)}
                   setCoordinates={this.props.setTargetCoordinates}
-                  setValue={this.setValue}
+                  setValue ={this.setValueFrom}
                   method='post'
                   url='/api/points'
-                  data={{ pointSearchText: this.state.value }}
-                  value={this.state.value}
+                  data={{ pointSearchText: this.state.valueFrom }}
+                  value={this.state.valueFrom}
                   rejectEdit={this.rejectEdit}
                 />
                 <LiveSearch
                   editClose={() => this.editClose(null)}
                   setCoordinates={this.props.setTargetCoordinates}
-                  setValue={this.setValue}
+                  setValue ={this.setValueTo}
                   method='post'
                   url='/api/points'
-                  data={{ pointSearchText: this.state.value }}
-                  value={this.state.value}
+                  data={{ pointSearchText: this.state.valueTo }}
+                  value={this.state.valueTo}
                   rejectEdit={this.rejectEdit}
                 />
                 <Map />
