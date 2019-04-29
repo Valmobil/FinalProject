@@ -30,5 +30,6 @@ public class UserToken {
   private String userTokenRefresh;
   private LocalDateTime userTokenRefreshTo;
   private String userTokenAccess;
+  private String userTokenExternal;
   private LocalDateTime userTokenAccessTo;
 }

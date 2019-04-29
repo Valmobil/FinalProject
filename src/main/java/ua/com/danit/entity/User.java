@@ -37,16 +37,16 @@ public class User extends Auditable {
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String userPassword;
   private String userMail;
-  private String userTokenRefresh;
-  private String userTokenAccess;
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-  @Column(length = 1200)
-  private String userTokenExternal;
   private String userPhoto;
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-  private List<Car> car;
   private Integer userIsOkUserPhoto;
   private Integer userIsOkCarPhoto;
   private Integer userIsConfirmedMail;
   private Integer userIsConfirmedPhone;
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+  private List<Car> cars;
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+  private List<UserPoint> userPoints;
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+  private List<UserToken> userTokens;
 }

@@ -2,7 +2,7 @@ package ua.com.danit.facade;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.com.danit.dto.userPoint.UserPointResponce;
+import ua.com.danit.dto.UserPointResponce;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
 import ua.com.danit.service.UserPointsService;

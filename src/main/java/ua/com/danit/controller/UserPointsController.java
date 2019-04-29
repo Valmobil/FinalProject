@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.com.danit.dto.userPoint.UserPointResponce;
+import ua.com.danit.dto.UserPointResponce;
 import ua.com.danit.facade.UserPointsFacade;
 import ua.com.danit.service.UserPointsService;
 import ua.com.danit.service.UserTokensService;
