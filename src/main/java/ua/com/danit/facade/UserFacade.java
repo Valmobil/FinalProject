@@ -22,6 +22,11 @@ public class UserFacade extends AbstractDtoFacade<User, UserRequest, UserResponc
     this.usersService = usersService;
   }
 
+  public UserResponce mapEntityToResponce(User user) {
+    UserResponce userResponce = modelMapper.map(user, UserResponce.class);
+    return userResponce;
+  }
+
   public String saveUserPoints(List<UserPointResponce> userPointResponces, User user) {
     return null;
   }

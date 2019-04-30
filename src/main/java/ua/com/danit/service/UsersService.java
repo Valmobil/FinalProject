@@ -2,7 +2,6 @@ package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.com.danit.entity.Car;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
@@ -104,29 +103,27 @@ public class UsersService {
     return userPoints;
   }
 
-  void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
+  User checkLoginAndUpdateExternalTokenInDb(UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       //Save new user based on external token
       user = new User();
-      userInfo.setUser(user);
-      loginService.saveLoginToMailOrPhone(userInfo, userLogin);
+      loginService.saveLoginToMailOrPhone(user, userLogin);
       user.setUserMail(userLogin.getUserLogin());
+      user = usersRepository.save(user);
     }
-    user.setUserTokenExternal(userLogin.getUserToken());
+        UserToken userToken = userTokensRepository.findTop1FirstByUser(user.getUserId());
+    userToken.setUserTokenExternal(userLogin.getUserToken());
     updateUserTokenInUserEntity(user);
-    userInfo.setUser(user);
+    userTokensRepository.save(userToken);
+    return usersRepository.getOne(user.getUserId());
   }
 
-  void updateUserTokenInUserEntity(User user) {
-    if (user == null) {
-      return;
-    }
+  User updateUserTokenInUserEntity(User user) {
     UserToken userToken = userTokensService.generateInitialTokinSet(user);
-    user.setUserTokenRefresh(userToken.getUserTokenRefresh());
-    user.setUserTokenAccess(userToken.getUserTokenAccess());
-    usersRepository.save(user);
+    user = usersRepository.save(user);
     userTokensRepository.save(userToken);
+    return usersRepository.getOne(user.getUserId());
   }
 
   User checkLogin(UserLogin userLogin) {
@@ -197,9 +194,9 @@ public class UsersService {
       return null;
     }
     user.setUserId(userFromToken.getUserId());
-    for (Car car : user.getCar()) {
-      car.setUser(user);
-    }
+//    for (Car car : user.getCar()) {
+//      car.setUser(user);
+//    }
     usersRepository.save(user);
     UserInfo userInfo = new UserInfo();
     userInfo.setUser(usersRepository.getOne(user.getUserId()));

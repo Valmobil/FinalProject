@@ -1,7 +1,9 @@
 package ua.com.danit.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -29,12 +31,12 @@ public class LoginsController {
   }
 
   @PostMapping("signin")
-  public RequestEntity<UserResponce> postLoginSignIn(@RequestBody UserLogin userLogin) {
-    return loginsService.checkLoginSignInCredentials(userLogin);
+  public ResponseEntity<UserInfo> postLoginSignIn(@RequestBody UserLogin userLogin) {
+    return new ResponseEntity<>(loginsService.checkLoginSignInCredentials(userLogin), HttpStatus.OK);
   }
 
   @PostMapping("signup")
-  public UserInfo postLoginSignUp(@RequestBody UserLogin userLogin) {
+  public UserResponce postLoginSignUp(@RequestBody UserLogin userLogin) {
     return loginsService.checkRegistrationCredentials(userLogin);
   }
 

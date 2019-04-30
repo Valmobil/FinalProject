@@ -1,10 +1,12 @@
 -- File just for test purposes only
 -- we fill some rows with test data
 -- it works just for H2 DB
-insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user_Photo, user_Token_Access) values (1, 'Anrdew', '+380504434665', '12345', 'andrew@gmail.com', '/UserPhotos/1.jpg',        'd7654464-da2c-4efc-ac38-b9cbb0011d1f')
-insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user_Photo, user_Token_Access) values (2, 'Oleg', '+380685053223', '12345', 'oleg@gmail.com', '/UserPhotos/2.jpg', 'fd220faf-cb9f-4e07-8510-0f325050e3cc')
-insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user_Photo, user_Token_Access) values (3, 'Marichka', '+380679984536', '12345', 'marichka@gmail.com', '/UserPhotos/3.jpg', '')
-insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user_Photo, user_Token_Access) values (4, 'Galynka', '+380503337744', '12345', 'galynka@gmail.com', '/UserPhotos/4.jpg', '')
+insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user_Photo) values (1, 'Anrdew', '+380504434665', '12345', 'andrew@gmail.com', '/UserPhotos/1.jpg')
+insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user_Photo) values (2, 'Oleg', '+380685053223', '12345', 'oleg@gmail.com', '/UserPhotos/2.jpg')
+insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user_Photo) values (3, 'Marichka', '+380679984536', '12345', 'marichka@gmail.com', '/UserPhotos/3.jpg')
+insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user_Photo) values (4, 'Galynka', '+380503337744', '12345', 'galynka@gmail.com', '/UserPhotos/4.jpg')
+insert into user_token (user_token_id, user_token_user_id, user_token_refresh, user_token_refresh_to, user_token_access, user_token_access_to, user_token_external) values (1, 1, null, null, 'd7654464-da2c-4efc-ac38-b9cbb0011d1f', '2019-03-15T07:15:00', null )
+insert into user_token (user_token_id, user_token_user_id, user_token_refresh, user_token_refresh_to, user_token_access, user_token_access_to, user_token_external) values (2, 2, null, null, 'fd220faf-cb9f-4e07-8510-0f325050e3cc', '2019-03-15T07:15:00', null )
 insert into car (car_Id, car_user_id, car_Name, car_Colour, car_Photo) values (1, 1, 'Mercedes', 'Red', '/carsPhotos/1_1.jpg')
 insert into car (car_Id, car_user_id, car_Name, car_Colour, car_Photo) values (2, 1, 'Opel', 'Blue', '/carsPhotos/2_1.jpg')
 insert into car (car_Id, car_user_id, car_Name, car_Colour, car_Photo) values (3, 2, 'Cadillac', 'Blue', '/carsPhotos/2_2.jpg')

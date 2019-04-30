@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Component
-public class XmlToPointDbService {
+public class XmlToPointDbService implements Runnable {
   private PointsRepository pointsRepository;
   private Environment env;
 
@@ -37,15 +37,16 @@ public class XmlToPointDbService {
     this.env = env;
   }
 
+  @Override
   @PostConstruct
-  public void init() {
+  public void run() {
     System.out.println("Map Points export from XML to DB start.");
     String xmlFileName = env.getProperty("application.map.xmlsource");
     String xmlFileReadRowsQty = env.getProperty("application.map.xmlsourcesavetodbqty");
     loadXmlFile(xmlFileName, xmlFileReadRowsQty);
     System.out.println("Map Points export from XML to DB is finished");
-
   }
+
 
   void loadXmlFile(String fileName, String xmlFileReadRowsQty) {
     //Read Root of XLS file
@@ -169,5 +170,6 @@ public class XmlToPointDbService {
     }
     return n.getNodeValue();
   }
+
 
 }

@@ -22,26 +22,26 @@ public class UserTokensServiceTest {
 
   @Test
   public void checkExistingTokingAnswer() {
-    UserLogin userLogin = new UserLogin();
-    userLogin.setUserLogin("gmail@mail.ru");
-    userLogin.setUserPassword("1234567890");
-    userLogin.setUserPasswordNew("1234567890");
-    UserInfo userInfo = loginsService.checkRegistrationCredentials(userLogin);
-
-    UserToken userToken = new UserToken();
-    userToken.setUserTokenRefresh(userInfo.getUser().getUserTokenRefresh());
-
-    for (int i = 0; i < 10; i++) {
-      UserToken userTokenNext = (UserToken) userTokensService.requestNewTokenService(userToken).getBody();
-      //Check result
-      Assert.assertNotEquals(userToken.getUserTokenRefresh(),userTokenNext.getUserTokenRefresh());
-      Assert.assertNotEquals(userToken.getUserTokenAccess(),userTokenNext.getUserTokenAccess());
-      Assert.assertNotNull(userTokenNext);
-      Assert.assertNotNull(userTokenNext.getUserTokenRefresh());
-
-      userToken = userTokenNext;
-    }
-    System.out.println();
+//    UserLogin userLogin = new UserLogin();
+//    userLogin.setUserLogin("gmail@mail.ru");
+//    userLogin.setUserPassword("1234567890");
+//    userLogin.setUserPasswordNew("1234567890");
+//    UserInfo userInfo = loginsService.checkRegistrationCredentials(userLogin);
+//
+//    UserToken userToken = new UserToken();
+//    userToken.setUserTokenRefresh(userInfo.getUser().getUserTokenRefresh());
+//
+//    for (int i = 0; i < 10; i++) {
+//      UserToken userTokenNext = (UserToken) userTokensService.requestNewTokenService(userToken).getBody();
+//      //Check result
+//      Assert.assertNotEquals(userToken.getUserTokenRefresh(),userTokenNext.getUserTokenRefresh());
+//      Assert.assertNotEquals(userToken.getUserTokenAccess(),userTokenNext.getUserTokenAccess());
+//      Assert.assertNotNull(userTokenNext);
+//      Assert.assertNotNull(userTokenNext.getUserTokenRefresh());
+//
+//      userToken = userTokenNext;
+//    }
+//    System.out.println();
   }
 
 
