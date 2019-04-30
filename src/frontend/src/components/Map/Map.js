@@ -117,23 +117,34 @@ class Map extends Component {
         // this.reverseGeocode()
     }
 
-    calculateRouteFromAtoB = (index) => {
+    calculateRouteFromAtoB = () => {
         if (this.props.showSmartRoute){
             const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
             this.map.addObject(currentMarker);
         }
-        if (this.props.showMainRoute && this.props.mainTripParams){
-            const params = this.props.mainTripParams[index]
+        if (this.props.showMainRoute && this.props.currentMainTripParams.length > 0){
+            const svgMarker = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"' +
+            ' width="19px" height="24px" enable-background="new 0 0 19 24" xml:space="preserve">' +
+                '<path fill="#f57c00" d="M9.5,0C4.2,0,0,4.2,0,9.5C0,14.7,8.7,24,9.5,24S19,14.7,19,9.5C19,4.2,14.7,0,9.5,0z M9.5,13.8' +
+            'c-2.4,0-4.3-1.9-4.3-4.3s1.9-4.3,4.3-4.3s4.3,1.9,4.3,4.3S11.8,13.8,9.5,13.8z"/></svg>';
+
+            const params = this.props.currentMainTripParams[this.counter]
             for (let key in params){
                 if (params.hasOwnProperty(key) && key.substring(0, 8) === 'waypoint'){
                     let value = params[key].split(',')
-                    const currentMarker = new H.map.Marker({lat: value[0], lng: value[1]});
+                    let currentMarker = null;
+                    if (this.counter === 0) currentMarker = new H.map.Marker({lat: value[0], lng: value[1]});
+                    else {
+                        const icon = new H.map.Icon(svgMarker)
+                        const coords = {lat: value[0], lng: value[1]}
+                        currentMarker = new H.map.Marker(coords, {icon: icon});
+                    }
                     this.map.addObject(currentMarker);
                 }
             }
         }
         const router = this.platform.getRoutingService(),
-            routeRequestParams = this.props.mainTripParams ? this.props.mainTripParams[index] : {
+            routeRequestParams = this.props.currentMainTripParams ? this.props.currentMainTripParams[this.counter] : {
                 mode: 'fastest;car',
                 representation: 'display',
                 routeattributes : 'waypoints,summary,shape,legs',
@@ -150,10 +161,13 @@ class Map extends Component {
     }
 
     onSuccess = (result) => {
-        this.counter++;
         const route = result.response.route[0];
         this.addRouteShapeToMap(route);
         this.props.setIntermediatePoints(route.leg[0].maneuver.map(item => item.position))
+        if (this.props.currentMainTripParams.length > this.counter){
+            this.counter++
+            this.calculateRouteFromAtoB()
+        }
     }
 
     onError = (error) => {
@@ -169,20 +183,8 @@ class Map extends Component {
             let parts = point.split(',');
             lineString.pushLatLngAlt(parts[0], parts[1]);
         });
-        let strokeColor;
-        switch (this.counter){
-            case 1: strokeColor = 'rgba(0, 128, 255, 0.7)'
-                break;
-            case 2: strokeColor = 'green'
-                break;
-            case 3: strokeColor = 'aqua'
-                break;
-            case 4: strokeColor = 'steelblue'
-                break;
-            default: strokeColor = 'rgba(0, 128, 255, 0.7)'
-        }
+        let strokeColor = this.counter === 0 ? 'rgba(0, 128, 255, 0.7)' : '#f57c00';
 
-        console.log('strokeColor = ', strokeColor)
         polyline = new H.map.Polyline(lineString, {
             style: {
                 lineWidth: 4,
@@ -190,13 +192,25 @@ class Map extends Component {
             }
         });
         // Add the polyline to the map
+        polyline.id = 'route';
+        this.group.id = 'route'
+        this.group.addObject(polyline);
         this.map.addObject(polyline);
         // And zoom to its bounding rectangle
         this.map.setViewBounds(polyline.getBounds(), true);
     }
 
+
     handleInput = (e) => {
         this.setState({[e.target.name]: e.target.value})
+    }
+
+    removeObjectById = (id) => {
+        for (let object of this.map.getObjects()){
+            if (object.id === id){
+                this.map.removeObject(object);
+            }
+        }
     }
 
 
@@ -239,9 +253,10 @@ class Map extends Component {
             }
         }
 
-        if (this.props.mainTripParams !== prevProps.mainTripParams && this.props.showMainRoute && !this.state.calculationRoute){
-            this.props.mainTripParams.forEach((item, index) => this.calculateRouteFromAtoB(index))
-            this.setState({calculationRoute: true})
+        if (this.props.currentMainTripParams !== prevProps.currentMainTripParams && this.props.showMainRoute){
+            this.removeObjectById('route')
+            this.counter = 0
+            this.calculateRouteFromAtoB()
         }
     }
 
@@ -252,7 +267,6 @@ class Map extends Component {
     }
 
     render() {
-
         let height = this.props.height ? this.props.height : 350
 
 
@@ -270,7 +284,7 @@ const mapStateToProps = (state) => {
     return {
         coords: state.users.myCoordinates,
         targetCoordinates: state.users.targetCoordinates,
-        mainTripParams: state.users.mainTripParams,
+        currentMainTripParams: state.users.currentMainTripParams,
     }
 }
 
