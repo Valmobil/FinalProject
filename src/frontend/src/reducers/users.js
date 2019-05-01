@@ -2,7 +2,7 @@ import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_R
     SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
     GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS,
     INITIAL_LOAD, SET_USER_PHOTO, SET_PROFILE, ADD_CAR, SET_INTERMEDIATE_POINTS,ADD_TRIP_DATE, ADD_NEW_TRIP, LIVE_SEARCH_SHOW,
-    SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS} from '../actions/users'
+    SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS } from '../actions/users'
 
 
 const initialState = {
@@ -46,7 +46,8 @@ const initialState = {
   intermediatePoints: [],
   mainTripParams: null,
   mainTripPointNames: [],
-  currentMainTripParams: [],
+  userMainTripParams: null,
+  currentMainTripParams: null,
 }
 
 function users (state = initialState, action) {
@@ -115,6 +116,8 @@ function users (state = initialState, action) {
       return {...state, mainTripParams: action.payload}
     case SET_MAIN_TRIPS_POINT_NAMES:
       return {...state, mainTripPointNames: action.payload}
+    case SET_USER_TRIP_PARAMS:
+      return {...state, userMainTripParams: action.payload}
     case SET_CURRENT_TRIP_PARAMS:
       return {...state, currentMainTripParams: action.payload}
 

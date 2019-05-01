@@ -27,7 +27,7 @@ class Map extends Component {
     }
 
     listen = null;
-    counter = 0;
+    currentRender = 'user';
 
     geocode = (searchPoint) => {
         const geocoder = this.platform.getGeocodingService(),
@@ -117,23 +117,28 @@ class Map extends Component {
         // this.reverseGeocode()
     }
 
-    calculateRouteFromAtoB = () => {
+    calculateRouteFromAtoB = (params) => {
         if (this.props.showSmartRoute){
             const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
             this.map.addObject(currentMarker);
         }
-        if (this.props.showMainRoute && this.props.currentMainTripParams.length > 0){
-            const svgMarker = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"' +
-            ' width="19px" height="24px" enable-background="new 0 0 19 24" xml:space="preserve">' +
-                '<path fill="#f57c00" d="M9.5,0C4.2,0,0,4.2,0,9.5C0,14.7,8.7,24,9.5,24S19,14.7,19,9.5C19,4.2,14.7,0,9.5,0z M9.5,13.8' +
-            'c-2.4,0-4.3-1.9-4.3-4.3s1.9-4.3,4.3-4.3s4.3,1.9,4.3,4.3S11.8,13.8,9.5,13.8z"/></svg>';
+        if (this.props.showMainRoute && params){
+            // const svgMarker = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"' +
+            //     ' width="19px" height="24px" enable-background="new 0 0 19 24" xml:space="preserve">' +
+            //     '<path fill="#f57c00" d="M9.5,0C4.2,0,0,4.2,0,9.5C0,14.7,8.7,24,9.5,24S19,14.7,19,9.5C19,4.2,14.7,0,9.5,0z M9.5,13.8' +
+            //     'c-2.4,0-4.3-1.9-4.3-4.3s1.9-4.3,4.3-4.3s4.3,1.9,4.3,4.3S11.8,13.8,9.5,13.8z"/></svg>';
 
-            const params = this.props.currentMainTripParams[this.counter]
+            const svgMarker = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"' +
+	              ' width="19px" height="24px" enable-background="new 0 0 19 24" xml:space="preserve">' +
+                  '<path fill="#FFFFFF" d="M18.5,9c0,5-9,15-9,15s-9-10-9-15s4-9,9-9S18.5,4,18.5,9z"/>' +
+                  '<path fill="#F57C00" d="M17.8,9.3c0,4.6-8.3,13.8-8.3,13.8S1.3,13.8,1.3,9.3S4.9,1,9.5,1S17.8,4.7,17.8,9.3z"/></svg>'
+
+
             for (let key in params){
                 if (params.hasOwnProperty(key) && key.substring(0, 8) === 'waypoint'){
                     let value = params[key].split(',')
                     let currentMarker = null;
-                    if (this.counter === 0) currentMarker = new H.map.Marker({lat: value[0], lng: value[1]});
+                    if (this.currentRender === 'user') currentMarker = new H.map.Marker({lat: value[0], lng: value[1]});
                     else {
                         const icon = new H.map.Icon(svgMarker)
                         const coords = {lat: value[0], lng: value[1]}
@@ -144,7 +149,7 @@ class Map extends Component {
             }
         }
         const router = this.platform.getRoutingService(),
-            routeRequestParams = this.props.currentMainTripParams ? this.props.currentMainTripParams[this.counter] : {
+            routeRequestParams = params ? params : {
                 mode: 'fastest;car',
                 representation: 'display',
                 routeattributes : 'waypoints,summary,shape,legs',
@@ -164,10 +169,6 @@ class Map extends Component {
         const route = result.response.route[0];
         this.addRouteShapeToMap(route);
         this.props.setIntermediatePoints(route.leg[0].maneuver.map(item => item.position))
-        if (this.props.currentMainTripParams.length > this.counter){
-            this.counter++
-            this.calculateRouteFromAtoB()
-        }
     }
 
     onError = (error) => {
@@ -183,7 +184,7 @@ class Map extends Component {
             let parts = point.split(',');
             lineString.pushLatLngAlt(parts[0], parts[1]);
         });
-        let strokeColor = this.counter === 0 ? 'rgba(0, 128, 255, 0.7)' : '#f57c00';
+        let strokeColor = this.currentRender === 'user' ? 'rgba(0, 128, 255, 0.7)' : '#f57c00';
 
         polyline = new H.map.Polyline(lineString, {
             style: {
@@ -198,6 +199,7 @@ class Map extends Component {
         this.map.addObject(polyline);
         // And zoom to its bounding rectangle
         this.map.setViewBounds(polyline.getBounds(), true);
+        this.currentRender = 'user'
     }
 
 
@@ -235,7 +237,7 @@ class Map extends Component {
         // eslint-disable-next-line
         const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
         this.setUpClickListener()
-        if (this.props.targetCoordinates.latitude === 0 || Object.keys(this.props.targetCoordinates).length === 0){
+        if ((this.props.targetCoordinates.latitude === 0 || Object.keys(this.props.targetCoordinates).length === 0) && !this.props.showMainRoute){
             this.props.setTargetCoordinates({
                 latitude: 50.449394,
                 longitude: 30.525433,
@@ -246,17 +248,27 @@ class Map extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.targetCoordinates !== prevProps.targetCoordinates){
+            this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
             if (Object.keys(this.props.coords).length > 0 && Object.keys(this.props.targetCoordinates).length > 0 && this.props.showSmartRoute && !this.state.calculationRoute){
-                this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
                 this.calculateRouteFromAtoB()
                 this.setState({calculationRoute: true})
             }
         }
 
+        if (this.props.userMainTripParams !== prevProps.userMainTripParams && this.props.showMainRoute){
+            this.removeObjectById('route')
+            this.currentRender = 'user'
+            // this.setState({current: this.props.userMainTripParams}, () => this.calculateRouteFromAtoB())
+            this.calculateRouteFromAtoB(this.props.userMainTripParams)
+
+        }
+
         if (this.props.currentMainTripParams !== prevProps.currentMainTripParams && this.props.showMainRoute){
             this.removeObjectById('route')
-            this.counter = 0
-            this.calculateRouteFromAtoB()
+            this.currentRender = 'current'
+            // this.setState({current: this.props.currentMainTripParams}, () => this.calculateRouteFromAtoB())
+            this.calculateRouteFromAtoB(this.props.currentMainTripParams)
+
         }
     }
 
@@ -268,11 +280,10 @@ class Map extends Component {
 
     render() {
         let height = this.props.height ? this.props.height : 350
-
-
-      return (
-            <div style={{width: '100%', margin: '20px 0' }}>
-            <div id="here-map" style={{width: '100%', height, background: 'grey', marginTop: 15}} />
+        let marginTop = this.props.marginTop ? this.props.marginTop : '20px'
+        return (
+            <div style={{width: '100%', marginTop}}>
+                <div id="here-map" style={{width: '100%', height, background: 'grey'}} />
             </div>
         );
     }
@@ -284,6 +295,7 @@ const mapStateToProps = (state) => {
     return {
         coords: state.users.myCoordinates,
         targetCoordinates: state.users.targetCoordinates,
+        userMainTripParams: state.users.userMainTripParams,
         currentMainTripParams: state.users.currentMainTripParams,
     }
 }

@@ -1,4 +1,4 @@
-import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS } from './users'
+import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS } from './users'
 import {callApi} from "../utils/utils";
 
 export const setMainTrips = (id) => dispatch => {
@@ -25,12 +25,12 @@ export const setMainTrips = (id) => dispatch => {
             })
             dispatch({type: SET_MAIN_TRIPS_PARAMS, payload: parameterArray})
             dispatch({type: SET_MAIN_TRIPS_POINT_NAMES, payload: allRoutesArray})
-            dispatch({type: SET_CURRENT_TRIP_PARAMS, payload: [parameterArray[0]]})
+            dispatch({type: SET_USER_TRIP_PARAMS, payload: parameterArray[0]})
         })
         .catch(console.log)
 }
 // * *********************
 
-export const setCurrentMainTripParams = (array) => dispatch => {
-    dispatch({type: SET_CURRENT_TRIP_PARAMS, payload: array})
+export const setCurrentMainTripParams = (params) => dispatch => {
+    dispatch({type: SET_CURRENT_TRIP_PARAMS, payload: params})
 }
