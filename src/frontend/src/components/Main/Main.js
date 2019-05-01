@@ -15,7 +15,7 @@ const styles = theme => ({
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 15,
     },
     root: {
         width: '55%',
@@ -55,14 +55,14 @@ class Main extends Component{
 
     render(){
         const { classes } = this.props;
-        const { mainTripParams, mainTripPointNames } = this.props.users
+        const { mainTripParams, mainTripPointNames } = this.props.trips
         const routesArray = mainTripPointNames.slice()
         routesArray.splice(0, 1)
         const routesList = routesArray.map((item, index) =>
             (<div className={classes.rectangle} key={index}>
                         <ExpansionPanel className={classes.root}>
                             <ExpansionPanelSummary
-                                onClick={() => this.props.setCurrentMainTripParams([mainTripParams[0], mainTripParams[index + 1]])}
+                                onClick={() => this.props.setCurrentMainTripParams(mainTripParams[index + 1])}
                                 expandIcon={<ExpandMoreIcon className={classes.expandIcon}/>}
                             >
                                 <Typography className={classes.heading}>{item[0]} - {item[item.length - 1]}</Typography>
@@ -93,8 +93,9 @@ class Main extends Component{
                 <Map
                 height={250}
                 showMainRoute={true}
+                marginTop={'50px'}
                 />
-            <div style={{width: '100%', margin: '20px 0 20px 0'}}>
+            <div style={{width: '100%', margin: '20px 0'}}>
                 {routesList}
             </div>
             </>
@@ -104,7 +105,7 @@ class Main extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        users: state.users
+        trips: state.trips
     }
 }
 

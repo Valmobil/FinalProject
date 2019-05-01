@@ -1,5 +1,37 @@
-import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS } from './users'
+import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS,
+    SET_TRIP, SET_MY_COORDS, SET_TARGET_COORDS, SET_SEARCHED_LOCATION, SET_INTERMEDIATE_POINTS } from './users'
 import {callApi} from "../utils/utils";
+
+
+export const setTrip = (trip) => dispatch => {
+    callApi('put', '/api/trips', trip)
+        .then(res => console.log('setTrip: ', res))
+        .catch(err => console.log(err))
+    dispatch({type: SET_TRIP, trip})
+
+}
+//* **********************
+
+export const setMyCoordinates = coords => dispatch => {
+    dispatch({type: SET_MY_COORDS, payload: coords})
+}
+//* **********************
+
+export const setSearchedLocation = (location) => dispatch => {
+    dispatch({type: SET_SEARCHED_LOCATION, payload: location})
+}
+//* **********************
+
+export const setTargetCoordinates = (coordinates) => dispatch => {
+    dispatch({type: SET_TARGET_COORDS, payload: coordinates})
+}
+//* **********************
+
+
+export const setIntermediatePoints = (points) => dispatch => {
+    dispatch({type: SET_INTERMEDIATE_POINTS, payload: points})
+}
+//* **********************
 
 export const setMainTrips = (id) => dispatch => {
     callApi('post', 'api/trips/others', {tripId: id})
@@ -25,12 +57,12 @@ export const setMainTrips = (id) => dispatch => {
             })
             dispatch({type: SET_MAIN_TRIPS_PARAMS, payload: parameterArray})
             dispatch({type: SET_MAIN_TRIPS_POINT_NAMES, payload: allRoutesArray})
-            dispatch({type: SET_CURRENT_TRIP_PARAMS, payload: [parameterArray[0]]})
+            dispatch({type: SET_USER_TRIP_PARAMS, payload: parameterArray[0]})
         })
         .catch(console.log)
 }
 // * *********************
 
-export const setCurrentMainTripParams = (array) => dispatch => {
-    dispatch({type: SET_CURRENT_TRIP_PARAMS, payload: array})
+export const setCurrentMainTripParams = (params) => dispatch => {
+    dispatch({type: SET_CURRENT_TRIP_PARAMS, payload: params})
 }

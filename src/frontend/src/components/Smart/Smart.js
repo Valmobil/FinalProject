@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { logOut, setUserPoints, setTrip, setMyCoordinates, setSearchedLocation, setTargetCoordinates, showLiveSearch } from '../../actions/userCreators'
+import { logOut, setUserPoints,  showLiveSearch } from '../../actions/userCreators'
+import { setTrip, setMyCoordinates, setSearchedLocation, setTargetCoordinates,} from '../../actions/tripCreators'
 import SmartRoute from './SmartRoute/SmartRoute'
 import { withStyles } from '@material-ui/core/styles'
 import Radio from '@material-ui/core/Radio'
@@ -154,14 +155,14 @@ class Smart extends Component {
 
         this.getIntermediate()
             .then(res => {
-                let points = this.props.users.intermediatePoints
+                let points = this.props.trips.intermediatePoints
                 points.push(tripPoint)
                 this.setState({trip: [...this.state.trip, ...points]}, () => console.log('Trip = ', this.state.trip))
             })
 
         this.getIntermediate()
             .then(res => {
-                let points = this.props.users.intermediatePoints
+                let points = this.props.trips.intermediatePoints
                 points.push(tripPoint)
                 this.setState({trip: [...this.state.trip, ...points]})
             })
@@ -169,7 +170,7 @@ class Smart extends Component {
 
     getIntermediate = () => new Promise((resolve) => {
         let check = () => {
-            if (this.props.users.intermediatePoints.length > 0){
+            if (this.props.trips.intermediatePoints.length > 0){
                 resolve()
             } else {
                 setTimeout(check, 50)
@@ -188,8 +189,8 @@ class Smart extends Component {
 
             const tripPoint = {
                 tripPointName: 'manual',
-                tripPointLatitude: this.props.users.myCoordinates.latitude,
-                tripPointLongitude: this.props.users.myCoordinates.longitude,
+                tripPointLatitude: this.props.trips.myCoordinates.latitude,
+                tripPointLongitude: this.props.trips.myCoordinates.longitude,
                 tripPointSequence: 0,
             }
             this.setState({trip: [tripPoint]}, () => this.setRoute(userPoint))
@@ -244,8 +245,8 @@ class Smart extends Component {
                 return {...item,
                     userPointName: this.state.name,
                     userPointAddress: pointAddress,
-                    userPointLatitude: this.props.users.targetCoordinates.latitude,
-                    userPointLongitude: this.props.users.targetCoordinates.longitude,
+                    userPointLatitude: this.props.trips.targetCoordinates.latitude,
+                    userPointLongitude: this.props.trips.targetCoordinates.longitude,
                     pointNameEn: this.state.name,
                 }
             } else {
@@ -320,9 +321,9 @@ class Smart extends Component {
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
-// console.log('targetCoordinates = ', this.props.users.targetCoordinates)
-// console.log('myCoordinates = ', this.props.users.myCoordinates)
-// console.log('Render: this.props.users.intermediatePoints = ', this.props.users.intermediatePoints)
+// console.log('targetCoordinates = ', this.props.trips.targetCoordinates)
+// console.log('myCoordinates = ', this.props.trips.myCoordinates)
+// console.log('Render: this.props.trips.intermediatePoints = ', this.props.users.intermediatePoints)
 
 
 
@@ -545,7 +546,8 @@ class Smart extends Component {
 }
 const mapStateToProps = (state) => {
     return {
-        users: state.users
+        users: state.users,
+        trips: state.trips
     }
 }
 const mapDispatchToProps = (dispatch) => {
