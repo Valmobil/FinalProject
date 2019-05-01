@@ -4,6 +4,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ua.com.danit.dto.UserResponce;
+import ua.com.danit.entity.User;
 import ua.com.danit.service.AmazonS3Service;
 
 @Component
@@ -19,22 +21,23 @@ public class ModelMapperConfig {
   }
 
   public void initializeModelMapper() {
-//    addBusinessCategoryMapping();
+//    addUserMapping();
 //    addEventCategoryMapping();
 //    addBusinessPhotoMapping();
 //    addPlacePhotoMapping();
 //    addEventPhotoMapping();
   }
 
-//  private void addBusinessCategoryMapping() {
-//    modelMapper.addMappings(new PropertyMap<BusinessCategory, BusinessCategoryResponse>() {
+//  private void addUserMapping() {
+//    modelMapper.addMappings(new PropertyMap<User, UserResponce>() {
 //      @Override
-//      protected void configure() { }
+//      protected void configure() {
+//      }
 //    });
-//    modelMapper.getTypeMap(BusinessCategory.class, BusinessCategoryResponse.class)
+//    modelMapper.getTypeMap(User.class, UserResponce.class)
 //        .setPostConverter(context -> {
-//          BusinessCategoryResponse destination = context.getDestination();
-//          BusinessCategory source = context.getSource();
+//          UserResponce destination = context.getDestination();
+//          User source = context.getSource();
 //          String imageKey = source.getImageKey();
 //          String iconKey = source.getIconKey();
 //          if (imageKey != null) {
@@ -46,7 +49,7 @@ public class ModelMapperConfig {
 //          return destination;
 //        });
 //  }
-//
+
 //  private void addEventCategoryMapping() {
 //    modelMapper.addMappings(new PropertyMap<EventCategory, EventCategoryResponse>() {
 //      @Override

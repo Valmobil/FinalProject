@@ -87,5 +87,9 @@ public class UserTokensService {
       userToken.setUserTokenRefreshTo(date);
     }
   }
+
+  public void deleteAllByUser(User user) {
+    userTokensRepository.deleteAllByUser(user);
+  }
 }
 

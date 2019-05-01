@@ -20,6 +20,6 @@ public class UserResponce {
   private Integer userIsConfirmedPhone;
   private String userTokenRefresh;
   private String userTokenAccess;
-//  private List<Car> cars;
-//  private List<UserPoint> userPoints;
+  private List<Car> cars;
+  private List<UserPoint> userPoints;
 }

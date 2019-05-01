@@ -13,6 +13,10 @@ public interface UserTokensRepository extends JpaRepository<UserToken, Long> {
 
   List<UserToken> findByUserTokenAccess(String accessToken);
 
-  UserToken findTop1FirstByUser (Long userId);
+  List<UserToken> findByUser (User user);
 
+  default void deleteAllByUser(User user) {
+    List<UserToken> userTokens = findByUser(user);
+    deleteInBatch(userTokens);
+  }
 }

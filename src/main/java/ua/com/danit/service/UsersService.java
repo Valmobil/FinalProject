@@ -2,19 +2,24 @@ package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.com.danit.entity.Car;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
 import ua.com.danit.entity.UserToken;
 import ua.com.danit.dto.UserInfo;
 import ua.com.danit.dto.UserLogin;
+import ua.com.danit.error.KnownException;
 import ua.com.danit.repository.CarsRepository;
 import ua.com.danit.repository.PointsRepository;
 import ua.com.danit.repository.UserPointsRepository;
 import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,15 +69,15 @@ public class UsersService {
     return user;
   }
 
-  void addCarsUserPointsTokens(UserInfo userInfo) {
-
-    //Generate new tokens
-    updateUserTokenInUserEntity(userInfo.getUser());
-    //Collect Cars
-    userInfo.setCars(carsRepository.findByUser(userInfo.getUser()));
-    //Collect User Points
-    userInfo.setUserPoints(collectUserPointsAndFillInEmptyOnes(userInfo.getUser()));
-  }
+  //  void addCarsUserPointsTokens(UserInfo userInfo) {
+  //
+  //    //Generate new tokens
+  //    updateUserTokenInUserEntity(userInfo.getUser());
+  //    //Collect Cars
+  //    userInfo.setCars(carsRepository.findByUser(userInfo.getUser()));
+  //    //Collect User Points
+  //    userInfo.setUserPoints(collectUserPointsAndFillInEmptyOnes(userInfo.getUser()));
+  //  }
 
   List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
     if (user == null) {
@@ -110,20 +115,48 @@ public class UsersService {
       user = new User();
       loginService.saveLoginToMailOrPhone(user, userLogin);
       user.setUserMail(userLogin.getUserLogin());
-      user = usersRepository.save(user);
     }
-        UserToken userToken = userTokensRepository.findTop1FirstByUser(user.getUserId());
-    userToken.setUserTokenExternal(userLogin.getUserToken());
+    if (user.getUserTokens().size() > 1) {
+      userTokensService.deleteAllByUser(user);
+      throw new KnownException("Error! Internal authorization issue - duplicated tokens. Please try to signIn again!");
+    }
+    //Check if Old External token equal to new External Token
+    if (user.getUserTokens().size() == 1) {
+      if (user.getUserTokens().get(0).getUserTokenExternal() == null) {
+        user.getUserTokens().get(0).setUserTokenExternal(userLogin.getUserToken());
+      } else {
+        if (!user.getUserTokens().get(0).getUserTokenExternal().equals(userLogin.getUserToken())) {
+          throw new KnownException("Error! Previously we used another external authorization provider! Please use login and password for login");
+        }
+      }
+    } else {
+      //If we have no token
+      UserToken userTokenNew = null;
+      userTokenNew = new UserToken();
+      userTokenNew.setUser(user);
+      userTokenNew.setUserTokenExternal(userLogin.getUserToken());
+      userTokensRepository.save(userTokenNew);
+
+      if (userTokenNew.getUserTokenExternal() == null) {
+        userTokenNew.setUserTokenExternal(userLogin.getUserToken());
+      }
+    }
     updateUserTokenInUserEntity(user);
-    userTokensRepository.save(userToken);
-    return usersRepository.getOne(user.getUserId());
+    user = usersRepository.save(user);
+    return user;
   }
 
   User updateUserTokenInUserEntity(User user) {
+    if (user.getUserTokens() == null) {
+      user.setUserTokens(new LinkedList<>());
+    }
     UserToken userToken = userTokensService.generateInitialTokinSet(user);
-    user = usersRepository.save(user);
-    userTokensRepository.save(userToken);
-    return usersRepository.getOne(user.getUserId());
+    UserToken userTokenOld = user.getUserTokens().get(0);
+    userTokenOld.setUserTokenAccess(userToken.getUserTokenAccess());
+    userTokenOld.setUserTokenAccessTo(userToken.getUserTokenAccessTo());
+    userTokenOld.setUserTokenRefresh(userToken.getUserTokenRefresh());
+    userTokenOld.setUserTokenRefreshTo(userToken.getUserTokenRefreshTo());
+    return user;
   }
 
   User checkLogin(UserLogin userLogin) {
@@ -158,7 +191,6 @@ public class UsersService {
   }
 
 
-
   static boolean checkEmailFormat(String userMail) {
     Pattern validEmailAddressRegex =
         Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
@@ -188,19 +220,16 @@ public class UsersService {
   }
 
 
-  public UserInfo saveUserProfile(User user, User userFromToken) {
+  public User saveUserProfile(User user, User userFromToken) {
     //Update some fields
     if (userFromToken == null) {
-      return null;
+      throw new KnownException("Error: Access token not found!");
     }
     user.setUserId(userFromToken.getUserId());
-//    for (Car car : user.getCar()) {
-//      car.setUser(user);
-//    }
-    usersRepository.save(user);
-    UserInfo userInfo = new UserInfo();
-    userInfo.setUser(usersRepository.getOne(user.getUserId()));
-    addCarsUserPointsTokens(userInfo);
-    return userInfo;
+    for (Car car : user.getCars()) {
+      car.setUser(user);
+    }
+    user = usersRepository.save(user);
+    return user;
   }
 }

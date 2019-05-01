@@ -19,39 +19,37 @@ import ua.com.danit.service.UsersService;
 @RestController
 @RequestMapping("api/logins")
 public class LoginsController {
-  private UsersService usersService;
   private LoginsService loginsService;
   private MailSenderService mailSenderService;
 
   @Autowired
-  public LoginsController(UsersService usersService, LoginsService loginsService, MailSenderService mailSenderService) {
-    this.usersService = usersService;
+  public LoginsController(LoginsService loginsService, MailSenderService mailSenderService) {
     this.loginsService = loginsService;
     this.mailSenderService = mailSenderService;
   }
 
   @PostMapping("signin")
-  public ResponseEntity<UserInfo> postLoginSignIn(@RequestBody UserLogin userLogin) {
+  public ResponseEntity<UserResponce> postLoginSignIn(@RequestBody UserLogin userLogin) {
     return new ResponseEntity<>(loginsService.checkLoginSignInCredentials(userLogin), HttpStatus.OK);
   }
 
   @PostMapping("signup")
-  public UserResponce postLoginSignUp(@RequestBody UserLogin userLogin) {
-    return loginsService.checkRegistrationCredentials(userLogin);
+  public ResponseEntity<UserResponce> postLoginSignUp(@RequestBody UserLogin userLogin) {
+    return new ResponseEntity<>(loginsService.checkRegistrationCredentials(userLogin),HttpStatus.OK);
   }
 
   @PostMapping("pswdchange")
-  public String postLoginPasswordChange(@RequestBody UserLogin userLogin) {
-    return loginsService.checkPasswordChange(userLogin);
+  public ResponseEntity<String> postLoginPasswordChange(@RequestBody UserLogin userLogin) {
+    return new ResponseEntity<>(loginsService.checkPasswordChange(userLogin),HttpStatus.OK);
   }
 
   @PostMapping("pswdrestore")
-  public String postLoginPasswordRestore(@RequestBody UserLogin userLogin) {
-    return loginsService.checkPasswordRestore(userLogin);
+  public ResponseEntity<String> postLoginPasswordRestore(@RequestBody UserLogin userLogin) {
+    return new ResponseEntity<>(loginsService.checkPasswordRestore(userLogin),HttpStatus.OK);
   }
 
   @PostMapping("email")
-  public String checkUserByEmail(@RequestBody UserLogin userLogin, @RequestHeader(value = "Host") String host) {
-    return mailSenderService.checkUserByEmail(userLogin, host);
+  public ResponseEntity<String> checkUserByEmail(@RequestBody UserLogin userLogin, @RequestHeader(value = "Host") String host) {
+    return new ResponseEntity<>(mailSenderService.checkUserByEmail(userLogin, host),HttpStatus.OK);
   }
 }

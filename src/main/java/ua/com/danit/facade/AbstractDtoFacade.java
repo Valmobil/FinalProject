@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ua.com.danit.service.CrudService;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -16,44 +15,9 @@ import java.util.stream.Collectors;
 @Transactional
 @SuppressWarnings("unchecked")
 public abstract class AbstractDtoFacade<E, I, O> {
-  protected CrudService<E> crudService;
-  protected ModelMapper modelMapper;
 
   @Autowired
-  public AbstractDtoFacade(CrudService<E> crudService,
-                           ModelMapper modelMapper) {
-    this.crudService = crudService;
-    this.modelMapper = modelMapper;
-  }
-
-  protected AbstractDtoFacade() {
-  }
-
-  public O getById(Long id) {
-    return mapEntityToResponseDto(crudService.getById(id));
-  }
-
-  public List<O> getAll() {
-    List<E> entities = crudService.getAll();
-    return mapEntityListToResponseDtoList(entities);
-  }
-
-  public O create(I requestDto) {
-    E entity = mapRequestDtoToEntity(requestDto);
-    E createdEntity = crudService.create(entity);
-    return mapEntityToResponseDto(createdEntity);
-  }
-
-  public O update(Long id, I requestDto) {
-    E entity = mapRequestDtoToEntity(requestDto);
-    E updatedEntity = crudService.update(id, entity);
-    return mapEntityToResponseDto(updatedEntity);
-  }
-
-  public O delete(Long id) {
-    E entity = crudService.delete(id);
-    return mapEntityToResponseDto(entity);
-  }
+  protected ModelMapper modelMapper;
 
   public O mapEntityToResponseDto(E entity) {
     if (entity != null) {

@@ -11,6 +11,9 @@ import ua.com.danit.facade.UserFacade;
 import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
+import java.lang.management.LockInfo;
+import java.util.List;
+
 import static ua.com.danit.service.UsersService.checkEmailFormat;
 import static ua.com.danit.service.UsersService.normalizeMobilePhone;
 
@@ -40,17 +43,14 @@ public class LoginsService {
     UserInfo userInfo = new UserInfo();
     if (userLogin.getUserToken() == null) {
       //L=0 T=0 P=0 NP=0
-      return "Error! Please fill restore token!";
+      throw new KnownException("Error! Please fill restore token!");
     } else {
       //L=0 T=1 P=0 NP=0
       //find user by Session Token in DB
       userInfo.setUser(userTokensService.findUserByAccessToken(userLogin.getUserToken()));
       if (userInfo.getUser() == null) {
-        return "Error: Incorrect or expired Token!";
+        throw new KnownException("Error: Incorrect or expired Token!");
       }
-      //Generate new token
-      //      usersService.generateNewSessionToken(userInfo.getUser());
-      //      usersRepository.save(userInfo.getUser());
     }
     return "Ok. Password was changed! Please login using new password!";
   }
@@ -125,8 +125,7 @@ public class LoginsService {
         usersService.checkLoginAndUpdateExternalTokenInDb(userLogin);
       }
     }
-    UserResponce userResponce = userFacade.mapEntityToResponce(user);
-    return userResponce;
+    return userFacade.mapEntityToResponce(user);
   }
 
   void saveLoginToMailOrPhone(User user, UserLogin userLogin) {
@@ -143,42 +142,40 @@ public class LoginsService {
     }
   }
 
-  public UserInfo checkLoginSignInCredentials(UserLogin userLogin) {
-//    convertUserLoginBlankToNull(userLogin);
-//    UserInfo userInfo = new UserInfo();
-//    if (userLogin.getUserLogin() == null) {
-//      if (userLogin.getUserToken() == null) {
-//        //L=0 T=0 P=0 NP=0
-//        throw new KnownException("Error! Have no user with such login!");
-//      } else {
-//        //L=0 T=1 P=0 NP=0
-//        //find user by Session Token in DB
-//        userInfo.setUser(userTokensService.findUserByAccessToken(userLogin.getUserToken()));
-//        if (userInfo.getUser() == null) {
-//          throw new KnownException("Error: have no valid session token!");
-//        }
-//      }
-//    } else {
-//      if (userLogin.getUserToken() == null) {
-//        if (userLogin.getUserPassword() == null) {
-//          //L=1 T=0 P=0 NP=0
-//          throw new KnownException("Error: incorrect login or password!");
-//        } else {
-//          //L=1 T=0 P=1 NP=0
-//          userInfo.setUser(usersService.checkIfLoginAndPasswordIsCorrect(userLogin));
-//          if (userInfo.getUser() == null) {
-//            throw new KnownException("Error: incorrect login or password!");
-//          }
-//        }
-//      } else {
-//        //L=1 T=1 P=0 NP=0
-//        //Update Token if token and login are present
-//        usersService.checkLoginAndUpdateExternalTokenInDb(userInfo, userLogin);
-//      }
-//    }
-//    usersService.addCarsUserPointsTokens(userInfo);
-//    return userInfo;
-    return new UserInfo();
+  public UserResponce checkLoginSignInCredentials(UserLogin userLogin) {
+    convertUserLoginBlankToNull(userLogin);
+    User user = new User();
+    if (userLogin.getUserLogin() == null) {
+      if (userLogin.getUserToken() == null) {
+        //L=0 T=0 P=0 NP=0
+        throw new KnownException("Error! Have no user with such login!");
+      } else {
+        //L=0 T=1 P=0 NP=0
+        //find user by Session Token in DB
+        user = userTokensService.findUserByAccessToken(userLogin.getUserToken());
+        if (user == null) {
+          throw new KnownException("Error: have no valid session token!");
+        }
+      }
+    } else {
+      if (userLogin.getUserToken() == null) {
+        if (userLogin.getUserPassword() == null) {
+          //L=1 T=0 P=0 NP=0
+          throw new KnownException("Error: incorrect login or password!");
+        } else {
+          //L=1 T=0 P=1 NP=0
+          user = usersService.checkIfLoginAndPasswordIsCorrect(userLogin);
+          if (user == null) {
+            throw new KnownException("Error: incorrect login or password!");
+          }
+        }
+      } else {
+        //L=1 T=1 P=0 NP=0
+        //Update Token if token and login are present
+        usersService.checkLoginAndUpdateExternalTokenInDb(userLogin);
+      }
+    }
+    return userFacade.mapEntityToResponce(user);
   }
 
   void convertUserLoginBlankToNull(UserLogin userLogin) {
@@ -203,6 +200,4 @@ public class LoginsService {
       }
     }
   }
-
-
 }
