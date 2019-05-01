@@ -1,8 +1,7 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE,
-    SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
-    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS,
-    INITIAL_LOAD, SET_USER_PHOTO, SET_PROFILE, ADD_CAR, SET_INTERMEDIATE_POINTS,ADD_TRIP_DATE, ADD_NEW_TRIP, LIVE_SEARCH_SHOW,
-    SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS } from '../actions/users'
+    SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
+    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR,
+    INITIAL_LOAD, SET_USER_PHOTO, SET_PROFILE, ADD_CAR, ADD_TRIP_DATE, ADD_NEW_TRIP, LIVE_SEARCH_SHOW, } from '../actions/users'
 
 
 const initialState = {
@@ -36,18 +35,6 @@ const initialState = {
     tripDateTime:'',
     tripPoint:[],
   },
-  trip: {},
-  address: '',
-  myCoordinates: {},
-  errorMessage: null,
-  searchedLocation: '',
-  targetCoordinates: {},
-  initialLoad: true,
-  intermediatePoints: [],
-  mainTripParams: null,
-  mainTripPointNames: [],
-  userMainTripParams: null,
-  currentMainTripParams: null,
 }
 
 function users (state = initialState, action) {
@@ -78,20 +65,10 @@ function users (state = initialState, action) {
       return {...state, loginRejected: action.payload}
     case SET_USER_NAME:
       return {...state, user: action.payload}
-    case SET_TRIP:
-      return {...state, trip: action.payload}
-    // case SET_ADDRESS:
-    //   return {...state, address: action.payload}
-    case SET_MY_COORDS:
-      return {...state, myCoordinates: action.payload}
     case SET_ERROR_MESSAGE:
       return {...state, errorMessage: action.payload}
     case DELETE_TRIP_FROM_HISTORY:
         return {...state, tripsHistory: action.payload}
-    case SET_SEARCHED_LOCATION:
-        return {...state, searchedLocation: action.payload}
-    case SET_TARGET_COORDS:
-        return {...state, targetCoordinates: action.payload}
     case GET_LOCATION_REQUEST:
         return{...state, allPointRequest: true}
     case GET_LOCATION_SUCCESS:
@@ -100,8 +77,6 @@ function users (state = initialState, action) {
         return{...state, initialLoad: action.payload}
     case SET_USER_PHOTO:
         return{...state, user: {...state.user, userPhoto: action.payload}}
-    case SET_INTERMEDIATE_POINTS:
-        return{...state, intermediatePoints: action.payload}
     case GET_LOCATION_ERROR:
         return{...state}
     case SET_PROFILE:
@@ -112,14 +87,6 @@ function users (state = initialState, action) {
         return{...state, newTrip: action.payload}
     case LIVE_SEARCH_SHOW:
       return {...state, liveSearchShow: action.payload}
-    case SET_MAIN_TRIPS_PARAMS:
-      return {...state, mainTripParams: action.payload}
-    case SET_MAIN_TRIPS_POINT_NAMES:
-      return {...state, mainTripPointNames: action.payload}
-    case SET_USER_TRIP_PARAMS:
-      return {...state, userMainTripParams: action.payload}
-    case SET_CURRENT_TRIP_PARAMS:
-      return {...state, currentMainTripParams: action.payload}
 
     default:
       return {...state}

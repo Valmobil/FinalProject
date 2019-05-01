@@ -55,7 +55,7 @@ class Main extends Component{
 
     render(){
         const { classes } = this.props;
-        const { mainTripParams, mainTripPointNames } = this.props.users
+        const { mainTripParams, mainTripPointNames } = this.props.trips
         const routesArray = mainTripPointNames.slice()
         routesArray.splice(0, 1)
         const routesList = routesArray.map((item, index) =>
@@ -105,7 +105,7 @@ class Main extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        users: state.users
+        trips: state.trips
     }
 }
 

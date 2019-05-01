@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './Map.css'
-import { setTargetCoordinates, setSearchedLocation, setIntermediatePoints } from "../../actions/userCreators";
+import { setTargetCoordinates, setSearchedLocation, setIntermediatePoints } from "../../actions/tripCreators";
 import { connect } from "react-redux";
 
 
@@ -293,10 +293,10 @@ class Map extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        coords: state.users.myCoordinates,
-        targetCoordinates: state.users.targetCoordinates,
-        userMainTripParams: state.users.userMainTripParams,
-        currentMainTripParams: state.users.currentMainTripParams,
+        coords: state.trips.myCoordinates,
+        targetCoordinates: state.trips.targetCoordinates,
+        userMainTripParams: state.trips.userMainTripParams,
+        currentMainTripParams: state.trips.currentMainTripParams,
     }
 }
 
