@@ -4,7 +4,8 @@ import DatePicker from './DatePicker/DatePicker'
 // import moment from 'moment';
 import LiveSearch from '../LiveSearch/LiveSearch';
 import { withStyles } from '@material-ui/core/styles'
-import { addNewTrip, setTargetCoordinates, showLiveSearch } from '../../actions/userCreators'
+import { addNewTrip, showLiveSearch } from '../../actions/userCreators'
+import { setTargetCoordinates } from '../../actions/tripCreators'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 // import TextField from '@material-ui/core/TextField'

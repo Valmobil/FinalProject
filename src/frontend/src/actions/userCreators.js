@@ -1,7 +1,7 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
-    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT,
-    INITIAL_LOAD, SET_PROFILE, SET_USER_PHOTO, ADD_CAR, SET_INTERMEDIATE_POINTS, ADD_TRIP_DATE, LIVE_SEARCH_SHOW } from './users'
+    LOGIN_REJECTED, SET_USER_NAME, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
+    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, USER_LOGOUT,
+    INITIAL_LOAD, SET_PROFILE, SET_USER_PHOTO, ADD_CAR, ADD_TRIP_DATE, LIVE_SEARCH_SHOW } from './users'
 
 import { callApi, setLocalStorage, removeTokens } from '../utils/utils'
 
@@ -174,19 +174,6 @@ export const updateCars = (newCarList) => dispatch => {
 
 //* **********************
 
-export const setTrip = (trip) => dispatch => {
-    callApi('put', '/api/trips', trip)
-        .then(res => console.log('setTrip: ', res))
-        .catch(err => console.log(err))
-    dispatch({type: SET_TRIP, trip})
-
-}
-//* **********************
-
-export const setMyCoordinates = coords => dispatch => {
-    dispatch({type: SET_MY_COORDS, payload: coords})
-}
-//* **********************
 
 export const setErrorMessage = (message) => dispatch => {
     dispatch({type: SET_ERROR_MESSAGE, payload: message})
@@ -239,17 +226,6 @@ export const setUserPhoto = (image) => dispatch => {
        .catch(console.log)
 }
 //* **********************
-
-export const setSearchedLocation = (location) => dispatch => {
-    dispatch({type: SET_SEARCHED_LOCATION, payload: location})
-}
-//* **********************
-
-export const setTargetCoordinates = (coordinates) => dispatch => {
-    dispatch({type: SET_TARGET_COORDS, payload: coordinates})
-}
-//* **********************
-
 export const getLocationFromDB = dispatch => {
     dispatch({type: GET_LOCATION_REQUEST, payload: true})
     callApi('get', 'api/points/test')
@@ -284,10 +260,6 @@ export const updateProfile = (userInfo) => dispatch =>{
         })
 }
 //* **********************
-
-export const setIntermediatePoints = (points) => dispatch => {
-    dispatch({type: SET_INTERMEDIATE_POINTS, payload: points})
-}
 
 
 export const addTripDate = newDate => dispatch =>{

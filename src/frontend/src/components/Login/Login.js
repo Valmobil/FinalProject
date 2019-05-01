@@ -90,7 +90,7 @@ class Login extends Component {
 
     componentDidUpdate (prevProps, prevState, snapshot) {
       if (this.props.users.isAuthenticated !== prevProps.users.isAuthenticated) {
-        const path = this.state.signType === 'log-in' ? `/main` : `/profile`
+        const path = this.state.signType === 'log-in' ? `/smart` : `/profile`
         this.props.history.push({pathname: path})
       }
     }
