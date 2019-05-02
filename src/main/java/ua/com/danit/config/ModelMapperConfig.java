@@ -1,11 +1,8 @@
 package ua.com.danit.config;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.com.danit.dto.UserResponce;
-import ua.com.danit.entity.User;
 import ua.com.danit.service.AmazonS3Service;
 
 @Component
@@ -29,14 +26,14 @@ public class ModelMapperConfig {
   }
 
 //  private void addUserMapping() {
-//    modelMapper.addMappings(new PropertyMap<User, UserResponce>() {
+//    modelMapper.addMappings(new PropertyMap<User, UserResponse>() {
 //      @Override
 //      protected void configure() {
 //      }
 //    });
-//    modelMapper.getTypeMap(User.class, UserResponce.class)
+//    modelMapper.getTypeMap(User.class, UserResponse.class)
 //        .setPostConverter(context -> {
-//          UserResponce destination = context.getDestination();
+//          UserResponse destination = context.getDestination();
 //          User source = context.getSource();
 //          String imageKey = source.getImageKey();
 //          String iconKey = source.getIconKey();

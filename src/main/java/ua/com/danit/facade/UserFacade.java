@@ -2,19 +2,13 @@ package ua.com.danit.facade;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.com.danit.dto.UserPointResponce;
 import ua.com.danit.dto.UserRequest;
-import ua.com.danit.dto.UserResponce;
+import ua.com.danit.dto.UserResponse;
 import ua.com.danit.entity.User;
-import ua.com.danit.entity.UserPoint;
-import ua.com.danit.service.UserPointsService;
 import ua.com.danit.service.UsersService;
 
-import java.util.LinkedList;
-import java.util.List;
-
 @Component
-public class UserFacade extends AbstractDtoFacade<User, UserRequest, UserResponce> {
+public class UserFacade extends AbstractDtoFacade<User, UserRequest, UserResponse> {
   private UsersService usersService;
 
   @Autowired
@@ -22,13 +16,10 @@ public class UserFacade extends AbstractDtoFacade<User, UserRequest, UserResponc
     this.usersService = usersService;
   }
 
-  public UserResponce mapEntityToResponce(User user) {
-    UserResponce userResponce = modelMapper.map(user, UserResponce.class);
-    return userResponce;
+  public UserResponse mapEntityToResponce(User user) {
+    UserResponse userResponse = modelMapper.map(user, UserResponse.class);
+    return userResponse;
   }
 
-  public String saveUserPoints(List<UserPointResponce> userPointResponces, User user) {
-    return null;
-  }
 
 }

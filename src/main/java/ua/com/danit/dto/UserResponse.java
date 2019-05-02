@@ -9,7 +9,7 @@ import ua.com.danit.entity.UserPoint;
 import java.util.List;
 
 @Data
-public class UserResponce {
+public class UserResponse {
   private String userName;
   private String userPhone;
   private String userMail;

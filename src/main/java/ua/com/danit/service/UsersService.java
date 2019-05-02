@@ -10,6 +10,7 @@ import ua.com.danit.entity.UserToken;
 import ua.com.danit.dto.UserInfo;
 import ua.com.danit.dto.UserLogin;
 import ua.com.danit.error.KnownException;
+import ua.com.danit.facade.UserTokenFacade;
 import ua.com.danit.repository.CarsRepository;
 import ua.com.danit.repository.PointsRepository;
 import ua.com.danit.repository.UserPointsRepository;
@@ -28,24 +29,24 @@ import java.util.regex.Pattern;
 public class UsersService {
   private UsersRepository usersRepository;
   private UserPointsRepository userPointsRepository;
-  private CarsRepository carsRepository;
   private PointsRepository pointsRepository;
   private UserTokensService userTokensService;
   private UserTokensRepository userTokensRepository;
+  private UserTokenFacade userTokenFacade;
 
   @Autowired
   public UsersService(UsersRepository usersRepository,
                       UserPointsRepository userPointRepository,
-                      CarsRepository carsRepository,
                       PointsRepository pointsRepository,
                       UserTokensService userTokensService,
+                      UserTokenFacade userTokenFacade,
                       UserTokensRepository userTokensRepository) {
     this.usersRepository = usersRepository;
     this.userPointsRepository = userPointRepository;
-    this.carsRepository = carsRepository;
     this.pointsRepository = pointsRepository;
     this.userTokensService = userTokensService;
     this.userTokensRepository = userTokensRepository;
+    this.userTokenFacade = userTokenFacade;
   }
 
   @Autowired
@@ -152,6 +153,7 @@ public class UsersService {
     }
     UserToken userToken = userTokensService.generateInitialTokinSet(user);
     UserToken userTokenOld = user.getUserTokens().get(0);
+    userTokenOld = userTokenFacade.mapRequestDtoToEntity(userToken);
     userTokenOld.setUserTokenAccess(userToken.getUserTokenAccess());
     userTokenOld.setUserTokenAccessTo(userToken.getUserTokenAccessTo());
     userTokenOld.setUserTokenRefresh(userToken.getUserTokenRefresh());

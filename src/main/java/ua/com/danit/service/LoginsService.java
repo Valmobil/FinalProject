@@ -2,17 +2,14 @@ package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.com.danit.dto.UserResponce;
+import ua.com.danit.dto.UserResponse;
 import ua.com.danit.entity.User;
 import ua.com.danit.dto.UserInfo;
 import ua.com.danit.dto.UserLogin;
 import ua.com.danit.error.KnownException;
 import ua.com.danit.facade.UserFacade;
-import ua.com.danit.repository.UserTokensRepository;
+import ua.com.danit.facade.UserTokenFacade;
 import ua.com.danit.repository.UsersRepository;
-
-import java.lang.management.LockInfo;
-import java.util.List;
 
 import static ua.com.danit.service.UsersService.checkEmailFormat;
 import static ua.com.danit.service.UsersService.normalizeMobilePhone;
@@ -22,19 +19,19 @@ public class LoginsService {
   private UsersRepository usersRepository;
   private UsersService usersService;
   private UserTokensService userTokensService;
-  private UserTokensRepository userTokensRepository;
   private UserFacade userFacade;
+  private UserTokenFacade userTokenFacade;
 
   @Autowired
   public LoginsService(UsersRepository usersRepository,
                        UsersService usersService,
                        UserTokensService userTokensService,
-                       UserTokensRepository userTokensRepository,
+                       UserTokenFacade userTokenFacade,
                        UserFacade userFacade) {
     this.usersRepository = usersRepository;
     this.usersService = usersService;
     this.userTokensService = userTokensService;
-    this.userTokensRepository = userTokensRepository;
+    this.userTokenFacade = userTokenFacade;
     this.userFacade = userFacade;
   }
 
@@ -79,7 +76,7 @@ public class LoginsService {
     }
   }
 
-  public UserResponce checkRegistrationCredentials(UserLogin userLogin) {
+  public UserResponse checkRegistrationCredentials(UserLogin userLogin) {
     convertUserLoginBlankToNull(userLogin);
 
     User user = new User();
@@ -142,7 +139,7 @@ public class LoginsService {
     }
   }
 
-  public UserResponce checkLoginSignInCredentials(UserLogin userLogin) {
+  public UserResponse checkLoginSignInCredentials(UserLogin userLogin) {
     convertUserLoginBlankToNull(userLogin);
     User user = new User();
     if (userLogin.getUserLogin() == null) {

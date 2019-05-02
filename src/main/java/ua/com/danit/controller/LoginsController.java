@@ -2,19 +2,16 @@ package ua.com.danit.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.com.danit.dto.UserInfo;
 import ua.com.danit.dto.UserLogin;
-import ua.com.danit.dto.UserResponce;
+import ua.com.danit.dto.UserResponse;
 import ua.com.danit.service.LoginsService;
 import ua.com.danit.service.MailSenderService;
-import ua.com.danit.service.UsersService;
 
 @RestController
 @RequestMapping("api/logins")
@@ -29,12 +26,12 @@ public class LoginsController {
   }
 
   @PostMapping("signin")
-  public ResponseEntity<UserResponce> postLoginSignIn(@RequestBody UserLogin userLogin) {
+  public ResponseEntity<UserResponse> postLoginSignIn(@RequestBody UserLogin userLogin) {
     return new ResponseEntity<>(loginsService.checkLoginSignInCredentials(userLogin), HttpStatus.OK);
   }
 
   @PostMapping("signup")
-  public ResponseEntity<UserResponce> postLoginSignUp(@RequestBody UserLogin userLogin) {
+  public ResponseEntity<UserResponse> postLoginSignUp(@RequestBody UserLogin userLogin) {
     return new ResponseEntity<>(loginsService.checkRegistrationCredentials(userLogin),HttpStatus.OK);
   }
 
