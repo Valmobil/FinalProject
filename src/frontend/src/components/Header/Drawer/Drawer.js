@@ -12,6 +12,7 @@ const Drawer = (props) => {
     <div className={classArray}>
       <div style={{display: 'flex', flexDirection: 'column'}}>
         <Link to={'/main'} onClick={() => topMenuToggle(true)}>Main</Link>
+        <Link to={'/smart'} onClick={() => topMenuToggle(true)}>Smart</Link>
         <Link to={'/profile'} onClick={() => topMenuToggle(true)}>Profile</Link>
         <Link to={'/mytrips'} onClick={() => topMenuToggle(true)}>My Trips</Link>
         <Link to={'/newtrip'} onClick={() => topMenuToggle(true)}>New Trip</Link>

@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {setUserPoints, setTrip,  setCar, updateCars} from '../../actions/userCreators'
+import {setUserPoints,  setCar, updateCars} from '../../actions/userCreators'
+import { setTrip } from '../../actions/tripCreators'
 import { withStyles } from '@material-ui/core/styles'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
