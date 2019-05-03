@@ -184,7 +184,7 @@ export const setErrorMessage = (message) => dispatch => {
 export const setProfile = (profile) => dispatch => {
     callApi('put', '/api/users', profile)
         .then(response => dispatch({type: SET_PROFILE, payload: response.data}))
-        .then(res => console.log('cars from userCreators: ', res))
+        .then(res => console.log('userCars from userCreators: ', res))
         .catch(err => console.log(err))
     // dispatch({type: SET_USER, payload: profile})
     dispatch({type: SET_PROFILE, payload: profile})

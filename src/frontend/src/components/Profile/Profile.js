@@ -26,7 +26,7 @@ class Profile extends Component {
     newCar: {
             carName: '',
             carColour: '',
-            carPhoto: '/CarsPhotos/n_1.jpg',
+            carPhoto: '/carsPhotos/n_1.jpg',
             },
         }
 
@@ -50,7 +50,7 @@ class Profile extends Component {
 
   render () {
 
-       // console.log(this.props.users.cars)
+       // console.log(this.props.users.userCars)
         const {classes} = this.props
 
       const userInformation = {

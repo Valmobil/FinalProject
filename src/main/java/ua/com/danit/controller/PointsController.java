@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.Point;
-import ua.com.danit.dao.PointSearch;
+import ua.com.danit.dto.PointSearch;
 import ua.com.danit.service.PointsService;
 import ua.com.danit.service.UserTokensService;
 

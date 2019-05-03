@@ -23,27 +23,18 @@ public class UserPointsService {
     this.usersService = usersService;
   }
 
-  public List<UserPoint> getUserPointByUserId(Long userId) {
+  public List<ua.com.danit.entity.UserPoint> getUserPointByUserId(Long userId) {
     User user = usersRepository.getOne(userId);
-    List<UserPoint> userPoints = usersService.collectUserPointsAndFillInEmptyOnes(user);
+    List<ua.com.danit.entity.UserPoint> userPoints = usersService.collectUserPointsAndFillInEmptyOnes(user);
     userPointsRepository.saveAll(userPoints);
     return userPointsRepository.findByUser(user);
   }
 
   public String saveUserPoints(List<UserPoint> userPoints, User user) {
-    //Update userPoint with userInfo
-    if (user == null) {
-      return "Fail";
-    }
-    for (UserPoint userPoint : userPoints) {
-      userPoint.setUser(user);
-    }
-
     List<UserPoint> userPointsResult = userPointsRepository.saveAll(userPoints);
     if (userPointsResult.size() > 0) {
       return "Ok";
-    } else {
-      return "Fail";
     }
+    return null;
   }
 }

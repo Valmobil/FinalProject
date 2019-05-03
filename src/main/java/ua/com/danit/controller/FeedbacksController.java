@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.Feedback;
-import ua.com.danit.dao.FeedbackInfo;
+import ua.com.danit.dto.FeedbackInfo;
 import ua.com.danit.service.FeedbacksService;
 import ua.com.danit.service.UserTokensService;
 import ua.com.danit.service.UsersService;

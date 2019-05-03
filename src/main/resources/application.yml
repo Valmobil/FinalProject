@@ -1,6 +1,3 @@
-server:
-  port: 9000
-
 spring:
   profiles:
     active: local
@@ -22,6 +19,14 @@ application:
     xmlsource: src/main/resources/maps/map.xml
     xmlsourcesavetodbqty: 10
 
+
+amazonProperties:
+  endpointUrl: https://s3.us-east-2.amazonaws.com
+  accessKey: XXXXXXXXXXXXXXXXX
+  secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXX
+  bucketName: your-bucket-name
+
+
 ---
 
 spring:
@@ -38,6 +43,15 @@ spring:
       enabled: true
       path: /console
 
+server:
+  port: 9000
+
+aws:
+  s3:
+    credentials:
+      path:
+        src/main/resources/aws/s3/credentials/dev
+
 ---
 
 spring:
@@ -53,8 +67,19 @@ spring:
     hibernate:
       ddl-auto: create
 
+aws:
+  s3:
+    credentials:
+      path:
+        src/main/resources/aws/s3/credentials/dev
+
 ---
 
 spring:
   profiles: prod
 
+aws:
+  s3:
+    credentials:
+      path:
+        src/main/resources/aws/s3/credentials/prod

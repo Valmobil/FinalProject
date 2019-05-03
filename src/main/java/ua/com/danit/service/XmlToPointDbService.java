@@ -4,6 +4,8 @@ import com.ibm.icu.text.Transliterator;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -11,7 +13,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import ua.com.danit.entity.Point;
+import ua.com.danit.repository.PointsRepository;
 
+import javax.annotation.PostConstruct;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,14 +27,24 @@ import java.io.File;
 import java.io.IOException;
 
 @Service
-public class XmlFilesService {
-  private XmlFilePointSaveCashService xmlFilePointSaveCashService;
+public class XmlToPointDbService extends Thread {
+  private PointsRepository pointsRepository;
+  private Environment env;
 
   @Autowired
-  public XmlFilesService(XmlFilePointSaveCashService xmlFilePointSaveCashService) {
-    this.xmlFilePointSaveCashService = xmlFilePointSaveCashService;
+  XmlToPointDbService(Environment env, PointsRepository pointsRepository) {
+    this.pointsRepository = pointsRepository;
+    this.env = env;
   }
 
+  @Override
+  public void run() {
+    System.out.println("Map Points export from XML to DB start.");
+    String xmlFileName = env.getProperty("application.map.xmlsource");
+    String xmlFileReadRowsQty = env.getProperty("application.map.xmlsourcesavetodbqty");
+    loadXmlFile(xmlFileName, xmlFileReadRowsQty);
+    System.out.println("Map Points export from XML to DB is finished");
+  }
 
   void loadXmlFile(String fileName, String xmlFileReadRowsQty) {
     //Read Root of XLS file
@@ -105,7 +119,7 @@ public class XmlFilesService {
         }
       }
       //Save points to DB
-      xmlFilePointSaveCashService.savePointsToDb(point);
+      pointsRepository.save(point);
     }
   }
 
@@ -154,4 +168,6 @@ public class XmlFilesService {
     }
     return n.getNodeValue();
   }
+
+
 }

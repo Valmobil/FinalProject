@@ -5,13 +5,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.com.danit.entity.Car;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.TripPoint;
 import ua.com.danit.entity.User;
 import ua.com.danit.repository.TripsRepository;
 
-import javax.persistence.Entity;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,10 +33,10 @@ public class TripsService {
     for (TripPoint point : trip.getTripPoint()) {
       point.setTrip(trip);
     }
-    //Remove Car if Car == null
-    if (trip.getCar() != null) {
-      if (trip.getCar().getCarId() == 0) {
-        trip.setCar(null);
+    //Remove UserCar if UserCar == null
+    if (trip.getUserCar() != null) {
+      if (trip.getUserCar().getUserCarId() == 0) {
+        trip.setUserCar(null);
       }
     }
     if (tripsRepository.save(trip) != null) {
@@ -93,7 +91,7 @@ public class TripsService {
           //re-new some fields
           tripDeepCopy.setTripId(null);
           tripDeepCopy.setUser(user);
-          tripDeepCopy.setCar(trip.getCar());
+          tripDeepCopy.setUserCar(trip.getUserCar());
           for (TripPoint tripPoint : tripDeepCopy.getTripPoint()) {
             tripPoint.setTrip(tripDeepCopy);
             tripPoint.setTripPointId(null);
