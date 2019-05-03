@@ -4,7 +4,7 @@ import { SET_INTERMEDIATE_POINTS, SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NA
 
 const initialState = {
     trip: {},
-    myCoordinates: {},
+    myCoordinates: null,
     searchedLocation: '',
     targetCoordinates: {},
     initialLoad: true,

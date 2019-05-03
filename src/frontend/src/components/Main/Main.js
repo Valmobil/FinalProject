@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component, Suspense } from 'react'
 import {connect} from 'react-redux'
 import { setMainTrips, setCurrentMainTripParams } from "../../actions/tripCreators";
 import { withStyles } from '@material-ui/core/styles';
@@ -8,7 +8,9 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '@material-ui/core/Button'
+import Spinner from '../Spinner/Spinner'
 import Map from '../Map/Map'
+
 
 const styles = theme => ({
     rectangle: {
@@ -90,13 +92,17 @@ class Main extends Component{
         return(
 
             <>
+
                 <Map
                 height={250}
                 showMainRoute={true}
                 marginTop={'50px'}
                 />
+
             <div style={{width: '100%', margin: '20px 0'}}>
+            <Suspense fallback={<Spinner />}>
                 {routesList}
+            </Suspense>
             </div>
             </>
         )

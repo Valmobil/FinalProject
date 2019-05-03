@@ -10,12 +10,13 @@
 .logout-button{
     margin-top: 30px;
 }
-.welcome-span{
-    color: #fff;
-    margin: 10px auto 10px auto;
-}
 .role-question{
     margin-top: 40px;
+    animation: question .5s forwards;
+}
+@keyframes question {
+    from {opacity: 0}
+    to {opacity: 1}
 }
 .type-button-container{
     display: flex;

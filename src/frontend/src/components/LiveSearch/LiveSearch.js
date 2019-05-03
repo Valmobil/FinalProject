@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button'
 import MenuItem from '@material-ui/core/MenuItem'
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
-import {callApi} from "../../utils/utils";
+import { singleCallApi } from "../../utils/utils";
 import orange from "@material-ui/core/colors/orange";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
@@ -117,7 +117,7 @@ class LiveSearch extends Component {
 
         if (inputLength >= 4){
             // let response = await callApi('post', '/api/points/', data)
-            let response = await callApi(this.props.method, this.props.url, this.props.data)
+            let response = await singleCallApi(this.props.method, this.props.url, this.props.data)
             suggestionsList = response.data
         }
         this.setState({
@@ -178,6 +178,7 @@ class LiveSearch extends Component {
                 <div style={{display: 'flex', justifyContent: 'space-between', width: '80%', margin: '20px auto'}}>
                 <Button
                     onClick={this.props.editClose}
+                    disabled={this.props.name.length === 0}
                     classes={{
                         root: classes.acceptButton,
                         label: classes.label

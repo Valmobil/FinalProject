@@ -43,7 +43,7 @@ export const axiosRequest = (method, url, data, headers, config) => {
         url,
         data,
         headers,
-        config,
+        cancelToken: config,
     })
 }
 //* *********************
@@ -63,4 +63,35 @@ export const removeTokens = () => {
     window.localStorage.removeItem('iTripper_access_token_expires')
     window.localStorage.removeItem('iTripper_refresh_token')
     window.localStorage.removeItem('iTripper_refresh_token_expires')
+    window.localStorage.removeItem('iTripper_page')
 }
+//* *********************
+const memo = Object.create(null);
+
+const search = () => {
+    let source;
+    return (method, url, data) => {
+        if(source){
+            source.cancel('canceled by user')
+        }
+        source = axios.CancelToken.source();
+        try{
+            if (memo[data.pointSearchText]){
+                return memo[data.pointSearchText]
+            }
+            const response = callApi(method, url, data, source.token)
+            response
+                .then(res => memo[data.pointSearchText] = res)
+                .catch(console.log)
+            return response
+        } catch(error) {
+            if(axios.isCancel(error)) {
+                console.log('Request canceled', error.message);
+            } else {
+                console.log("Something's gone wrong: ", error.message)
+            }
+        }
+    }
+}
+
+export const singleCallApi = search()

@@ -11,8 +11,8 @@ let platform = {
     app_id: 'dxvPSIheZpzC0JnT43pa',
     app_code: '2AQJFcfRqLmLZPd0q0hz7g',
     center: {
-        lat: 50.428765,
-        lng: -12.593888,
+        lat: 50.449394,
+        lng: 30.525433,
     },
     zoom: 15,
     useHTTPS: true,
@@ -123,11 +123,6 @@ class Map extends Component {
             this.map.addObject(currentMarker);
         }
         if (this.props.showMainRoute && params){
-            // const svgMarker = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"' +
-            //     ' width="19px" height="24px" enable-background="new 0 0 19 24" xml:space="preserve">' +
-            //     '<path fill="#f57c00" d="M9.5,0C4.2,0,0,4.2,0,9.5C0,14.7,8.7,24,9.5,24S19,14.7,19,9.5C19,4.2,14.7,0,9.5,0z M9.5,13.8' +
-            //     'c-2.4,0-4.3-1.9-4.3-4.3s1.9-4.3,4.3-4.3s4.3,1.9,4.3,4.3S11.8,13.8,9.5,13.8z"/></svg>';
-
             const svgMarker = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"' +
 	              ' width="19px" height="24px" enable-background="new 0 0 19 24" xml:space="preserve">' +
                   '<path fill="#FFFFFF" d="M18.5,9c0,5-9,15-9,15s-9-10-9-15s4-9,9-9S18.5,4,18.5,9z"/>' +
@@ -223,6 +218,8 @@ class Map extends Component {
                 lng: this.props.coords.longitude,
             };
         }
+console.log('this.props.coords = ', this.props.coords)
+
         this.platform = new H.service.Platform(platform);
         const layer = this.platform.createDefaultLayers();
         const container = document.getElementById('here-map');
