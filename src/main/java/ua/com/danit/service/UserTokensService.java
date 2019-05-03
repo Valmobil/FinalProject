@@ -1,11 +1,16 @@
 package ua.com.danit.service;
 
+import com.amazonaws.services.dynamodbv2.xspec.L;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import ua.com.danit.dto.UserTokenRequest;
+import ua.com.danit.dto.UserTokenResponse;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserToken;
+import ua.com.danit.error.KnownException;
+import ua.com.danit.facade.UserTokenFacade;
 import ua.com.danit.repository.UserTokensRepository;
 
 import java.time.LocalDateTime;
@@ -15,18 +20,21 @@ import java.util.UUID;
 @Service
 public class UserTokensService {
   private UserTokensRepository userTokensRepository;
+  private UserTokenFacade userTokenFacade;
 
   private static final int refreshTokenExpirationMin = 30 * 24 * 60;
   private static final int accessTokenExpirationMin = 15;
 
   @Autowired
-  public UserTokensService(UserTokensRepository userTokensRepository) {
+  public UserTokensService(UserTokensRepository userTokensRepository,
+                           UserTokenFacade userTokenFacade) {
     this.userTokensRepository = userTokensRepository;
+    this.userTokenFacade = userTokenFacade;
   }
 
   public User findUserByAccessToken(String accessToken) {
     List<UserToken> userTokens;
-    if (accessToken.substring(0,6).equals("Bearer")) {
+    if (accessToken.substring(0, 6).equals("Bearer")) {
       userTokens = userTokensRepository.findByUserTokenAccess(accessToken.substring(7));
     } else {
       userTokens = userTokensRepository.findByUserTokenAccess(accessToken);
@@ -41,54 +49,62 @@ public class UserTokensService {
     return null;
   }
 
-
-  UserToken generateInitialTokinSet(User user) {
-    UserToken userToken = new UserToken();
-    userToken.setUser(user);
-    generateNewSessionToken("Refresh", userToken);
-    generateNewSessionToken("Access", userToken);
-    return userToken;
+  UserTokenResponse generateInitialTokinSet() {
+    UserTokenResponse userTokenResponse = new UserTokenResponse();
+    generateNewSessionToken("Refresh", userTokenResponse);
+    generateNewSessionToken("Access", userTokenResponse);
+    return userTokenResponse;
   }
 
-  public ResponseEntity requestNewTokenService(UserToken userToken) {
-    if (userToken == null) {
-      return new ResponseEntity<>("Error! Empty input JSON!", HttpStatus.NOT_ACCEPTABLE);
-    }
-    UserToken userTokenDb = userTokensRepository.findByUserTokenRefresh(userToken.getUserTokenRefresh());
-    if (userTokenDb == null) {
-      return new ResponseEntity<>("Error! Incorrect Refresh Token!",HttpStatus.NOT_ACCEPTABLE);
+  public UserTokenResponse requestNewTokenService(UserTokenRequest userTokenRequest) {
+    if (userTokenRequest == null) {
+      throw new KnownException("Error! Empty JSON input!");
     }
 
-    if (userTokenDb.getUserTokenRefreshTo().isAfter(LocalDateTime.now())) {
-      //If Refresh token are valid
-      generateNewSessionToken("Refresh", userTokenDb);
-      generateNewSessionToken("Access", userTokenDb);
-      userTokenDb = userTokensRepository.save(userTokenDb);
-      return new ResponseEntity<>(userTokenDb,HttpStatus.OK);
-    } else {
+    UserToken userTokenDb = findByUserTokenRefresh(userTokenRequest.getUserTokenRefresh());
+    if (userTokenDb == null) {
+      throw new KnownException("Error! Incorrect Refresh Token!");
+    }
+    if (userTokenDb.getUserTokenRefreshTo().isBefore(LocalDateTime.now())) {
       //if Refresh token is expired
       userTokensRepository.delete(userTokenDb);
-      return new ResponseEntity<>("Error! Refresh Token has expired! Please login again!",HttpStatus.NOT_ACCEPTABLE);
+      throw new KnownException("Error! Refresh Token has expired! Please login again!");
+    } else {
+      //If Refresh token are valid
+      UserTokenResponse userTokenResponse = new UserTokenResponse();
+      generateNewSessionToken("Refresh", userTokenResponse);
+      generateNewSessionToken("Access", userTokenResponse);
+      userTokenDb = userTokenFacade.mapRequestDtoToEntity(userTokenResponse, userTokenDb);
+      userTokenDb = userTokensRepository.save(userTokenDb);
+      return userTokenFacade.mapEntityToResponseDto(userTokenDb);
     }
   }
 
-  private void generateNewSessionToken(String stype, UserToken userToken) {
+  private UserToken findByUserTokenRefresh(String userTokenRefresh) {
+    List<UserToken> userTokenList = userTokensRepository.findByUserTokenRefresh(userTokenRefresh);
+    if (userTokenList.size() == 0) {
+      return null;
+    }
+    return userTokenList.get(0);
+  }
+
+  private void generateNewSessionToken(String stype, UserTokenResponse userTokenResponse) {
     int dateShift;
     LocalDateTime date = LocalDateTime.now();
     if (stype.equals("Refresh")) {
-      userToken.setUserTokenAccess(UUID.randomUUID().toString());
+      userTokenResponse.setUserTokenAccess(UUID.randomUUID().toString());
       dateShift = accessTokenExpirationMin;
       date = date.plusMinutes(dateShift);
-      userToken.setUserTokenAccessTo(date);
+      userTokenResponse.setUserTokenAccessTo(date);
     } else {
-      userToken.setUserTokenRefresh(UUID.randomUUID().toString());
+      userTokenResponse.setUserTokenRefresh(UUID.randomUUID().toString());
       dateShift = refreshTokenExpirationMin;
       date = date.plusMinutes(dateShift);
-      userToken.setUserTokenRefreshTo(date);
+      userTokenResponse.setUserTokenRefreshTo(date);
     }
   }
 
-  public void deleteAllByUser(User user) {
+  void deleteAllByUser(User user) {
     userTokensRepository.deleteAllByUser(user);
   }
 }

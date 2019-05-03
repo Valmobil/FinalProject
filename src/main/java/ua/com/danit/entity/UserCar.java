@@ -27,17 +27,17 @@ import java.util.Objects;
 @Builder
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler","user"})
-public class Car extends Auditable {
+public class UserCar extends Auditable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long carId;
-  private String carName;
-  private String carColour;
-  private String carPhoto;
+  private long userCarId;
+  private String userCarName;
+  private String userCarColour;
+  private String userCarPhoto;
   @ManyToOne
   @NonNull
-  @JoinColumn(name = "CAR_USER_ID", referencedColumnName = "userId")
-  @JsonIgnoreProperties({"car", "user", "userId", "userName",
+  @JoinColumn(name = "USER_CAR_USER_ID", referencedColumnName = "userId")
+  @JsonIgnoreProperties({"userCar", "user", "userId", "userName",
       "userPhone", "userMail", "userToken", "userTokenValidTo", "userPhoto"})
   private User user;
 }

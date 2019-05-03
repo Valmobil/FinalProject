@@ -1,11 +1,7 @@
 package ua.com.danit.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import ua.com.danit.entity.Car;
-import ua.com.danit.entity.UserPoint;
+import ua.com.danit.entity.UserCar;
 
 import java.util.List;
 
@@ -15,5 +11,5 @@ public class UserRequest {
   private String userPhone;
   private String userMail;
   private String userPhoto;
-  private List<Car> cars;
+  private List<UserCar> userCars;
 }

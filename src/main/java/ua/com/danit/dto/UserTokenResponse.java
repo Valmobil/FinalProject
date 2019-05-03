@@ -17,8 +17,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class UserTokenResponse {
-  @Id
-  private long userTokenId;
   private String userTokenRefresh;
   private LocalDateTime userTokenRefreshTo;
   private String userTokenAccess;

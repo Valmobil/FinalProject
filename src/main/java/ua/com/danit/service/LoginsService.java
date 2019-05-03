@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.UserResponse;
 import ua.com.danit.entity.User;
-import ua.com.danit.dto.UserInfo;
 import ua.com.danit.dto.UserLogin;
 import ua.com.danit.error.KnownException;
 import ua.com.danit.facade.UserFacade;
@@ -36,50 +35,55 @@ public class LoginsService {
   }
 
   public String checkPasswordRestore(UserLogin userLogin) {
-    convertUserLoginBlankToNull(userLogin);
-    UserInfo userInfo = new UserInfo();
-    if (userLogin.getUserToken() == null) {
-      //L=0 T=0 P=0 NP=0
-      throw new KnownException("Error! Please fill restore token!");
-    } else {
-      //L=0 T=1 P=0 NP=0
-      //find user by Session Token in DB
-      userInfo.setUser(userTokensService.findUserByAccessToken(userLogin.getUserToken()));
-      if (userInfo.getUser() == null) {
-        throw new KnownException("Error: Incorrect or expired Token!");
-      }
-    }
-    return "Ok. Password was changed! Please login using new password!";
+    //ToDo
+
+    //    convertUserLoginBlankToNull(userLogin);
+    //    UserInfo userInfo = new UserInfo();
+    //    if (userLogin.getUserToken() == null) {
+    //      //L=0 T=0 P=0 NP=0
+    //      throw new KnownException("Error! Please fill restore token!");
+    //    } else {
+    //      //L=0 T=1 P=0 NP=0
+    //      //find user by Session Token in DB
+    //      userInfo.setUser(userTokensService.findUserByAccessToken(userLogin.getUserToken()));
+    //      if (userInfo.getUser() == null) {
+    //        throw new KnownException("Error: Incorrect or expired Token!");
+    //      }
+    //    }
+    //    return "Ok. Password was changed! Please login using new password!";
+    return "check";
   }
 
   public String checkPasswordChange(UserLogin userLogin) {
-    convertUserLoginBlankToNull(userLogin);
-    UserInfo userInfo = new UserInfo();
-    if (userLogin.getUserLogin() == null) {
-      //L=0 T=0 P=0 NP=0
-      return "Error! Have no user login!";
-    } else {
-      if (userLogin.getUserPassword() == null) {
-        //L=1 T=0 P=0 NP=0
-        return "Error: incorrect old password!";
-      } else {
-        //L=1 T=0 P=1 NP=0
-        userInfo.setUser(usersService.checkIfLoginAndPasswordIsCorrect(userLogin));
-        if (userInfo.getUser() == null) {
-          return "Error: incorrect login or password!";
-        }
-        //Save new password
-        userInfo.getUser().setUserPassword(userLogin.getUserPasswordNew());
-        usersRepository.save(userInfo.getUser());
-      }
-      return "Ok, Password was changed successfully!";
-    }
+    //todo
+    //    convertUserLoginBlankToNull(userLogin);
+    //    UserInfo userInfo = new UserInfo();
+    //    if (userLogin.getUserLogin() == null) {
+    //      //L=0 T=0 P=0 NP=0
+    //      return "Error! Have no user login!";
+    //    } else {
+    //      if (userLogin.getUserPassword() == null) {
+    //        //L=1 T=0 P=0 NP=0
+    //        return "Error: incorrect old password!";
+    //      } else {
+    //        //L=1 T=0 P=1 NP=0
+    //        userInfo.setUser(usersService.checkIfLoginAndPasswordIsCorrect(userLogin));
+    //        if (userInfo.getUser() == null) {
+    //          return "Error: incorrect login or password!";
+    //        }
+    //        //Save new password
+    //        userInfo.getUser().setUserPassword(userLogin.getUserPasswordNew());
+    //        usersRepository.save(userInfo.getUser());
+    //      }
+    //      return "Ok, Password was changed successfully!";
+    //    }
+    return "check";
   }
 
-  public UserResponse checkRegistrationCredentials(UserLogin userLogin) {
+  public UserResponse checkSignUpCredentials(UserLogin userLogin) {
     convertUserLoginBlankToNull(userLogin);
 
-    User user = new User();
+    User user;
     if (userLogin.getUserLogin() == null) {
       if (userLogin.getUserToken() == null) {
         //L=0 T=0 P=0 NP=0
@@ -110,7 +114,7 @@ public class LoginsService {
               user = new User();
               saveLoginToMailOrPhone(user, userLogin);
               user.setUserPassword(usersService.passwordEncrypt(userLogin.getUserPassword()));
-              user = usersService.updateUserTokenInUserEntity(user);
+
             } else {
               throw new KnownException("Error: The user with this login was already registered!");
             }
@@ -119,9 +123,13 @@ public class LoginsService {
       } else {
         //L=1 T=1 P=0 NP=0
         //Update Token if token and login are present
-        usersService.checkLoginAndUpdateExternalTokenInDb(userLogin);
+        user = usersService.checkLoginAndUpdateExternalTokenInDb(userLogin);
       }
     }
+    user = usersService.updateUserTokenInUserEntity(user);
+    //Collect User Points
+    user.setUserPoints(usersService.collectUserPointsAndFillInEmptyOnes(user));
+    user = usersRepository.save(user);
     return userFacade.mapEntityToResponce(user);
   }
 
@@ -141,7 +149,7 @@ public class LoginsService {
 
   public UserResponse checkLoginSignInCredentials(UserLogin userLogin) {
     convertUserLoginBlankToNull(userLogin);
-    User user = new User();
+    User user;
     if (userLogin.getUserLogin() == null) {
       if (userLogin.getUserToken() == null) {
         //L=0 T=0 P=0 NP=0
@@ -151,7 +159,7 @@ public class LoginsService {
         //find user by Session Token in DB
         user = userTokensService.findUserByAccessToken(userLogin.getUserToken());
         if (user == null) {
-          throw new KnownException("Error: have no valid session token!");
+          throw new KnownException("Error: have no valid access token!");
         }
       }
     } else {
@@ -169,9 +177,13 @@ public class LoginsService {
       } else {
         //L=1 T=1 P=0 NP=0
         //Update Token if token and login are present
-        usersService.checkLoginAndUpdateExternalTokenInDb(userLogin);
+        user = usersService.checkLoginAndUpdateExternalTokenInDb(userLogin);
       }
     }
+    user = usersService.updateUserTokenInUserEntity(user);
+    //Collect User Points
+    user.setUserPoints(usersService.collectUserPointsAndFillInEmptyOnes(user));
+    user = usersRepository.save(user);
     return userFacade.mapEntityToResponce(user);
   }
 

@@ -150,7 +150,7 @@ class Map extends Component {
         }
         const router = this.platform.getRoutingService(),
             routeRequestParams = params ? params : {
-                mode: 'fastest;car',
+                mode: 'fastest;userCar',
                 representation: 'display',
                 routeattributes : 'waypoints,summary,shape,legs',
                 maneuverattributes: 'direction,action',

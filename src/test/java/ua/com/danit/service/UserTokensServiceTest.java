@@ -1,14 +1,10 @@
 package ua.com.danit.service;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.com.danit.entity.UserToken;
-import ua.com.danit.dto.UserInfo;
-import ua.com.danit.dto.UserLogin;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -26,7 +22,7 @@ public class UserTokensServiceTest {
 //    userLogin.setUserLogin("gmail@mail.ru");
 //    userLogin.setUserPassword("1234567890");
 //    userLogin.setUserPasswordNew("1234567890");
-//    UserInfo userInfo = loginsService.checkRegistrationCredentials(userLogin);
+//    UserInfo userInfo = loginsService.checkSignUpCredentials(userLogin);
 //
 //    UserToken userToken = new UserToken();
 //    userToken.setUserTokenRefresh(userInfo.getUser().getUserTokenRefresh());

@@ -23,7 +23,7 @@ import java.util.Date;
 public class UserToken {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long userTokenId;
+  private Long userTokenId;
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "USER_TOKEN_USER_ID", referencedColumnName = "userId")
   private User user;

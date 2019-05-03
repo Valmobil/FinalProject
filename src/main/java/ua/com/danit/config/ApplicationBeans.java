@@ -28,11 +28,6 @@ public class ApplicationBeans {
   @Autowired
   private ModelMapperConfig modelMapperConfig;
 
-//  @Bean
-//  public PasswordEncoder passwordEncoder() {
-//    return new BCryptPasswordEncoder();
-//  }
-
   @Bean
   public ModelMapper modelMapper() {
     return new ModelMapper();

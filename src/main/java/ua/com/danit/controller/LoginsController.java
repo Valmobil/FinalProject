@@ -32,7 +32,7 @@ public class LoginsController {
 
   @PostMapping("signup")
   public ResponseEntity<UserResponse> postLoginSignUp(@RequestBody UserLogin userLogin) {
-    return new ResponseEntity<>(loginsService.checkRegistrationCredentials(userLogin),HttpStatus.OK);
+    return new ResponseEntity<>(loginsService.checkSignUpCredentials(userLogin),HttpStatus.OK);
   }
 
   @PostMapping("pswdchange")
@@ -46,7 +46,8 @@ public class LoginsController {
   }
 
   @PostMapping("email")
-  public ResponseEntity<String> checkUserByEmail(@RequestBody UserLogin userLogin, @RequestHeader(value = "Host") String host) {
+  public ResponseEntity<String> checkUserByEmail(@RequestBody UserLogin userLogin,
+                                                 @RequestHeader(value = "Host") String host) {
     return new ResponseEntity<>(mailSenderService.checkUserByEmail(userLogin, host),HttpStatus.OK);
   }
 }

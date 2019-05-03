@@ -19,9 +19,9 @@ import javax.persistence.ManyToOne;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class UserPoint extends Auditable{
+public class UserPoint extends Auditable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long userPointId;
@@ -32,7 +32,6 @@ public class UserPoint extends Auditable{
   private User user;
   private double userPointLongitude;
   private double userPointLatitude;
-
 }
 
 

@@ -38,13 +38,13 @@ public class Trip extends Auditable {
   @JoinColumn(name = "TRIP_USER_ID", referencedColumnName = "userId")
   @JsonIgnoreProperties({"userMail", "userTokenRefresh", "userTokenAccess",
       "userIsOkUserPhoto", "userIsOkCarPhoto", "userIsConfirmedMail",
-      "userIsConfirmedPhone","car"})
+      "userIsConfirmedPhone","userCar"})
   private User user;
   @ManyToOne
-  @JoinColumn(name = "TRIP_CAR_ID", referencedColumnName = "carId")
+  @JoinColumn(name = "TRIP_USER_CAR_ID", referencedColumnName = "userCarId")
   @JsonIgnoreProperties({"user"})
   @Nullable
-  private Car car;
+  private UserCar userCar;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "trip")
   private List<TripPoint> tripPoint;
   private LocalDateTime tripDateTime;

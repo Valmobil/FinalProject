@@ -2,24 +2,21 @@ package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.com.danit.entity.Car;
+import ua.com.danit.dto.UserTokenResponse;
+import ua.com.danit.entity.UserCar;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
 import ua.com.danit.entity.UserToken;
-import ua.com.danit.dto.UserInfo;
 import ua.com.danit.dto.UserLogin;
 import ua.com.danit.error.KnownException;
 import ua.com.danit.facade.UserTokenFacade;
-import ua.com.danit.repository.CarsRepository;
 import ua.com.danit.repository.PointsRepository;
 import ua.com.danit.repository.UserPointsRepository;
 import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -70,21 +67,16 @@ public class UsersService {
     return user;
   }
 
-  //  void addCarsUserPointsTokens(UserInfo userInfo) {
-  //
-  //    //Generate new tokens
-  //    updateUserTokenInUserEntity(userInfo.getUser());
-  //    //Collect Cars
-  //    userInfo.setCars(carsRepository.findByUser(userInfo.getUser()));
-  //    //Collect User Points
-  //    userInfo.setUserPoints(collectUserPointsAndFillInEmptyOnes(userInfo.getUser()));
-  //  }
-
   List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
     if (user == null) {
       return new ArrayList<>();
     }
-    List<UserPoint> userPoints = userPointsRepository.findByUser(user);
+    List<UserPoint> userPoints;
+    if (user.getUserId() == null) {
+      userPoints = new LinkedList<>();
+    } else {
+      userPoints = userPointsRepository.findByUser(user);
+    }
     if (userPoints.size() < 5) {
       if (userPoints.size() < 1) {
         UserPoint pointHome = new UserPoint(null, "Home", "adress", user, 0, 0);
@@ -104,7 +96,7 @@ public class UsersService {
         UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0);
         userPoints.add(pointOther);
       }
-      userPoints = userPointsRepository.saveAll(userPoints);
+//      userPoints = userPointsRe?pository.saveAll(userPoints);
     }
     return userPoints;
   }
@@ -127,7 +119,8 @@ public class UsersService {
         user.getUserTokens().get(0).setUserTokenExternal(userLogin.getUserToken());
       } else {
         if (!user.getUserTokens().get(0).getUserTokenExternal().equals(userLogin.getUserToken())) {
-          throw new KnownException("Error! Previously we used another external authorization provider! Please use login and password for login");
+          throw new KnownException("Error! Previously we used another external authorization provider! Please "
+              + "use login and password for login");
         }
       }
     } else {
@@ -136,28 +129,23 @@ public class UsersService {
       userTokenNew = new UserToken();
       userTokenNew.setUser(user);
       userTokenNew.setUserTokenExternal(userLogin.getUserToken());
-      userTokensRepository.save(userTokenNew);
 
       if (userTokenNew.getUserTokenExternal() == null) {
         userTokenNew.setUserTokenExternal(userLogin.getUserToken());
       }
     }
-    updateUserTokenInUserEntity(user);
-    user = usersRepository.save(user);
     return user;
   }
 
   User updateUserTokenInUserEntity(User user) {
     if (user.getUserTokens() == null) {
       user.setUserTokens(new LinkedList<>());
+      user.getUserTokens().add(new UserToken());
+      user.getUserTokens().get(0).setUser(user);
+      user.getUserTokens().get(0).setUserTokenId(null);
     }
-    UserToken userToken = userTokensService.generateInitialTokinSet(user);
-    UserToken userTokenOld = user.getUserTokens().get(0);
-    userTokenOld = userTokenFacade.mapRequestDtoToEntity(userToken);
-    userTokenOld.setUserTokenAccess(userToken.getUserTokenAccess());
-    userTokenOld.setUserTokenAccessTo(userToken.getUserTokenAccessTo());
-    userTokenOld.setUserTokenRefresh(userToken.getUserTokenRefresh());
-    userTokenOld.setUserTokenRefreshTo(userToken.getUserTokenRefreshTo());
+    UserTokenResponse userTokenResponse = userTokensService.generateInitialTokinSet();
+    user.getUserTokens().set(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, user.getUserTokens().get(0)));
     return user;
   }
 
@@ -228,8 +216,8 @@ public class UsersService {
       throw new KnownException("Error: Access token not found!");
     }
     user.setUserId(userFromToken.getUserId());
-    for (Car car : user.getCars()) {
-      car.setUser(user);
+    for (UserCar userCar : user.getUserCars()) {
+      userCar.setUser(user);
     }
     user = usersRepository.save(user);
     return user;

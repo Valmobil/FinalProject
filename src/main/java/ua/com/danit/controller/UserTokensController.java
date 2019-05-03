@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ua.com.danit.dto.UserTokenRequest;
+import ua.com.danit.dto.UserTokenResponse;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserToken;
 import ua.com.danit.service.UserTokensService;
@@ -23,7 +25,7 @@ public class UserTokensController {
   }
 
   @PostMapping
-  public ResponseEntity requestNewToken(@RequestBody UserToken userToken) {
-    return userTokensService.requestNewTokenService(userToken);
+  public ResponseEntity<UserTokenResponse> requestNewToken(@RequestBody UserTokenRequest userTokenRequest) {
+    return new ResponseEntity<>(userTokensService.requestNewTokenService(userTokenRequest), HttpStatus.OK);
   }
 }
