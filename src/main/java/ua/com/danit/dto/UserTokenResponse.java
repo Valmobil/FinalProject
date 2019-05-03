@@ -1,9 +1,10 @@
-package ua.com.danit.entity;
+package ua.com.danit.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ua.com.danit.entity.User;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,23 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
-import java.util.Date;
 
-@Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@JsonIgnoreProperties({"user"})
-public class UserToken {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long userTokenId;
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "USER_TOKEN_USER_ID", referencedColumnName = "userId")
-  private User user;
+public class UserTokenResponse {
   private String userTokenRefresh;
   private LocalDateTime userTokenRefreshTo;
   private String userTokenAccess;
   private LocalDateTime userTokenAccessTo;
-  private String userTokenExternal;
 }

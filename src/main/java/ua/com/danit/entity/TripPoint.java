@@ -38,7 +38,7 @@ public class TripPoint {
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @NonNull
   @JoinColumn(name = "TRIP_POINT_TRIP_ID", referencedColumnName = "tripId")
-  @JsonIgnoreProperties({"user","car"})
+  @JsonIgnoreProperties({"user","userCar"})
   private Trip trip;
 
 }

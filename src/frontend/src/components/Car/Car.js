@@ -28,8 +28,8 @@ class Car extends Component {
       const style = this.state.back ? {transform: `translateX(${this.state.offset}px)`, transition: `transform .3s ease-in-out`} : {transform: `translateX(${this.state.offset}px)`}
       const { model } = this.props
       return (
-        <div className="single-car-line">
-          <div className="single-car" style={style}
+        <div className="single-userCar-line">
+          <div className="single-userCar" style={style}
             onTouchStart={(e) => this.handleStart(e.touches[0].clientX)}
             onTouchEnd={this.handleEnd}
             onTouchMove={(e) => this.handleMove(this.props.users.cars, model, e)}

@@ -3,7 +3,7 @@ package ua.com.danit.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ua.com.danit.entity.Feedback;
-import ua.com.danit.dao.FeedbackInfo;
+import ua.com.danit.dto.FeedbackInfo;
 
 
 import java.util.List;

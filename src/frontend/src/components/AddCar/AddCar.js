@@ -135,7 +135,7 @@ class AddCar extends Component {
         newCar: {
             carName: '',
             carColour: '',
-            carPhoto: '/CarsPhotos/n_1.jpg',
+            carPhoto: '/carsPhotos/n_1.jpg',
         },
         selectedId: 1,
         editing: '',
@@ -165,8 +165,8 @@ class AddCar extends Component {
 
    handleDelete = (id) => {
         // console.log(this.props)
-        // let newCarsArr = this.props.users.cars.map(item => {
-        //     if (item.carId !== id) {
+        // let newCarsArr = this.props.users.userCars.map(item => {
+        //     if (item.userCarId !== id) {
         //         return {
         //             ...item
         //         }
