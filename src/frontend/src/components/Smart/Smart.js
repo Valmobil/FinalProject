@@ -316,7 +316,7 @@ class Smart extends Component {
     // }
 
     componentDidMount () {
-        if (this.props.users.cars.length === 1) this.setState({car: this.props.users.cars[0]})
+        if (this.props.users.userCars.length === 1) this.setState({car: this.props.users.userCars[0]})
         const options = {
             enableHighAccuracy: true
         };
@@ -331,15 +331,15 @@ class Smart extends Component {
         // console.log(this.props.users)
         const { classes } = this.props
         const { role, car, name, value, editing, adding, creatingTrip } = this.state
-        const { cars, userPoints } = this.props.users
-        let currentCar = cars.length === 1 ? cars[0] : car
+        const { userCars, userPoints } = this.props.users
+        let currentCar = userCars.length === 1 ? userCars[0] : car
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
 // console.log('targetCoordinates = ', this.props.trips.targetCoordinates)
 // console.log('myCoordinates = ', this.props.trips.myCoordinates)
 // console.log('Render: this.props.trips.intermediatePoints = ', this.props.users.intermediatePoints)
-
+console.log('userCars = ', userCars)
 
 
         let placesList = null
@@ -430,8 +430,8 @@ class Smart extends Component {
 
 
 
-        const carList = cars.map((item) => {
-            return <MenuItem value={item} key = {item.carId}>{item.carName + ' ' + item.carColour}</MenuItem>
+        const carList = userCars.map((item) => {
+            return <MenuItem value={item} key = {item.userCarId}>{item.userCarName + ' ' + item.userCarColour}</MenuItem>
         })
 
         let dependentButton = null

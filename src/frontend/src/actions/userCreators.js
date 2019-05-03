@@ -42,7 +42,7 @@ export const checkAuthorizationByToken = () => dispatch => {
 export const setAuthByToken = () => dispatch => {
     const userToken = window.localStorage.getItem('iTripper_access_token');
     if (userToken) {
-dispatch({type: INITIAL_LOAD, payload: true})
+        dispatch({type: INITIAL_LOAD, payload: true})
         const accessTokenExpires = window.localStorage.getItem('iTripper_access_token_expires')
         const refreshTokenExpires = window.localStorage.getItem('iTripper_refresh_token_expires')
         const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
@@ -70,6 +70,7 @@ dispatch({type: INITIAL_LOAD, payload: true})
         } else {
             callApi('post', '/api/logins/signin', { userToken })
                 .then(response => {
+                    setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
                     dispatch(authDispatches(response))
                 })
                 .catch(console.log)
@@ -80,9 +81,15 @@ dispatch({type: INITIAL_LOAD, payload: true})
 // * *********************
 
 const authDispatches = (response) => dispatch => {
+    const userData = {
+        userName: response.data.userName,
+        userPhone: response.data.userPhone,
+        userMail: response.data.userMail,
+        userPhoto: response.data.userPhoto,
+    }
     dispatch({type: SET_AUTH, payload: true})
-    dispatch({type: SET_USER, payload: response.data.user})
-    dispatch({type: SET_CARS, payload: response.data.cars})
+    dispatch({type: SET_USER, payload: userData})
+    dispatch({type: SET_CARS, payload: response.data.userCars})
     dispatch({type: SET_USER_POINTS, payload: response.data.userPoints})
 }
 
@@ -107,11 +114,10 @@ export const setAuthorization = (state, signType) => (dispatch) => {
     }
     axios.post('/api/logins/' + route, data)
         .then(response => {
+            console.log('user = ',response.data)
             dispatch(setErrorMessage(response.data.message))
-            if (response.data.user !== null) {
-                console.log('user = ',response.data.user)
-
-                setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh)
+            if (response.data !== null) {
+                setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
                 dispatch(authDispatches(response))
                 dispatch({type: INITIAL_LOAD, payload: true})
             } else {

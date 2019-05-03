@@ -22,7 +22,7 @@ const initialState = {
     userTokenAccessTo: '',
     userTokenRefresh: '',
   },
-  cars: [],
+  userCars: [],
   userPoints: [],
   commonPoints: [],
   role: 'passenger',
@@ -42,9 +42,9 @@ function users (state = initialState, action) {
     case SET_AUTH:
       return {...state, isAuthenticated: action.payload}
     case SET_USER:
-      return {...state, user: action.payload}
+      return {...state, user: {...state.user, ...action.payload}}
     case SET_CARS:
-      return {...state, cars: action.payload}
+      return {...state, userCars: action.payload}
     case SET_USER_POINTS:
       return {...state, userPoints: action.payload}
     case SET_COMMON_POINTS:

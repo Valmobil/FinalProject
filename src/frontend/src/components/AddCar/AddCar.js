@@ -173,7 +173,7 @@ class AddCar extends Component {
         //
         //     }
         // })
-       const newCarList = this.props.users.cars.filter(item => item.carId !== id)
+       const newCarList = this.props.users.userCars.filter(item => item.carId !== id)
        this.props.updateCars(newCarList)
 
     }
@@ -181,33 +181,33 @@ class AddCar extends Component {
     render () {
         const { classes } = this.props
         const { editing, adding} = this.state
-        const { carName, carColour} = this.state.newCar
-        const { cars  } = this.props.users;
-        console.log('CARS', cars)
+        const { userCarName, userCarColour} = this.state.newCar
+        const { userCars  } = this.props.users;
+        console.log('CARS', userCars)
 
 
-        const placesList = cars.map((item) => {
+        const placesList = userCars.map((item) => {
             let output = null
-            if (item.carId === editing) {
+            if (item.userCarId === editing) {
                 output = (
-                    <EditSmart key = {item.carId}
+                    <EditSmart key = {item.userCarId}
                                handleEditInput={this.handleEditInput}
-                               editName={carName}
-                               editColour={carColour}
-                               editSubmit={() => this.editSubmit(item.carId)}
+                               editName={userCarName}
+                               editColour={userCarColour}
+                               editSubmit={() => this.editSubmit(item.userCarId)}
                     />
                 )
             } else {
                 output = (
-                    item.carName !== '<no point>' &&
-                    <div key = {item.carId} style={{display: 'flex', width: '100%'}}>
+                    item.userCarName !== '<no point>' &&
+                    <div key = {item.userCarId} style={{display: 'flex', width: '100%'}}>
                         <Button
                                 variant="contained"
                                 color="primary"
                                 className={classes.smartRoute}
                                 classes={{ label: classes.label }}
                         >
-                            {item.carName}
+                            {item.userCarName}
                         </Button>
                         <div className="icon-container">
                             <IconButton
