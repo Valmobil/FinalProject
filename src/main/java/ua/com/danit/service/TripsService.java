@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.com.danit.dto.TripResponse;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.TripPoint;
 import ua.com.danit.entity.User;
+import ua.com.danit.facade.TripFacade;
 import ua.com.danit.repository.TripsRepository;
 
 import java.io.IOException;
@@ -18,10 +20,12 @@ import java.util.List;
 @Service
 public class TripsService {
   private TripsRepository tripsRepository;
+  private TripFacade tripFacade;
 
   @Autowired
-  public TripsService(TripsRepository tripsRepository) {
+  public TripsService(TripsRepository tripsRepository, TripFacade tripFacade) {
     this.tripsRepository = tripsRepository;
+    this.tripFacade = tripFacade;
   }
 
   public Trip getTripById(Long tripId) {
@@ -56,7 +60,7 @@ public class TripsService {
   }
 
 
-  public List<Trip> getTripListService(User user) {
+  public List<TripResponse>  getTripListService(User user) {
     List<Trip> trips = new LinkedList<>();
     //Get list of trips except deleted ones
     for (Trip trip : tripsRepository.findByUser(user)) {
@@ -64,7 +68,7 @@ public class TripsService {
         trips.add(trip);
       }
     }
-    return trips;
+    return tripFacade.mapEntityListToResponseDtoList(trips);
   }
 
   public void deleteTripById(Long tripId, User user) {

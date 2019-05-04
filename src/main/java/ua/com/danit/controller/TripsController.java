@@ -2,6 +2,8 @@ package ua.com.danit.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ua.com.danit.dto.TripResponse;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.User;
 import ua.com.danit.service.TripsService;
@@ -35,13 +38,13 @@ public class TripsController {
   }
 
   @PostMapping("list")
-  public List<Trip> getUserTripList(@RequestHeader String authorization) {
-    return tripsService.getTripListService(userTokensService.findUserByAccessToken(authorization));
+  public RequestEntity<List<TripResponse>> getUserTripList(@RequestHeader String authorization) {
+    return new RequestEntity<>(tripsService.getTripListService(userTokensService.findUserByAccessToken(authorization)),HttpStatus.OK);
   }
 
   @PostMapping("others")
-  public List<Trip> getOtherUsersTripList(@RequestHeader String authorization) {
-    return tripsService.getOwnAndOtherTrips(userTokensService.findUserByAccessToken(authorization));
+  public RequestEntity<List<Trip>> getOtherUsersTripList(@RequestHeader String authorization) {
+    return new RequestEntity<>(tripsService.getOwnAndOtherTrips(userTokensService.findUserByAccessToken(authorization)),HttpStatus.OK);
   }
 
   @PostMapping("copy")

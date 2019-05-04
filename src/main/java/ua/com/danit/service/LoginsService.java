@@ -35,54 +35,48 @@ public class LoginsService {
   }
 
   public String checkPasswordRestore(UserLogin userLogin) {
-    //ToDo
-
-    //    convertUserLoginBlankToNull(userLogin);
-    //    UserInfo userInfo = new UserInfo();
-    //    if (userLogin.getUserToken() == null) {
-    //      //L=0 T=0 P=0 NP=0
-    //      throw new KnownException("Error! Please fill restore token!");
-    //    } else {
-    //      //L=0 T=1 P=0 NP=0
-    //      //find user by Session Token in DB
-    //      userInfo.setUser(userTokensService.findUserByAccessToken(userLogin.getUserToken()));
-    //      if (userInfo.getUser() == null) {
-    //        throw new KnownException("Error: Incorrect or expired Token!");
-    //      }
-    //    }
-    //    return "Ok. Password was changed! Please login using new password!";
-    return "check";
+    convertUserLoginBlankToNull(userLogin);
+    User user;
+    if (userLogin.getUserToken() == null) {
+      //L=0 T=0 P=0 NP=0
+      throw new KnownException("Error! Please fill restore token!");
+    } else {
+      //L=0 T=1 P=0 NP=0
+      //find user by Session Token in DB
+      user = userTokensService.findUserByAccessToken(userLogin.getUserToken());
+      if (user == null) {
+        throw new KnownException("Error: Incorrect or expired Token!");
+      }
+    }
+    return "Ok. Password was changed! Please login using new password!";
   }
 
   public String checkPasswordChange(UserLogin userLogin) {
-    //todo
-    //    convertUserLoginBlankToNull(userLogin);
-    //    UserInfo userInfo = new UserInfo();
-    //    if (userLogin.getUserLogin() == null) {
-    //      //L=0 T=0 P=0 NP=0
-    //      return "Error! Have no user login!";
-    //    } else {
-    //      if (userLogin.getUserPassword() == null) {
-    //        //L=1 T=0 P=0 NP=0
-    //        return "Error: incorrect old password!";
-    //      } else {
-    //        //L=1 T=0 P=1 NP=0
-    //        userInfo.setUser(usersService.checkIfLoginAndPasswordIsCorrect(userLogin));
-    //        if (userInfo.getUser() == null) {
-    //          return "Error: incorrect login or password!";
-    //        }
-    //        //Save new password
-    //        userInfo.getUser().setUserPassword(userLogin.getUserPasswordNew());
-    //        usersRepository.save(userInfo.getUser());
-    //      }
-    //      return "Ok, Password was changed successfully!";
-    //    }
-    return "check";
+    convertUserLoginBlankToNull(userLogin);
+    User user;
+    if (userLogin.getUserLogin() == null) {
+      //L=0 T=0 P=0 NP=0
+      throw new KnownException("Error! Have no user login!");
+    } else {
+      if (userLogin.getUserPassword() == null) {
+        //L=1 T=0 P=0 NP=0
+        throw new KnownException("Error: incorrect old password!");
+      } else {
+        //L=1 T=0 P=1 NP=0
+        user = usersService.checkIfLoginAndPasswordIsCorrect(userLogin);
+        if (user == null) {
+          throw new KnownException("Error: incorrect login or password!");
+        }
+        //Save new password
+        user.setUserPassword(userLogin.getUserPasswordNew());
+        usersRepository.save(user);
+      }
+      return "Ok, Password was changed successfully!";
+    }
   }
 
   public UserResponse checkSignUpCredentials(UserLogin userLogin) {
     convertUserLoginBlankToNull(userLogin);
-
     User user;
     if (userLogin.getUserLogin() == null) {
       if (userLogin.getUserToken() == null) {
@@ -130,7 +124,7 @@ public class LoginsService {
     //Collect User Points
     user.setUserPoints(usersService.collectUserPointsAndFillInEmptyOnes(user));
     user = usersRepository.save(user);
-    return userFacade.mapEntityToResponce(user);
+    return userFacade.mapEntityToResponse(user);
   }
 
   void saveLoginToMailOrPhone(User user, UserLogin userLogin) {
@@ -184,7 +178,7 @@ public class LoginsService {
     //Collect User Points
     user.setUserPoints(usersService.collectUserPointsAndFillInEmptyOnes(user));
     user = usersRepository.save(user);
-    return userFacade.mapEntityToResponce(user);
+    return userFacade.mapEntityToResponse(user);
   }
 
   void convertUserLoginBlankToNull(UserLogin userLogin) {
