@@ -1,6 +1,7 @@
 package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.UserTokenResponse;
 import ua.com.danit.entity.UserCar;
@@ -49,13 +50,16 @@ public class UsersService {
   @Autowired
   LoginsService loginService;
 
+  @Autowired
+  PasswordEncoder passwordEncoder;
+
   public User createNewUsers(User users) {
     return usersRepository.save(users);
   }
 
   String passwordEncrypt(String userPasswordNew) {
-    //!!!!! Write password encryption procedure
-    return userPasswordNew;
+    //TODO !!!!! Write password encryption procedure
+    return passwordEncoder.encode(userPasswordNew);
   }
 
   private User changePassword(UserLogin userLogin) {
