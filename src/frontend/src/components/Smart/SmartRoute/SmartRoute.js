@@ -4,6 +4,7 @@ import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Button from '@material-ui/core/Button'
+import Zoom from '@material-ui/core/Zoom'
 
 
 const styles = theme => ({
@@ -62,8 +63,10 @@ class SmartRoute extends Component {
         const { classes } = this.props
         const { item, handleEdit, handleDelete } = this.props
         const { editing } = this.state
+        const transitionDelay = 100*item.userPointId + 'ms'
         return(
             <>
+
                 {editing &&
                 <IconButton
                     onClick={() => handleDelete(item.userPointId)}
@@ -72,7 +75,7 @@ class SmartRoute extends Component {
                     <DeleteIcon/>
                 </IconButton>
                 }
-
+                    <Zoom in={true} style={{transitionDelay}}>
                 <Button
                         onContextMenu={this.contextMenuDisable}
                         onTouchStart={this.touchStart}
@@ -84,7 +87,7 @@ class SmartRoute extends Component {
                 >
                     {item.userPointName}
                 </Button>
-
+                    </Zoom>
                 {editing &&
                 <IconButton
                     onClick={() => handleEdit(item)}

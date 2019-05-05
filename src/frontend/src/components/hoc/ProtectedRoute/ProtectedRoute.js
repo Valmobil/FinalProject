@@ -18,6 +18,9 @@ class ProtectedRoute extends Component {
         if (!this.props.users.initialLoad && prevProps.path !== this.props.path) {
             this.props.checkAuthorizationByToken()
         }
+        if (prevProps.path !== this.props.path) {
+            localStorage.setItem('iTripper_page', this.props.path)
+        }
     }
 
     render() {

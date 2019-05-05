@@ -15,6 +15,7 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import InputLabel from '@material-ui/core/InputLabel'
+import Slide from '@material-ui/core/Slide';
 import Map from '../Map/Map'
 import LiveSearch from'../LiveSearch/LiveSearch'
 import './Smart.css'
@@ -301,7 +302,7 @@ class Smart extends Component {
     }
 
     componentDidMount () {
-        if (this.props.users.cars.length === 1) this.setState({car: this.props.users.cars[0]})
+        if (this.props.users.userCars.length === 1) this.setState({car: this.props.users.userCars[0]})
         const options = {
             enableHighAccuracy: true
         };
@@ -316,15 +317,15 @@ class Smart extends Component {
         // console.log(this.props.users)
         const { classes } = this.props
         const { role, car, name, value, editing, adding, creatingTrip } = this.state
-        const { cars, userPoints } = this.props.users
-        let currentCar = cars.length === 1 ? cars[0] : car
+        const { userCars, userPoints } = this.props.users
+        let currentCar = userCars.length === 1 ? userCars[0] : car
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
 // console.log('targetCoordinates = ', this.props.trips.targetCoordinates)
 // console.log('myCoordinates = ', this.props.trips.myCoordinates)
 // console.log('Render: this.props.trips.intermediatePoints = ', this.props.users.intermediatePoints)
-
+console.log('userCars = ', userCars)
 
 
         let placesList = null
@@ -415,8 +416,8 @@ class Smart extends Component {
 
 
 
-        const carList = cars.map((item) => {
-            return <MenuItem value={item} key = {item.carId}>{item.carName + ' ' + item.carColour}</MenuItem>
+        const carList = userCars.map((item) => {
+            return <MenuItem value={item} key = {item.userCarId}>{item.userCarName + ' ' + item.userCarColour}</MenuItem>
         })
 
         let dependentButton = null
@@ -444,6 +445,7 @@ class Smart extends Component {
             )
         } else if ( !adding ){
             dependentButton = (
+              <Slide direction="up" in={!adDisable} mountOnEnter unmountOnExit>
                 <Button onClick={this.addNewPoint}
                         type="raised"
                         color="primary"
@@ -458,6 +460,7 @@ class Smart extends Component {
                 >
                     New quick trip
                 </Button>
+              </Slide>
             )
         }
 
@@ -466,7 +469,7 @@ class Smart extends Component {
                 <div className="welcome-user">
                     {!adding && !editing &&
                     <>
-                    <span className="welcome-span role-question">what is your today's role?</span>
+                       <span className="role-question">what is your role today?</span>
                         <RadioGroup
                             aria-label="position"
                             name="position"
@@ -490,6 +493,7 @@ class Smart extends Component {
                         </RadioGroup>
 
                         <div className="type-button-container">
+                            <Slide direction="down" in={true} mountOnEnter unmountOnExit>
                             <Button onClick={this.newTripRedirect}
                                     classes={{
                                         root: classes.typeButtons,
@@ -498,6 +502,8 @@ class Smart extends Component {
                             >
                                 Plan new trip
                             </Button>
+                            </Slide>
+                            <Slide direction="down" in={true} mountOnEnter unmountOnExit>
                             <Button onClick ={this.tripsHistoryRedirect}
                                     classes={{
                                         root: classes.typeButtons,
@@ -506,12 +512,13 @@ class Smart extends Component {
                             >
                                 Trip history
                             </Button>
+                            </Slide>
                         </div>
                         {!creatingTrip &&
                         <span className="welcome-span">Choose from quick trips:</span>
                         }
-                        </>
-                        }
+                    </>
+                    }
 
                         {placesList}
 
