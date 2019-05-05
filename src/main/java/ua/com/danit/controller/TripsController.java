@@ -39,7 +39,8 @@ public class TripsController {
 
   @PostMapping("list")
   public RequestEntity<List<TripResponse>> getUserTripList(@RequestHeader String authorization) {
-    return new RequestEntity<>(tripsService.getTripListService(userTokensService.findUserByAccessToken(authorization)),HttpStatus.OK);
+    return new RequestEntity<>(tripsService.getTripListService(userTokensService.findUserByAccessToken(authorization)),
+        HttpStatus.OK);
   }
 
   @PostMapping("others")

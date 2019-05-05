@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ua.com.danit.dto.UserPointResponse;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
+import ua.com.danit.error.KnownException;
 import ua.com.danit.service.UserPointsService;
 
 import java.util.LinkedList;
@@ -29,7 +30,7 @@ public class UserPointFacade extends AbstractDtoFacade<UserPoint, UserPointRespo
       }
       return userPointsService.saveUserPoints(userPoints, user);
     }
-    return null;
+    throw new KnownException("Error! User not found with this access token!");
   }
 
 }

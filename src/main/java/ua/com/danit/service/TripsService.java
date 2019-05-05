@@ -60,7 +60,7 @@ public class TripsService {
   }
 
 
-  public List<TripResponse>  getTripListService(User user) {
+  public List<TripResponse> getTripListService(User user) {
     List<Trip> trips = new LinkedList<>();
     //Get list of trips except deleted ones
     for (Trip trip : tripsRepository.findByUser(user)) {
@@ -87,7 +87,7 @@ public class TripsService {
       if (trip.getUser().getUserId().equals(user.getUserId())) {
         //create copy
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule() );
+        objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         Trip tripDeepCopy = new Trip();
         try {
