@@ -89,7 +89,7 @@ public class TripsService {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        Trip tripDeepCopy = new Trip();
+        Trip tripDeepCopy;
         try {
           tripDeepCopy = objectMapper.readValue(objectMapper.writeValueAsString(trip), Trip.class);
           //re-new some fields
