@@ -25,6 +25,13 @@ public class ApplicationBeans {
   @Value("${aws.s3.credentials.path}")
   private String s3CredentialsPath;
 
+  @Value("${aws.s3.credentials.endpointUrl}")
+  private String s3CredentialsEndpointUrl;
+
+  @Value("${aws.s3.credentials.bucketName}")
+  private String s3CredentialsBucketName;
+
+
   @Autowired
   private ModelMapperConfig modelMapperConfig;
 
