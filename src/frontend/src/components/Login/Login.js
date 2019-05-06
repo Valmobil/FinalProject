@@ -6,7 +6,6 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import {connect} from 'react-redux'
 import { setAuthorization, setSocialAuth, setLoginRejected, setAuthByToken } from '../../actions/userCreators'
-import './Login.css'
 import { withStyles } from '@material-ui/core/styles'
 import InputAdornment from '@material-ui/core/InputAdornment';
 import firebase from 'firebase'
@@ -17,7 +16,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import Link from '@material-ui/core/Link';
 import Popup from './Popup/Popup'
+import './Login.css'
+
 
 firebase.initializeApp({
   apiKey: 'AIzaSyDx0_JsSsE45hOx_XKwpVptROViTneTVbA',
@@ -29,23 +31,26 @@ const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
 class Login extends Component {
-    state = {
-      user: {
-        login: '',
-        password: '',
-        token: '',
-        confirmPassword: ''
-      },
-      isSigned: false,
-      signType: 'log-in',
-      alertOpen: false,
-      passwordIsHidden: true,
-      error: {
-        login: '',
-        password: '',
-        confirmPassword: '',
-      }
-    };
+
+      state = {
+            user: {
+                login: '',
+                password: '',
+                token: '',
+                confirmPassword: ''
+            },
+            isSigned: false,
+            signType: 'log-in',
+            alertOpen: false,
+            passwordIsHidden: true,
+            error: {
+                login: '',
+                password: '',
+                confirmPassword: '',
+            }
+        };
+        loginInput = React.createRef();
+
 
 
 
@@ -71,7 +76,7 @@ class Login extends Component {
     validate = (name) => {
         const { login, password, confirmPassword } = this.state.user
         if (name === 'login'){
-            if (login.length === 0 || !(phoneNumber.test(login.split('-').join('')) || email.test(login.toLowerCase()))){
+            if (!(phoneNumber.test(login.split('-').join('')) || email.test(login.toLowerCase()))){
                 this.setState({error: {...this.state.error, login: 'Please enter valid email or phone number'}})
             }
         }
@@ -85,6 +90,7 @@ class Login extends Component {
 
     handleRadio = event => {
       this.setState({ signType: event.target.value })
+      this.loginInput.current.focus();
     };
 
     handleInput = ({target: {name, value}}) => {
@@ -180,7 +186,7 @@ class Login extends Component {
 
               {signType === 'log-in' &&<span>or</span>}
             <TextField
-              label="Phone number or email"
+              label="Login"
               autoFocus={true}
               style={style.input}
               autoComplete="off"
@@ -191,6 +197,7 @@ class Login extends Component {
               onFocus={this.onFocus}
               error={this.state.error.login.length > 0}
               helperText={this.state.error.login}
+              inputRef={this.loginInput}
               InputProps={{
                 classes: {
                   input: classes.inputColor
@@ -256,6 +263,11 @@ class Login extends Component {
                           ),
                       }}
                     />
+            }
+            {signType === 'log-in' &&
+                <Link href={'/restore_password'} className={classes.link}>
+                      forgot password?
+                </Link>
             }
             <Button onClick={() => this.setAuth(this.state.user)}
               disabled={!allChecks}
@@ -324,6 +336,10 @@ const styles = theme => ({
         outline: 'none',
     }
   },
+  link:{
+     marginTop: 30,
+     color: '#262626',
+    },
 })
 
 const mapStateToProps = (state) => {
