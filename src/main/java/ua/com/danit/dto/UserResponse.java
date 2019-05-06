@@ -1,8 +1,6 @@
 package ua.com.danit.dto;
 
 import lombok.Data;
-import ua.com.danit.entity.UserCar;
-import ua.com.danit.entity.UserPoint;
 import java.util.List;
 
 @Data
@@ -17,6 +15,6 @@ public class UserResponse {
   private Integer userIsConfirmedPhone;
   private String userTokenRefresh;
   private String userTokenAccess;
-  private List<UserCar> userCars;
+  private List<UserCarResponse> userCars;
   private List<UserPointResponse> userPoints;
 }

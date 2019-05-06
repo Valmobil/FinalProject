@@ -115,16 +115,14 @@ export const setAuthorization = (state, signType) => (dispatch) => {
     axios.post('/api/logins/' + route, data)
         .then(response => {
             console.log('user = ',response.data)
-            dispatch(setErrorMessage(response.data.message))
-            if (response.data !== null) {
-                setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-                dispatch(authDispatches(response))
-                dispatch({type: INITIAL_LOAD, payload: true})
-            } else {
-                dispatch(setLoginRejected(true))
-            }
+            setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+            dispatch(authDispatches(response))
+            dispatch({type: INITIAL_LOAD, payload: true})
         })
-        .catch(err => console.log(err))
+        .catch(error => {
+            dispatch(setLoginRejected(true))
+            dispatch(setErrorMessage(error.response.data))
+        })
 }
 //* *********************
 

@@ -20,11 +20,6 @@ application:
     xmlsourcesavetodbqty: 10
 
 
-amazonProperties:
-  endpointUrl: https://s3.us-east-2.amazonaws.com
-  accessKey: XXXXXXXXXXXXXXXXX
-  secretKey: XXXXXXXXXXXXXXXXXXXXXXXXXX
-  bucketName: your-bucket-name
 
 
 ---
@@ -49,8 +44,9 @@ server:
 aws:
   s3:
     credentials:
-      path:
-        src/main/resources/aws/s3/credentials/dev
+      path: src/main/resources/credentials/aws/aws-S3-dev.csv
+      endpointUrl: https://s3.us-east-2.amazonaws.com
+      bucketName: imagestoredev
 
 ---
 
