@@ -51,12 +51,12 @@ public class TripsService {
   }
 
 
-  public List<Trip> getOwnAndOtherTrips(User user) {
+  public List<TripResponse> getOwnAndOtherTrips(User user) {
     List<Trip> trips = new LinkedList<>();
-    trips.add(getTripById(1L));
-    trips.add(getTripById(3L));
-    trips.add(getTripById(4L));
-    return trips;
+    trips.add(tripsRepository.getOne(1L));
+    trips.add(tripsRepository.getOne(3L));
+    trips.add(tripsRepository.getOne(4L));
+    return tripFacade.mapEntityListToResponseDtoList(trips);
   }
 
 
@@ -72,7 +72,7 @@ public class TripsService {
   }
 
   public void deleteTripById(Long tripId, User user) {
-    Trip trip = tripsRepository.findByTripId(tripId);
+    Trip trip = tripsRepository.getOne(tripId);
     if (user != null) {
       if (trip.getUser().getUserId().equals(user.getUserId())) {
         trip.setTripIsDeleted(1);
@@ -82,7 +82,7 @@ public class TripsService {
   }
 
   public void copyTripById(long tripId, User user) {
-    Trip trip = tripsRepository.findByTripId(tripId);
+    Trip trip = tripsRepository.getOne(tripId);
     if (user != null) {
       if (trip.getUser().getUserId().equals(user.getUserId())) {
         //create copy

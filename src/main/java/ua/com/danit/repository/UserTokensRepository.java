@@ -19,4 +19,5 @@ public interface UserTokensRepository extends JpaRepository<UserToken, Long> {
     List<UserToken> userTokens = findByUser(user);
     deleteInBatch(userTokens);
   }
+  
 }

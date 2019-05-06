@@ -1,11 +1,9 @@
 package ua.com.danit.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,26 +36,26 @@ public class TripsController {
   }
 
   @PostMapping("list")
-  public RequestEntity<List<TripResponse>> getUserTripList(@RequestHeader String authorization) {
-    return new RequestEntity<>(tripsService.getTripListService(userTokensService.findUserByAccessToken(authorization)),
+  public ResponseEntity<List<TripResponse>> getUserTripList(@RequestHeader String authorization) {
+    return new ResponseEntity<>(tripsService.getTripListService(userTokensService.findUserByAccessToken(authorization)),
         HttpStatus.OK);
   }
 
   @PostMapping("others")
-  public RequestEntity<List<Trip>> getOtherUsersTripList(@RequestHeader String authorization) {
-    return new RequestEntity<>(tripsService.getOwnAndOtherTrips(userTokensService.findUserByAccessToken(authorization)),HttpStatus.OK);
+  public ResponseEntity<List<TripResponse>> getOtherUsersTripList(@RequestHeader String authorization) {
+    return new ResponseEntity<>(tripsService.getOwnAndOtherTrips(userTokensService.findUserByAccessToken(authorization)),
+        HttpStatus.OK);
   }
 
   @PostMapping("copy")
-  public List<Trip> copyUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
+  public ResponseEntity<List<TripResponse>> copyUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
     User user = userTokensService.findUserByAccessToken(authorization);
     tripsService.copyTripById(trip.getTripId(), user);
-    return tripsService.getTripListService(user);
+    return new ResponseEntity<>(tripsService.getTripListService(user),HttpStatus.OK);
   }
 
   @DeleteMapping
   public void deleteUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
     tripsService.deleteTripById(trip.getTripId(), userTokensService.findUserByAccessToken(authorization));
   }
-
 }
