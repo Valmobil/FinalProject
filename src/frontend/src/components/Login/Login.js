@@ -14,23 +14,19 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import Slide from '@material-ui/core/Slide'
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import Popup from './Popup/Popup'
 
 firebase.initializeApp({
   apiKey: 'AIzaSyDx0_JsSsE45hOx_XKwpVptROViTneTVbA',
   authDomain: 'social-auth-7.firebaseapp.com'
 })
 
-function Transition (props) {
-  return <Slide direction="up" {...props} />
-}
+const phoneNumber = /^\+?[0-9]{10}/;
+const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
 class Login extends Component {
     state = {
@@ -44,7 +40,14 @@ class Login extends Component {
       signType: 'log-in',
       alertOpen: false,
       passwordIsHidden: true,
+      error: {
+        login: '',
+        password: '',
+        confirmPassword: '',
+      }
     };
+
+
 
     uiConfig = {
       signInFlow: 'popup',
@@ -55,6 +58,29 @@ class Login extends Component {
       callbacks: {
         signInSuccessWithAuthResult: () => false
       }
+    }
+
+    onBlur = ({target: {name}}) => {
+        this.validate(name)
+    }
+
+    onFocus = ({target: {name}}) => {
+        this.setState({error: {...this.state.error, [name]: ''}})
+    }
+
+    validate = (name) => {
+        const { login, password, confirmPassword } = this.state.user
+        if (name === 'login'){
+            if (login.length === 0 || !(phoneNumber.test(login.split('-').join('')) || email.test(login.toLowerCase()))){
+                this.setState({error: {...this.state.error, login: 'Please enter valid email or phone number'}})
+            }
+        }
+        if (name === 'password' && password.length < 5){
+            this.setState({error: {...this.state.error, password: 'Password has to be 5 characters at least'}})
+        }
+        if (name === 'confirmPassword' && password !== confirmPassword){
+            this.setState({error: {...this.state.error, password: 'Passwords do not match'}})
+        }
     }
 
     handleRadio = event => {
@@ -112,18 +138,16 @@ class Login extends Component {
         }));
     }
 
-    tryToLoginAgagin = () => {
+    tryToLoginAgain = () => {
         this.setState({user: {...this.state.user, login: '', password: '', confirmPassword: ''}}, () => this.props.setLoginRejected(false))
     }
 
     render () {
       const { classes } = this.props
       const { signType, passwordIsHidden, user: {login, password, confirmPassword} } = this.state
-      const phoneNumber = /^\+?[0-9]{10}/;
-      const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const allChecks = (phoneNumber.test(login.split('-').join('')) || email.test(login.toLowerCase())) &&
-          ((signType === 'log-in' && login !== '' && password !== '') ||
-              (signType === 'register' && login !== '' && password !== ''))
+          ((signType === 'log-in' && login !== '' && password.length >= 5) ||
+              (signType === 'register' && login !== '' && password.length >= 5 && password === confirmPassword))
       return (
         <div className="login-container">
           <MuiThemeProvider theme={theme}>
@@ -154,7 +178,7 @@ class Login extends Component {
                       firebaseAuth={firebase.auth()}
                     />
 
-            <span>or</span>
+              {signType === 'log-in' &&<span>or</span>}
             <TextField
               label="Phone number or email"
               autoFocus={true}
@@ -163,6 +187,10 @@ class Login extends Component {
               name='login'
               value={login}
               onChange={this.handleInput}
+              onBlur={this.onBlur}
+              onFocus={this.onFocus}
+              error={this.state.error.login.length > 0}
+              helperText={this.state.error.login}
               InputProps={{
                 classes: {
                   input: classes.inputColor
@@ -177,6 +205,10 @@ class Login extends Component {
               name='password'
               value={password}
               onChange={this.handleInput}
+              onBlur={this.onBlur}
+              onFocus={this.onFocus}
+              error={this.state.error.password.length > 0}
+              helperText={this.state.error.password}
               InputProps={{
                 classes: {
                   input: classes.inputColor
@@ -203,6 +235,10 @@ class Login extends Component {
                       name='confirmPassword'
                       value={confirmPassword}
                       onChange={this.handleInput}
+                      onBlur={this.onBlur}
+                      onFocus={this.onFocus}
+                      error={this.state.error.confirmPassword.length > 0}
+                      helperText={this.state.error.confirmPassword}
                       InputProps={{
                           classes: {
                               input: classes.inputColor
@@ -232,26 +268,13 @@ class Login extends Component {
                Submit
             </Button>
           </MuiThemeProvider>
-          <Dialog
-            open={this.props.users.loginRejected}
-            TransitionComponent={Transition}
-            keepMounted
-            onClose={this.handleAlertClose}
-            aria-labelledby="alert-dialog-slide-title"
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogContent>
-              <DialogContentText id="alert-dialog-slide-description" style={{textAlign: 'center'}}>
-                  {this.props.users.errorMessage}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.tryToLoginAgagin} color="primary">
-                Ok
-              </Button>
 
-            </DialogActions>
-          </Dialog>
+          <Popup
+              handleAlertClose={this.handleAlertClose}
+              tryToLoginAgain={this.tryToLoginAgain}
+              loginRejected={this.props.users.loginRejected}
+              errorMessage={this.props.users.errorMessage}
+          />
         </div>
       )
     }

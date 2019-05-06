@@ -301,6 +301,20 @@ class Smart extends Component {
         this.props.history.push('/newtrip')
     }
 
+    // getCurrentPosition = (options) => {
+    //     return new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, options))
+    // }
+    //
+    // getMyLocation = async(options) => {
+    //     try{
+    //         const position = await this.getCurrentPosition(options)
+    //         const { latitude, longitude } = position.coords
+    //         this.props.setMyCoordinates({ latitude, longitude })
+    //     } catch (error) {
+    //         console.log('Error fetching location: ',error)
+    //     }
+    // }
+
     componentDidMount () {
         if (this.props.users.userCars.length === 1) this.setState({car: this.props.users.userCars[0]})
         const options = {
