@@ -138,13 +138,16 @@ public class UsersService {
   }
 
   User updateUserTokenInUserEntity(User user) {
+    UserTokenResponse userTokenResponse = userTokensService.generateInitialTokinSet();
     if (user.getUserTokens() == null) {
       user.setUserTokens(new LinkedList<>());
+    }
+    if (user.getUserTokens().size() == 0) {
       user.getUserTokens().add(new UserToken());
       user.getUserTokens().get(0).setUser(user);
       user.getUserTokens().get(0).setUserTokenId(null);
+      user.getUserTokens().set(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, new UserToken()));
     }
-    UserTokenResponse userTokenResponse = userTokensService.generateInitialTokinSet();
     user.getUserTokens().set(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, user.getUserTokens().get(0)));
     return user;
   }

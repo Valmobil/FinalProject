@@ -19,9 +19,6 @@ application:
     xmlsource: src/main/resources/maps/map.xml
     xmlsourcesavetodbqty: 10
 
-
-
-
 ---
 
 spring:
@@ -44,9 +41,12 @@ server:
 aws:
   s3:
     credentials:
-      path: src/main/resources/credentials/aws/aws-S3-dev.csv
-      endpointUrl: https://s3.us-east-2.amazonaws.com
-      bucketName: imagestoredev
+#      path: src/main/resources/credentials/aws/aws-S3-dev.yml
+#      endpointUrl: https://s3.eu-central-1.amazonaws.com
+      region: eu-central-1
+      bucket: imagestoredev/users/
+      accessKey: AKIARB2UKB5IJWXCHIJW
+      secretKey: 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
 
 ---
 
