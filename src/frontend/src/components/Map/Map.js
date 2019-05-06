@@ -81,6 +81,7 @@ class Map extends Component {
 
         geocoder.reverseGeocode(parameters,
             (result) => {
+                console.log('result = ', result)
                 this.props.setSearchedLocation(result.Response.View[0].Result[0].Location.Address.Label);
             }, (error) => {
                 console.log(error);
@@ -145,7 +146,7 @@ class Map extends Component {
         }
         const router = this.platform.getRoutingService(),
             routeRequestParams = params ? params : {
-                mode: 'fastest;userCar',
+                mode: 'fastest;car',
                 representation: 'display',
                 routeattributes : 'waypoints,summary,shape,legs',
                 maneuverattributes: 'direction,action',
@@ -218,7 +219,6 @@ class Map extends Component {
                 lng: this.props.coords.longitude,
             };
         }
-console.log('this.props.coords = ', this.props.coords)
 
         this.platform = new H.service.Platform(platform);
         const layer = this.platform.createDefaultLayers();
@@ -234,7 +234,8 @@ console.log('this.props.coords = ', this.props.coords)
         // eslint-disable-next-line
         const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
         this.setUpClickListener()
-        if ((this.props.targetCoordinates.latitude === 0 || Object.keys(this.props.targetCoordinates).length === 0) && !this.props.showMainRoute){
+        if ((!this.props.targetCoordinates || Number(this.props.targetCoordinates.latitude) === 0
+            || Number(this.props.targetCoordinates.longitude) === 0 ) && !this.props.showMainRoute){
             this.props.setTargetCoordinates({
                 latitude: 50.449394,
                 longitude: 30.525433,
@@ -246,7 +247,7 @@ console.log('this.props.coords = ', this.props.coords)
     componentDidUpdate(prevProps) {
         if (this.props.targetCoordinates !== prevProps.targetCoordinates){
             this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
-            if (Object.keys(this.props.coords).length > 0 && Object.keys(this.props.targetCoordinates).length > 0 && this.props.showSmartRoute && !this.state.calculationRoute){
+            if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute && !this.state.calculationRoute){
                 this.calculateRouteFromAtoB()
                 this.setState({calculationRoute: true})
             }

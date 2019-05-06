@@ -6,7 +6,7 @@ const initialState = {
     trip: {},
     myCoordinates: null,
     searchedLocation: '',
-    targetCoordinates: {},
+    targetCoordinates: null,
     initialLoad: true,
     intermediatePoints: [],
     mainTripParams: null,
