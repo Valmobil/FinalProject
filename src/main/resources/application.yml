@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: local
+    include: awss3dev
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -18,9 +20,8 @@ application:
   map:
     xmlsource: src/main/resources/maps/map.xml
     xmlsourcesavetodbqty: 10
-
-
-
+  images:
+    save: AWSS3
 
 ---
 
@@ -41,13 +42,6 @@ spring:
 server:
   port: 9000
 
-aws:
-  s3:
-    credentials:
-      path: src/main/resources/credentials/aws/aws-S3-dev.csv
-      endpointUrl: https://s3.us-east-2.amazonaws.com
-      bucketName: imagestoredev
-
 ---
 
 spring:
@@ -63,19 +57,8 @@ spring:
     hibernate:
       ddl-auto: create
 
-aws:
-  s3:
-    credentials:
-      path:
-        src/main/resources/aws/s3/credentials/dev
 
 ---
 
 spring:
   profiles: prod
-
-aws:
-  s3:
-    credentials:
-      path:
-        src/main/resources/aws/s3/credentials/prod
