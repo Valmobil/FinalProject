@@ -147,7 +147,11 @@ class LiveSearch extends Component {
 
     renderInputComponent = (inputProps) => {
         const { classes, inputRef = () => {}, ref, ...other } = inputProps;
-        return (
+        const visibleFields = this.props.liveSearchShow;
+        console.log('from live search', visibleFields);
+
+            if (visibleFields){
+                return (
                 <MuiThemeProvider theme={theme}>
                 <TextField
                     fullWidth
@@ -197,7 +201,27 @@ class LiveSearch extends Component {
                 </Button>
                 </div>
                 </MuiThemeProvider>
-        );
+                );
+            } else {
+                return (
+                    <MuiThemeProvider theme={theme}>
+                        <TextField
+                            fullWidth
+                            InputProps={{
+                                inputRef: node => {
+                                    ref(node);
+                                    inputRef(node);
+                                },
+                                classes: {
+                                    input: classes.inputColor,
+                                },
+                            }}
+                            {...other}
+                        />
+                    </MuiThemeProvider>)
+            }
+
+
     }
 
     componentDidMount(){
@@ -250,7 +274,8 @@ class LiveSearch extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        searchedLocation: state.users.searchedLocation
+        searchedLocation: state.users.searchedLocation,
+        liveSearchShow: state.users.liveSearchShow,
     }
 }
 

@@ -127,8 +127,9 @@ class NewTrip extends Component {
     }
 
     render() {
-      const { classes, newTrip} = this.props
-
+      const { classes, newTrip} = this.props;
+      const showSearch = this.props.users;
+      console.log('show live search from new trip',showSearch);
       return (
             <form className='trip-container' onSubmit={this.submitTrip}>
                 <h1>New Trip</h1>
