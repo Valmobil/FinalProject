@@ -6,9 +6,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.TripResponse;
+import ua.com.danit.dto.TripResponseWithUser;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.TripPoint;
 import ua.com.danit.entity.User;
+import ua.com.danit.error.KnownException;
 import ua.com.danit.facade.TripFacade;
 import ua.com.danit.repository.TripsRepository;
 
@@ -46,19 +48,21 @@ public class TripsService {
     if (tripsRepository.save(trip) != null) {
       return "Ok";
     } else {
-      return "Fail";
+      throw new KnownException("Error! Trip have not been saved!");
     }
   }
 
-
-  public List<TripResponse> getOwnAndOtherTrips(User user) {
+  public List<TripResponseWithUser> getOwnAndOtherTrips(User user) {
     List<Trip> trips = new LinkedList<>();
     trips.add(tripsRepository.getOne(1L));
     trips.add(tripsRepository.getOne(3L));
     trips.add(tripsRepository.getOne(4L));
-    return tripFacade.mapEntityListToResponseDtoList(trips);
+    List<TripResponseWithUser> tripResponses = new LinkedList<>();
+    for (Trip trip : trips) {
+      tripResponses.add(tripFacade.mapEntityToResponseDtoWithUser(trip));
+    }
+    return tripResponses;
   }
-
 
   public List<TripResponse> getTripListService(User user) {
     List<Trip> trips = new LinkedList<>();

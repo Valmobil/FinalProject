@@ -28,3 +28,6 @@
 .dependent-button-container{
     margin-top: 30px;
 }
+.smart-button{
+    border: 1px solid red;
+}

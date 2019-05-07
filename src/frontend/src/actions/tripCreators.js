@@ -42,7 +42,7 @@ export const setMainTrips = (id) => dispatch => {
             res.data.forEach(element => {
                 let currentRouteArray = []
                 let routeRequestParams = {
-                    mode: 'fastest;userCar',
+                    mode: 'fastest;car',
                     representation: 'display',
                     routeattributes : 'waypoints,summary,shape,legs',
                     maneuverattributes: 'direction,action',

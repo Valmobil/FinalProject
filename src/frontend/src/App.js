@@ -26,14 +26,14 @@ class App extends Component {
         <div className="App">
           <Switch>
             <Route exact path='/' component={Login}/>
-            <ProtectedRoute exact path="/main" component={Main}/>
-            <ProtectedRoute exact path="/smart" component={Smart}/>
-            <ProtectedRoute exact path="/profile" component={Profile}/>
-            <Route exact path="/restore_password" component={PassRestoration}/>
-            <Route exact path="/C" component={ChangePassword} />
-            <ProtectedRoute exact path='/mytrips' component={TripsHistoryForm}/>
-            <ProtectedRoute exact path='/newtrip' component={NewTrip}/>
-            <ProtectedRoute exact path='/ac' component={AddCar}/>
+            <ProtectedRoute path="/main" component={Main}/>
+            <ProtectedRoute path="/smart" component={Smart}/>
+            <ProtectedRoute path="/profile" component={Profile}/>
+            <ProtectedRoute path='/mytrips' component={TripsHistoryForm}/>
+            <ProtectedRoute path='/newtrip' component={NewTrip}/>
+            <ProtectedRoute path='/ac' component={AddCar}/>
+            <Route path="/restore_password" component={PassRestoration}/>
+            <Route path="/C" component={ChangePassword} />
             <Route path='*' component={NoMatch}/>
           </Switch>
         </div>

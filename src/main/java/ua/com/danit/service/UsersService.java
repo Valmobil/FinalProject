@@ -125,8 +125,7 @@ public class UsersService {
       }
     } else {
       //If we have no token
-      UserToken userTokenNew = null;
-      userTokenNew = new UserToken();
+      UserToken userTokenNew = new UserToken();
       userTokenNew.setUser(user);
       userTokenNew.setUserTokenExternal(userLogin.getUserToken());
 
@@ -138,14 +137,16 @@ public class UsersService {
   }
 
   User updateUserTokenInUserEntity(User user) {
+    UserTokenResponse userTokenResponse = userTokensService.generateInitialTokinSet();
     if (user.getUserTokens() == null) {
       user.setUserTokens(new LinkedList<>());
-      user.getUserTokens().add(new UserToken());
-      user.getUserTokens().get(0).setUser(user);
-      user.getUserTokens().get(0).setUserTokenId(null);
     }
-    UserTokenResponse userTokenResponse = userTokensService.generateInitialTokinSet();
-    user.getUserTokens().set(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, user.getUserTokens().get(0)));
+    if (user.getUserTokens().size() == 0) {
+      user.getUserTokens().add(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, new UserToken()));
+      user.getUserTokens().get(0).setUser(user);
+    } else {
+      user.getUserTokens().set(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, user.getUserTokens().get(0)));
+    }
     return user;
   }
 
@@ -216,8 +217,10 @@ public class UsersService {
       throw new KnownException("Error: Access token not found!");
     }
     user.setUserId(userFromToken.getUserId());
-    for (UserCar userCar : user.getUserCars()) {
-      userCar.setUser(user);
+    if (user.getUserCars() != null) {
+      for (UserCar userCar : user.getUserCars()) {
+        userCar.setUser(user);
+      }
     }
     user = usersRepository.save(user);
     return user;
