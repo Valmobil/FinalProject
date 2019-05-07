@@ -18,11 +18,14 @@ application:
   map:
     xmlsource: src/main/resources/maps/map.xml
     xmlsourcesavetodbqty: 10
+  images:
+    save: AWSS3
 
 ---
 
 spring:
   profiles: local
+    include: awss3dev
 
   datasource:
     url: jdbc:h2:mem:final-project-preparation
@@ -37,16 +40,6 @@ spring:
 
 server:
   port: 9000
-
-aws:
-  s3:
-    credentials:
-#      path: src/main/resources/credentials/aws/aws-S3-dev.yml
-#      endpointUrl: https://s3.eu-central-1.amazonaws.com
-      region: eu-central-1
-      bucket: imagestoredev/users/
-      accessKey: AKIARB2UKB5IJWXCHIJW
-      secretKey: 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
 
 ---
 
@@ -63,19 +56,8 @@ spring:
     hibernate:
       ddl-auto: create
 
-aws:
-  s3:
-    credentials:
-      path:
-        src/main/resources/aws/s3/credentials/dev
-
+spring.profiles.include: 'awss3dev'
 ---
 
 spring:
   profiles: prod
-
-aws:
-  s3:
-    credentials:
-      path:
-        src/main/resources/aws/s3/credentials/prod
