@@ -3,6 +3,8 @@ package ua.com.danit.facade;
 import org.springframework.stereotype.Component;
 import ua.com.danit.dto.TripPointResponse;
 import ua.com.danit.dto.TripResponse;
+import ua.com.danit.dto.TripResponseWithUser;
+import ua.com.danit.dto.UserResponceTrip;
 import ua.com.danit.entity.Trip;
 
 import java.util.LinkedList;
@@ -23,6 +25,16 @@ public class TripFacade extends AbstractDtoFacade<Trip, TripResponse, TripRespon
     tripResponse.setTripPoint(tripPointResponses);
     return tripResponse;
   }
+
+  public TripResponseWithUser mapEntityToResponseDtoWithUser(Trip entity) {
+    TripResponseWithUser tripResponse = modelMapper.map(entity, TripResponseWithUser.class);
+    List<TripPointResponse> tripPointResponses = tripPointFacade.mapEntityListToResponseDtoList(entity.getTripPoint());
+    tripResponse.setTripPoint(tripPointResponses);
+    UserResponceTrip userResponceTrip = modelMapper.map(entity.getUser(), UserResponceTrip.class);
+    tripResponse.setUser(userResponceTrip);
+    return tripResponse;
+  }
+
 
   @Override
   public List<TripResponse> mapEntityListToResponseDtoList(List<Trip> entityList) {

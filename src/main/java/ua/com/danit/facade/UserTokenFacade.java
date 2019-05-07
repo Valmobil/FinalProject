@@ -12,11 +12,11 @@ public class UserTokenFacade extends AbstractDtoFacade<UserToken, UserTokenRespo
     return super.mapEntityToResponseDto(entity);
   }
 
-  public UserToken mapRequestDtoToEntity(UserTokenResponse dto, UserToken source) {
+  public UserToken mapRequestDtoToEntity(UserTokenResponse dto, UserToken entity) {
     UserToken destination = super.mapRequestDtoToEntity(dto);
-    destination.setUserTokenId(source.getUserTokenId());
-    destination.setUserTokenExternal(source.getUserTokenExternal());
-    destination.setUser(source.getUser());
+    destination.setUserTokenId(entity.getUserTokenId());
+    destination.setUserTokenExternal(entity.getUserTokenExternal());
+    destination.setUser(entity.getUser());
     return destination;
   }
 }

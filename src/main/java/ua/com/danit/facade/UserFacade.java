@@ -2,13 +2,13 @@ package ua.com.danit.facade;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.com.danit.dto.UserRequest;
+import ua.com.danit.dto.UserResponceTrip;
 import ua.com.danit.dto.UserResponse;
 import ua.com.danit.entity.User;
 import ua.com.danit.service.UsersService;
 
 @Component
-public class UserFacade extends AbstractDtoFacade<User, UserRequest, UserResponse> {
+public class UserFacade extends AbstractDtoFacade<User, UserResponceTrip, UserResponse> {
   private UsersService usersService;
   private UserPointFacade userPointFacade;
   private UserCarFacade userCarFacade;

@@ -1,52 +1,74 @@
 package ua.com.danit.config;
 
-import com.amazonaws.auth.PropertiesFileCredentialsProvider;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
 
 @Configuration
 public class ApplicationBeans {
 
+  //Model Mapper Configuration
+  @Autowired
+  private ModelMapperConfig modelMapperConfig;
+
+
   @PostConstruct
   private void initializeModelMapper() {
     modelMapperConfig.initializeModelMapper();
   }
-
-  @Value("${aws.s3.credentials.path}")
-  private String s3CredentialsPath;
-
-  @Value("${aws.s3.credentials.endpointUrl}")
-  private String s3CredentialsEndpointUrl;
-
-  @Value("${aws.s3.credentials.bucketName}")
-  private String s3CredentialsBucketName;
-
-
-  @Autowired
-  private ModelMapperConfig modelMapperConfig;
 
   @Bean
   public ModelMapper modelMapper() {
     return new ModelMapper();
   }
 
-  @Bean
-  public AmazonS3Client amazonS3() {
-    return (AmazonS3Client) AmazonS3ClientBuilder
-        .standard()
-        .withRegion(Regions.EU_CENTRAL_1)
-        .withCredentials(new PropertiesFileCredentialsProvider(s3CredentialsPath))
-        .build();
+  //AWS S3 config
+  //  @Value("${aws.s3.credentials.path}")
+  //  private String s3CredentialsPath;
+  @Value("${aws.s3.credentials.accessKey}")
+  private String awsKeyId;
+  @Value("${aws.s3.credentials.secretKey}")
+  private String awsKeySecret;
+  @Value("${aws.s3.credentials.region}")
+  String awsRegion;
+  @Value("${aws.s3.credentials.bucket}")
+  private String awsS3Bucket;
+
+
+  @Bean(name = "awsKeyId")
+  public String getAwsKeyId() {
+    return awsKeyId;
   }
+
+  @Bean(name = "awsKeySecret")
+  public String getAwsKeySecret() {
+    return awsKeySecret;
+  }
+
+  @Bean(name = "awsRegion")
+  public Region getAwsPollyRegion() {
+    return Region.getRegion(Regions.fromName(awsRegion));
+  }
+
+  @Bean(name = "awsCredentialsProvider")
+  public AWSCredentialsProvider getAwsCredentials() {
+    BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.awsKeyId, this.awsKeySecret);
+    return new AWSStaticCredentialsProvider(awsCredentials);
+  }
+
+  @Bean(name = "awsS3Bucket")
+  public String getAws3Bucket() {
+    return awsS3Bucket;
+  }
+
 
 }

@@ -6,10 +6,8 @@ import ua.com.danit.entity.UserCar;
 import java.util.List;
 
 @Data
-public class UserRequest {
+public class UserResponceTrip {
   private String userName;
   private String userPhone;
-  private String userMail;
   private String userPhoto;
-  private List<UserCar> userCars;
 }
