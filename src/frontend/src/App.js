@@ -11,9 +11,11 @@ import PassRestoration from './components/PassRestoration'
 import ChangePassword from './components/ChangePassword'
 import TripsHistoryForm from "./components/TripsHistory/TripsHistoryForm";
 import NewTrip from './components/NewTrip/NewTrip'
+import Card from './components/FeedbackForms/Cards/Card'
+import Button from './components/FeedbackForms'
 
 import './App.css'
-import FeedbackForms from './components/FeedbackForms'
+// import FeedbackForms from './components/FeedbackForms'
 
 class App extends Component {
   render () {
@@ -28,7 +30,7 @@ class App extends Component {
             <ProtectedRoute exact path="/profile" component={Profile}/>
             <Route exact path="/restore_password" component={PassRestoration}/>
             <Route exact path="/newpassword" component={ChangePassword} />
-            <Route exact path="/feedback" component={FeedbackForms} />
+            <Route exact path="/feedback" component={Button} />
             <Route exact path="/C" component={ChangePassword} />
             <Route exact path='/history' component={TripsHistoryForm}/>
             <Route exact path='/newtrip' component={NewTrip}/>

@@ -5,50 +5,68 @@
 //}
 
 
-.like-button {
-  background: #ffff99;
-  margin-right: 20px;
+//.like-button {
+//  background: #ffff99;
+//  margin-right: 20px;
+//}
+//
+//.liked {
+//  background: #ffff00;
+//  font-size: 20pt;
+//}
+//
+//.likes-counter {
+//  color: #006400;
+//}
+//
+//.dislike-button {
+//  background: #99ffff;
+//}
+//
+//.disliked {
+//  background: #00ffff;
+//  font-size: 20pt;
+//}
+//
+//.dislikes-counter {
+//  color: #0000CD;
+//}
+//
+//.card {
+//  min-width: 275px
+//}
+//
+//
+//.bullet {
+//  display: inline-block;
+//  margin: 0 2px;
+//  transform: scale(0.8)
+//}
+//
+//
+//.title {
+//  font-size: 14px;
+//}
+//
+//
+//.pos {
+//  margin-bottom: 12px;
+//}
+
+.formFeedback-List {
+  border-style: solid;
+  border-color: darkgreen;
+  width: 400px;
+  height: 100px;
+  border-radius: 30px;
+  columns: auto;
+  color: red;
+  display: flex;
+  justify-content: space-between;
 }
 
-.liked {
-  background: #ffff00;
-  font-size: 20pt;
+.formFeedback-item{
+  display: flex;
+  justify-content: space-between;
 }
 
-.likes-counter {
-  color: #006400;
-}
-
-.dislike-button {
-  background: #99ffff;
-}
-
-.disliked {
-  background: #00ffff;
-  font-size: 20pt;
-}
-
-.dislikes-counter {
-  color: #0000CD;
-}
-
-.card {
-  min-width: 275px
-}
-
-
-.bullet {
-  display: inline-block;
-  margin: 0 2px;
-  transform: scale(0.8)
-}
-
-
-.title {
-  font-size: 14px;
-}
-
-
-.pos {
-  margin-bottom: 12px;
-}
