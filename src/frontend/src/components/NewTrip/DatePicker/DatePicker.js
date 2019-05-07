@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import{ connect } from 'react-redux';
-import { addTripDate} from '../../../actions/userCreators'
+import { addTripDate} from '../../../actions/userCreators';
 // import moment from 'moment';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -21,6 +21,10 @@ const styles = theme => ({
 });
 
 class DatePickers extends Component {
+
+  state = {
+    date:'',
+  }
 
   render(){
     const { classes, tripDate } = this.props;

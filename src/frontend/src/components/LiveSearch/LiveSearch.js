@@ -147,8 +147,11 @@ class LiveSearch extends Component {
 
     renderInputComponent = (inputProps) => {
         const { classes, inputRef = () => {}, ref, ...other } = inputProps;
-        const visibleFields = this.props.liveSearchShow;
+        // const visibleFields = this.props.liveSearchShow;
+        const visibleFields = false;
+
         console.log('from live search', visibleFields);
+
 
             if (visibleFields){
                 return (

@@ -1,20 +1,21 @@
 import React, {Component} from 'react';
-import DatePicker from './DatePicker/DatePicker'
 // import TimePicker from './TimePicker/TimePicker'
 // import moment from 'moment';
 import LiveSearch from '../LiveSearch/LiveSearch';
 import { withStyles } from '@material-ui/core/styles'
-import { addNewTrip, showLiveSearch } from '../../actions/userCreators'
+import { addNewTrip, addTripDate, showLiveSearch } from '../../actions/userCreators'
 import { setTargetCoordinates } from '../../actions/tripCreators'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-// import TextField from '@material-ui/core/TextField'
+import TextField from '@material-ui/core/TextField'
 // import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 // import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 // import orange from '@material-ui/core/colors/orange'
 
 import './NewTrip.css'
 import Map from '../Map/Map';
+import ForDateTimePickers from './DateTimePickers/ForDateTimePickers'
+import DatePicker from './DatePicker/DatePicker'
 
 // const theme = createMuiTheme({
 //   palette: {
@@ -104,10 +105,10 @@ class NewTrip extends Component {
 
     addTripDate = (tripDate)=>{
       this.setState({
-        date: tripDate.date.format('YYYY-MM-DD'),
-        time: tripDate.time.format('HH:mm'),
+        tripDateTime:tripDate,
       })
     }
+
 
     submitTrip = (newTrip) =>{
       let liveSearchShow = true;
@@ -127,14 +128,18 @@ class NewTrip extends Component {
     }
 
     render() {
+      const date = new Date();
+      console.log('new date', date);
       const { classes, newTrip} = this.props;
-      const showSearch = this.props.users;
+      const showSearch = this.props.users.liveSearchShow;
       console.log('show live search from new trip',showSearch);
       return (
             <form className='trip-container' onSubmit={this.submitTrip}>
-                <h1>New Trip</h1>
-                <DatePicker tripDate={newTrip} addTripDate={this.addTripDate}/>
-                <LiveSearch
+              <h1>new trip</h1>
+              {/*<ForDateTimePickers/>*/}
+              <DatePicker/>
+
+              <LiveSearch
                   editClose={() => this.editClose(null)}
                   setCoordinates={this.props.setTargetCoordinates}
                   setValue ={this.setValueFrom}

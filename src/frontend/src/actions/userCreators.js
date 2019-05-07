@@ -276,6 +276,6 @@ export const addNewTrip = newTrip => dispatch => {
       .catch(err => console.log(err))
 }
 
-export const showLiveSearch = liveSearchShow => dispatch =>{
+export const showLiveSearch = liveSearchShow => dispatch => {
     dispatch({ type: LIVE_SEARCH_SHOW, payload: liveSearchShow})
 }
