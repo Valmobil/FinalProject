@@ -45,28 +45,28 @@ public class ApplicationBeans {
 
 
   @Bean(name = "awsKeyId")
-  public String getAWSKeyId() {
+  public String getAwsKeyId() {
     return awsKeyId;
   }
 
   @Bean(name = "awsKeySecret")
-  public String getAWSKeySecret() {
+  public String getAwsKeySecret() {
     return awsKeySecret;
   }
 
   @Bean(name = "awsRegion")
-  public Region getAWSPollyRegion() {
+  public Region getAwsPollyRegion() {
     return Region.getRegion(Regions.fromName(awsRegion));
   }
 
   @Bean(name = "awsCredentialsProvider")
-  public AWSCredentialsProvider getAWSCredentials() {
+  public AWSCredentialsProvider getAwsCredentials() {
     BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.awsKeyId, this.awsKeySecret);
     return new AWSStaticCredentialsProvider(awsCredentials);
   }
 
   @Bean(name = "awsS3Bucket")
-  public String getAWSS3Bucket() {
+  public String getAws3Bucket() {
     return awsS3Bucket;
   }
 

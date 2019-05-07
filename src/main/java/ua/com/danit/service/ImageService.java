@@ -15,7 +15,8 @@ public class ImageService {
   private AmazonS3Service amazonS3Service;
 
   @Autowired
-  public ImageService(ImageRepository imageRepository, UserTokensService userTokensService, AmazonS3Service amazonS3Service) {
+  public ImageService(ImageRepository imageRepository, UserTokensService userTokensService,
+                      AmazonS3Service amazonS3Service) {
     this.imageRepository = imageRepository;
     this.userTokensService = userTokensService;
     this.amazonS3Service = amazonS3Service;

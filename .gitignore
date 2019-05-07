@@ -22,5 +22,4 @@
 *.rar
 
 /src/main/resources/credentials/aws/aws-S3-prd.yml
-/aws-S3-dev.yml
-/src/main/resources/application-awss3dev.yml
+/src/main/resources/application-awss3dev.old

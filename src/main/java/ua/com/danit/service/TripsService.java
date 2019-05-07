@@ -59,7 +59,7 @@ public class TripsService {
     trips.add(tripsRepository.getOne(4L));
     List<TripResponseWithUser> tripResponses = new LinkedList<>();
     for (Trip trip : trips) {
-       tripResponses.add(tripFacade.mapEntityToResponseDtoWithUser(trip));
+      tripResponses.add(tripFacade.mapEntityToResponseDtoWithUser(trip));
     }
     return tripResponses;
   }

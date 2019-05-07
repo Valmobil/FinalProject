@@ -142,7 +142,7 @@ public class UsersService {
       user.setUserTokens(new LinkedList<>());
     }
     if (user.getUserTokens().size() == 0) {
-      user.getUserTokens().set(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, new UserToken()));
+      user.getUserTokens().add(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, new UserToken()));
       user.getUserTokens().get(0).setUser(user);
     } else {
       user.getUserTokens().set(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, user.getUserTokens().get(0)));
@@ -217,8 +217,10 @@ public class UsersService {
       throw new KnownException("Error: Access token not found!");
     }
     user.setUserId(userFromToken.getUserId());
-    for (UserCar userCar : user.getUserCars()) {
-      userCar.setUser(user);
+    if (user.getUserCars() != null) {
+      for (UserCar userCar : user.getUserCars()) {
+        userCar.setUser(user);
+      }
     }
     user = usersRepository.save(user);
     return user;

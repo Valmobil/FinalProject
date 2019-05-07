@@ -12,14 +12,10 @@ import ua.com.danit.service.AmazonS3Service;
 public class ModelMapperConfig {
 
   private ModelMapper modelMapper;
-//  private AmazonS3Service amazonS3Service;
 
   @Autowired
-  public ModelMapperConfig(ModelMapper modelMapper
-//      , AmazonS3Service amazonS3Service
-  ) {
+  public ModelMapperConfig(ModelMapper modelMapper) {
     this.modelMapper = modelMapper;
-//    this.amazonS3Service = amazonS3Service;
   }
 
   public void initializeModelMapper() {

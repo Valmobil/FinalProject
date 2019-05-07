@@ -37,6 +37,7 @@ public class ImagesController {
   public String saveImageController(@RequestParam("fileUpload") byte[] file,
                                     @RequestHeader String authorization) {
     return imageService.saveNewImageToS3(file, userTokensService.findUserByAccessToken(authorization));
-    //to DB:    return linkToPicture + imageService.saveNewImage(file, userTokensService.findUserByAccessToken(authorization));
+    //to DB:    return linkToPicture + imageService.saveNewImage(file,
+    // userTokensService.findUserByAccessToken(authorization));
   }
 }

@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: local
+    include: awss3dev
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -25,7 +27,6 @@ application:
 
 spring:
   profiles: local
-    include: awss3dev
 
   datasource:
     url: jdbc:h2:mem:final-project-preparation
@@ -56,7 +57,7 @@ spring:
     hibernate:
       ddl-auto: create
 
-spring.profiles.include: 'awss3dev'
+
 ---
 
 spring:

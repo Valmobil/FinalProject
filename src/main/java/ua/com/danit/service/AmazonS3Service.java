@@ -43,45 +43,45 @@ public class AmazonS3Service {
   }
 
   public static final String IMAGE_EXTENSION = ".png";
-//  private AmazonS3Client s3;
-//
-//  @Autowired
-//  public AmazonS3Service(AmazonS3Client s3) {
-//    this.s3 = s3;
-//  }
-//
-//  public S3UploadResponse putImage(MultipartFile file) throws IOException {
-//    String fileKey = generateS3FileKey();
-//    s3.putObject(s3CredentialsBucketName, fileKey, file.getInputStream(), null);
-//    return S3UploadResponse.builder()
-//        .fileKey(fileKey)
-//        .fileResource(getUrlFromFileKey(fileKey))
-//        .build();
-//  }
+  //  private AmazonS3Client s3;
+  //
+  //  @Autowired
+  //  public AmazonS3Service(AmazonS3Client s3) {
+  //    this.s3 = s3;
+  //  }
+  //
+  //  public S3UploadResponse putImage(MultipartFile file) throws IOException {
+  //    String fileKey = generateS3FileKey();
+  //    s3.putObject(s3CredentialsBucketName, fileKey, file.getInputStream(), null);
+  //    return S3UploadResponse.builder()
+  //        .fileKey(fileKey)
+  //        .fileResource(getUrlFromFileKey(fileKey))
+  //        .build();
+  //  }
 
-//  public S3UploadResponse putImage(byte[] file) {
-//
-//
-//
-//    String fileKey = generateS3FileKey();
-//    s3.putObject(s3CredentialsBucketName, fileKey, new ByteArrayInputStream(file), null);
-//    return S3UploadResponse.builder()
-//        .fileKey(fileKey)
-//        .fileResource(getUrlFromFileKey(fileKey))
-//        .build();
-//  }
+  //  public S3UploadResponse putImage(byte[] file) {
+  //
+  //
+  //
+  //    String fileKey = generateS3FileKey();
+  //    s3.putObject(s3CredentialsBucketName, fileKey, new ByteArrayInputStream(file), null);
+  //    return S3UploadResponse.builder()
+  //        .fileKey(fileKey)
+  //        .fileResource(getUrlFromFileKey(fileKey))
+  //        .build();
+  //  }
 
   private String generateS3FileKey() {
     return UUID.randomUUID().toString() + IMAGE_EXTENSION;
   }
 
-//  public String getUrlFromFileKey(String fileKey) {
-//    return this.amazonS3.getResourceUrl(s3CredentialsBucketName, fileKey);
-//  }
+  //  public String getUrlFromFileKey(String fileKey) {
+  //    return this.amazonS3.getResourceUrl(s3CredentialsBucketName, fileKey);
+  //  }
 
-//  public void deleteObject(String fileKey) {
-//    s3.deleteObject(s3CredentialsBucketName, fileKey);
-//  }
+  //  public void deleteObject(String fileKey) {
+  //    s3.deleteObject(s3CredentialsBucketName, fileKey);
+  //  }
 
 
 }
