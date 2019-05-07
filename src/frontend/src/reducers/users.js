@@ -22,6 +22,7 @@ const initialState = {
     userTokenAccessTo: '',
     userTokenRefresh: '',
   },
+  errorMessage: '',
   userCars: [],
   userPoints: [],
   commonPoints: [],

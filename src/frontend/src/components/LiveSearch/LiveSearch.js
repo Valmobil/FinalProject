@@ -178,13 +178,13 @@ class LiveSearch extends Component {
                 <div style={{display: 'flex', justifyContent: 'space-between', width: '80%', margin: '20px auto'}}>
                 <Button
                     onClick={this.props.editClose}
-                    disabled={this.props.name.length === 0}
+                    disabled={this.props.name.length === 0 || this.props.value.length === 0}
                     classes={{
                         root: classes.acceptButton,
                         label: classes.label
                     }}
                 >
-                    Submit
+                        Accept
                 </Button>
                 <Button
                         onClick={this.props.rejectEdit}

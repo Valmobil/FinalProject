@@ -32,7 +32,7 @@ const styles = theme => ({
         color: '#fff',
         height: 30,
         padding: 0,
-        width: '47%'
+        width: '47%',
     },
     acceptButton: {
         borderRadius: 3,
@@ -182,7 +182,6 @@ class Smart extends Component {
 
 
     setStartRoute = (userPoint) => {
-        console.log('userPoint = ', userPoint)
         if (!userPoint.userPointLatitude || !userPoint.userPointLongitude || userPoint.userPointLatitude === 0 || userPoint.userPointLongitude === 0){
             this.handleEdit(userPoint)
         } else {
@@ -301,6 +300,20 @@ class Smart extends Component {
         this.props.history.push('/newtrip')
     }
 
+    // getCurrentPosition = (options) => {
+    //     return new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, options))
+    // }
+    //
+    // getMyLocation = async(options) => {
+    //     try{
+    //         const position = await this.getCurrentPosition(options)
+    //         const { latitude, longitude } = position.coords
+    //         this.props.setMyCoordinates({ latitude, longitude })
+    //     } catch (error) {
+    //         console.log('Error fetching location: ',error)
+    //     }
+    // }
+
     componentDidMount () {
         if (this.props.users.userCars.length === 1) this.setState({car: this.props.users.userCars[0]})
         const options = {
@@ -325,7 +338,7 @@ class Smart extends Component {
 // console.log('targetCoordinates = ', this.props.trips.targetCoordinates)
 // console.log('myCoordinates = ', this.props.trips.myCoordinates)
 // console.log('Render: this.props.trips.intermediatePoints = ', this.props.users.intermediatePoints)
-console.log('userCars = ', userCars)
+
 
 
         let placesList = null

@@ -56,6 +56,8 @@ class Main extends Component{
     }
 
     render(){
+        console.log('userMainTripParams = ', this.props.trips.userMainTripParams)
+        console.log('currentMainTripParams = ', this.props.trips.currentMainTripParams)
         const { classes } = this.props;
         const { mainTripParams, mainTripPointNames } = this.props.trips
         const routesArray = mainTripPointNames.slice()
