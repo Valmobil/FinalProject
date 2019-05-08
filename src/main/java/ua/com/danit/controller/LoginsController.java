@@ -1,69 +1,53 @@
 package ua.com.danit.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.com.danit.model.UserInfo;
-import ua.com.danit.model.UserLogin;
+import ua.com.danit.dto.UserLogin;
+import ua.com.danit.dto.UserResponse;
 import ua.com.danit.service.LoginsService;
 import ua.com.danit.service.MailSenderService;
-import ua.com.danit.service.UsersService;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("api/logins")
 public class LoginsController {
-  private UsersService usersService;
   private LoginsService loginsService;
   private MailSenderService mailSenderService;
 
   @Autowired
-  public LoginsController(UsersService usersService, LoginsService loginsService, MailSenderService mailSenderService) {
-    this.usersService = usersService;
+  public LoginsController(LoginsService loginsService, MailSenderService mailSenderService) {
     this.loginsService = loginsService;
     this.mailSenderService = mailSenderService;
   }
 
-  //  @Autowired
-  //  private HttpServletRequest request;
-
-  //  @PostMapping("session")
-  //  public
-
   @PostMapping("signin")
-  public UserInfo postLoginSignIn(@RequestBody UserLogin userLogin) {
-    return loginsService.checkLoginSignInCredentials(userLogin);
+  public ResponseEntity<UserResponse> postLoginSignIn(@RequestBody UserLogin userLogin) {
+    return new ResponseEntity<>(loginsService.checkLoginSignInCredentials(userLogin), HttpStatus.OK);
   }
 
   @PostMapping("signup")
-  public UserInfo postLoginSignUp(@RequestBody UserLogin userLogin) {
-    return loginsService.checkRegistrationCredentials(userLogin);
+  public ResponseEntity<UserResponse> postLoginSignUp(@RequestBody UserLogin userLogin) {
+    return new ResponseEntity<>(loginsService.checkSignUpCredentials(userLogin),HttpStatus.OK);
   }
 
   @PostMapping("pswdchange")
-  public String postLoginPasswordChange(@RequestBody UserLogin userLogin) {
-    return loginsService.checkPasswordChange(userLogin);
+  public ResponseEntity<String> postLoginPasswordChange(@RequestBody UserLogin userLogin) {
+    return new ResponseEntity<>(loginsService.checkPasswordChange(userLogin),HttpStatus.OK);
   }
 
   @PostMapping("pswdrestore")
-  public String postLoginPasswordRestore(@RequestBody UserLogin userLogin) {
-    return loginsService.checkPasswordRestore(userLogin);
+  public ResponseEntity<String> postLoginPasswordRestore(@RequestBody UserLogin userLogin) {
+    return new ResponseEntity<>(loginsService.checkPasswordRestore(userLogin),HttpStatus.OK);
   }
 
   @PostMapping("email")
-  public String checkUserByEmail(@RequestBody UserLogin userLogin, @RequestHeader(value = "Host") String host) {
-    //https://www.baeldung.com/spring-security-registration-i-forgot-my-password
-    //    return pswdResetTokenService.checkUserByEmail(userLogin, request.getContextPath());
-    return mailSenderService.checkUserByEmail(userLogin, host);
-  }
-
-  @GetMapping("test")
-  public UserLogin showUserLoginFormat() {
-    return loginsService.loginServiceTest();
+  public ResponseEntity<String> checkUserByEmail(@RequestBody UserLogin userLogin,
+                                                 @RequestHeader(value = "Host") String host) {
+    return new ResponseEntity<>(mailSenderService.checkUserByEmail(userLogin, host),HttpStatus.OK);
   }
 }

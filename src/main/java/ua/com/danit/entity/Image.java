@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,6 +23,7 @@ import java.sql.Blob;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "user"})
 public class Image extends Auditable {
@@ -28,9 +31,10 @@ public class Image extends Auditable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long imageId;
   @Lob
-  private Blob imageBlob;
+  private byte[] imageData;
   @NotNull
   @ManyToOne
+
   @JoinColumn(name = "IMAGE_USER_ID", referencedColumnName = "userId")
   private User user;
 }

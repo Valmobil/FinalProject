@@ -1,0 +1,33 @@
+.welcome-user{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+    color: #fff;
+}
+.logout-button{
+    margin-top: 30px;
+}
+.role-question{
+    margin-top: 40px;
+    animation: question .5s forwards;
+}
+@keyframes question {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+.type-button-container{
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    height: 40px;
+    margin-top: 10px;
+}
+.dependent-button-container{
+    margin-top: 30px;
+}
+.smart-button{
+    border: 1px solid red;
+}

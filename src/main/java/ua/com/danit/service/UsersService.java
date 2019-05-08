@@ -2,20 +2,22 @@ package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.com.danit.entity.Car;
+import ua.com.danit.dto.UserTokenResponse;
+import ua.com.danit.entity.UserCar;
 import ua.com.danit.entity.Point;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
 import ua.com.danit.entity.UserToken;
-import ua.com.danit.model.UserInfo;
-import ua.com.danit.model.UserLogin;
-import ua.com.danit.repository.CarsRepository;
+import ua.com.danit.dto.UserLogin;
+import ua.com.danit.error.KnownException;
+import ua.com.danit.facade.UserTokenFacade;
 import ua.com.danit.repository.PointsRepository;
 import ua.com.danit.repository.UserPointsRepository;
 import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,26 +26,24 @@ import java.util.regex.Pattern;
 public class UsersService {
   private UsersRepository usersRepository;
   private UserPointsRepository userPointsRepository;
-  private CarsRepository carsRepository;
   private PointsRepository pointsRepository;
   private UserTokensService userTokensService;
   private UserTokensRepository userTokensRepository;
-
-  private static final int dateShift = 30;
+  private UserTokenFacade userTokenFacade;
 
   @Autowired
   public UsersService(UsersRepository usersRepository,
                       UserPointsRepository userPointRepository,
-                      CarsRepository carsRepository,
                       PointsRepository pointsRepository,
                       UserTokensService userTokensService,
+                      UserTokenFacade userTokenFacade,
                       UserTokensRepository userTokensRepository) {
     this.usersRepository = usersRepository;
     this.userPointsRepository = userPointRepository;
-    this.carsRepository = carsRepository;
     this.pointsRepository = pointsRepository;
     this.userTokensService = userTokensService;
     this.userTokensRepository = userTokensRepository;
+    this.userTokenFacade = userTokenFacade;
   }
 
   @Autowired
@@ -53,11 +53,7 @@ public class UsersService {
     return usersRepository.save(users);
   }
 
-  public User getUserById(Long userId) {
-    return usersRepository.getOne(userId);
-  }
-
-  public String passwordEncrypt(String userPasswordNew) {
+  String passwordEncrypt(String userPasswordNew) {
     //!!!!! Write password encryption procedure
     return userPasswordNew;
   }
@@ -71,68 +67,87 @@ public class UsersService {
     return user;
   }
 
-  void addCarsUserPointsTokens(UserInfo userInfo) {
-
-    //Generate new tokens
-    updateUserTokenInUserEntity(userInfo.getUser());
-    //Collect Cars
-    userInfo.setCars(carsRepository.findByUser(userInfo.getUser()));
-    //Collect User Points
-    userInfo.setUserPoints(collectUserPointsAndFillInEmptyOnes(userInfo.getUser()));
-  }
-
   List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
     if (user == null) {
       return new ArrayList<>();
     }
-    List<UserPoint> userPoints = userPointsRepository.findByUser(user);
+    List<UserPoint> userPoints;
+    if (user.getUserId() == null) {
+      userPoints = new LinkedList<>();
+    } else {
+      userPoints = userPointsRepository.findByUser(user);
+    }
     if (userPoints.size() < 5) {
       if (userPoints.size() < 1) {
-        UserPoint pointHome = new UserPoint(null, "Home", "adress", user, 0, 0, null);
+        UserPoint pointHome = new UserPoint(null, "Home", "adress", user, 0, 0);
         userPoints.add(pointHome);
       }
       if (userPoints.size() < 2) {
-        UserPoint pointWork = new UserPoint(null, "Work", "Kyivska obl.", user, 50.570425, 30.2637260, null);
+        UserPoint pointWork = new UserPoint(null, "Work", "Kyivska obl.", user, 50.570425, 30.2637260);
         userPoints.add(pointWork);
       }
       //for test purposes
       if (userPoints.size() < 3) {
         Point point = pointsRepository.getOne(4L);
-        UserPoint pointWork = new UserPoint(null, "Boryspil", "Kyivska obl.", user, 0, 0, point);
+        UserPoint pointWork = new UserPoint(null, "Boryspil", "Kyivska obl.", user, 0, 0);
         userPoints.add(pointWork);
       }
       for (int i = userPoints.size(); i < 5; i++) {
-        UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0, null);
+        UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0);
         userPoints.add(pointOther);
       }
-      userPoints = userPointsRepository.saveAll(userPoints);
+//      userPoints = userPointsRe?pository.saveAll(userPoints);
     }
     return userPoints;
   }
 
-  void checkLoginAndUpdateTokenInDb(UserInfo userInfo, UserLogin userLogin) {
+  User checkLoginAndUpdateExternalTokenInDb(UserLogin userLogin) {
     User user = checkLogin(userLogin);
     if (user == null) {
       //Save new user based on external token
       user = new User();
-      userInfo.setUser(user);
-      loginService.saveLoginToMailOrPhone(userInfo, userLogin);
+      loginService.saveLoginToMailOrPhone(user, userLogin);
       user.setUserMail(userLogin.getUserLogin());
     }
-    user.setUserTokenExternal(userLogin.getUserToken());
-    updateUserTokenInUserEntity(user);
-    userInfo.setUser(user);
+    if (user.getUserTokens().size() > 1) {
+      userTokensService.deleteAllByUser(user);
+      throw new KnownException("Error! Internal authorization issue - duplicated tokens. Please try to signIn again!");
+    }
+    //Check if Old External token equal to new External Token
+    if (user.getUserTokens().size() == 1) {
+      if (user.getUserTokens().get(0).getUserTokenExternal() == null) {
+        user.getUserTokens().get(0).setUserTokenExternal(userLogin.getUserToken());
+      } else {
+        if (!user.getUserTokens().get(0).getUserTokenExternal().equals(userLogin.getUserToken())) {
+          throw new KnownException("Error! Previously we used another external authorization provider! Please "
+              + "use login and password for login");
+        }
+      }
+    } else {
+      //If we have no token
+      UserToken userTokenNew = new UserToken();
+      userTokenNew.setUser(user);
+      userTokenNew.setUserTokenExternal(userLogin.getUserToken());
+
+      if (userTokenNew.getUserTokenExternal() == null) {
+        userTokenNew.setUserTokenExternal(userLogin.getUserToken());
+      }
+    }
+    return user;
   }
 
-  void updateUserTokenInUserEntity(User user) {
-    if (user == null) {
-      return;
+  User updateUserTokenInUserEntity(User user) {
+    UserTokenResponse userTokenResponse = userTokensService.generateInitialTokinSet();
+    if (user.getUserTokens() == null) {
+      user.setUserTokens(new LinkedList<>());
     }
-    UserToken userToken = userTokensService.generateInitialTokinSet(user);
-    user.setUserTokenRefresh(userToken.getUserTokenRefresh());
-    user.setUserTokenAccess(userToken.getUserTokenAccess());
-    usersRepository.save(user);
-    userTokensRepository.save(userToken);
+    if (user.getUserTokens().size() == 0) {
+      user.getUserTokens().add(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, new UserToken()));
+      user.getUserTokens().get(0).setUser(user);
+    } else {
+      user.getUserTokens().set(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, user.getUserTokens().get(0)));
+    }
+    return user;
   }
 
   User checkLogin(UserLogin userLogin) {
@@ -167,7 +182,6 @@ public class UsersService {
   }
 
 
-
   static boolean checkEmailFormat(String userMail) {
     Pattern validEmailAddressRegex =
         Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
@@ -176,7 +190,7 @@ public class UsersService {
     return matcher.find();
   }
 
-  public static String normalizeMobilePhone(String userPhone) {
+  static String normalizeMobilePhone(String userPhone) {
     String phone = userPhone.replace("(", "")
         .replace(")", "")
         .replace(" ", "")
@@ -197,19 +211,18 @@ public class UsersService {
   }
 
 
-  public UserInfo saveUserProfile(User user, User userFromToken) {
+  public User saveUserProfile(User user, User userFromToken) {
     //Update some fields
     if (userFromToken == null) {
-      return null;
+      throw new KnownException("Error: Access token not found!");
     }
     user.setUserId(userFromToken.getUserId());
-    for (Car car : user.getCar()) {
-      car.setUser(user);
+    if (user.getUserCars() != null) {
+      for (UserCar userCar : user.getUserCars()) {
+        userCar.setUser(user);
+      }
     }
-    usersRepository.save(user);
-    UserInfo userInfo = new UserInfo();
-    userInfo.setUser(usersRepository.getOne(user.getUserId()));
-    addCarsUserPointsTokens(userInfo);
-    return userInfo;
+    user = usersRepository.save(user);
+    return user;
   }
 }

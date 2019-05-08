@@ -2,23 +2,17 @@ package ua.com.danit.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.PswdResetToken;
 import ua.com.danit.entity.User;
-import ua.com.danit.model.UserLogin;
+import ua.com.danit.dto.UserLogin;
 import ua.com.danit.repository.PswdResetTokenRepository;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.util.Properties;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 public class MailSenderService {
@@ -86,10 +80,9 @@ public class MailSenderService {
       helper.setTo(to);
       helper.setText(msg, true);
       return message;
-    } catch (MessagingException ex) {
-//      Logger.getLogger(HTMLMail.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (MessagingException ignored) {
+      return null;
     }
-    return null;
   }
 
 

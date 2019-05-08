@@ -1,9 +1,11 @@
-import {combineReducers} from 'redux'
+import { combineReducers } from 'redux'
 import users from './users'
+import trips from './trips'
 import password from './password'
 
 const appReducer = combineReducers({
   users,
+  trips,
   password
 })
 

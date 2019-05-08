@@ -1,57 +1,12 @@
-import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_TRIP, SET_MY_COORDS, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
-    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, SET_SEARCHED_LOCATION, SET_TARGET_COORDS, USER_LOGOUT } from './users'
+import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
+    LOGIN_REJECTED, SET_USER_NAME, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
+    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, USER_LOGOUT,
+    INITIAL_LOAD, SET_PROFILE, SET_USER_PHOTO, ADD_CAR, ADD_TRIP_DATE, LIVE_SEARCH_SHOW } from './users'
+
+import { callApi, setLocalStorage, removeTokens } from '../utils/utils'
+
 import axios from 'axios'
 
-
-
-
-export const callApi = (method, url, data, config) => {
-    let headers = null
-    if (window.localStorage.getItem('iTripper_access_token')){
-        const refreshTokenExpires = Date.parse(window.localStorage.getItem('iTripper_refresh_token_expires'))
-        const accessTokenExpires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
-        if (refreshTokenExpires && (Date.now() > refreshTokenExpires)){
-            logOut();
-        } else if (Date.now() >= accessTokenExpires){
-            const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token');
-            axios({
-                method: 'post',
-                url: 'api/usertokens',
-                data: { userTokenRefresh }
-            })
-                .then(response => {
-                    if (response.data) {
-                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-                        headers = {
-                            Authorization: `Bearer ${response.data.userTokenAccess}`,
-                        }
-                        headers = Object.assign({ Authorization: `Bearer ${response.data.userTokenAccess}` }, config)
-                        return axiosRequest(method, url, data, headers, config)
-                    } else {
-                        logOut()
-                    }
-                })
-        }
-        headers = {
-            Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}`,
-        }
-        headers = Object.assign({ Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}` }, config)
-    }
-    return axiosRequest(method, url, data, headers, config)
-}
-
-//* *********************
-
-export const axiosRequest = (method, url, data, headers, config) => {
-    return axios({
-        method,
-        url,
-        data,
-        headers,
-        config,
-    })
-}
 //* *********************
 
 export const checkAuthorizationByToken = () => dispatch => {
@@ -72,52 +27,22 @@ export const checkAuthorizationByToken = () => dispatch => {
                     if (response.data) {
                         setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
                     } else {
-                        setTimeout(() => {
-                            const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
-                            axios({
-                                method: 'post',
-                                url: '/api/usertokens',
-                                data: {userTokenRefresh}
-                            })
-                                .then(response => {
-                                    if (response.data) {
-                                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-                                    } else {
-                                        dispatch(logOut())
-                                    }
-                                })
-                                .catch(console.log)
-                        }, 50)
+                        dispatch(logOut())
                     }
                 })
                 .catch(console.log)
         }
-    } else dispatch(logOut())
-}
-//* *********************
-
-const setLocalStorage = (accessToken, refreshToken) => {
-    const accessTokenExpires = new Date(Date.now() + 880000).toISOString()
-    const refreshTokenExpires = new Date(Date.now() + 2591900000).toISOString()
-    window.localStorage.setItem('iTripper_access_token', accessToken)
-    window.localStorage.setItem('iTripper_refresh_token', refreshToken)
-    window.localStorage.setItem('iTripper_access_token_expires', accessTokenExpires)
-    window.localStorage.setItem('iTripper_refresh_token_expires', refreshTokenExpires)
+    } else {
+        dispatch(logOut())
+    }
 }
 
-//* *********************
-
-const removeTokens = () => {
-    window.localStorage.removeItem('iTripper_access_token')
-    window.localStorage.removeItem('iTripper_access_token_expires')
-    window.localStorage.removeItem('iTripper_refresh_token')
-    window.localStorage.removeItem('iTripper_refresh_token_expires')
-}
 // * *********************
 
 export const setAuthByToken = () => dispatch => {
     const userToken = window.localStorage.getItem('iTripper_access_token');
     if (userToken) {
+        dispatch({type: INITIAL_LOAD, payload: true})
         const accessTokenExpires = window.localStorage.getItem('iTripper_access_token_expires')
         const refreshTokenExpires = window.localStorage.getItem('iTripper_refresh_token_expires')
         const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
@@ -138,46 +63,34 @@ export const setAuthByToken = () => dispatch => {
                             })
                             .catch(console.log)
                     } else {
-                        setTimeout(() => {
-                            const userTokenRefresh = window.localStorage.getItem('iTripper_refresh_token')
-                            axios({
-                                method: 'post',
-                                url: '/api/usertokens',
-                                data: {userTokenRefresh}
-                            })
-                                .then(response => {
-                                    if (response.data) {
-                                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-                                        callApi('post', '/api/logins/signin', {userToken: response.data.userTokenAccess})
-                                            .then(res => {
-                                                dispatch(authDispatches(res))
-                                            })
-                                            .catch(console.log)
-                                    } else {
-                                        dispatch(logOut())
-                                    }
-                                })
-                                .catch(console.log)
-                        }, 50)
+                        dispatch(logOut())
                     }
                 })
                 .catch(console.log)
         } else {
             callApi('post', '/api/logins/signin', { userToken })
                 .then(response => {
+                    setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
                     dispatch(authDispatches(response))
                 })
                 .catch(console.log)
         }
     }
 }
+
 // * *********************
 
 const authDispatches = (response) => dispatch => {
+    const userData = {
+        userName: response.data.userName,
+        userPhone: response.data.userPhone,
+        userMail: response.data.userMail,
+        userPhoto: response.data.userPhoto,
+    }
     dispatch({type: SET_AUTH, payload: true})
-    dispatch({type: SET_USER, payload: response.data.user})
-    dispatch({type: SET_CARS, payload: response.data.cars})
-    dispatch(setUserPoints(response.data.userPoints))
+    dispatch({type: SET_USER, payload: userData})
+    dispatch({type: SET_CARS, payload: response.data.userCars})
+    dispatch({type: SET_USER_POINTS, payload: response.data.userPoints})
 }
 
 // * *********************
@@ -185,28 +98,31 @@ const authDispatches = (response) => dispatch => {
 export const setAuthorization = (state, signType) => (dispatch) => {
     // console.log('state = ',getState())
     let route = signType === 'log-in' ? 'signin' : 'signup'
-    axios.post('/api/logins/' + route, {
-        userLogin: state.login,
-        userPassword: state.password,
-        userPasswordNew: state.confirmPassword
-    })
-        .then(response => {
-            dispatch(setErrorMessage(response.data.message))
-            if (response.data.user !== null) {
-                console.log('user = ',response.data.user)
-
-                setLocalStorage(response.data.user.userTokenAccess, response.data.user.userTokenRefresh)
-                dispatch(authDispatches(response))
-            } else {
-                dispatch(setLoginRejected(true))
-            }
-        })
-        .catch(err => console.log(err))
-    if (signType === 'log-in') {
-        callApi('get', '/api/points/filter/test')
-            .then(response => dispatch({type: SET_COMMON_POINTS, payload: response.data}))
-            .catch(err => console.log(err))
+    let data = null
+    if (state.password) {
+        data = {
+            userLogin: state.login,
+            userPassword: state.password,
+            userPasswordNew: state.confirmPassword
+        }
     }
+    else {
+        data = {
+            userLogin: state.login,
+            userToken: state.token,
+        }
+    }
+    axios.post('/api/logins/' + route, data)
+        .then(response => {
+            console.log('user = ',response.data)
+            setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+            dispatch(authDispatches(response))
+            dispatch({type: INITIAL_LOAD, payload: true})
+        })
+        .catch(error => {
+            dispatch(setLoginRejected(true))
+            dispatch(setErrorMessage(error.response.data))
+        })
 }
 //* *********************
 
@@ -227,12 +143,6 @@ export const topMenuToggle = (topMenuOpen) => dispatch => {
 
 //* **********************
 
-export const deleteCar = (carList, car) => dispatch => {
-    const newCarList = carList.filter(item => item !== car)
-    dispatch({type: SET_CAR_LIST, payload: newCarList})
-}
-//* **********************
-
 export const addNewCar = (carList, car) => dispatch => {
     const newCarList = [...carList, car]
     dispatch({type: SET_CAR_LIST, payload: newCarList})
@@ -249,6 +159,7 @@ export const setUserPoints = (payload) => dispatch => {
         .catch(err => console.log(err))
     dispatch({type: SET_USER_POINTS, payload})
 }
+
 //* **********************
 
 //from /profile
@@ -256,25 +167,17 @@ export const setUserName = (name) => dispatch => {
     dispatch({type: SET_USER_NAME, payload: name})
 }
 //* **********************
-
-export const setTrip = (trip) => dispatch => {
-    callApi('put', '/api/trips', trip)
-        .then(res => console.log('usersCreators: ', res))
-        .catch(err => console.log(err))
-    dispatch({type: SET_TRIP, trip})
+export const setCar = (newCar) => dispatch => {
+    dispatch({type: ADD_CAR, payload: newCar})
 
 }
 //* **********************
-
-export const setAddress = (address) => dispatch => {
-    dispatch({type: SET_SEARCHED_LOCATION, payload: address})
+export const updateCars = (newCarList) => dispatch => {
+    dispatch({type: SET_CARS, payload: newCarList})
 }
+
 //* **********************
 
-export const setMyCoordinates = coords => dispatch => {
-    dispatch({type: SET_MY_COORDS, payload: coords})
-}
-//* **********************
 
 export const setErrorMessage = (message) => dispatch => {
     dispatch({type: SET_ERROR_MESSAGE, payload: message})
@@ -284,9 +187,13 @@ export const setErrorMessage = (message) => dispatch => {
 ////setProfile data to database
 export const setProfile = (profile) => dispatch => {
     callApi('put', '/api/users', profile)
+        .then(response => dispatch({type: SET_PROFILE, payload: response.data}))
+        .then(res => console.log('userCars from userCreators: ', res))
         .catch(err => console.log(err))
-    dispatch({type: SET_USER, payload: profile})
+    // dispatch({type: SET_USER, payload: profile})
+    dispatch({type: SET_PROFILE, payload: profile})
 }
+
 //* **********************
 //
 // export const fetchTripsHistory = (userId) => dispatch =>{
@@ -307,31 +214,22 @@ export const setProfile = (profile) => dispatch => {
 
 export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
     dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
-    callApi('delete','api/trips/delete',tripId)
+    callApi('delete','api/trips',{tripId})
         .then(resp=>console.log(resp))
         .catch(err => console.log(err))
 }
 //* **********************
 
-export const setPhoto = (image) => dispatch => {
+export const setUserPhoto = (image) => dispatch => {
     let data = new FormData();
-    data.append('file', image);
-   callApi('put', 'api/images', data)
-       .then(response => console.log('image response: ', response))
+    data.append('fileUpload', image);
+    callApi('put', 'api/images', data)
+       .then(response => {
+           dispatch({type: SET_USER_PHOTO, payload: response.data})
+       })
        .catch(console.log)
 }
 //* **********************
-
-export const setSearchedLocation = (location) => dispatch => {
-    dispatch({type: SET_SEARCHED_LOCATION, payload: location})
-}
-//* **********************
-
-export const setTargetCoordinates = (coordinates) => dispatch => {
-    dispatch({type: SET_TARGET_COORDS, payload: coordinates})
-}
-//* **********************
-
 export const getLocationFromDB = dispatch => {
     dispatch({type: GET_LOCATION_REQUEST, payload: true})
     callApi('get', 'api/points/test')
@@ -346,4 +244,38 @@ export const getLocationFromDB = dispatch => {
         .catch(err=>{
             dispatch({type: GET_LOCATION_ERROR, payload: 'choice place from map'})
         })
+}
+//* **********************
+
+export const setInitialLoadToFalse = () => dispatch => {
+    dispatch({type: INITIAL_LOAD, payload: false})
+}
+
+//* **********************
+
+export const updateProfile = (userInfo) => dispatch =>{
+    console.log('updateProfile', userInfo)
+    callApi('put', '/api/users', userInfo)
+        .then( resp => {
+            dispatch({type: 'UPDATED_PROFILE'})
+        })
+        .catch( err => {
+            console.log(err)
+        })
+}
+//* **********************
+
+
+export const addTripDate = newDate => dispatch =>{
+  dispatch({ type: ADD_TRIP_DATE, payload: newDate})
+}
+
+export const addNewTrip = newTrip => dispatch => {
+    callApi('put','api/trips', newTrip)
+      .then(resp => console.log(resp))
+      .catch(err => console.log(err))
+}
+
+export const showLiveSearch = liveSearchShow => dispatch =>{
+    dispatch({ type: LIVE_SEARCH_SHOW, payload: liveSearchShow})
 }

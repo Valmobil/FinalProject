@@ -22,8 +22,8 @@ import java.util.Date;
 @JsonIgnoreProperties({"user"})
 public class UserToken {
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  private long userTokenId;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long userTokenId;
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "USER_TOKEN_USER_ID", referencedColumnName = "userId")
   private User user;
@@ -31,4 +31,5 @@ public class UserToken {
   private LocalDateTime userTokenRefreshTo;
   private String userTokenAccess;
   private LocalDateTime userTokenAccessTo;
+  private String userTokenExternal;
 }

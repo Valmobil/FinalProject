@@ -1,3 +1,7 @@
+.trip-container{
+    width: 100%;
+    color: #ffffff;
+}
 .trip-btn-container{
     display: flex;
     justify-content: space-between;

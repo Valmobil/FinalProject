@@ -4,12 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.ToString;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -19,15 +14,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.util.Objects;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-//@EqualsAndHashCode(exclude={"trip"})
-//@ToString(exclude={"trip"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler","trip"})
 public class TripPoint {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,9 +30,7 @@ public class TripPoint {
   private double tripPointLatitude;
   private int tripPointSequence;
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @NonNull
   @JoinColumn(name = "TRIP_POINT_TRIP_ID", referencedColumnName = "tripId")
-  @JsonIgnoreProperties({"user","car", "tripPoint", "tripDateTime"})
   private Trip trip;
 
 }

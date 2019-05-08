@@ -4,11 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Feedback;
 import ua.com.danit.entity.User;
-import ua.com.danit.model.FeedbackInfo;
+import ua.com.danit.dto.FeedbackInfo;
 import ua.com.danit.repository.FeedbacksRepository;
 import ua.com.danit.repository.UsersRepository;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 

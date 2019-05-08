@@ -2,14 +2,14 @@ package ua.com.danit.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.entity.User;
-import ua.com.danit.model.UserInfo;
 import ua.com.danit.service.UserTokensService;
 import ua.com.danit.service.UsersService;
 
@@ -25,15 +25,9 @@ public class UsersController {
     this.userTokensService = userTokensService;
   }
 
-  @PutMapping("")
-  public UserInfo saveUserProfile(@RequestBody User user, @RequestHeader String authorization) {
-    return usersService.saveUserProfile(user, userTokensService.findUserByAccessToken(authorization));
+  @PutMapping
+  public ResponseEntity<User> saveUserProfile(@RequestBody User user, @RequestHeader String authorization) {
+    return new ResponseEntity<>(usersService.saveUserProfile(user, userTokensService.findUserByAccessToken(authorization)),
+        HttpStatus.OK);
   }
-
-  @GetMapping("test")
-  public User getUserById() {
-    //Write check in DB the user existence and return user data
-    return usersService.getUserById(1L);
-  }
-
 }

@@ -1,31 +1,29 @@
 import React, {Component} from 'react';
-import DateAndTimePickers from './DateAndTimePicker/DateAndTimePicker'
-import ChosePointFromSelect from './ChosePointFromSelect/ChosePointFromSelect'
+import DatePicker from './DatePicker/DatePicker'
+// import TimePicker from './TimePicker/TimePicker'
+// import moment from 'moment';
+import LiveSearch from '../LiveSearch/LiveSearch';
 import { withStyles } from '@material-ui/core/styles'
+import { addNewTrip, showLiveSearch } from '../../actions/userCreators'
+import { setTargetCoordinates } from '../../actions/tripCreators'
 import Button from '@material-ui/core/Button'
+import { connect } from 'react-redux'
+// import TextField from '@material-ui/core/TextField'
+// import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+// import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
+// import orange from '@material-ui/core/colors/orange'
+
 import './NewTrip.css'
 import Map from '../Map/Map';
 
+// const theme = createMuiTheme({
+//   palette: {
+//     primary: orange
+//   },
+//   typography: { useNextVariants: true }
+// })
+
 const styles = theme => ({
-    // smartRoute: {
-    //     background: '#ff9800',
-    //     borderRadius: 3,
-    //     border: 0,
-    //     color: 'white',
-    //     height: 40,
-    //     padding: 0,
-    //     marginLeft: (window.innerWidth - 200) / 2,
-    //     marginTop: 20,
-    //     width: 200
-    // },
-    // typeButtons: {
-    //     borderRadius: 3,
-    //     border: '1px solid #fff',
-    //     color: '#fff',
-    //     height: 30,
-    //     padding: 0,
-    //     width: '47%'
-    // },
     acceptButton: {
         borderRadius: 3,
         background: '#fff',
@@ -46,7 +44,7 @@ const styles = theme => ({
         textTransform: 'capitalize'
     },
     root: {
-        width: '100%',
+        width: '120%',
         marginTop: 20,
         background: 'transparent',
         position: 'relative',
@@ -57,17 +55,107 @@ const styles = theme => ({
 
 class NewTrip extends Component {
 
+     state = {
+       car: '',
+       tripDateTime: '',
+       tripPoint: [],
+       valueFrom:'',
+       valueTo:''
+     }
+
+    editClose = (pointId) => {
+      let id = null
+      if (pointId) {
+        id = pointId
+      } else {
+        id = this.props.users.userPoints.length > 0 ?
+          this.props.users.userPoints.find(item => item.userPointName === '<no point>').userPointId : 1
+      }
+      let newUserPoints = this.props.users.userPoints.map(item => {
+        if (item.userPointId === id) {
+          let pointAddress = this.props.users.searchedLocation || this.state.value
+          return {...item,
+            userPointName: this.state.name,
+            userPointAddress: pointAddress,
+            userPointLatitude: this.props.users.targetCoordinates.latitude,
+            userPointLongitude: this.props.users.targetCoordinates.longitude,
+            pointNameEn: this.state.name,
+          }
+        } else {
+          return item
+        }
+      })
+      this.props.setUserPoints(newUserPoints)
+      this.rejectEdit()
+    }
+
+    setValueFrom = (valueFrom) => {
+      this.setState({valueFrom})
+    }
+
+    setValueTo = (valueTo) => {
+      this.setState({valueTo})
+    }
+
+    rejectEdit = () => {
+      this.props.setSearchedLocation('')
+      this.setState({ value: ''})
+    }
+
+    addTripDate = (tripDate)=>{
+      this.setState({
+        date: tripDate.date.format('YYYY-MM-DD'),
+        time: tripDate.time.format('HH:mm'),
+      })
+    }
+
+    submitTrip = (newTrip) =>{
+      let liveSearchShow = true;
+      this.props.showLiveSearch(liveSearchShow);
+      // this.props.addNewTrip(newTrip),
+      this.props.history.push('/main')
+    }
+
+    componentDidMount(){
+      let liveSearchShow = false;
+      this.props.showLiveSearch(liveSearchShow);
+    }
+
+    componentWillUnmount(){
+      let liveSearchShow = true;
+      this.props.showLiveSearch(liveSearchShow);
+    }
+
     render() {
-        const { classes } = this.props
-        console.log(classes)
-        return (
-            <div>
+      const { classes, newTrip} = this.props
+
+      return (
+            <form className='trip-container' onSubmit={this.submitTrip}>
                 <h1>New Trip</h1>
-                <DateAndTimePickers/>
-                <ChosePointFromSelect/>
-                <Map/>
+                <DatePicker tripDate={newTrip} addTripDate={this.addTripDate}/>
+                <LiveSearch
+                  editClose={() => this.editClose(null)}
+                  setCoordinates={this.props.setTargetCoordinates}
+                  setValue ={this.setValueFrom}
+                  method='post'
+                  url='/api/points'
+                  data={{ pointSearchText: this.state.valueFrom }}
+                  value={this.state.valueFrom}
+                  rejectEdit={this.rejectEdit}
+                />
+                <LiveSearch
+                  editClose={() => this.editClose(null)}
+                  setCoordinates={this.props.setTargetCoordinates}
+                  setValue ={this.setValueTo}
+                  method='post'
+                  url='/api/points'
+                  data={{ pointSearchText: this.state.valueTo }}
+                  value={this.state.valueTo}
+                  rejectEdit={this.rejectEdit}
+                />
+                <Map />
                 <div className="trip-btn-container">
-                    <Button onClick={this.submitRoute}
+                    <Button
                          classes={{
                              root: classes.acceptButton,
                              label: classes.label
@@ -84,9 +172,25 @@ class NewTrip extends Component {
                         Reject trip
                     </Button>
                 </div>
-            </div>
+            </form>
         );
     }
 }
 
-export default withStyles(styles)(NewTrip);
+const mapStateToProps = state => {
+  return{
+    users: state.users,
+    liveSearchShow: state.users.liveSearchShow,
+    newTrip: state.users.newTrip
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addNewTrip: (newTrip) => dispatch(addNewTrip(newTrip)),
+    setTargetCoordinates: (coords) => dispatch(setTargetCoordinates(coords)),
+    showLiveSearch: (liveSearchShow) => dispatch(showLiveSearch(liveSearchShow))
+  }
+}
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(NewTrip));

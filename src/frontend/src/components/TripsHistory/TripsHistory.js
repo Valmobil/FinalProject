@@ -5,7 +5,8 @@ import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
-import { deleteTripFromHistory, callApi } from '../../actions/userCreators'
+import { deleteTripFromHistory } from '../../actions/userCreators'
+import { callApi } from '../../utils/utils'
 import PropTypes from 'prop-types'
 // import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 // import orange from "@material-ui/core/colors/orange";
@@ -43,10 +44,13 @@ class TripsHistory extends Component {
 
     componentDidMount(){
         callApi('post', '/api/trips/list')
-            .then(resp => this.setState({
+            .then(resp => {
+              console.log('response data from trips history',resp.data)
+                this.setState({
                 tripsHistory: resp.data,
                 fetchingTripsHistory: false
-            }))
+              })
+            })
             .catch(err => err.message)
     }
 
@@ -63,11 +67,13 @@ class TripsHistory extends Component {
         this.props.deleteTripFromHistory(id);
     }
 
-
     render() {
         const { classes  } = this.props
         let nameOfPoint = '';
-        let tripsHistoryPointList = this.state.tripsHistory.map((item) => {
+        const tripsHistoryPointArray = this.state.tripsHistory;
+        let tripsHistoryList = null;
+        if (tripsHistoryPointArray.length > 0) {
+          tripsHistoryList = this.state.tripsHistory.map((item) => {
             return (
                 <li key={item.tripId}>
                     {
@@ -93,11 +99,13 @@ class TripsHistory extends Component {
                     {nameOfPoint=''}
                 </li>
             )
-        })
+        })} else{
+          tripsHistoryList = 'No Trips Yet'
+        }
         return (
             <div className='trip-history-list'>
                 <ul className='list-history'>
-                    {this.state.fetchingTripsHistory ? 'Loading...' : tripsHistoryPointList }
+                    {this.state.fetchingTripsHistory ? 'Loading...' : tripsHistoryList }
                 </ul>
             </div>
         );
