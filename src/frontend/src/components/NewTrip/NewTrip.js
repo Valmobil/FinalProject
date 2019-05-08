@@ -76,8 +76,8 @@ class NewTrip extends Component {
         if (item.userPointId === id) {
           let pointAddress = this.props.users.searchedLocation || this.state.value
           return {...item,
-            userPointName: this.state.name,
-            userPointAddress: pointAddress,
+            // userPointName: this.state.name,
+            // userPointAddress: pointAddress,
             userPointLatitude: this.props.users.targetCoordinates.latitude,
             userPointLongitude: this.props.users.targetCoordinates.longitude,
             pointNameEn: this.state.name,
@@ -128,8 +128,8 @@ class NewTrip extends Component {
     }
 
     render() {
-      const date = new Date();
-      console.log('new date', date);
+      // const date = new Date();
+      // console.log('new date', date);
       const { classes, newTrip} = this.props;
       const showSearch = this.props.users.liveSearchShow;
       console.log('show live search from new trip',showSearch);
@@ -137,7 +137,7 @@ class NewTrip extends Component {
             <form className='trip-container' onSubmit={this.submitTrip}>
               <h1>new trip</h1>
               {/*<ForDateTimePickers/>*/}
-              <DatePicker/>
+              <ForDateTimePickers/>
 
               <LiveSearch
                   editClose={() => this.editClose(null)}
