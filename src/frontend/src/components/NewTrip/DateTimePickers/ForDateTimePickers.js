@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import DateFnsUtils from "@date-io/date-fns";
+import "@material-ui/pickers"
 import {
-  // DatePicker,
-  // TimePicker,
-  DateTimePicker,
+  DatePicker,
+  TimePicker,
+  // DateTimePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import { connect } from 'react-redux';
@@ -11,46 +12,38 @@ import { setTripDate, setTripTime} from '../../../actions/tripCreators';
 
 class ForDateTimePickers extends Component {
 
-  handleDateChange = date => {
-    //e.preventDefault(),
-    // console.log(date)
-    this.props.setTripDate(date)
+  handleDateChange = newDate => {
+      this.props.setTripDate(newDate)
   }
 
-  handleTimeChange = time => {
-    //e.preventDefault(),
-    // console.log(date)
-    this.props.setTripTime(time)
+  handleTimeChange =  newTime => {
+      this.props.setTripTime(newTime)
   }
+
   render(){
-
-    // const selectedDate = date => {
-    //
-    // }
-    //
-    // const selectedTime = time => {
-    //   this.props.setTripTime(time)
-    // }
-
-
-
-    // const [selectedDate, handleDateChange] = useState(new Date());
-    // const date = selectedDate;
-    // console.log(date);
-    {/*<MuiPickersUtilsProvider theme={themeProvider} utils={DateFnsUtils}>*/}
-      {/*<DatePicker value={selectedDate} onChange={handleDateChange} />*/}
-      {/*<TimePicker value={selectedDate} onChange={handleDateChange} />*/}
-    {/*</MuiPickersUtilsProvider>*/}
     const date = this.props.tripDate;
     const time = this.props.tripTime;
 
-
     return (
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <DateTimePicker value={date} onChange={this.handleDateChange} />
-        {/*<TimePicker value={time} onChange={this.handleTimeChange} />*/}
-      </MuiPickersUtilsProvider>
+      <div>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <DatePicker
+            style ={{width:'25%', paddingRight: 20}}
+            autoFocus={true}
+            value={date}
+            onChange={this.handleDateChange}
+            onAccept = {this.props.setTripDate}
 
+          />
+          <TimePicker
+            style= {{width:'25%', paddingLeft: 20}}
+            value={time}
+            ampm={false}
+            onChange={this.handleTimeChange}
+            onAccept = {this.props.setTripTime}
+          />
+        </MuiPickersUtilsProvider>
+      </div>
     );
   }
 }
