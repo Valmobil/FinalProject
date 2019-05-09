@@ -27,7 +27,7 @@ public class UsersController {
 
   @PutMapping
   public ResponseEntity<User> saveUserProfile(@RequestBody User user, @RequestHeader String authorization) {
-    return new ResponseEntity<>(usersService.saveUserProfile(user, userTokensService.findUserByAccessToken(authorization)),
+    return new ResponseEntity<>(usersService.putUserProfile(user, userTokensService.findUserByAccessToken(authorization)),
         HttpStatus.OK);
   }
 }

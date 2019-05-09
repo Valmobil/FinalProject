@@ -6,5 +6,5 @@ aws:
       #      endpointUrl: https://s3.eu-central-1.amazonaws.com
       region: eu-central-1
       bucket: imagestoredev/users/
-      accessKey: ask-for-file
-      secretKey: ask-for-file
+      accessKey: AKIARB2UKB5IDMXUHV76
+      secretKey: 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

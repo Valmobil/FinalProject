@@ -43,9 +43,6 @@ public class ImageService {
   }
 
   public String saveNewImageToS3(byte[] file, User user) {
-    if (user == null) {
-      throw new KnownException("Error! Cannot find user with such Access token!");
-    }
     byte[] fileDecoded = Base64.decodeBase64(new String(file).split(",")[1].getBytes());
     return amazonS3Service.putImage(file);
   }
