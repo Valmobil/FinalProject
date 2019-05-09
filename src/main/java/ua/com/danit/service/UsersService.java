@@ -49,23 +49,19 @@ public class UsersService {
   @Autowired
   LoginsService loginService;
 
-  public User createNewUsers(User users) {
-    return usersRepository.save(users);
-  }
-
   String passwordEncrypt(String userPasswordNew) {
     //!!!!! Write password encryption procedure
     return userPasswordNew;
   }
 
-  private User changePassword(UserLogin userLogin) {
-    User user = checkIfLoginAndPasswordIsCorrect(userLogin);
-    if (user != null) {
-      user.setUserPassword(passwordEncrypt(userLogin.getUserPasswordNew()));
-      user = usersRepository.save(user);
-    }
-    return user;
-  }
+//  private User changePassword(UserLogin userLogin) {
+//    User user = checkIfPasswordIsCorrect(userLogin);
+//    if (user != null) {
+//      user.setUserPassword(passwordEncrypt(userLogin.getUserPasswordNew()));
+//      user = usersRepository.save(user);
+//    }
+//    return user;
+//  }
 
   List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
     if (user == null) {
@@ -101,40 +97,47 @@ public class UsersService {
     return userPoints;
   }
 
-  User checkLoginAndUpdateExternalTokenInDb(UserLogin userLogin) {
-    User user = checkLogin(userLogin);
-    if (user == null) {
-      //Save new user based on external token
-      user = new User();
-      loginService.saveLoginToMailOrPhone(user, userLogin);
-      user.setUserMail(userLogin.getUserLogin());
-    }
-    if (user.getUserTokens().size() > 1) {
-      userTokensService.deleteAllByUser(user);
-      throw new KnownException("Error! Internal authorization issue - duplicated tokens. Please try to signIn again!");
-    }
-    //Check if Old External token equal to new External Token
-    if (user.getUserTokens().size() == 1) {
-      if (user.getUserTokens().get(0).getUserTokenExternal() == null) {
-        user.getUserTokens().get(0).setUserTokenExternal(userLogin.getUserToken());
-      } else {
-        if (!user.getUserTokens().get(0).getUserTokenExternal().equals(userLogin.getUserToken())) {
-          throw new KnownException("Error! Previously we used another external authorization provider! Please "
-              + "use login and password for login");
-        }
-      }
-    } else {
-      //If we have no token
-      UserToken userTokenNew = new UserToken();
-      userTokenNew.setUser(user);
-      userTokenNew.setUserTokenExternal(userLogin.getUserToken());
-
-      if (userTokenNew.getUserTokenExternal() == null) {
-        userTokenNew.setUserTokenExternal(userLogin.getUserToken());
-      }
-    }
-    return user;
+  void checkExternalTokenAndUpdateUser(UserLogin userLogin, User user) {
+    //Check if Old External token mail correspond with existing mail
+    user.getUserTokens().get(0).setUserTokenExternal(userLogin.getUserToken());
   }
+
+//  User checkLoginAndUpdateExternalTokenInDb(UserLogin userLogin, User user) {
+//    User userExisting = checkLogin(userLogin);
+//    if (userExisting == null) {
+//      //Save new user based on external token
+//      loginService.saveLoginToMailOrPhone(user, userLogin);
+//      user.setUserMail(userLogin.getUserLogin());
+//    } else {
+//      user = userExisting;
+//    }
+//
+//    if (user.getUserTokens().size() > 1) {
+//      userTokensService.deleteAllByUser(user);
+//      throw new KnownException("Error! Internal authorization issue - duplicated tokens. Please try to signIn again!");
+//    }
+//    //Check if Old External token equal to new External Token
+//    if (user.getUserTokens().size() == 1) {
+//      if (user.getUserTokens().get(0).getUserTokenExternal() == null) {
+//        user.getUserTokens().get(0).setUserTokenExternal(userLogin.getUserToken());
+//      } else {
+//        if (!user.getUserTokens().get(0).getUserTokenExternal().equals(userLogin.getUserToken())) {
+//          throw new KnownException("Error! Previously we used another external authorization provider! Please "
+//              + "use login and password for login");
+//        }
+//      }
+//    } else {
+//      //If we have no token
+//      UserToken userTokenNew = new UserToken();
+//      userTokenNew.setUser(user);
+//      userTokenNew.setUserTokenExternal(userLogin.getUserToken());
+//
+//      if (userTokenNew.getUserTokenExternal() == null) {
+//        userTokenNew.setUserTokenExternal(userLogin.getUserToken());
+//      }
+//    }
+//    return user;
+//  }
 
   User updateUserTokenInUserEntity(User user) {
     UserTokenResponse userTokenResponse = userTokensService.generateInitialTokinSet();
@@ -150,47 +153,47 @@ public class UsersService {
     return user;
   }
 
-  User checkLogin(UserLogin userLogin) {
-    List<User> users;
-    if (checkForEmail(userLogin)) {
-      // if login is mail
-      //check if e-Mail has correct format
-      if (!checkEmailFormat(userLogin.getUserLogin())) {
-        return null;
-      }
-      users = usersRepository.findByUserMail(userLogin.getUserLogin());
-    } else {
-      //if login is phone
-      users = usersRepository.findByUserPhone(normalizeMobilePhone(userLogin.getUserLogin()));
+//  User checkLogin(UserLogin userLogin) {
+//    List<User> users;
+//    if (checkForEmail(userLogin)) {
+//      // if login is mail
+//      //check if e-Mail has correct format
+//      if (!checkEmailFormat(userLogin.getUserLogin())) {
+//        throw new KnownException("Error! e-Mail format is not correct!");
+//      }
+//      users = usersRepository.findByUserMail(userLogin.getUserLogin());
+//    } else {
+//      //if login is phone
+//      users = usersRepository.findByUserPhone(normalizeMobilePhone(userLogin.getUserLogin()));
+//    }
+//    if (users.size() != 1) {
+//      return null;
+//    }
+//    return users.get(0);
+//  }
+
+
+  void checkIfPasswordIsCorrect(UserLogin userLogin, User user) {
+    if (user.getUserPassword() == null) {
+      throw new KnownException("Error: In order to set new password please enter via Google or FaceBook, go to User Profile and Press Change Password!");
     }
-    if (users.size() != 1) {
-      return null;
+    if (!user.getUserPassword().equals(passwordEncrypt(userLogin.getUserPassword()))) {
+      throw new KnownException("Error: incorrect login or password!");
     }
-    return users.get(0);
   }
 
 
-  User checkIfLoginAndPasswordIsCorrect(UserLogin userLogin) {
-    User user = checkLogin(userLogin);
-    if (user == null) {
-      return null;
-    }
-    if (user.getUserPassword().equals(passwordEncrypt(userLogin.getUserPassword()))) {
-      return user;
-    }
-    return null;
-  }
-
-
-  static boolean checkEmailFormat(String userMail) {
+  void checkEmailFormat(String userMail) {
     Pattern validEmailAddressRegex =
         Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
     Matcher matcher = validEmailAddressRegex.matcher(userMail);
-    return matcher.find();
+    if (!matcher.find()) {
+      throw new KnownException("Error: Incorrect eMail, please check!");
+    }
   }
 
-  static String normalizeMobilePhone(String userPhone) {
+  String normalizeAndCheckPhoneFormat(String userPhone) {
     String phone = userPhone.replace("(", "")
         .replace(")", "")
         .replace(" ", "")
@@ -198,10 +201,16 @@ public class UsersService {
         .trim();
     if (phone.charAt(0) != '+') {
       if (phone.length() == 10) {
-        return "+38" + phone;
+        phone = "+38" + phone;
       } else {
-        return "+" + phone;
+        phone = "+" + phone;
       }
+    }
+    Pattern validEmailAddressRegex =
+        Pattern.compile("\\+[0-9]+$");
+    Matcher matcher = validEmailAddressRegex.matcher(phone);
+    if (!matcher.find()) {
+      throw new KnownException("Error: Incorrect phone number!");
     }
     return phone;
   }
@@ -211,7 +220,7 @@ public class UsersService {
   }
 
 
-  public User saveUserProfile(User user, User userFromToken) {
+  public User putUserProfile(User user, User userFromToken) {
     //Update some fields
     if (userFromToken == null) {
       throw new KnownException("Error: Access token not found!");
@@ -225,4 +234,58 @@ public class UsersService {
     user = usersRepository.save(user);
     return user;
   }
+
+  public User findByEmail(String userLogin, String mode, User user) {
+    List<User> users = usersRepository.findByUserMail(userLogin);
+    if (users.size() == 0) {
+      if ("LoginByExternalToken".equals(mode)) {
+        user.setUserMail(userLogin);
+      } else {
+        throw new KnownException("Error: User with eMail " + userLogin + " has not been found!");
+      }
+    }
+    if (users.size() > 1) {
+      throw new KnownException("Error: Several Users with eMail " + userLogin + " have been found! Please contact support team!");
+    }
+    if (users.size() == 1) {
+      user = users.get(0);
+    }
+    return user;
+  }
+
+  public User findByPhone(String userLogin) {
+    List<User> users = usersRepository.findByUserPhone(userLogin);
+    if (users.size() == 0) {
+      throw new KnownException("Error: User with Phone " + userLogin + " has not been found!");
+    }
+    if (users.size() > 1) {
+      throw new KnownException("Error: Several Users with Phone " + userLogin + " have been found! Please contact support team!");
+    }
+    return users.get(0);
+  }
+
+  User createNewEmptyUser() {
+    User user = new User();
+    user.setUserTokens(new LinkedList<>());
+    user.setUserCars(new LinkedList<>());
+    user.setUserPoints(new LinkedList<>());
+    return user;
+  }
+
+
+  public void checkUserStructure(User user) {
+    //userTokens check
+    if (user.getUserTokens() == null) {
+      user.setUserTokens(new LinkedList<>());
+    }
+    if (user.getUserTokens().size() > 1) {
+      throw new KnownException("Error: User has Several Users Tokens by system mistake! Please contact support team");
+    }
+    if (user.getUserTokens().size() == 0) {
+      user.getUserTokens().add(new UserToken());
+      user.getUserTokens().get(0).setUser(user);
+    }
+  }
+
+
 }

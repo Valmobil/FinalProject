@@ -33,23 +33,23 @@ public class MailSenderService {
     this.mailSender = mailSender;
   }
 
-  public String checkUserByEmail(UserLogin userLogin, String contextPath) {
-    if (userLogin == null) {
-      return "Error: Please fill e-Mail cell!";
-    }
-    loginsService.convertUserLoginBlankToNull(userLogin);
-    if (userLogin.getUserLogin() == null) {
-      return "Error: Please fill e-Mail cell!";
-    }
-    User user = usersService.checkLogin(userLogin);
-    if (user == null) {
-      return "Error: The e-Mail was not found!";
-    }
-    //Send mail and save token
-    sendResetPasswordMail(user, contextPath);
-
-    return "Ok. The message was sent!";
-  }
+//  public String checkUserByEmail(UserLogin userLogin, String contextPath) {
+//    if (userLogin == null) {
+//      return "Error: Please fill e-Mail cell!";
+//    }
+//    loginsService.convertUserLoginBlankToNull(userLogin);
+//    if (userLogin.getUserLogin() == null) {
+//      return "Error: Please fill e-Mail cell!";
+//    }
+//    User user = usersService.checkLogin(userLogin);
+//    if (user == null) {
+//      return "Error: The e-Mail was not found!";
+//    }
+//    //Send mail and save token
+//    sendResetPasswordMail(user, contextPath);
+//
+//    return "Ok. The message was sent!";
+//  }
 
   private void sendResetPasswordMail(User user, String contextPath) {
     String token = UUID.randomUUID().toString();

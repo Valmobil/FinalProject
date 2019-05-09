@@ -27,27 +27,32 @@ public class LoginsController {
 
   @PostMapping("signin")
   public ResponseEntity<UserResponse> postLoginSignIn(@RequestBody UserLogin userLogin) {
-    return new ResponseEntity<>(loginsService.checkLoginSignInCredentials(userLogin), HttpStatus.OK);
+    return new ResponseEntity<>(loginsService.checkLoginSignInSignUp(userLogin,"SignIn"), HttpStatus.OK);
   }
 
   @PostMapping("signup")
   public ResponseEntity<UserResponse> postLoginSignUp(@RequestBody UserLogin userLogin) {
-    return new ResponseEntity<>(loginsService.checkSignUpCredentials(userLogin),HttpStatus.OK);
+//    return new ResponseEntity<>(loginsService.checkSignUpCredentials(userLogin),HttpStatus.OK);
+    return new ResponseEntity<>(new UserResponse(),HttpStatus.OK);
+
   }
 
   @PostMapping("pswdchange")
   public ResponseEntity<String> postLoginPasswordChange(@RequestBody UserLogin userLogin) {
-    return new ResponseEntity<>(loginsService.checkPasswordChange(userLogin),HttpStatus.OK);
+//    return new ResponseEntity<>(loginsService.checkPasswordChange(userLogin),HttpStatus.OK);
+    return new ResponseEntity<>("ok",HttpStatus.OK);
   }
 
   @PostMapping("pswdrestore")
   public ResponseEntity<String> postLoginPasswordRestore(@RequestBody UserLogin userLogin) {
-    return new ResponseEntity<>(loginsService.checkPasswordRestore(userLogin),HttpStatus.OK);
+//    return new ResponseEntity<>(loginsService.checkPasswordRestore(userLogin),HttpStatus.OK);
+    return new ResponseEntity<>("Ok",HttpStatus.OK);
   }
 
   @PostMapping("email")
   public ResponseEntity<String> checkUserByEmail(@RequestBody UserLogin userLogin,
                                                  @RequestHeader(value = "Host") String host) {
-    return new ResponseEntity<>(mailSenderService.checkUserByEmail(userLogin, host),HttpStatus.OK);
+//    return new ResponseEntity<>(mailSenderService.checkUserByEmail(userLogin, host),HttpStatus.OK);
+    return new ResponseEntity<>("Ok",HttpStatus.OK);
   }
 }
