@@ -12,12 +12,20 @@ import ua.com.danit.dto.UserLogin;
 import ua.com.danit.dto.UserResponse;
 import ua.com.danit.service.LoginsService;
 import ua.com.danit.service.MailSenderService;
+import ua.com.danit.service.UserTokensService;
 
 @RestController
 @RequestMapping("api/logins")
 public class LoginsController {
   private LoginsService loginsService;
   private MailSenderService mailSenderService;
+  protected UserTokensService userTokensService;
+
+  public LoginsController(LoginsService loginsService, MailSenderService mailSenderService, UserTokensService userTokensService) {
+    this.loginsService = loginsService;
+    this.mailSenderService = mailSenderService;
+    this.userTokensService = userTokensService;
+  }
 
   @Autowired
   public LoginsController(LoginsService loginsService, MailSenderService mailSenderService) {
@@ -32,21 +40,17 @@ public class LoginsController {
 
   @PostMapping("signup")
   public ResponseEntity<UserResponse> postLoginSignUp(@RequestBody UserLogin userLogin) {
-//    return new ResponseEntity<>(loginsService.checkSignUpCredentials(userLogin),HttpStatus.OK);
-    return new ResponseEntity<>(new UserResponse(),HttpStatus.OK);
-
+    return new ResponseEntity<>(loginsService.checkLoginSignInSignUp(userLogin, "SignUp"),HttpStatus.OK);
   }
 
   @PostMapping("pswdchange")
-  public ResponseEntity<String> postLoginPasswordChange(@RequestBody UserLogin userLogin) {
-//    return new ResponseEntity<>(loginsService.checkPasswordChange(userLogin),HttpStatus.OK);
-    return new ResponseEntity<>("ok",HttpStatus.OK);
+  public ResponseEntity<String> postLoginPasswordChange(@RequestBody UserLogin userLogin, @RequestHeader String authorization) {
+    return new ResponseEntity<>(loginsService.passwordChange(userLogin, userTokensService.findUserByAccessToken(authorization)),HttpStatus.OK);
   }
 
   @PostMapping("pswdrestore")
   public ResponseEntity<String> postLoginPasswordRestore(@RequestBody UserLogin userLogin) {
-//    return new ResponseEntity<>(loginsService.checkPasswordRestore(userLogin),HttpStatus.OK);
-    return new ResponseEntity<>("Ok",HttpStatus.OK);
+    return new ResponseEntity<>(loginsService.passwordRestore(userLogin),HttpStatus.OK);
   }
 
   @PostMapping("email")
