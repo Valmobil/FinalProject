@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.com.danit.dto.UserLogin;
 import ua.com.danit.dto.UserResponse;
 import ua.com.danit.service.LoginsService;
+import ua.com.danit.service.UsersService;
 
 
 import static org.junit.Assert.assertEquals;
@@ -33,13 +34,7 @@ public class LoginControllerTest {
   private ObjectMapper objectMapper;
 
   @Autowired
-  private ModelMapper modelMapper;
-
-  @Autowired
-  private LoginsService loginsService;
-
-//  @Autowired
-//  private ChatMessageRepository chatMessageRepository;
+  UsersService usersService;
 
   @Test
   public void signUpByMailAndPassword() throws Exception {
@@ -86,6 +81,6 @@ public class LoginControllerTest {
     String responseBody = result.getResponse().getContentAsString();
     UserResponse userResponse = objectMapper.readValue(responseBody, UserResponse.class);
 
-    assertEquals(phone, userResponse.getUserMail());
+    assertEquals(usersService.normalizeAndCheckPhoneFormat(phone), userResponse.getUserPhone());
   }
 }

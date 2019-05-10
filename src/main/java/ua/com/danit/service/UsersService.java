@@ -134,7 +134,7 @@ public class UsersService {
     }
   }
 
-  String normalizeAndCheckPhoneFormat(String userPhone) {
+  public String normalizeAndCheckPhoneFormat(String userPhone) {
     String phone = userPhone.replace("(", "")
         .replace(")", "")
         .replace(" ", "")
@@ -203,7 +203,7 @@ public class UsersService {
     List<User> users = usersRepository.findByUserPhone(userLogin);
     if (users.size() == 0) {
       if ("SignUp".equals(mode.getEndPoint())) {
-        user.setUserMail(userLogin);
+        user.setUserPhone(userLogin);
       } else {
         throw new KnownException("Error: User with Phone " + userLogin + " has not been found!");
       }
