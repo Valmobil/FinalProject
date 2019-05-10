@@ -186,7 +186,7 @@ class Login extends Component {
 
               {signType === 'log-in' &&<span>or</span>}
             <TextField
-              label="Login"
+              label="Phone or email"
               autoFocus={true}
               style={style.input}
               autoComplete="off"

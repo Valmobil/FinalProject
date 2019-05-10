@@ -223,11 +223,13 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
 export const setUserPhoto = (image) => dispatch => {
     let data = new FormData();
     data.append('fileUpload', image);
-    callApi('put', 'api/images', data)
+    const photoCall = callApi('put', 'api/images', data)
+        photoCall
        .then(response => {
            dispatch({type: SET_USER_PHOTO, payload: response.data})
        })
        .catch(console.log)
+    return photoCall
 }
 //* **********************
 export const getLocationFromDB = dispatch => {
@@ -253,11 +255,12 @@ export const setInitialLoadToFalse = () => dispatch => {
 
 //* **********************
 
-export const updateProfile = (userInfo) => dispatch =>{
-    console.log('updateProfile', userInfo)
-    callApi('put', '/api/users', userInfo)
-        .then( resp => {
-            dispatch({type: 'UPDATED_PROFILE'})
+export const updateProfile = (user) => dispatch =>{
+
+    callApi('put', '/api/users', user)
+        .then(response => {
+            console.log('response from \'/api/users = ', response)
+            // dispatch({type: 'UPDATED_PROFILE'})
         })
         .catch( err => {
             console.log(err)
