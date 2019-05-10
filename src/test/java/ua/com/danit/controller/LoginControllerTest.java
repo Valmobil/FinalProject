@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.com.danit.dto.UserLogin;
 import ua.com.danit.dto.UserResponse;
 import ua.com.danit.service.LoginsService;
+import ua.com.danit.service.UsersService;
 
 
 import static org.junit.Assert.assertEquals;
@@ -33,13 +34,7 @@ public class LoginControllerTest {
   private ObjectMapper objectMapper;
 
   @Autowired
-  private ModelMapper modelMapper;
-
-  @Autowired
-  private LoginsService loginsService;
-
-//  @Autowired
-//  private ChatMessageRepository chatMessageRepository;
+  UsersService usersService;
 
   @Test
   public void signUpByMailAndPassword() throws Exception {
@@ -63,5 +58,29 @@ public class LoginControllerTest {
     UserResponse userResponse = objectMapper.readValue(responseBody, UserResponse.class);
 
     assertEquals(mail, userResponse.getUserMail());
+  }
+
+  @Test
+  public void signUpByPhoneAndPassword() throws Exception {
+    String password = "12345";
+    String phone = "068-531-12-12";
+
+    UserLogin userLogin = new UserLogin();
+    userLogin.setUserLogin(phone);
+    userLogin.setUserPassword(password);
+    userLogin.setUserPasswordNew(password);
+
+    String chatUserLogin = objectMapper.writeValueAsString(userLogin);
+
+    MvcResult result = mockMvc.perform(
+        post("/api/logins/signup")
+//            .with(csrf())
+            .content(chatUserLogin)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andReturn();
+    String responseBody = result.getResponse().getContentAsString();
+    UserResponse userResponse = objectMapper.readValue(responseBody, UserResponse.class);
+
+    assertEquals(usersService.normalizeAndCheckPhoneFormat(phone), userResponse.getUserPhone());
   }
 }
