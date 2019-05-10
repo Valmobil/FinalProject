@@ -21,6 +21,7 @@ const styles = theme => ({
     },
     root: {
         width: '55%',
+        borderRadius: 4,
     },
     heading: {
         fontSize: theme.typography.pxToRem(15),
@@ -56,8 +57,6 @@ class Main extends Component{
     }
 
     render(){
-        console.log('userMainTripParams = ', this.props.trips.userMainTripParams)
-        console.log('currentMainTripParams = ', this.props.trips.currentMainTripParams)
         const { classes } = this.props;
         const { mainTripParams, mainTripPointNames } = this.props.trips
         const routesArray = mainTripPointNames.slice()
