@@ -135,7 +135,7 @@ class AddCar extends Component {
         newCar: {
             carName: '',
             carColour: '',
-            carPhoto: '/carsPhotos/n_1.jpg',
+            carPhoto: '/CarsPhotos/n_1.jpg',
         },
         selectedId: 1,
         editing: '',
@@ -165,15 +165,15 @@ class AddCar extends Component {
 
    handleDelete = (id) => {
         // console.log(this.props)
-        // let newCarsArr = this.props.users.userCars.map(item => {
-        //     if (item.userCarId !== id) {
+        // let newCarsArr = this.props.users.cars.map(item => {
+        //     if (item.carId !== id) {
         //         return {
         //             ...item
         //         }
         //
         //     }
         // })
-       const newCarList = this.props.users.userCars.filter(item => item.carId !== id)
+       const newCarList = this.props.users.cars.filter(item => item.carId !== id)
        this.props.updateCars(newCarList)
 
     }
@@ -181,33 +181,33 @@ class AddCar extends Component {
     render () {
         const { classes } = this.props
         const { editing, adding} = this.state
-        const { userCarName, userCarColour} = this.state.newCar
-        const { userCars  } = this.props.users;
-        console.log('CARS', userCars)
+        const { carName, carColour} = this.state.newCar
+        const { cars  } = this.props.users;
+        console.log('CARS', cars)
 
 
-        const placesList = userCars.map((item) => {
+        const placesList = cars.map((item) => {
             let output = null
-            if (item.userCarId === editing) {
+            if (item.carId === editing) {
                 output = (
-                    <EditSmart key = {item.userCarId}
+                    <EditSmart key = {item.carId}
                                handleEditInput={this.handleEditInput}
-                               editName={userCarName}
-                               editColour={userCarColour}
-                               editSubmit={() => this.editSubmit(item.userCarId)}
+                               editName={carName}
+                               editColour={carColour}
+                               editSubmit={() => this.editSubmit(item.carId)}
                     />
                 )
             } else {
                 output = (
-                    item.userCarName !== '<no point>' &&
-                    <div key = {item.userCarId} style={{display: 'flex', width: '100%'}}>
+                    item.carName !== '<no point>' &&
+                    <div key = {item.carId} style={{display: 'flex', width: '100%'}}>
                         <Button
                                 variant="contained"
                                 color="primary"
                                 className={classes.smartRoute}
                                 classes={{ label: classes.label }}
                         >
-                            {item.userCarName}
+                            {item.carName}
                         </Button>
                         <div className="icon-container">
                             <IconButton
