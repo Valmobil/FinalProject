@@ -17,20 +17,20 @@ import java.util.UUID;
 
 @Service
 public class MailSenderService {
+  private JavaMailSender javaMailSender;
   private UsersService usersService;
   private LoginsService loginsService;
   private PswdResetTokenRepository pswdResetTokenRepository;
-  private JavaMailSender mailSender;
 
   @Autowired
-  MailSenderService(UsersService usersService,
+  MailSenderService(JavaMailSender javaMailSender,
+                    UsersService usersService,
                     LoginsService loginsService,
-                    PswdResetTokenRepository pswdResetTokenRepository,
-                    JavaMailSender mailSender) {
+                    PswdResetTokenRepository pswdResetTokenRepository) {
+    this.javaMailSender = javaMailSender;
     this.usersService = usersService;
     this.loginsService = loginsService;
     this.pswdResetTokenRepository = pswdResetTokenRepository;
-    this.mailSender = mailSender;
   }
 
   public String sendEmailWithRestorationToken(UserLogin userLogin, String contextPath) {
@@ -60,7 +60,7 @@ public class MailSenderService {
     //save token in DB
     createPasswordResetTokenForUser(user, token);
     //Mail token to user
-    mailSender.send(constructResetTokenEmail(contextPath, token, user));
+    javaMailSender.send(constructResetTokenEmail(contextPath, token, user));
   }
 
   private MimeMessage constructResetTokenEmail(
@@ -75,7 +75,7 @@ public class MailSenderService {
 
   private MimeMessage constructMimeMail(String subject, String msg, String from, String to) {
     try {
-      MimeMessage message = mailSender.createMimeMessage();
+      MimeMessage message = javaMailSender.createMimeMessage();
 
       message.setSubject(subject);
       MimeMessageHelper helper;
