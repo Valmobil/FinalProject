@@ -81,12 +81,7 @@ class LiveSearch extends Component {
     getSuggestionValue = suggestion => suggestion.pointNameEn ? suggestion.pointNameEn : null;
 
     renderSuggestion = (suggestion, { query, isHighlighted }) => {
-        if (isHighlighted) {
-            this.props.setCoordinates({
-                latitude: suggestion.pointLatitude.toFixed(6),
-                longitude: suggestion.pointLongitude.toFixed(6)
-            })
-        }
+
         const matches = match(suggestion.pointNameEn, query);
         const parts = parse(suggestion.pointNameEn, matches);
 
@@ -138,11 +133,11 @@ class LiveSearch extends Component {
         this.props.setValue(newValue)
     };
 
-    onSuggestionSelected = () => {
-        // setTimeout(() => {
-        //     this.props.setSearchedLocation(this.state.value)
-        //     console.log(this.state.value)
-        // }, 50)
+    onSuggestionSelected = (e, {suggestion}) => {
+        this.props.setCoordinates({
+            latitude: suggestion.pointLatitude.toFixed(6),
+            longitude: suggestion.pointLongitude.toFixed(6)
+        })
     }
 
     renderInputComponent = (inputProps) => {
