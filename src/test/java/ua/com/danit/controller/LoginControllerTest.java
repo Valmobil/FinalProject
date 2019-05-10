@@ -64,4 +64,28 @@ public class LoginControllerTest {
 
     assertEquals(mail, userResponse.getUserMail());
   }
+
+  @Test
+  public void signUpByPhoneAndPassword() throws Exception {
+    String password = "12345";
+    String phone = "068-531-12-12";
+
+    UserLogin userLogin = new UserLogin();
+    userLogin.setUserLogin(phone);
+    userLogin.setUserPassword(password);
+    userLogin.setUserPasswordNew(password);
+
+    String chatUserLogin = objectMapper.writeValueAsString(userLogin);
+
+    MvcResult result = mockMvc.perform(
+        post("/api/logins/signup")
+//            .with(csrf())
+            .content(chatUserLogin)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andReturn();
+    String responseBody = result.getResponse().getContentAsString();
+    UserResponse userResponse = objectMapper.readValue(responseBody, UserResponse.class);
+
+    assertEquals(phone, userResponse.getUserMail());
+  }
 }
