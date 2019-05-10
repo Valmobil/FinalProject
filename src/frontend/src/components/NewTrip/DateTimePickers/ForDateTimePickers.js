@@ -8,21 +8,18 @@ import {
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import { connect } from 'react-redux';
-import { setTripDate, setTripTime} from '../../../actions/tripCreators';
+import { setTripDateTime } from '../../../actions/tripCreators';
 
 class ForDateTimePickers extends Component {
 
-  handleDateChange = newDate => {
-      this.props.setTripDate(newDate)
-  }
-
-  handleTimeChange =  newTime => {
-      this.props.setTripTime(newTime)
+  handleDateTimeChange = newDateTime => {
+      this.props.setTripDateTime(newDateTime)
   }
 
   render(){
-    const date = this.props.tripDate;
-    const time = this.props.tripTime;
+    const dateTime = this.props.tripDateTime;
+
+    console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
 
     return (
       <div>
@@ -30,17 +27,20 @@ class ForDateTimePickers extends Component {
           <DatePicker
             style ={{width:'25%', paddingRight: 20}}
             autoFocus={true}
-            value={date}
-            onChange={this.handleDateChange}
-            onAccept = {this.props.setTripDate}
+            value={dateTime}
+            onChange={this.handleDateTimeChange}
+            autoOk={true}
+            onAccept = {this.props.setTripDateTime}
 
           />
           <TimePicker
-            style= {{width:'25%', paddingLeft: 20}}
-            value={time}
+            style= {{width:'18%',justifyContent:'center' ,paddingLeft: 20}}
+            value={dateTime}
             ampm={false}
-            onChange={this.handleTimeChange}
-            onAccept = {this.props.setTripTime}
+            minutesStep = {5}
+            onChange={this.handleDateTimeChange}
+            autoOk={true}
+            onAccept = {this.props.setTripDateTime}
           />
         </MuiPickersUtilsProvider>
       </div>
@@ -50,15 +50,13 @@ class ForDateTimePickers extends Component {
 
 const mapStateToProps = state => {
   return{
-    tripDate: state.trips.tripDate,
-    tripTime:state.trips.tripTime,
+    tripDateTime: state.trips.tripDateTime,
   }
 }
 
 const mapDispatchToProps = dispatch =>{
   return {
-    setTripDate: (date) => dispatch(setTripDate(date)),
-    setTripTime: (time) => dispatch(setTripTime(time)),
+    setTripDateTime: (dateTime) => dispatch(setTripDateTime(dateTime)),
   }
 }
 

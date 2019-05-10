@@ -1,6 +1,6 @@
 import { SET_INTERMEDIATE_POINTS, SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_MY_COORDS,
     SET_SEARCHED_LOCATION, SET_TARGET_COORDS, SET_USER_TRIP_PARAMS, SET_CURRENT_TRIP_PARAMS, SET_TRIP,
-    SET_TRIP_DATE, SET_TRIP_TIME} from "../actions/users";
+  SET_TRIP_DATE_TIME } from "../actions/users";
 
 
 const initialState = {
@@ -15,8 +15,7 @@ const initialState = {
     userMainTripParams: null,
     currentMainTripParams: null,
 
-    tripDate: Date(),
-    tripTime: Date(),
+    tripDateTime: Date(),
 }
 
 function trips (state = initialState, action) {
@@ -39,10 +38,8 @@ function trips (state = initialState, action) {
             return {...state, userMainTripParams: action.payload}
         case SET_CURRENT_TRIP_PARAMS:
             return {...state, currentMainTripParams: action.payload}
-        case SET_TRIP_DATE:
-            return {...state, tripDate: action.payload}
-        case SET_TRIP_TIME:
-            return {...state, tripTime: action.payload}
+        case SET_TRIP_DATE_TIME:
+            return {...state, tripDateTime: action.payload}
 
         default:
             return {...state}

@@ -139,26 +139,26 @@ class NewTrip extends Component {
               {/*<ForDateTimePickers/>*/}
               <ForDateTimePickers/>
 
-              <LiveSearch
-                  editClose={() => this.editClose(null)}
-                  setCoordinates={this.props.setTargetCoordinates}
-                  setValue ={this.setValueFrom}
-                  method='post'
-                  url='/api/points'
-                  data={{ pointSearchText: this.state.valueFrom }}
-                  value={this.state.valueFrom}
-                  rejectEdit={this.rejectEdit}
-                />
-                <LiveSearch
-                  editClose={() => this.editClose(null)}
-                  setCoordinates={this.props.setTargetCoordinates}
-                  setValue ={this.setValueTo}
-                  method='post'
-                  url='/api/points'
-                  data={{ pointSearchText: this.state.valueTo }}
-                  value={this.state.valueTo}
-                  rejectEdit={this.rejectEdit}
-                />
+              {/*<LiveSearch*/}
+                  {/*editClose={() => this.editClose(null)}*/}
+                  {/*setCoordinates={this.props.setTargetCoordinates}*/}
+                  {/*setValue ={this.setValueFrom}*/}
+                  {/*method='post'*/}
+                  {/*url='/api/points'*/}
+                  {/*data={{ pointSearchText: this.state.valueFrom }}*/}
+                  {/*value={this.state.valueFrom}*/}
+                  {/*rejectEdit={this.rejectEdit}*/}
+                {/*/>*/}
+                {/*<LiveSearch*/}
+                  {/*editClose={() => this.editClose(null)}*/}
+                  {/*setCoordinates={this.props.setTargetCoordinates}*/}
+                  {/*setValue ={this.setValueTo}*/}
+                  {/*method='post'*/}
+                  {/*url='/api/points'*/}
+                  {/*data={{ pointSearchText: this.state.valueTo }}*/}
+                  {/*value={this.state.valueTo}*/}
+                  {/*rejectEdit={this.rejectEdit}*/}
+                {/*/>*/}
                 <Map />
                 <div className="trip-btn-container">
                     <Button

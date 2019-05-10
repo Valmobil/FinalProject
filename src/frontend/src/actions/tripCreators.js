@@ -1,6 +1,6 @@
 import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS,
     SET_TRIP, SET_MY_COORDS, SET_TARGET_COORDS, SET_SEARCHED_LOCATION, SET_INTERMEDIATE_POINTS,
-    SET_TRIP_DATE, SET_TRIP_TIME } from './users'
+  SET_TRIP_DATE_TIME } from './users'
 import {callApi} from "../utils/utils";
 
 
@@ -69,12 +69,8 @@ export const setCurrentMainTripParams = (params) => dispatch => {
 }
 // * *********************
 
-export const setTripDate = date => dispatch => {
-  dispatch({type: SET_TRIP_DATE, payload: date})
+export const setTripDateTime = dateTime => dispatch => {
+  dispatch({type: SET_TRIP_DATE_TIME, payload: dateTime})
 }
 // * *********************
 
-export const setTripTime = time => dispatch => {
-
-  dispatch({type: SET_TRIP_TIME, payload: time})
-}
