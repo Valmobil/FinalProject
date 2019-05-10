@@ -5,9 +5,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.LoginMode;
+import ua.com.danit.dto.UserLogin;
 import ua.com.danit.entity.PswdResetToken;
 import ua.com.danit.entity.User;
-import ua.com.danit.dto.UserLogin;
 import ua.com.danit.error.KnownException;
 import ua.com.danit.repository.PswdResetTokenRepository;
 
