@@ -214,7 +214,7 @@ public class UsersService {
     }
     if (users.size() == 1) {
       if ("SignUp".equals(mode.getEndPoint())) {
-        throw new KnownException("Error: Several Users with Phone " + userLogin + "already registered in database!"
+        throw new KnownException("Error: Several Users with Phone " + userLogin + " already registered in database!"
             + " Please login!");
       } else {
         user = users.get(0);

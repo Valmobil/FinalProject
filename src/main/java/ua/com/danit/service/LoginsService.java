@@ -133,7 +133,7 @@ public class LoginsService {
     if (userLogin.getUserPassword() == null) {
       throw new KnownException("Error: incorrect login or password!");
     }
-    if (endPointMode.equals("signUp")) {
+    if (endPointMode.equals("SignUp")) {
       if (!userLogin.getUserPassword().equals(userLogin.getUserPasswordNew())) {
         throw new KnownException("Error: Please repeat password correctly!");
       }
