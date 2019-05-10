@@ -56,8 +56,8 @@ public class UsersService {
   }
 
   User changePassword(String newPassword, User user) {
-      user.setUserPassword(passwordEncrypt(newPassword));
-      return user;
+    user.setUserPassword(passwordEncrypt(newPassword));
+    return user;
   }
 
   List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
@@ -115,7 +115,8 @@ public class UsersService {
 
   void checkIfPasswordIsCorrect(UserLogin userLogin, User user) {
     if (user.getUserPassword() == null) {
-      throw new KnownException("Error: Your account was found! But... in order to set new password please user Forgot Password link!");
+      throw new KnownException("Error: Your account was found! But... in order to set new password please user Forgot"
+          + " Password link!");
     }
     if (!user.getUserPassword().equals(passwordEncrypt(userLogin.getUserPassword()))) {
       throw new KnownException("Error: incorrect login or password!");
@@ -184,7 +185,8 @@ public class UsersService {
       }
     }
     if (users.size() > 1) {
-      throw new KnownException("Error: Several Users with eMail " + userLogin + " have been found! Please contact support team!");
+      throw new KnownException("Error: Several Users with eMail " + userLogin + " have been found! Please "
+          + "contact support team!");
     }
     if (users.size() == 1) {
       if ("SignUp".equals(mode.getEndPoint())) {
@@ -206,11 +208,13 @@ public class UsersService {
       }
     }
     if (users.size() > 1) {
-      throw new KnownException("Error: Several Users with Phone " + userLogin + " have been found! Please contact support team!");
+      throw new KnownException("Error: Several Users with Phone " + userLogin + " have been found! Please contact"
+          + " support team!");
     }
     if (users.size() == 1) {
       if ("SignUp".equals(mode.getEndPoint())) {
-        throw new KnownException("Error: Several Users with Phone " + userLogin + "already registered in database! Please login!");
+        throw new KnownException("Error: Several Users with Phone " + userLogin + "already registered in database!"
+            + " Please login!");
       } else {
         user = users.get(0);
       }

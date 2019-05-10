@@ -21,7 +21,8 @@ public class LoginsController {
   private MailSenderService mailSenderService;
   protected UserTokensService userTokensService;
 
-  public LoginsController(LoginsService loginsService, MailSenderService mailSenderService, UserTokensService userTokensService) {
+  public LoginsController(LoginsService loginsService, MailSenderService mailSenderService,
+                          UserTokensService userTokensService) {
     this.loginsService = loginsService;
     this.mailSenderService = mailSenderService;
     this.userTokensService = userTokensService;
@@ -35,28 +36,29 @@ public class LoginsController {
 
   @PostMapping("signin")
   public ResponseEntity<UserResponse> postLoginSignIn(@RequestBody UserLogin userLogin) {
-    return new ResponseEntity<>(loginsService.checkLoginSignInSignUp(userLogin,"SignIn"), HttpStatus.OK);
+    return new ResponseEntity<>(loginsService.checkLoginSignInSignUp(userLogin, "SignIn"), HttpStatus.OK);
   }
 
   @PostMapping("signup")
   public ResponseEntity<UserResponse> postLoginSignUp(@RequestBody UserLogin userLogin) {
-    return new ResponseEntity<>(loginsService.checkLoginSignInSignUp(userLogin, "SignUp"),HttpStatus.OK);
+    return new ResponseEntity<>(loginsService.checkLoginSignInSignUp(userLogin, "SignUp"), HttpStatus.OK);
   }
 
   @PostMapping("pswdchange")
-  public ResponseEntity<String> postLoginPasswordChange(@RequestBody UserLogin userLogin, @RequestHeader String authorization) {
-    return new ResponseEntity<>(loginsService.passwordChange(userLogin, userTokensService.findUserByAccessToken(authorization)),HttpStatus.OK);
+  public ResponseEntity<String> postLoginPasswordChange(@RequestBody UserLogin userLogin,
+                                                        @RequestHeader String authorization) {
+    return new ResponseEntity<>(loginsService.passwordChange(userLogin,
+        userTokensService.findUserByAccessToken(authorization)), HttpStatus.OK);
   }
 
   @PostMapping("pswdrestore")
   public ResponseEntity<String> postLoginPasswordRestore(@RequestBody UserLogin userLogin) {
-    return new ResponseEntity<>(loginsService.passwordRestore(userLogin),HttpStatus.OK);
+    return new ResponseEntity<>(loginsService.passwordRestore(userLogin), HttpStatus.OK);
   }
 
   @PostMapping("email")
   public ResponseEntity<String> checkUserByEmail(@RequestBody UserLogin userLogin,
                                                  @RequestHeader(value = "Host") String host) {
-//    return new ResponseEntity<>(mailSenderService.checkUserByEmail(userLogin, host),HttpStatus.OK);
-    return new ResponseEntity<>("Ok",HttpStatus.OK);
+    return new ResponseEntity<>(mailSenderService.sendEmailWithRestorationToken(userLogin, host), HttpStatus.OK);
   }
 }

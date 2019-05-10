@@ -46,10 +46,11 @@ public class LoginsService {
       throw new KnownException("Error! Please send new Restore Password letter using Forgot Password link on login page!");
     }
     if (pswdResetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-      throw new KnownException("Error! Your restore password link is expired! Please send new Restore Password letter using Forgot Password link on login page!");
+      throw new KnownException("Error! Your restore password link is expired! Please send new Restore Password letter"
+          + " using Forgot Password link on login page!");
     }
     User user = pswdResetToken.getUser();
-    usersService.changePassword(userLogin.getUserPasswordNew(),user);
+    usersService.changePassword(userLogin.getUserPasswordNew(), user);
     usersRepository.save(user);
     return "Ok. Password was successfully changed!";
   }
@@ -146,7 +147,7 @@ public class LoginsService {
     return loginMode;
   }
 
-  private void convertUserLoginBlankToNull(UserLogin userLogin) {
+  void convertUserLoginBlankToNull(UserLogin userLogin) {
     if (userLogin.getUserLogin() != null) {
       if (userLogin.getUserLogin().trim().equals("")) {
         userLogin.setUserLogin(null);

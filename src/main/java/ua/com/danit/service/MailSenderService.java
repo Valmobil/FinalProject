@@ -1,13 +1,14 @@
 package ua.com.danit.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import ua.com.danit.dto.LoginMode;
 import ua.com.danit.entity.PswdResetToken;
 import ua.com.danit.entity.User;
 import ua.com.danit.dto.UserLogin;
+import ua.com.danit.error.KnownException;
 import ua.com.danit.repository.PswdResetTokenRepository;
 
 import javax.mail.MessagingException;
@@ -26,30 +27,33 @@ public class MailSenderService {
                     LoginsService loginsService,
                     PswdResetTokenRepository pswdResetTokenRepository,
                     JavaMailSender mailSender) {
-
     this.usersService = usersService;
     this.loginsService = loginsService;
     this.pswdResetTokenRepository = pswdResetTokenRepository;
     this.mailSender = mailSender;
   }
 
-//  public String checkUserByEmail(UserLogin userLogin, String contextPath) {
-//    if (userLogin == null) {
-//      return "Error: Please fill e-Mail cell!";
-//    }
-//    loginsService.convertUserLoginBlankToNull(userLogin);
-//    if (userLogin.getUserLogin() == null) {
-//      return "Error: Please fill e-Mail cell!";
-//    }
-//    User user = usersService.checkLogin(userLogin);
-//    if (user == null) {
-//      return "Error: The e-Mail was not found!";
-//    }
-//    //Send mail and save token
-//    sendResetPasswordMail(user, contextPath);
-//
-//    return "Ok. The message was sent!";
-//  }
+  public String sendEmailWithRestorationToken(UserLogin userLogin, String contextPath) {
+    if (userLogin == null) {
+      throw new KnownException("Error: Please fill e-Mail cell!");
+    }
+    loginsService.convertUserLoginBlankToNull(userLogin);
+    if (userLogin.getUserLogin() == null) {
+      throw new KnownException("Error: Please fill e-Mail cell!");
+    }
+    usersService.checkEmailFormat(userLogin.getUserLogin());
+    User user = usersService.createNewEmptyUser();
+    LoginMode loginMode = LoginMode.builder()
+        .isEmail(true)
+        .endPoint("SignIn")
+        .mode("LoginByPassword")
+        .build();
+    user = usersService.findUserByEmail(userLogin.getUserLogin(), loginMode, user);
+    //Send mail and save token
+    sendResetPasswordMail(user, contextPath);
+
+    return "Ok. The message was sent!";
+  }
 
   private void sendResetPasswordMail(User user, String contextPath) {
     String token = UUID.randomUUID().toString();
@@ -90,6 +94,5 @@ public class MailSenderService {
     PswdResetToken myToken = new PswdResetToken(token, user);
     pswdResetTokenRepository.save(myToken);
   }
-
 
 }
