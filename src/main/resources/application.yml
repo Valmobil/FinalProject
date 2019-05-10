@@ -1,9 +1,10 @@
 spring:
   profiles:
     active: local
+
     include: S3dev
 
-  mail:
+mail:
     host: smtp.gmail.com
     port: 587
     username: itripper0@gmail.com

@@ -94,6 +94,7 @@ public class UsersService {
     return userPoints;
   }
 
+
   void checkExternalTokenAndUpdateUser(UserLogin userLogin, User user) {
     //Check if Old External token mail correspond with existing mail
     user.getUserTokens().get(0).setUserTokenExternal(userLogin.getUserToken());

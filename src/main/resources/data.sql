@@ -1,6 +1,7 @@
 -- File just for test purposes only
 -- we fill some rows with test data
 -- it works just for H2 DB
+
 insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user_Photo) values (1, 'Anrdew', '+380504434665', '12345', 'andrew@gmail.com', 'http://localhost:9000/UserPhotos/1.jpg')
 insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user_Photo) values (2, 'Oleg', '+380685053223', '12345', 'oleg@gmail.com', 'http://localhost:9000/UserPhotos/2.jpg')
 insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user_Photo) values (3, 'Marichka', '+380679984536', '12345', 'marichka@gmail.com', 'http://localhost:9000/UserPhotos/3.jpg')
@@ -10,6 +11,7 @@ insert into user (user_Id, user_Name, user_Phone, user_Password, user_Mail, user
 insert into user_car (user_car_Id, user_car_user_id, user_car_Name, user_car_Colour, user_car_Photo) values (1, 1, 'Mercedes', 'Red', 'http://localhost:9000/carsPhotos/1_1.jpg')
 insert into user_car (user_car_Id, user_car_user_id, user_car_Name, user_car_Colour, user_car_Photo) values (2, 1, 'Opel', 'Blue', 'http://localhost:9000/carsPhotos/2_1.jpg')
 insert into user_car (user_car_Id, user_car_user_id, user_car_Name, user_car_Colour, user_car_Photo) values (3, 2, 'Cadillac', 'Blue', 'http://localhost:9000/carsPhotos/2_2.jpg')
+
 insert into trip (TRIP_ID, TRIP_DATE_TIME, TRIP_user_CAR_ID, TRIP_USER_ID, TRIP_SITS_QTY, TRIP_IS_DELETED) values (1, '2019-03-15T07:15:00', 1, 1, 3, 0)
 insert into trip (TRIP_ID, TRIP_DATE_TIME, TRIP_user_CAR_ID, TRIP_USER_ID, TRIP_SITS_QTY, TRIP_IS_DELETED) values (2, '2019-03-16T20:00:00', 2, 2, 4, 0)
 insert into trip (TRIP_ID, TRIP_DATE_TIME, TRIP_user_CAR_ID, TRIP_USER_ID, TRIP_SITS_QTY, TRIP_IS_DELETED) values (3, '2019-03-16T20:00:00', null, 3, 1, 0)
