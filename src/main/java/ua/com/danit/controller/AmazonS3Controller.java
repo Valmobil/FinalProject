@@ -42,9 +42,9 @@ public class AmazonS3Controller {
   //    return new ResponseEntity<>(s3Service.putImage(imageFile), HttpStatus.OK);
   //  }
 
-  @PostMapping("upload")
-  public String saveImageController(@RequestParam("fileUpload") byte[] file,
-                                    @RequestHeader String authorization) {
-    return imageService.saveNewImageToS3(file, userTokensService.findUserByAccessToken(authorization));
-  }
+  //  @PostMapping("upload")
+  //  public String saveImageController(@RequestParam("fileUpload") byte[] file,
+  //                                    @RequestHeader String authorization) {
+  //    return imageService.saveNewImageToS3(file, userTokensService.findUserByAccessToken(authorization));
+  //  }
 }
