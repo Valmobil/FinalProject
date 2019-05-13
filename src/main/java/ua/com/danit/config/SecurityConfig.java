@@ -107,7 +107,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/**/*.jpg",
             "/**/*.html",
             "/**/*.css",
-            "/**/*.js")
+            "/**/*.js",
+            "/console/**/**",
+            // for Swagger, only for dev
+            "/webjars/**",
+            "/v2/api-docs/**",
+            "/configuration/ui/**",
+            "/swagger-resources/**",
+            "/configuration/security/**",
+            "/swagger-ui.html/**",
+            "/swagger-ui.html#/**")
         .permitAll()
         .antMatchers("/auth/**", "/oauth2/**")
         .permitAll()
@@ -127,6 +136,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .successHandler(oAuth2AuthenticationSuccessHandler)
         .failureHandler(oAuth2AuthenticationFailureHandler);
+
+    // FrameOptions disabled for proper work with H2 database. Must be enabled in prod mode
+    http.headers().frameOptions().disable();
 
     // Add our custom Token based authentication filter
     http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

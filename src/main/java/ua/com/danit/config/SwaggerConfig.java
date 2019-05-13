@@ -29,8 +29,8 @@ public class SwaggerConfig {
   // Describe your apis
   private ApiInfo apiInfo() {
     return new ApiInfoBuilder()
-        .title("Swagger Sample APIs")
-        .description("This page lists all the rest apis for Swagger Sample App.")
+        .title("iTRIPPER Sample APIs")
+        .description("This page lists all the rest apis")
         .version("1.0-SNAPSHOT")
         .build();
   }
