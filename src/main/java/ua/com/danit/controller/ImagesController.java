@@ -21,23 +21,23 @@ public class ImagesController {
   private UserTokensService userTokensService;
   private static final String linkToPicture = "api/images/?id=";
 
-  @Autowired
-  public ImagesController(ImageService imageService, UserTokensService userTokensService) {
-    this.imageService = imageService;
-    this.userTokensService = userTokensService;
-  }
-
-  @GetMapping(value = "", produces = MediaType.IMAGE_PNG_VALUE)
-  public byte[] getImageControllerGet(@RequestParam String id) {
-    return imageService.getImageService(id);
-  }
-
-
-  @PutMapping
-  public String saveImageController(@RequestParam("fileUpload") byte[] file,
-                                    @RequestHeader String authorization) {
-    return imageService.saveNewImageToS3(file, userTokensService.findUserByAccessToken(authorization));
-    //to DB:    return linkToPicture + imageService.saveNewImage(file,
-    // userTokensService.findUserByAccessToken(authorization));
-  }
+  //  @Autowired
+  //  public ImagesController(ImageService imageService, UserTokensService userTokensService) {
+  //    this.imageService = imageService;
+  //    this.userTokensService = userTokensService;
+  //  }
+  //
+  //  @GetMapping(value = "", produces = MediaType.IMAGE_PNG_VALUE)
+  //  public byte[] getImageControllerGet(@RequestParam String id) {
+  //    return imageService.getImageService(id);
+  //  }
+  //
+  //
+  //  @PutMapping
+  //  public String saveImageController(@RequestParam("fileUpload") byte[] file,
+  //                                    @RequestHeader String authorization) {
+  //    return imageService.saveNewImageToS3(file, userTokensService.findUserByAccessToken(authorization));
+  //to DB:    return linkToPicture + imageService.saveNewImage(file,
+  // userTokensService.findUserByAccessToken(authorization));
+  //    }
 }

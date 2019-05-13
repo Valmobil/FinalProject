@@ -1,13 +1,14 @@
 package ua.com.danit.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import ua.com.danit.dto.LoginMode;
+import ua.com.danit.dto.UserLogin;
 import ua.com.danit.entity.PswdResetToken;
 import ua.com.danit.entity.User;
-import ua.com.danit.dto.UserLogin;
+import ua.com.danit.error.KnownException;
 import ua.com.danit.repository.PswdResetTokenRepository;
 
 import javax.mail.MessagingException;
@@ -16,35 +17,38 @@ import java.util.UUID;
 
 @Service
 public class MailSenderService {
+  private JavaMailSender javaMailSender;
   private UsersService usersService;
   private LoginsService loginsService;
   private PswdResetTokenRepository pswdResetTokenRepository;
-  private JavaMailSender mailSender;
 
   @Autowired
-  MailSenderService(UsersService usersService,
+  MailSenderService(JavaMailSender javaMailSender,
+                    UsersService usersService,
                     LoginsService loginsService,
-                    PswdResetTokenRepository pswdResetTokenRepository,
-                    JavaMailSender mailSender) {
-
+                    PswdResetTokenRepository pswdResetTokenRepository) {
+    this.javaMailSender = javaMailSender;
     this.usersService = usersService;
     this.loginsService = loginsService;
     this.pswdResetTokenRepository = pswdResetTokenRepository;
-    this.mailSender = mailSender;
   }
 
-  public String checkUserByEmail(UserLogin userLogin, String contextPath) {
+  public String sendEmailWithRestorationToken(UserLogin userLogin, String contextPath) {
     if (userLogin == null) {
-      return "Error: Please fill e-Mail cell!";
+      throw new KnownException("Error: Please fill e-Mail cell!");
     }
     loginsService.convertUserLoginBlankToNull(userLogin);
     if (userLogin.getUserLogin() == null) {
-      return "Error: Please fill e-Mail cell!";
+      throw new KnownException("Error: Please fill e-Mail cell!");
     }
-    User user = usersService.checkLogin(userLogin);
-    if (user == null) {
-      return "Error: The e-Mail was not found!";
-    }
+    usersService.checkEmailFormat(userLogin.getUserLogin());
+    User user = usersService.createNewEmptyUser();
+    LoginMode loginMode = LoginMode.builder()
+        .isEmail(true)
+        .endPoint("SignIn")
+        .mode("LoginByPassword")
+        .build();
+    user = usersService.findUserByEmail(userLogin.getUserLogin(), loginMode, user);
     //Send mail and save token
     sendResetPasswordMail(user, contextPath);
 
@@ -56,7 +60,7 @@ public class MailSenderService {
     //save token in DB
     createPasswordResetTokenForUser(user, token);
     //Mail token to user
-    mailSender.send(constructResetTokenEmail(contextPath, token, user));
+    javaMailSender.send(constructResetTokenEmail(contextPath, token, user));
   }
 
   private MimeMessage constructResetTokenEmail(
@@ -71,7 +75,7 @@ public class MailSenderService {
 
   private MimeMessage constructMimeMail(String subject, String msg, String from, String to) {
     try {
-      MimeMessage message = mailSender.createMimeMessage();
+      MimeMessage message = javaMailSender.createMimeMessage();
 
       message.setSubject(subject);
       MimeMessageHelper helper;
@@ -90,6 +94,5 @@ public class MailSenderService {
     PswdResetToken myToken = new PswdResetToken(token, user);
     pswdResetTokenRepository.save(myToken);
   }
-
 
 }
