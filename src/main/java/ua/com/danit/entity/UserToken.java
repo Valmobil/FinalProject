@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -31,5 +32,6 @@ public class UserToken {
   private LocalDateTime userTokenRefreshTo;
   private String userTokenAccess;
   private LocalDateTime userTokenAccessTo;
+  @Column(length = 1500)
   private String userTokenExternal;
 }
