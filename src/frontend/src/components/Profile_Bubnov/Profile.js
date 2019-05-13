@@ -217,7 +217,7 @@ class Profile extends Component {
                   {carList}
                   {dependentOutput}
 
-                  <Button onClick={ () => this.props.updateProfile({...this.state.user, car: this.state.cars})}
+                  <Button onClick={ () => this.props.updateProfile({...this.state.user, userCars: this.state.cars})}
                           color="primary"
                           style={style.button}
                           classes={{
