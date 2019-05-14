@@ -29,7 +29,7 @@ public class ImageService {
   }
 
 
-  private static final String linkToPicture = "/api/images/?id=";
+  private static final String linkToLocalPicture = "/api/images/?id=";
 
   public String saveImageToDb(byte[] file, User user, String host) {
     String imageName = imageProviderLocalDb.putImage(file, user, "");
@@ -37,7 +37,11 @@ public class ImageService {
   }
 
   private String addServerToImageName(String imageName, String host) {
-    return host + linkToPicture + imageName;
+    if (host.substring(0, 5) == "locl") {
+      return "http://" + host + linkToLocalPicture + imageName;
+    } else {
+      return host + linkToLocalPicture + imageName;
+    }
   }
 
   public byte[] getImageService(String imageId) {
