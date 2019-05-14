@@ -279,9 +279,7 @@ public class UsersService {
       }
       if ("point".equals(str)) {
         if (user.getUserPoints() == null || user.getUserPoints().size() == 0) {
-          if (user.getUserId() != null) {
-            user = collectUserPointsAndFillInEmptyOnes(user);
-          }
+          user = collectUserPointsAndFillInEmptyOnes(user);
         }
       }
     }
