@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.TripResponse;
+import ua.com.danit.dto.TripResponseId;
 import ua.com.danit.dto.TripResponseWithUser;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.TripPoint;
@@ -34,7 +35,7 @@ public class TripsService {
     return tripsRepository.getOne(tripId);
   }
 
-  public String saveTripToDb(Trip trip) {
+  public TripResponseId saveTripToDb(Trip trip) {
     //Set TripId to TripPoints
     for (TripPoint point : trip.getTripPoint()) {
       point.setTrip(trip);
@@ -45,11 +46,11 @@ public class TripsService {
         trip.setUserCar(null);
       }
     }
-    if (tripsRepository.save(trip) != null) {
-      return "Ok";
-    } else {
+    trip = tripsRepository.save(trip);
+    if (trip == null) {
       throw new KnownException("Error! Trip have not been saved!");
     }
+    return new TripResponseId(trip.getTripId());
   }
 
   public List<TripResponseWithUser> getOwnAndOtherTrips(User user) {

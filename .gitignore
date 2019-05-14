@@ -21,5 +21,4 @@
 *.tar.gz
 *.rar
 
-/src/main/resources/application-S3dev.yml
-/src/main/resources/application-S3prd.yml
+/src/main/resources/credentials/
