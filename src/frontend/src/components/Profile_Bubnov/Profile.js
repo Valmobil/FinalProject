@@ -8,10 +8,15 @@ import Photo from './Photo/Photo'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import { connect } from 'react-redux'
-import { updateProfile, setUserPhoto} from '../../actions/userCreators'
+import { updateProfile, setPhoto} from '../../actions/userCreators'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Car from './Car/Car'
+import Spinner from '../Spinner/Spinner'
+import sihlouette from '../../utils/sihlouette.svg'
 
+
+const phoneNumber = /^\+?[0-9]{10}/;
+const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 class Profile extends Component {
 
@@ -24,12 +29,19 @@ class Profile extends Component {
         },
      cars: [],
      adding: false,
+     avatarShown: true,
+     uploadingOpen: false,
      newCar: {
             userCarName: '',
             userCarColour: '',
             userCarPhoto: '',
             },
-        }
+      error: {
+            userName: '',
+            userPhone: '',
+            userMail: '',
+            },
+     }
 
     handleChange = ({target: { name, value }}) => {
             this.setState({user: {...this.state.user, [name]: value}, newCar: {...this.state.newCar, [name]: value}})
@@ -60,15 +72,49 @@ class Profile extends Component {
         this.setState({cars})
     }
 
-    setUserPhoto = (photo) => {
-        this.props.setUserPhoto(photo)
-            .then(res => this.setState({user: {...this.state.user, userPhoto: res.data}}))
+    // setUserPhoto = (photo) => {
+    //     this.props.setPhoto(photo)
+    //         .then(res => this.setState({user: {...this.state.user, userPhoto: res.data}}))
+    //
+    // }
 
+    avatarShowToggle = (avatarShown, uploadingOpen) => {
+        this.setState({ avatarShown, uploadingOpen })
+    }
+
+    onBlur = ({target: {name}}) => {
+        this.validate(name)
+    }
+
+    onFocus = ({target: {name}}) => {
+        this.setState({error: {...this.state.error, [name]: ''}})
+    }
+
+    validate = (name) => {
+        const { user: { userName, userPhone, userMail } } = this.state
+        if (name === 'userName'){
+            if ( userName.length === 0 ){
+                this.setState({error: {...this.state.error, userName: 'Please enter user name'}})
+            }
+        }
+        if ( name === 'userPhone' ){
+            if ( !phoneNumber.test(userPhone.split('-').join('')) ){
+                this.setState({error: {...this.state.error, userPhone: 'Please enter valid phone'}})
+            }
+        }
+        if ( name === 'userMail' ){
+            if ( !email.test(userMail.toLowerCase()) ){
+                this.setState({error: {...this.state.error, userMail: 'Please enter valid email'}})
+            }
+        }
     }
 
     componentDidUpdate(prevProps){
         if (this.props.users.userCars !== prevProps.users.userCars){
             this.setState({user: {...this.state.user, ...this.props.users.user}, cars: this.props.users.userCars})
+        }
+        if (this.props.users.user.userPhoto !== prevProps.users.user.userPhoto){
+            this.avatarShowToggle(true)
         }
     }
 
@@ -77,8 +123,13 @@ class Profile extends Component {
     }
 
   render () {
-        const {classes} = this.props
-        const { adding, cars } = this.state
+        console.log('photo = ', this.props.users.user.userPhoto)
+        const { classes } = this.props
+        const { adding, cars, avatarShown, uploadingOpen, user: { userName, userPhone, userMail }, newCar: { userCarName, userCarColour } } = this.state
+        const allChecks = phoneNumber.test(userPhone.split('-').join(''))
+            && email.test(userMail.toLowerCase())
+            && userName.length > 0
+
         let carList = cars.map(item => {
           const car =item.userCarName + ' ' + item.userCarColour
           return (
@@ -104,7 +155,7 @@ class Profile extends Component {
                       }}
                       label='Car name'
                       name='userCarName'
-                      value={this.state.newCar.userCarName}
+                      value={ userCarName }
                       onChange={this.handleChange}
                   />
                   <TextField
@@ -116,14 +167,14 @@ class Profile extends Component {
                       }}
                       label='Car color'
                       name='userCarColour'
-                      value={this.state.newCar.userCarColour}
+                      value={ userCarColour }
                       onChange={this.handleChange}
 
                   />
                         <div className='newcar-buttons-container'>
                             <Button
-                                onClick={this.submitNewCar}
-                                disabled={this.state.newCar.userCarName.length === 0 || this.state.newCar.userCarColour.length === 0}
+                                onClick={ this.submitNewCar }
+                                disabled={ userCarName.length === 0 || userCarColour.length === 0 }
                                 classes={{
                                     root: classes.submitButton,
                                     label: classes.label
@@ -132,7 +183,7 @@ class Profile extends Component {
                                 Submit
                             </Button>
                             <Button
-                                onClick={this.rejectNewCar}
+                                onClick={ this.rejectNewCar }
                                 classes={{
                                     root: classes.rejectButton,
                                     label: classes.label
@@ -141,12 +192,11 @@ class Profile extends Component {
                                 Reject
                             </Button>
                         </div>
-
               </>
           )
       } else {
           dependentOutput = (
-              <Button onClick={this.handleAddCar}
+              <Button onClick={ this.handleAddCar }
                       type="raised"
                       color="primary"
                       classes={{
@@ -161,12 +211,26 @@ class Profile extends Component {
               </Button>
           )
       }
+    let userAvatar = this.props.users.user.userPhoto.includes('id') ? `http://${this.props.users.user.userPhoto}` : sihlouette
+    let userAvatarBox = null;
+        if (avatarShown && !uploadingOpen){
+            userAvatarBox = (
+                <div>
+                    <img src={userAvatar} style={{height: 100}} alt=''/>
+                </div>
+            )
+        } else if (!avatarShown && !uploadingOpen){
+            userAvatarBox = <Spinner/>
+        }
     return (
           <div className='profile-container'>
-              <Photo setPhoto={this.setUserPhoto}/>
-              <div>
-                  <img src={`/api/images/?id=${this.props.users.user.userPhoto}`} style={{height: 100}} alt=''/>
-              </div>
+              <Photo
+                  setPhoto={this.props.setPhoto}
+                  avatarShowToggle={this.avatarShowToggle}
+              />
+
+              {userAvatarBox}
+
               <MuiThemeProvider theme={theme}>
                   <TextField
                       required
@@ -174,8 +238,13 @@ class Profile extends Component {
                       name='userName'
                       type='text'
                       onChange={this.handleChange}
-                      value={this.state.user.userName}
-                      style={style.input}
+                      onBlur={this.onBlur}
+                      onFocus={this.onFocus}
+                      autoComplete="off"
+                      value={ userName }
+                      error={ this.state.error.userName.length > 0 }
+                      helperText={ this.state.error.userName }
+                      style={ style.input }
                       InputProps={{
                           classes: {
                               input: classes.inputColor
@@ -188,8 +257,13 @@ class Profile extends Component {
                       name='userPhone'
                       placeholder= '+38'
                       onChange={this.handleChange}
-                      value={this.state.user.userPhone}
-                      style={style.input}
+                      onBlur={this.onBlur}
+                      onFocus={this.onFocus}
+                      autoComplete="off"
+                      value={ userPhone }
+                      error={ this.state.error.userPhone.length > 0 }
+                      helperText={ this.state.error.userPhone }
+                      style={ style.input }
                       InputProps={{
                           classes: {
                               input: classes.inputColor
@@ -203,23 +277,30 @@ class Profile extends Component {
                       type="email"
                       name='userMail'
                       onChange={this.handleChange}
-                      autoComplete="email"
-                      margin="normal"
-                      value={this.state.user.userMail}
-                      style={style.input}
+                      onBlur={this.onBlur}
+                      onFocus={this.onFocus}
+                      autoComplete="off"
+                      value={ userMail }
+                      error={ this.state.error.userMail.length > 0 }
+                      helperText={ this.state.error.userMail }
+                      style={ style.input }
                       InputProps={{
                           classes: {
                               input: classes.inputColor
                           }
                       }}
                   />
-
+                  <span className='carlist-header'>List of your cars (swipe to delete)</span>
+                  <div className='carlist'>
                   {carList}
+                  </div>
                   {dependentOutput}
 
-                  <Button onClick={ () => this.props.updateProfile({...this.state.user, userCars: this.state.cars})}
+                  {!adding &&
+                  <Button onClick={() => this.props.updateProfile({...this.state.user, userCars: this.state.cars})}
                           color="primary"
                           style={style.button}
+                          disabled={!allChecks}
                           classes={{
                               root: classes.root,
                               label: classes.label
@@ -228,6 +309,7 @@ class Profile extends Component {
                   >
                       Submit
                   </Button>
+                  }
               </MuiThemeProvider>
           </div>
 
@@ -316,14 +398,10 @@ const styles = theme => ({
 const style = {
   input: {
     width: '100%',
-    height: '40px',
-    color: '#fff',
-    marginTop: 10,
   },
   button: {
-    margin: theme.spacing.unit,
-    marginTop: '10px',
-    border: '1px solid #38D1FF'
+    height: 30,
+    marginTop: 30,
   }
 }
 
@@ -340,7 +418,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
       updateProfile: (userInfo) => dispatch(updateProfile(userInfo)),
-      setUserPhoto: (photo) => dispatch(setUserPhoto(photo)),
+      setPhoto: (photo) => dispatch(setPhoto(photo)),
   }
 }
 

@@ -220,7 +220,8 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
 }
 //* **********************
 
-export const setUserPhoto = (image) => dispatch => {
+export const setPhoto = (image) => dispatch => {
+    console.log('image = ', image)
     let data = new FormData();
     data.append('fileUpload', image);
     const photoCall = callApi('put', 'api/images', data)
