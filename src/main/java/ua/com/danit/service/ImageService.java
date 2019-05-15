@@ -37,7 +37,7 @@ public class ImageService {
   }
 
   private String addServerToImageName(String imageName, String host) {
-    if (host.substring(0, 5) == "locl") {
+    if ("localhost".equals(host.substring(0, 10)) ) {
       return "http://" + host + linkToLocalPicture + imageName;
     } else {
       return host + linkToLocalPicture + imageName;
