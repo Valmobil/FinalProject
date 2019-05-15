@@ -33,7 +33,8 @@ public class MailSenderService {
     this.pswdResetTokenRepository = pswdResetTokenRepository;
   }
 
-  public String sendEmailWithRestorationToken(UserLogin userLogin, String contextPath) {
+
+  public String sendEmailWithMailConfirmation(UserLogin userLogin, String contextPath, String endPoint) {
     if (userLogin == null) {
       throw new KnownException("Error: Please fill e-Mail cell!");
     }
@@ -45,32 +46,55 @@ public class MailSenderService {
     User user = usersService.createNewEmptyUser();
     LoginMode loginMode = LoginMode.builder()
         .isEmail(true)
-        .endPoint("SignIn")
-        .mode("LoginByPassword")
+        .endPoint(endPoint)
+        .mode("")
         .build();
     user = usersService.findUserByEmail(userLogin.getUserLogin(), loginMode, user);
     //Send mail and save token
-    sendResetPasswordMail(user, contextPath);
+    sendResetPasswordMail(user, contextPath, loginMode);
 
     return "Ok. The message was sent!";
   }
 
-  private void sendResetPasswordMail(User user, String contextPath) {
+  private void sendResetPasswordMail(User user, String contextPath, LoginMode loginMode) {
     String token = UUID.randomUUID().toString();
     //save token in DB
     createPasswordResetTokenForUser(user, token);
-    //Mail token to user
-    javaMailSender.send(constructResetTokenEmail(contextPath, token, user));
+    //Mail to user
+    if ("email".equals(loginMode.getEndPoint())) {
+      javaMailSender.send(constructResetTokenEmail(contextPath, token, user));
+    } else {
+      javaMailSender.send(constructConfirmEmail(contextPath, token, user));
+    }
+  }
+
+  private MimeMessage constructConfirmEmail(
+      String contextPath, String token, User user) {
+    contextPath = checkForLocalHost(contextPath);
+    String url = contextPath + "/api/logins/confirmemailstatus?token=" + token;
+    return constructMimeMail("Confirm Email",
+        "<html><body>Добридень!<br><br>Ви отримали це повідомлення, бо Ви (маємо таку надію, що це були Ви) "
+            + "зареєструвалися і хочете підтвердити свою поштову адресу "
+            + "<br><a href=\"" + url + "\">Please click for mail confirmation!</a><br><br>З повагою, ваша комманда підтримки!</body></html>",
+        "", user.getUserMail());
   }
 
   private MimeMessage constructResetTokenEmail(
       String contextPath, String token, User user) {
+    contextPath = checkForLocalHost(contextPath);
     String url = contextPath + "/user/changePassword?id=" + "&token=" + token;
     return constructMimeMail("Reset Password",
-        "Добридень!<br><br>Ви отримали це повідомлення, бо Ви (маємо таку надію що це були Ви) "
-            + "хочете встановити свій новий пароль "
-            + "<br><a href=\"" + url + "\">Please click for password restore!</a><br><br>З повагою, ваша комманда!",
+        "<html><body>Добридень!<br><br>Ви отримали це повідомлення, бо Ви (маємо таку надію? що це були Ви) "
+            + "хочете встановити новий пароль "
+            + "<br><a href=\"" + url + "\">Please click for password restore!</a><br><br>З повагою, ваша комманда підтримки!</body></html>",
         "", user.getUserMail());
+  }
+
+  static String checkForLocalHost(String contextPath) {
+    if (contextPath.substring(0,9).equals("localhost")) {
+      return "http://" + contextPath;
+    }
+    return contextPath;
   }
 
   private MimeMessage constructMimeMail(String subject, String msg, String from, String to) {
@@ -95,4 +119,7 @@ public class MailSenderService {
     pswdResetTokenRepository.save(myToken);
   }
 
+  public String receiveMailConfirmation(String host) {
+    return "Ok just for test";
+  }
 }
