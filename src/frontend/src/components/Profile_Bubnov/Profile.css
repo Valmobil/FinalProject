@@ -19,6 +19,14 @@
     width: 70%;
 
 }
+.carlist{
+    width: 100%;
+    margin-top: 30px;
+}
+.carlist-header{
+    margin-top: 30px;
+    color: #fff;
+}
 
 
 @media screen and (max-width: 710px) and (min-width: 380px){
