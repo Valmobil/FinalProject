@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
+import Spinner from '../../Spinner/Spinner'
 import './Photo.css'
 
 
@@ -36,11 +37,23 @@ const styles = {
 
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 
-const Photo = ({ classes, setPhoto, avatarShowToggle }) => {
+const Photo = ({ classes, setPhoto, photo, sihlouette }) => {
 
     const [ imgSrc, setImgSrc] = useState(null)
     const [ base64, setBase64] = useState('')
+    const [avatarShown, setAvatarShown] = useState(true)
+    const [uploadingOpen, setUploadingOpen] = useState(false)
     const cropper = useRef(null);
+    const uploadFile = useRef(null);
+
+    useEffect(() => {
+        avatarShowToggle(true)
+    }, [photo])
+
+    const avatarShowToggle = (avatarShown, uploadingOpen) => {
+        setAvatarShown(avatarShown)
+        setUploadingOpen(uploadingOpen)
+    }
 
     const handleFile = (e) => {
         avatarShowToggle(false, true)
@@ -54,7 +67,6 @@ const Photo = ({ classes, setPhoto, avatarShowToggle }) => {
         if (file) reader.readAsDataURL(file);
     }
 
-
     const saveImage = () => {
         rejectImage()
         setPhoto(base64)
@@ -63,23 +75,21 @@ const Photo = ({ classes, setPhoto, avatarShowToggle }) => {
 
     const rejectImage = () => setImgSrc(null)
 
-
     const crop = () => {
         setBase64(cropper.current.getCroppedCanvas().toDataURL())
     }
 
     let conditionalInput = imgSrc === null ?
             <>
-                <label className='photo-input-label'>
+                <label ref={uploadFile} className='photo-input-label'>
                     <input type="file"
                            name="fileUpload"
                            className='photo-input'
                            accept={acceptedFileTypes}
                            onChange={handleFile}
                     />
-                    Upload photo
+                    Upload photo*
                 </label>
-
             </>
             :
             <>
@@ -110,8 +120,22 @@ const Photo = ({ classes, setPhoto, avatarShowToggle }) => {
                     </Button>
                 </div>
             </>
+    let userAvatar = photo.includes('id') ? `http://${photo}` : sihlouette
+    let userAvatarBox = null;
+    if (avatarShown && !uploadingOpen){
+        userAvatarBox = (
+            <div onClick={() => uploadFile.current.click()}>
+                <img src={userAvatar} style={{height: 100}} alt=''/>
+            </div>
+        )
+    } else if (!avatarShown && !uploadingOpen){
+        userAvatarBox = <Spinner/>
+    }
         return (
-            conditionalInput
+            <>
+                {conditionalInput}
+                {userAvatarBox}
+            </>
         )
 }
 

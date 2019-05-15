@@ -11,8 +11,7 @@ import { connect } from 'react-redux'
 import { updateProfile, setPhoto} from '../../actions/userCreators'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Car from './Car/Car'
-import Spinner from '../Spinner/Spinner'
-import sihlouette from '../../utils/sihlouette.svg'
+import manSihlouette from '../../utils/manSihlouette.svg'
 
 
 const phoneNumber = /^\+?[0-9]{10}/;
@@ -29,8 +28,6 @@ class Profile extends Component {
         },
      cars: [],
      adding: false,
-     avatarShown: true,
-     uploadingOpen: false,
      newCar: {
             userCarName: '',
             userCarColour: '',
@@ -78,10 +75,6 @@ class Profile extends Component {
     //
     // }
 
-    avatarShowToggle = (avatarShown, uploadingOpen) => {
-        this.setState({ avatarShown, uploadingOpen })
-    }
-
     onBlur = ({target: {name}}) => {
         this.validate(name)
     }
@@ -114,7 +107,7 @@ class Profile extends Component {
             this.setState({user: {...this.state.user, ...this.props.users.user}, cars: this.props.users.userCars})
         }
         if (this.props.users.user.userPhoto !== prevProps.users.user.userPhoto){
-            this.avatarShowToggle(true)
+            this.setState({user: {...this.state.user, userPhoto: this.props.users.user.userPhoto}})
         }
     }
 
@@ -123,12 +116,12 @@ class Profile extends Component {
     }
 
   render () {
-        console.log('photo = ', this.props.users.user.userPhoto)
         const { classes } = this.props
-        const { adding, cars, avatarShown, uploadingOpen, user: { userName, userPhone, userMail }, newCar: { userCarName, userCarColour } } = this.state
+        const { adding, cars, user: { userName, userPhone, userMail, userPhoto }, newCar: { userCarName, userCarColour }} = this.state
         const allChecks = phoneNumber.test(userPhone.split('-').join(''))
             && email.test(userMail.toLowerCase())
             && userName.length > 0
+            && userPhoto.includes('id')
 
         let carList = cars.map(item => {
           const car =item.userCarName + ' ' + item.userCarColour
@@ -211,26 +204,13 @@ class Profile extends Component {
               </Button>
           )
       }
-    let userAvatar = this.props.users.user.userPhoto.includes('id') ? `http://${this.props.users.user.userPhoto}` : sihlouette
-    let userAvatarBox = null;
-        if (avatarShown && !uploadingOpen){
-            userAvatarBox = (
-                <div>
-                    <img src={userAvatar} style={{height: 100}} alt=''/>
-                </div>
-            )
-        } else if (!avatarShown && !uploadingOpen){
-            userAvatarBox = <Spinner/>
-        }
     return (
           <div className='profile-container'>
               <Photo
-                  setPhoto={this.props.setPhoto}
-                  avatarShowToggle={this.avatarShowToggle}
+                  setPhoto={ this.props.setPhoto }
+                  photo={ this.props.users.user.userPhoto }
+                  sihlouette={ manSihlouette }
               />
-
-              {userAvatarBox}
-
               <MuiThemeProvider theme={theme}>
                   <TextField
                       required
@@ -273,7 +253,6 @@ class Profile extends Component {
                   <TextField
                       required
                       label="Email"
-                      // className={classes.textField}
                       type="email"
                       name='userMail'
                       onChange={this.handleChange}
@@ -305,16 +284,12 @@ class Profile extends Component {
                               root: classes.root,
                               label: classes.label
                           }}
-
                   >
                       Submit
                   </Button>
                   }
               </MuiThemeProvider>
           </div>
-
-
-
     )
   }
 }
