@@ -63,10 +63,12 @@ public class LoginsController {
                                                  @RequestHeader(value = "Host") String host) {
     return new ResponseEntity<>(mailSenderService.sendEmailWithMailConfirmation(userLogin, host, "email"), HttpStatus.OK);
   }
+
   @PostMapping("confirmemail")
   public ResponseEntity<String> checkConfirmEmail(@RequestBody UserLogin userLogin,
-                                                 @RequestHeader(value = "Host") String host) {
-    return new ResponseEntity<>(mailSenderService.sendEmailWithMailConfirmation(userLogin, host, "confirmemail"), HttpStatus.OK);
+                                                  @RequestHeader(value = "Host") String host) {
+    return new ResponseEntity<>(mailSenderService.sendEmailWithMailConfirmation(userLogin, host, "confirmemail"),
+        HttpStatus.OK);
   }
 
   @GetMapping("confirmemailstatus")
