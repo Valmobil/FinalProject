@@ -6,7 +6,7 @@ import ua.com.danit.entity.User;
 
 import java.util.List;
 
-public interface CarsRepository extends JpaRepository<UserCar, Long> {
+public interface UserCarsRepository extends JpaRepository<UserCar, Long> {
 
   List<UserCar> findByUser(User user);
 
