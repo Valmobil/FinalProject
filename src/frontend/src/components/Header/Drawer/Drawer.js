@@ -13,7 +13,6 @@ const Drawer = (props) => {
             onClose={() => props.topMenuToggle(true)}
             onOpen={() => props.topMenuToggle(false)}
             disableBackdropTransition={true}
-            transitionDuration={500}
         >
             <div
                 tabIndex={0}

@@ -3,6 +3,7 @@ package ua.com.danit.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.LoginMode;
+import ua.com.danit.dto.UserResponse;
 import ua.com.danit.dto.UserTokenResponse;
 import ua.com.danit.entity.UserCar;
 import ua.com.danit.entity.Point;
@@ -11,8 +12,10 @@ import ua.com.danit.entity.UserPoint;
 import ua.com.danit.entity.UserToken;
 import ua.com.danit.dto.UserLogin;
 import ua.com.danit.error.KnownException;
+import ua.com.danit.facade.UserFacade;
 import ua.com.danit.facade.UserTokenFacade;
 import ua.com.danit.repository.PointsRepository;
+import ua.com.danit.repository.UserCarsRepository;
 import ua.com.danit.repository.UserPointsRepository;
 import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
@@ -26,29 +29,33 @@ import java.util.regex.Pattern;
 @Service
 public class UsersService {
   private UsersRepository usersRepository;
-  private UserPointsRepository userPointsRepository;
   private PointsRepository pointsRepository;
   private UserTokensService userTokensService;
-  private UserTokensRepository userTokensRepository;
   private UserTokenFacade userTokenFacade;
+  private UserPointsRepository userPointsRepository;
+  private UserFacade userFacade;
+  private UserCarsRepository userCarsRepository;
+  private UserTokensRepository userTokensRepository;
 
   @Autowired
   public UsersService(UsersRepository usersRepository,
-                      UserPointsRepository userPointRepository,
                       PointsRepository pointsRepository,
                       UserTokensService userTokensService,
                       UserTokenFacade userTokenFacade,
-                      UserTokensRepository userTokensRepository) {
+                      UserPointsRepository userPointsRepository,
+                      UserCarsRepository userCarsRepository,
+                      UserTokensRepository userTokensRepository,
+                      UserFacade userFacade) {
     this.usersRepository = usersRepository;
-    this.userPointsRepository = userPointRepository;
     this.pointsRepository = pointsRepository;
     this.userTokensService = userTokensService;
-    this.userTokensRepository = userTokensRepository;
     this.userTokenFacade = userTokenFacade;
+    this.userFacade = userFacade;
+    this.userPointsRepository = userPointsRepository;
+    this.userCarsRepository = userCarsRepository;
+    this.userTokensRepository = userTokensRepository;
   }
 
-  @Autowired
-  LoginsService loginService;
 
   private String passwordEncrypt(String userPasswordNew) {
     //!!!!! Write password encryption procedure
@@ -60,9 +67,9 @@ public class UsersService {
     return user;
   }
 
-  List<UserPoint> collectUserPointsAndFillInEmptyOnes(User user) {
+  User collectUserPointsAndFillInEmptyOnes(User user) {
     if (user == null) {
-      return new ArrayList<>();
+      throw new KnownException("Error! Empty user entity!");
     }
     List<UserPoint> userPoints;
     if (user.getUserId() == null) {
@@ -89,9 +96,9 @@ public class UsersService {
         UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0);
         userPoints.add(pointOther);
       }
-//      userPoints = userPointsRe?pository.saveAll(userPoints);
     }
-    return userPoints;
+    user.setUserPoints(userPoints);
+    return user;
   }
 
 
@@ -161,19 +168,21 @@ public class UsersService {
   }
 
 
-  public User putUserProfile(User user, User userFromToken) {
-    //Update some fields
+  public UserResponse putUserProfile(User user, User userFromToken) {
     if (userFromToken == null) {
       throw new KnownException("Error: Access token not found!");
     }
+    //Update some fields
     user.setUserId(userFromToken.getUserId());
+    user.setUserPassword(userFromToken.getUserPassword());
     if (user.getUserCars() != null) {
       for (UserCar userCar : user.getUserCars()) {
         userCar.setUser(user);
       }
     }
     user = usersRepository.save(user);
-    return user;
+    user = projection(user, "car", "token", "point");
+    return userFacade.mapEntityToResponse(user);
   }
 
   User findUserByEmail(String userLogin, LoginMode mode, User user) {
@@ -243,5 +252,37 @@ public class UsersService {
       user.getUserTokens().add(new UserToken());
       user.getUserTokens().get(0).setUser(user);
     }
+  }
+
+  public User updateUserCars(User user) {
+    List<UserCar> userCars = userCarsRepository.findByUser(user);
+    if (userCars != null && userCars.size() > 0) {
+      user.setUserCars(userCars);
+    }
+    return user;
+  }
+
+  public User projection(User user, String... names) {
+
+    for (String str : names) {
+      if ("car".equals(str)) {
+        if (user.getUserId() != null) {
+          if (user.getUserCars() == null || user.getUserCars().size() == 0) {
+            user = updateUserCars(user);
+          }
+        }
+      }
+      if ("token".equals(str)) {
+        if (user.getUserTokens() == null || user.getUserTokens().size() == 0) {
+          user = updateUserTokenInUserEntity(user);
+        }
+      }
+      if ("point".equals(str)) {
+        if (user.getUserPoints() == null || user.getUserPoints().size() == 0) {
+          user = collectUserPointsAndFillInEmptyOnes(user);
+        }
+      }
+    }
+    return user;
   }
 }

@@ -1,11 +1,9 @@
-import React, { Component } from 'react'
-import {connect} from 'react-redux'
-import { setUserPhoto} from '../../../actions/userCreators'
-import PropTypes from 'prop-types'
+import React, { useState, useRef, useEffect } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
+import Spinner from '../../Spinner/Spinner'
 import './Photo.css'
 
 
@@ -39,79 +37,72 @@ const styles = {
 
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 
-class Photo extends Component {
+const Photo = ({ classes, setPhoto, photo, sihlouette }) => {
 
-    constructor(props){
-        super(props)
-        this.state = {
-            file: null,
-            imgSrc: null,
-            base64: '',
-        };
-        this.cropper = React.createRef();
-}
+    const [ imgSrc, setImgSrc] = useState(null)
+    const [ base64, setBase64] = useState('')
+    const [avatarShown, setAvatarShown] = useState(true)
+    const [uploadingOpen, setUploadingOpen] = useState(false)
+    const cropper = useRef(null);
+    const uploadFile = useRef(null);
 
-    handleFile = (e) => {
+    useEffect(() => {
+        avatarShowToggle(true)
+    }, [photo])
+
+    const avatarShowToggle = (avatarShown, uploadingOpen) => {
+        setAvatarShown(avatarShown)
+        setUploadingOpen(uploadingOpen)
+    }
+
+    const handleFile = (e) => {
+        avatarShowToggle(false, true)
         const file = e.target.files[0]
         const img = new Image();
         img.src = window.URL.createObjectURL( file );
-        img.onload = () => {
-            this.setState({file})
-        }
         const reader = new FileReader();
         reader.addEventListener('load', () => {
-            this.setState({imgSrc: reader.result})
+            setImgSrc(reader.result)
         }, false)
         if (file) reader.readAsDataURL(file);
     }
 
-
-    saveImage = () => {
-        this.rejectImage()
-        this.props.setPhoto(this.state.base64)
+    const saveImage = () => {
+        rejectImage()
+        setPhoto(base64)
+        avatarShowToggle(false, false)
     }
 
-    rejectImage = () => {
-        this.setState({
-            file: null,
-            imgSrc: null,
-        })
+    const rejectImage = () => setImgSrc(null)
+
+    const crop = () => {
+        setBase64(cropper.current.getCroppedCanvas().toDataURL())
     }
 
-    crop(){
-        this.setState({base64: this.cropper.current.getCroppedCanvas().toDataURL()})
-    }
-
-
-
-    render(){
-        const { classes } = this.props
-        let conditionalInput = this.state.imgSrc === null ?
+    let conditionalInput = imgSrc === null ?
             <>
-                <label className='photo-input-label'>
+                <label ref={uploadFile} className='photo-input-label'>
                     <input type="file"
                            name="fileUpload"
                            className='photo-input'
                            accept={acceptedFileTypes}
-                           onChange={this.handleFile}
+                           onChange={handleFile}
                     />
-                    Choose file
+                    Upload photo*
                 </label>
-
             </>
             :
             <>
                 <Cropper
-                    ref={this.cropper}
-                    src={this.state.imgSrc}
+                    ref={cropper}
+                    src={imgSrc}
                     style={{height: 300, width: '100%'}}
                     aspectRatio={3 / 4}
                     guides={false}
-                    crop={this.crop.bind(this)} />
-
-
+                    crop={crop}
+                />
                 <div className="image-choose-button-container">
-                    <Button onClick={this.saveImage}
+                    <Button onClick={saveImage}
                             classes={{
                                 root: classes.acceptButton,
                                 label: classes.label
@@ -119,7 +110,7 @@ class Photo extends Component {
                     >
                         Accept
                     </Button>
-                    <Button onClick={this.rejectImage}
+                    <Button onClick={rejectImage}
                             classes={{
                                 root: classes.rejectButton,
                                 label: classes.label
@@ -129,22 +120,24 @@ class Photo extends Component {
                     </Button>
                 </div>
             </>
-        return (
-
-            conditionalInput
-
+    let userAvatar = photo && photo.includes('id') ? photo : sihlouette
+    let userAvatarBox = null;
+    if (avatarShown && !uploadingOpen){
+        userAvatarBox = (
+            <div onClick={() => uploadFile.current.click()}>
+                <img src={userAvatar} style={{height: 100}} alt=''/>
+            </div>
         )
+    } else if (!avatarShown && !uploadingOpen){
+        userAvatarBox = <Spinner/>
     }
-}
-Photo.propTypes = {
-    classes: PropTypes.object.isRequired
+        return (
+            <>
+                {conditionalInput}
+                {userAvatarBox}
+            </>
+        )
 }
 
 
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setUserPhoto: (image) => dispatch(setUserPhoto(image))
-    }
-}
-export default withStyles(styles)(connect(null, mapDispatchToProps)(Photo))
+export default withStyles(styles)(Photo)

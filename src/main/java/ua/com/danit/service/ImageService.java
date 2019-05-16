@@ -1,49 +1,56 @@
 package ua.com.danit.service;
 
-import org.codehaus.plexus.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.com.danit.entity.Image;
 import ua.com.danit.entity.User;
 import ua.com.danit.error.KnownException;
-import ua.com.danit.repository.ImageRepository;
+import ua.com.danit.repository.ImageDbRepository;
+import ua.com.danit.repository.ImagesRepository;
+
+import java.util.UUID;
 
 @Service
 public class ImageService {
-  private ImageRepository imageRepository;
+  private ImagesRepository imagesRepository;
+  private ImageDbRepository imageDbRepository;
   private UserTokensService userTokensService;
   private AmazonS3Service amazonS3Service;
+  private ImageProviderLocalDb imageProviderLocalDb;
 
   @Autowired
-  public ImageService(ImageRepository imageRepository, UserTokensService userTokensService,
-                      AmazonS3Service amazonS3Service) {
-    this.imageRepository = imageRepository;
+  public ImageService(ImagesRepository imagesRepository, ImageDbRepository imageDbRepository,
+                      UserTokensService userTokensService, AmazonS3Service amazonS3Service,
+                      ImageProviderLocalDb imageProviderLocalDb) {
+    this.imagesRepository = imagesRepository;
+    this.imageDbRepository = imageDbRepository;
     this.userTokensService = userTokensService;
     this.amazonS3Service = amazonS3Service;
+    this.imageProviderLocalDb = imageProviderLocalDb;
   }
 
-  //  public byte[] getImageService(String imageId) {
-  //    String[] parameters = imageId.split("_");
-  //    if (parameters.length < 1) {
-  //      return null;
-  //    }
-  //    return imageRepository.getOne(Long.valueOf(parameters[1])).getImageData();
-  //  }
-  //
-  //  public String saveNewImage(byte[] file, User user) {
-  //    if (user == null) {
-  //      throw new KnownException("Error! Cannot find user with such Access token!");
-  //    }
-  //    Image image = new Image();
-  //    image.setUser(user);
-  //    image.setImageData(Base64.decodeBase64(new String(file).split(",")[1].getBytes()));
-  //
-  //    image = imageRepository.save(image);
-  //    return user.getUserId().toString() + "_" + image.getImageId().toString();
-  //  }
-  //
-  //  public String saveNewImageToS3(byte[] file, User user) {
-  //    byte[] fileDecoded = Base64.decodeBase64(new String(file).split(",")[1].getBytes());
-  //    return amazonS3Service.putImage(file);
-  //  }
+
+  private static final String linkToLocalPicture = "/api/images/?id=";
+
+  public String saveImageToDb(byte[] file, User user, String host) {
+    String imageName = imageProviderLocalDb.putImage(file, user, "");
+    return addServerToImageName(imageName, host);
+  }
+
+  private String addServerToImageName(String imageName, String host) {
+    host = MailSenderService.checkForLocalHost(host);
+    return host + linkToLocalPicture + imageName;
+  }
+
+  public byte[] getImageService(String imageId) {
+    if (imageId == null || "null".equals(imageId) || "".equals(imageId)) {
+      throw new KnownException("Error! Image not found!");
+    }
+    return imageDbRepository.getOne(UUID.fromString(imageId)).getImageDbData();
+  }
+
+
+//    public String saveNewImageToS3(byte[] file, User user) {
+//      byte[] fileDecoded = Base64.decodeBase64(new String(file).split(",")[1].getBytes());
+//      return amazonS3Service.putImage(file);
+//    }
 }

@@ -320,8 +320,6 @@ class Smart extends Component {
             enableHighAccuracy: true
         };
         navigator.geolocation.getCurrentPosition(this.locationFetchSuccess, this.locationFetchError, options);
-        let liveSearchShow = true;
-        this.props.showLiveSearch(liveSearchShow);
     }
 
 

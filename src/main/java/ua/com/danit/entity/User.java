@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -35,7 +36,6 @@ public class User extends Auditable {
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String userPassword;
   private String userMail;
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String userPhoto;
   private Integer userIsOkUserPhoto;
   private Integer userIsOkCarPhoto;
@@ -43,7 +43,7 @@ public class User extends Auditable {
   private Integer userIsConfirmedPhone;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
   private List<UserCar> userCars;
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
   private List<UserPoint> userPoints;
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
   private List<UserToken> userTokens;
