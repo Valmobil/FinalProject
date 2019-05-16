@@ -17,7 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Link from '@material-ui/core/Link';
-import Popup from './Popup/Popup'
+import Popup from '../Popup/Popup'
 import './Login.css'
 
 
@@ -281,12 +281,12 @@ class Login extends Component {
             </Button>
           </MuiThemeProvider>
 
-          <Popup
-              handleAlertClose={this.handleAlertClose}
-              tryToLoginAgain={this.tryToLoginAgain}
-              loginRejected={this.props.users.loginRejected}
-              errorMessage={this.props.users.errorMessage}
-          />
+            <Popup
+                handleAlertClose={this.handleAlertClose}
+                popupOkButtonClick={this.tryToLoginAgain}
+                popupOpen={this.props.users.loginRejected}
+                errorMessage={this.props.users.errorMessage}
+            />
         </div>
       )
     }

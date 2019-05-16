@@ -5,9 +5,11 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
+import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,7 +22,6 @@ public class ApplicationBeans {
   @Autowired
   private ModelMapperConfig modelMapperConfig;
 
-
   @PostConstruct
   private void initializeModelMapper() {
     modelMapperConfig.initializeModelMapper();
@@ -30,6 +31,7 @@ public class ApplicationBeans {
   public ModelMapper modelMapper() {
     return new ModelMapper();
   }
+
 
   //AWS S3 config
   //  @Value("${aws.s3.credentials.path}")

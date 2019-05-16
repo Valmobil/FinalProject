@@ -220,16 +220,14 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
 }
 //* **********************
 
-export const setUserPhoto = (image) => dispatch => {
+export const setPhoto = (image) => dispatch => {
     let data = new FormData();
     data.append('fileUpload', image);
-    const photoCall = callApi('put', 'api/images', data)
-        photoCall
+    callApi('put', 'api/images', data)
        .then(response => {
            dispatch({type: SET_USER_PHOTO, payload: response.data})
        })
        .catch(console.log)
-    return photoCall
 }
 //* **********************
 export const getLocationFromDB = dispatch => {
@@ -256,7 +254,7 @@ export const setInitialLoadToFalse = () => dispatch => {
 //* **********************
 
 export const updateProfile = (user) => dispatch =>{
-
+console.log('user = ', user)
     callApi('put', '/api/users', user)
         .then(response => {
             console.log('response from \'/api/users = ', response)
@@ -266,19 +264,27 @@ export const updateProfile = (user) => dispatch =>{
             console.log(err)
         })
 }
+
 //* **********************
-
-
 export const addTripDate = newDate => dispatch =>{
   dispatch({ type: ADD_TRIP_DATE, payload: newDate})
 }
 
+//* **********************
 export const addNewTrip = newTrip => dispatch => {
     callApi('put','api/trips', newTrip)
       .then(resp => console.log(resp))
       .catch(err => console.log(err))
 }
 
+//* **********************
 export const showLiveSearch = liveSearchShow => dispatch =>{
     dispatch({ type: LIVE_SEARCH_SHOW, payload: liveSearchShow})
+}
+
+//* **********************
+export const confirmEmail = (email) => dispatch => {
+    callApi('post', 'api/logins/confirmemail', {userLogin: email})
+        .then(res => console.log('confirmation response = ', res))
+        .catch(console.log)
 }

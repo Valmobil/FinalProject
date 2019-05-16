@@ -2,6 +2,7 @@ package ua.com.danit.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.dto.TripResponse;
+import ua.com.danit.dto.TripResponseId;
 import ua.com.danit.dto.TripResponseWithUser;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.User;
@@ -32,8 +34,9 @@ public class TripsController {
   }
 
   @PutMapping
-  public String saveTripToDb(@RequestBody Trip trip) {
-    return tripsService.saveTripToDb(trip);
+  public ResponseEntity<TripResponseId> saveTripToDb(@RequestBody Trip trip) {
+    return new ResponseEntity<>(tripsService.saveTripToDb(trip),HttpStatus.OK);
+
   }
 
   @PostMapping("list")

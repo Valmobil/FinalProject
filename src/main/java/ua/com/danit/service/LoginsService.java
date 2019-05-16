@@ -103,8 +103,7 @@ public class LoginsService {
       knownWay = true;
     }
     if (knownWay) {
-      user = usersService.updateUserTokenInUserEntity(user);
-      user.setUserPoints(usersService.collectUserPointsAndFillInEmptyOnes(user));
+      user = usersService.projection(user, "car", "token", "point");
       user = usersRepository.save(user);
       return userFacade.mapEntityToResponse(user);
     } else {

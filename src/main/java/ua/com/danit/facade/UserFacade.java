@@ -9,15 +9,12 @@ import ua.com.danit.service.UsersService;
 
 @Component
 public class UserFacade extends AbstractDtoFacade<User, UserResponceTrip, UserResponse> {
-  private UsersService usersService;
   private UserPointFacade userPointFacade;
   private UserCarFacade userCarFacade;
 
   @Autowired
-  public UserFacade(UsersService usersService,
-                    UserPointFacade userPointFacade,
+  public UserFacade(UserPointFacade userPointFacade,
                     UserCarFacade userCarFacade) {
-    this.usersService = usersService;
     this.userPointFacade = userPointFacade;
     this.userCarFacade = userCarFacade;
   }
