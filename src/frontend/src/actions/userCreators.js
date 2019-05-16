@@ -264,19 +264,27 @@ console.log('user = ', user)
             console.log(err)
         })
 }
+
 //* **********************
-
-
 export const addTripDate = newDate => dispatch =>{
   dispatch({ type: ADD_TRIP_DATE, payload: newDate})
 }
 
+//* **********************
 export const addNewTrip = newTrip => dispatch => {
     callApi('put','api/trips', newTrip)
       .then(resp => console.log(resp))
       .catch(err => console.log(err))
 }
 
+//* **********************
 export const showLiveSearch = liveSearchShow => dispatch =>{
     dispatch({ type: LIVE_SEARCH_SHOW, payload: liveSearchShow})
+}
+
+//* **********************
+export const confirmEmail = (email) => dispatch => {
+    callApi('post', 'api/logins/confirmemail', {userLogin: email})
+        .then(res => console.log('confirmation response = ', res))
+        .catch(console.log)
 }

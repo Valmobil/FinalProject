@@ -120,7 +120,7 @@ const Photo = ({ classes, setPhoto, photo, sihlouette }) => {
                     </Button>
                 </div>
             </>
-    let userAvatar = photo.includes('id') ? `http://${photo}` : sihlouette
+    let userAvatar = photo && photo.includes('id') ? photo : sihlouette
     let userAvatarBox = null;
     if (avatarShown && !uploadingOpen){
         userAvatarBox = (
