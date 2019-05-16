@@ -1,7 +1,6 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
     LOGIN_REJECTED, SET_USER_NAME, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
-    GET_LOCATION_REQUEST, GET_LOCATION_SUCCESS, GET_LOCATION_ERROR, USER_LOGOUT,
-    INITIAL_LOAD, SET_PROFILE, SET_USER_PHOTO, ADD_CAR, ADD_TRIP_DATE, LIVE_SEARCH_SHOW } from './users'
+    USER_LOGOUT,INITIAL_LOAD, SET_PROFILE, SET_USER_PHOTO, ADD_CAR } from './users'
 
 import { callApi, setLocalStorage, removeTokens } from '../utils/utils'
 
@@ -215,7 +214,7 @@ export const setProfile = (profile) => dispatch => {
 export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch =>{
     dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
     callApi('delete','api/trips',{tripId})
-        .then(resp=>console.log(resp))
+        .then(resp => console.log(resp))
         .catch(err => console.log(err))
 }
 //* **********************
@@ -230,22 +229,6 @@ export const setUserPhoto = (image) => dispatch => {
        })
        .catch(console.log)
     return photoCall
-}
-//* **********************
-export const getLocationFromDB = dispatch => {
-    dispatch({type: GET_LOCATION_REQUEST, payload: true})
-    callApi('get', 'api/points/test')
-        .then(resp => {
-
-        })
-        .then(resp => {
-            console.log(resp)
-            dispatch({type: GET_LOCATION_SUCCESS, payload:resp.data})
-            }
-        )
-        .catch(err=>{
-            dispatch({type: GET_LOCATION_ERROR, payload: 'choice place from map'})
-        })
 }
 //* **********************
 
@@ -267,18 +250,3 @@ export const updateProfile = (user) => dispatch =>{
         })
 }
 //* **********************
-
-
-export const addTripDate = newDate => dispatch =>{
-  dispatch({ type: ADD_TRIP_DATE, payload: newDate})
-}
-
-export const addNewTrip = newTrip => dispatch => {
-    callApi('put','api/trips', newTrip)
-      .then(resp => console.log(resp))
-      .catch(err => console.log(err))
-}
-
-export const showLiveSearch = liveSearchShow => dispatch => {
-    dispatch({ type: LIVE_SEARCH_SHOW, payload: liveSearchShow})
-}

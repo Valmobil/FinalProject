@@ -142,84 +142,58 @@ class LiveSearch extends Component {
 
     renderInputComponent = (inputProps) => {
         const { classes, inputRef = () => {}, ref, ...other } = inputProps;
-        // const visibleFields = this.props.liveSearchShow;
-        const visibleFields = true;
 
-        console.log('from live search', visibleFields);
-
-
-            if (visibleFields){
-                return (
-                <MuiThemeProvider theme={theme}>
-                <TextField
-                    fullWidth
-                    InputProps={{
-                        classes: {
-                            input: classes.inputColor,
-                        },
-                    }}
-                    label='Place name'
-                    name='name'
-                    value={this.props.name}
-                    onChange={this.props.handleInput}
-                    autoComplete="off"
-                />
-                <TextField
-                    fullWidth
-                    InputProps={{
-                        inputRef: node => {
-                            ref(node);
-                            inputRef(node);
-                        },
-                        classes: {
-                            input: classes.inputColor,
-                        },
-                    }}
-                    {...other}
-                />
-                <div style={{display: 'flex', justifyContent: 'space-between', width: '80%', margin: '20px auto'}}>
-                <Button
-                    onClick={this.props.editClose}
-                    disabled={this.props.name.length === 0 || this.props.value.length === 0}
-                    classes={{
-                        root: classes.acceptButton,
-                        label: classes.label
-                    }}
-                >
-                        Accept
-                </Button>
-                <Button
-                        onClick={this.props.rejectEdit}
-                        classes={{
-                            root: classes.rejectButton,
-                            label: classes.label
-                        }}
-                    >
-                        Reject
-                </Button>
-                </div>
-                </MuiThemeProvider>
-                );
-            } else {
-                return (
-                    <MuiThemeProvider theme={theme}>
-                        <TextField
-                            fullWidth
-                            InputProps={{
-                                inputRef: node => {
-                                    ref(node);
-                                    inputRef(node);
-                                },
-                                classes: {
-                                    input: classes.inputColor,
-                                },
-                            }}
-                            {...other}
-                        />
-                    </MuiThemeProvider>)
-            }
-
-
+        return (
+        <MuiThemeProvider theme={theme}>
+        <TextField
+            fullWidth
+            InputProps={{
+                classes: {
+                    input: classes.inputColor,
+                },
+            }}
+            label='Place name'
+            name='name'
+            value={this.props.name}
+            onChange={this.props.handleInput}
+            autoComplete="off"
+        />
+        <TextField
+            fullWidth
+            InputProps={{
+                inputRef: node => {
+                    ref(node);
+                    inputRef(node);
+                },
+                classes: {
+                    input: classes.inputColor,
+                },
+            }}
+            {...other}
+        />
+        <div style={{display: 'flex', justifyContent: 'space-between', width: '80%', margin: '20px auto'}}>
+        <Button
+            onClick={this.props.editClose}
+            disabled={this.props.name.length === 0 || this.props.value.length === 0}
+            classes={{
+                root: classes.acceptButton,
+                label: classes.label
+            }}
+        >
+                Accept
+        </Button>
+        <Button
+                onClick={this.props.rejectEdit}
+                classes={{
+                    root: classes.rejectButton,
+                    label: classes.label
+                }}
+            >
+                Reject
+        </Button>
+        </div>
+        </MuiThemeProvider>
+        );
     }
 
     componentDidMount(){
@@ -234,7 +208,6 @@ class LiveSearch extends Component {
 
     render(){
         const { classes } = this.props
-
 
         const autosuggestProps = {
             renderInputComponent: this.renderInputComponent,
@@ -273,7 +246,6 @@ class LiveSearch extends Component {
 const mapStateToProps = (state) => {
     return {
         searchedLocation: state.users.searchedLocation,
-        liveSearchShow: state.users.liveSearchShow,
     }
 }
 

@@ -4,7 +4,6 @@ import "@material-ui/pickers"
 import {
   DatePicker,
   TimePicker,
-  // DateTimePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import { connect } from 'react-redux';
@@ -18,9 +17,6 @@ class ForDateTimePickers extends Component {
 
   render(){
     const dateTime = this.props.tripDateTime;
-
-    console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
-
     return (
       <div>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -30,8 +26,6 @@ class ForDateTimePickers extends Component {
             value={dateTime}
             onChange={this.handleDateTimeChange}
             autoOk={true}
-            onAccept = {this.props.setTripDateTime}
-
           />
           <TimePicker
             style= {{width:'18%',justifyContent:'center' ,paddingLeft: 20}}
@@ -40,7 +34,6 @@ class ForDateTimePickers extends Component {
             minutesStep = {5}
             onChange={this.handleDateTimeChange}
             autoOk={true}
-            onAccept = {this.props.setTripDateTime}
           />
         </MuiPickersUtilsProvider>
       </div>
