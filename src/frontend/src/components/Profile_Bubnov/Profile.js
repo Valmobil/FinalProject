@@ -4,13 +4,15 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import InputAdornment from '@material-ui/core/InputAdornment';
 import Photo from './Photo/Photo'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import { connect } from 'react-redux'
-import { updateProfile, setPhoto} from '../../actions/userCreators'
+import { updateProfile, setPhoto, confirmEmail } from '../../actions/userCreators'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Car from './Car/Car'
+import ConfirmButton from './ConfirmButton/ConfirmButton'
 import manSihlouette from '../../utils/manSihlouette.svg'
 
 
@@ -21,12 +23,12 @@ class Profile extends Component {
 
     state = {
      user: {
-            userName:     '',
-            userPhoto:    '',
-            userPhone:    '',
-            userMail:     '',
+            userName: this.props.users.user.userName,
+            userPhoto: this.props.users.user.userPhoto,
+            userPhone: this.props.users.user.userPhone,
+            userMail: this.props.users.user.userMail,
         },
-     cars: [],
+     cars: this.props.users.userCars || [],
      adding: false,
      newCar: {
             userCarName: '',
@@ -43,7 +45,6 @@ class Profile extends Component {
     handleChange = ({target: { name, value }}) => {
             this.setState({user: {...this.state.user, [name]: value}, newCar: {...this.state.newCar, [name]: value}})
     }
-
 
 
     handleAddCar = () => {
@@ -68,12 +69,6 @@ class Profile extends Component {
         const cars = this.state.cars.filter(item => item.userCarId !== car.userCarId)
         this.setState({cars})
     }
-
-    // setUserPhoto = (photo) => {
-    //     this.props.setPhoto(photo)
-    //         .then(res => this.setState({user: {...this.state.user, userPhoto: res.data}}))
-    //
-    // }
 
     onBlur = ({target: {name}}) => {
         this.validate(name)
@@ -102,6 +97,10 @@ class Profile extends Component {
         }
     }
 
+    confirmEmail = () => {
+        this.props.confirmEmail(this.state.user.userMail)
+    }
+
     componentDidUpdate(prevProps){
         if (this.props.users.userCars !== prevProps.users.userCars){
             this.setState({user: {...this.state.user, ...this.props.users.user}, cars: this.props.users.userCars})
@@ -111,15 +110,16 @@ class Profile extends Component {
         }
     }
 
-    componentDidMount(){
-        this.setState({user: {...this.state.user, ...this.props.users.user}, cars: this.props.users.userCars})
-    }
 
   render () {
-        const { classes } = this.props
+        const { classes, users: {user: {userIsConfirmedMail}} } = this.props
+
+      console.log('userIsConfirmedMail = ', userIsConfirmedMail)
+
+
         const { adding, cars, user: { userName, userPhone, userMail, userPhoto }, newCar: { userCarName, userCarColour }} = this.state
-        const allChecks = phoneNumber.test(userPhone.split('-').join(''))
-            && email.test(userMail.toLowerCase())
+        const allChecks = (userPhone && phoneNumber.test(userPhone.split('-').join('')))
+            && (userMail && email.test(userMail.toLowerCase()))
             && userName.length > 0
             && userPhoto.includes('id')
 
@@ -204,6 +204,13 @@ class Profile extends Component {
               </Button>
           )
       }
+    const adornment = !userIsConfirmedMail || userIsConfirmedMail < 2 ?
+          <InputAdornment position="end">
+              <ConfirmButton
+                  confirmEmail={this.confirmEmail}
+              />
+          </InputAdornment>
+          : null
     return (
           <div className='profile-container'>
               <Photo
@@ -221,7 +228,7 @@ class Profile extends Component {
                       onBlur={this.onBlur}
                       onFocus={this.onFocus}
                       autoComplete="off"
-                      value={ userName }
+                      value={ userName || '' }
                       error={ this.state.error.userName.length > 0 }
                       helperText={ this.state.error.userName }
                       style={ style.input }
@@ -240,7 +247,7 @@ class Profile extends Component {
                       onBlur={this.onBlur}
                       onFocus={this.onFocus}
                       autoComplete="off"
-                      value={ userPhone }
+                      value={ userPhone || '' }
                       error={ this.state.error.userPhone.length > 0 }
                       helperText={ this.state.error.userPhone }
                       style={ style.input }
@@ -259,14 +266,15 @@ class Profile extends Component {
                       onBlur={this.onBlur}
                       onFocus={this.onFocus}
                       autoComplete="off"
-                      value={ userMail }
+                      value={ userMail || '' }
                       error={ this.state.error.userMail.length > 0 }
                       helperText={ this.state.error.userMail }
                       style={ style.input }
                       InputProps={{
                           classes: {
                               input: classes.inputColor
-                          }
+                          },
+                          endAdornment: adornment,
                       }}
                   />
                   <span className='carlist-header'>List of your cars (swipe to delete)</span>
@@ -394,6 +402,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
       updateProfile: (userInfo) => dispatch(updateProfile(userInfo)),
       setPhoto: (photo) => dispatch(setPhoto(photo)),
+      confirmEmail: (email) => dispatch(confirmEmail(email)),
   }
 }
 
