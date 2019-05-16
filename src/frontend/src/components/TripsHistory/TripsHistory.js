@@ -86,7 +86,7 @@ class TripsHistory extends Component {
                         <IconButton
                             // onClick={() => this.handleEdit(item)}
                             className={classes.iconButton}
-                            aria-label="Edit">
+                            aria-label="Copy">
                             <EditIcon />
                         </IconButton>
                         <IconButton
