@@ -279,3 +279,10 @@ export const addNewTrip = newTrip => dispatch => {
 export const showLiveSearch = liveSearchShow => dispatch =>{
     dispatch({ type: LIVE_SEARCH_SHOW, payload: liveSearchShow})
 }
+
+export const restorePass = (email) => dispatch =>{
+    console.log('email=', email)
+    callApi('post', 'api/logins/email', {userLogin: email})
+      .then(resp => console.log(resp))
+      .catch(console.log)
+}
