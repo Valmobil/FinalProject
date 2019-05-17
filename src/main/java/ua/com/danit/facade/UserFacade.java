@@ -29,9 +29,7 @@ public class UserFacade extends AbstractDtoFacade<User, UserResponceTrip, UserRe
     userResponse.setUserTokenAccess(user.getUserTokens().get(0).getUserTokenAccess());
     userResponse.setUserPoints(userPointFacade.mapEntityListToResponseDtoList(user.getUserPoints()));
     userResponse.setUserCars(userCarFacade.mapEntityListToResponseDtoList(user.getUserCars()));
-    userResponse.setUserPhoto(imageDbProviderImpl.selectImageSource(user.getUserPhoto());
-
-
+    userResponse.setUserPhoto(imageDbProviderImpl.selectImageSource(user.getUserPhoto()));
     return userResponse;
   }
 }
