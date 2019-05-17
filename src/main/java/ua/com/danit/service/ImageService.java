@@ -14,17 +14,17 @@ public class ImageService {
   private ImagesRepository imagesRepository;
   private ImageDbRepository imageDbRepository;
   private UserTokensService userTokensService;
-  private AmazonS3Service amazonS3Service;
+  private ImageProviderAwsS3Service imageProviderAwsS3Service;
   private ImageProviderLocalDb imageProviderLocalDb;
 
   @Autowired
   public ImageService(ImagesRepository imagesRepository, ImageDbRepository imageDbRepository,
-                      UserTokensService userTokensService, AmazonS3Service amazonS3Service,
+                      UserTokensService userTokensService, ImageProviderAwsS3Service imageProviderAwsS3Service,
                       ImageProviderLocalDb imageProviderLocalDb) {
     this.imagesRepository = imagesRepository;
     this.imageDbRepository = imageDbRepository;
     this.userTokensService = userTokensService;
-    this.amazonS3Service = amazonS3Service;
+    this.imageProviderAwsS3Service = imageProviderAwsS3Service;
     this.imageProviderLocalDb = imageProviderLocalDb;
   }
 
