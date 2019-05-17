@@ -11,10 +11,10 @@ function Transition (props) {
 }
 
 const Popup = (props) => {
-    const { handleAlertClose, tryToLoginAgain, loginRejected, errorMessage } = props
+    const { handleAlertClose, popupOkButtonClick, popupOpen, errorMessage } = props
     return(
         <Dialog
-            open={loginRejected}
+            open={popupOpen}
             TransitionComponent={Transition}
             keepMounted
             onClose={handleAlertClose}
@@ -27,7 +27,7 @@ const Popup = (props) => {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={tryToLoginAgain} color="primary">
+                <Button onClick={popupOkButtonClick} color="primary">
                     Ok
                 </Button>
             </DialogActions>

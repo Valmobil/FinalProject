@@ -1,117 +1,25 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import deburr from 'lodash/deburr';
+import React, { Component } from 'react'
+import { withStyles } from '@material-ui/core/styles';
 import Autosuggest from 'react-autosuggest';
-import match from 'autosuggest-highlight/match';
-import parse from 'autosuggest-highlight/parse';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
-import MenuItem from '@material-ui/core/MenuItem';
-import Popper from '@material-ui/core/Popper';
-import { withStyles } from '@material-ui/core/styles';
+// import Button from '@material-ui/core/Button'
+import MenuItem from '@material-ui/core/MenuItem'
+import match from 'autosuggest-highlight/match';
+import parse from 'autosuggest-highlight/parse';
+import { singleCallApi } from "../../utils/utils";
+import orange from "@material-ui/core/colors/orange";
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 
-const suggestions = [
-  { label: 'Afghanistan' },
-  { label: 'Aland Islands' },
-  { label: 'Albania' },
-  { label: 'Algeria' },
-  { label: 'American Samoa' },
-  { label: 'Andorra' },
-  { label: 'Angola' },
-  { label: 'Anguilla' },
-  { label: 'Antarctica' },
-  { label: 'Antigua and Barbuda' },
-  { label: 'Argentina' },
-  { label: 'Armenia' },
-  { label: 'Aruba' },
-  { label: 'Australia' },
-  { label: 'Austria' },
-  { label: 'Azerbaijan' },
-  { label: 'Bahamas' },
-  { label: 'Bahrain' },
-  { label: 'Bangladesh' },
-  { label: 'Barbados' },
-  { label: 'Belarus' },
-  { label: 'Belgium' },
-  { label: 'Belize' },
-  { label: 'Benin' },
-  { label: 'Bermuda' },
-  { label: 'Bhutan' },
-  { label: 'Bolivia, Plurinational State of' },
-  { label: 'Bonaire, Sint Eustatius and Saba' },
-  { label: 'Bosnia and Herzegovina' },
-  { label: 'Botswana' },
-  { label: 'Bouvet Island' },
-  { label: 'Brazil' },
-  { label: 'British Indian Ocean Territory' },
-  { label: 'Brunei Darussalam' },
-];
+import {connect} from "react-redux";
 
-function renderInputComponent(inputProps) {
-  const { classes, inputRef = () => {}, ref, ...other } = inputProps;
-
-  return (
-    <TextField
-      fullWidth
-      InputProps={{
-        inputRef: node => {
-          ref(node);
-          inputRef(node);
-        },
-        classes: {
-          input: classes.input,
-        },
-      }}
-      {...other}
-    />
-  );
-}
-
-function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(suggestion.label, query);
-  const parts = parse(suggestion.label, matches);
-
-  return (
-    <MenuItem selected={isHighlighted} component="div">
-      <div>
-        {parts.map((part, index) =>
-          part.highlight ? (
-            <span key={String(index)} style={{ fontWeight: 500 }}>
-              {part.text}
-            </span>
-          ) : (
-            <strong key={String(index)} style={{ fontWeight: 300 }}>
-              {part.text}
-            </strong>
-          ),
-        )}
-      </div>
-    </MenuItem>
-  );
-}
-
-function getSuggestions(value) {
-  const inputValue = deburr(value.trim()).toLowerCase();
-  const inputLength = inputValue.length;
-  let count = 0;
-
-  return inputLength === 0
-    ? []
-    : suggestions.filter(suggestion => {
-      const keep =
-        count < 5 && suggestion.label.slice(0, inputLength).toLowerCase() === inputValue;
-
-      if (keep) {
-        count += 1;
-      }
-
-      return keep;
-    });
-}
-
-function getSuggestionValue(suggestion) {
-  return suggestion.label;
-}
+const theme = createMuiTheme({
+  palette: {
+    primary: orange
+  },
+  typography: { useNextVariants: true }
+})
 
 const styles = theme => ({
   root: {
@@ -120,6 +28,8 @@ const styles = theme => ({
   },
   container: {
     position: 'relative',
+    width: '90%',
+    margin: 'auto',
   },
   suggestionsContainerOpen: {
     position: 'absolute',
@@ -136,109 +46,173 @@ const styles = theme => ({
     padding: 0,
     listStyleType: 'none',
   },
-  divider: {
-    height: theme.spacing.unit * 2,
+  inputColor: {
+    color: '#fff',
+    width: '100%'
   },
-});
+  label: {
+    textTransform: 'capitalize'
+  },
+  acceptButton: {
+    borderRadius: 3,
+    background: '#fff',
+    color: '#008000',
+    height: 30,
+    padding: 0,
+    width: '47%'
+  },
+  rejectButton: {
+    borderRadius: 3,
+    background: '#fff',
+    color: '#FC2847',
+    height: 30,
+    padding: 0,
+    width: '47%'
+  },
+})
 
-class IntegrationAutosuggest extends React.Component {
+class AutoSuggestions extends Component {
+
   state = {
-    single: '',
-    popper: '',
+    value: '',
     suggestions: [],
   };
 
-  handleSuggestionsFetchRequested = ({ value }) => {
-    this.setState({
-      suggestions: getSuggestions(value),
-    });
-  };
+  getSuggestionValue = suggestion => suggestion.pointNameEn ? suggestion.pointNameEn : null;
 
-  handleSuggestionsClearRequested = () => {
-    this.setState({
-      suggestions: [],
-    });
-  };
+  renderSuggestion = (suggestion, { query, isHighlighted }) => {
 
-  handleChange = name => (event, { newValue }) => {
-    this.setState({
-      [name]: newValue,
-    });
-  };
-
-  render() {
-    const { classes } = this.props;
-
-    const autosuggestProps = {
-      renderInputComponent,
-      suggestions: this.state.suggestions,
-      onSuggestionsFetchRequested: this.handleSuggestionsFetchRequested,
-      onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
-      getSuggestionValue,
-      renderSuggestion,
-    };
+    const matches = match(suggestion.pointNameEn, query);
+    const parts = parse(suggestion.pointNameEn, matches);
 
     return (
-      <div className={classes.root}>
-        <Autosuggest
-          {...autosuggestProps}
-          inputProps={{
-            classes,
-            placeholder: 'Search a country (start with a)',
-            value: this.state.single,
-            onChange: this.handleChange('single'),
-          }}
-          theme={{
-            container: classes.container,
-            suggestionsContainerOpen: classes.suggestionsContainerOpen,
-            suggestionsList: classes.suggestionsList,
-            suggestion: classes.suggestion,
-          }}
-          renderSuggestionsContainer={options => (
-            <Paper {...options.containerProps} square>
-              {options.children}
-            </Paper>
+      <MenuItem selected={isHighlighted} component="div">
+        <div>
+          {parts.map((part, index) =>
+            part.highlight ? (
+              <span key={String(index)} style={{ fontWeight: 500 }}>
+              {part.text}
+            </span>
+            ) : (
+              <strong key={String(index)} style={{ fontWeight: 300 }}>
+                {part.text}
+              </strong>
+            ),
           )}
-        />
-        <div className={classes.divider} />
-        <Autosuggest
-          {...autosuggestProps}
-          inputProps={{
-            classes,
-            label: 'Label',
-            placeholder: 'With Popper',
-            value: this.state.popper,
-            onChange: this.handleChange('popper'),
-            inputRef: node => {
-              this.popperNode = node;
-            },
-            InputLabelProps: {
-              shrink: true,
-            },
-          }}
-          theme={{
-            suggestionsList: classes.suggestionsList,
-            suggestion: classes.suggestion,
-          }}
-          renderSuggestionsContainer={options => (
-            <Popper anchorEl={this.popperNode} open={Boolean(options.children)}>
-              <Paper
-                square
-                {...options.containerProps}
-                style={{ width: this.popperNode ? this.popperNode.clientWidth : null }}
-              >
-                {options.children}
-              </Paper>
-            </Popper>
-          )}
-        />
-      </div>
+        </div>
+      </MenuItem>
     );
+  }
+
+  onSuggestionsFetchRequested = async ({ value }) => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+
+    let suggestionsList = []
+
+    if (inputLength >= 4){
+      // let response = await callApi('post', '/api/points/', data)
+      let response = await singleCallApi(this.props.method, this.props.url, this.props.data)
+      suggestionsList = response.data
+    }
+    this.setState({
+      suggestions: suggestionsList
+    });
+  };
+
+  onSuggestionsClearRequested = () => {
+    this.setState({
+      suggestions: []
+    });
+  };
+
+  onSuggestionChange = (event, { newValue }) => {
+    this.setState({
+      value: newValue
+    });
+    this.props.setValue(newValue)
+  };
+
+  onSuggestionSelected = (e, {suggestion}) => {
+    this.props.setCoordinates({
+      latitude: suggestion.pointLatitude.toFixed(6),
+      longitude: suggestion.pointLongitude.toFixed(6)
+    })
+  }
+
+  renderInputComponent = (inputProps) => {
+    const { classes, inputRef = () => {}, ref, ...other } = inputProps;
+
+    return (
+      <MuiThemeProvider theme={theme}>
+        <TextField
+          fullWidth
+          InputProps={{
+            inputRef: node => {
+              ref(node);
+              inputRef(node);
+            },
+            classes: {
+              input: classes.inputColor,
+            },
+          }}
+          {...other}
+        />
+      </MuiThemeProvider>
+    );
+  }
+
+  componentDidMount(){
+    this.setState({value: this.props.value})
+  }
+
+  componentDidUpdate(prevProps){
+    if (this.props.searchedLocation !== prevProps.searchedLocation){
+      this.setState({value: this.props.searchedLocation})
+    }
+  }
+
+  render(){
+    const { classes } = this.props
+
+    const autosuggestProps = {
+      renderInputComponent: this.renderInputComponent,
+      suggestions: this.state.suggestions,
+      onSuggestionsFetchRequested: this.onSuggestionsFetchRequested,
+      onSuggestionsClearRequested: this.onSuggestionsClearRequested,
+      getSuggestionValue: this.getSuggestionValue,
+      renderSuggestion: this.renderSuggestion,
+      onSuggestionSelected: this.onSuggestionSelected,
+    };
+    return(
+      <Autosuggest
+        {...autosuggestProps}
+        inputProps={{
+          classes,
+          label: this.props.label,
+          value: this.state.value,
+          onChange: this.onSuggestionChange,
+        }}
+        theme={{
+          container: classes.container,
+          suggestionsContainerOpen: classes.suggestionsContainerOpen,
+          suggestionsList: classes.suggestionsList,
+          suggestion: classes.suggestion,
+        }}
+        renderSuggestionsContainer={options => (
+          <Paper {...options.containerProps} square>
+            {options.children}
+          </Paper>
+        )}
+      />
+    )
   }
 }
 
-IntegrationAutosuggest.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+const mapStateToProps = (state) => {
+  return {
+    searchedLocation: state.users.searchedLocation,
+  }
+}
 
-export default withStyles(styles)(IntegrationAutosuggest);
+export default withStyles(styles)(connect(mapStateToProps, null)(AutoSuggestions))

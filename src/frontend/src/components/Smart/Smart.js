@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { logOut, setUserPoints,  showLiveSearch } from '../../actions/userCreators'
+import { logOut, setUserPoints } from '../../actions/userCreators'
 import { setTrip, setMyCoordinates, setSearchedLocation, setTargetCoordinates,} from '../../actions/tripCreators'
 import SmartRoute from './SmartRoute/SmartRoute'
 import { withStyles } from '@material-ui/core/styles'
@@ -93,7 +93,7 @@ const styles = theme => ({
 })
 const style = {
     input: {
-        width: '100%'
+        width: '100%',
     },
     radio: {
         display: 'flex',
@@ -320,8 +320,6 @@ class Smart extends Component {
             enableHighAccuracy: true
         };
         navigator.geolocation.getCurrentPosition(this.locationFetchSuccess, this.locationFetchError, options);
-        let liveSearchShow = true;
-        this.props.showLiveSearch(liveSearchShow);
     }
 
 
@@ -578,7 +576,6 @@ const mapDispatchToProps = (dispatch) => {
         setMyCoordinates: (coords) => dispatch(setMyCoordinates(coords)),
         setTargetCoordinates: (coords) => dispatch(setTargetCoordinates(coords)),
         setSearchedLocation: (location) => dispatch(setSearchedLocation(location)),
-        showLiveSearch: (liveSearchShow) => dispatch(showLiveSearch(liveSearchShow))
     }
 }
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Smart))

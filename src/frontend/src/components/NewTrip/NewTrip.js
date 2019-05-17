@@ -1,27 +1,14 @@
 import React, {Component} from 'react';
-import DatePicker from './DatePicker/DatePicker'
-// import TimePicker from './TimePicker/TimePicker'
-// import moment from 'moment';
-import LiveSearch from '../LiveSearch/LiveSearch';
-import { withStyles } from '@material-ui/core/styles'
-import { addNewTrip, showLiveSearch } from '../../actions/userCreators'
-import { setTargetCoordinates } from '../../actions/tripCreators'
-import Button from '@material-ui/core/Button'
-import { connect } from 'react-redux'
-// import TextField from '@material-ui/core/TextField'
-// import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
-// import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
-// import orange from '@material-ui/core/colors/orange'
+import { withStyles } from '@material-ui/core/styles';
+// import { addNewTrip } from '../../actions/userCreators';
+import { setTargetCoordinates } from '../../actions/tripCreators';
+import Button from '@material-ui/core/Button';
+import { connect } from 'react-redux';
 
-import './NewTrip.css'
+import './NewTrip.css';
 import Map from '../Map/Map';
-
-// const theme = createMuiTheme({
-//   palette: {
-//     primary: orange
-//   },
-//   typography: { useNextVariants: true }
-// })
+import ForDateTimePickers from './ForDateTimePickers/ForDateTimePickers';
+import AutoSuggestions from '../AutoSuggestions/AutoSuggestions'
 
 const styles = theme => ({
     acceptButton: {
@@ -73,10 +60,10 @@ class NewTrip extends Component {
       }
       let newUserPoints = this.props.users.userPoints.map(item => {
         if (item.userPointId === id) {
-          let pointAddress = this.props.users.searchedLocation || this.state.value
+          // let pointAddress = this.props.users.searchedLocation || this.state.value
           return {...item,
-            userPointName: this.state.name,
-            userPointAddress: pointAddress,
+            // userPointName: this.state.name,
+            // userPointAddress: pointAddress,
             userPointLatitude: this.props.users.targetCoordinates.latitude,
             userPointLongitude: this.props.users.targetCoordinates.longitude,
             pointNameEn: this.state.name,
@@ -104,36 +91,24 @@ class NewTrip extends Component {
 
     addTripDate = (tripDate)=>{
       this.setState({
-        date: tripDate.date.format('YYYY-MM-DD'),
-        time: tripDate.time.format('HH:mm'),
+        tripDateTime:tripDate,
       })
     }
 
     submitTrip = (newTrip) =>{
-      let liveSearchShow = true;
-      this.props.showLiveSearch(liveSearchShow);
       // this.props.addNewTrip(newTrip),
       this.props.history.push('/main')
     }
 
-    componentDidMount(){
-      let liveSearchShow = false;
-      this.props.showLiveSearch(liveSearchShow);
-    }
-
-    componentWillUnmount(){
-      let liveSearchShow = true;
-      this.props.showLiveSearch(liveSearchShow);
-    }
-
     render() {
-      const { classes, newTrip} = this.props
-
+      const { classes } = this.props;
       return (
             <form className='trip-container' onSubmit={this.submitTrip}>
-                <h1>New Trip</h1>
-                <DatePicker tripDate={newTrip} addTripDate={this.addTripDate}/>
-                <LiveSearch
+              <h1>new trip</h1>
+              <ForDateTimePickers/>
+
+              <AutoSuggestions
+                  label = 'Search from'
                   editClose={() => this.editClose(null)}
                   setCoordinates={this.props.setTargetCoordinates}
                   setValue ={this.setValueFrom}
@@ -143,7 +118,8 @@ class NewTrip extends Component {
                   value={this.state.valueFrom}
                   rejectEdit={this.rejectEdit}
                 />
-                <LiveSearch
+                <AutoSuggestions
+                  label = 'Search to'
                   editClose={() => this.editClose(null)}
                   setCoordinates={this.props.setTargetCoordinates}
                   setValue ={this.setValueTo}
@@ -156,14 +132,17 @@ class NewTrip extends Component {
                 <Map />
                 <div className="trip-btn-container">
                     <Button
+                         onClick={this.editClose}
                          classes={{
                              root: classes.acceptButton,
                              label: classes.label
                          }}
+                         disabled = {this.state.valueFrom.length === 0 || this.state.valueTo.length === 0}
                     >
                         Submit trip
                     </Button>
                     <Button
+                        onClick = {this.rejectEdit}
                         classes={{
                             root: classes.rejectButton,
                             label: classes.label
@@ -180,16 +159,13 @@ class NewTrip extends Component {
 const mapStateToProps = state => {
   return{
     users: state.users,
-    liveSearchShow: state.users.liveSearchShow,
-    newTrip: state.users.newTrip
+    // newTrip: state.users.newTrip
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    addNewTrip: (newTrip) => dispatch(addNewTrip(newTrip)),
     setTargetCoordinates: (coords) => dispatch(setTargetCoordinates(coords)),
-    showLiveSearch: (liveSearchShow) => dispatch(showLiveSearch(liveSearchShow))
   }
 }
 
