@@ -5,7 +5,7 @@ import ua.com.danit.entity.User;
 
 import java.util.UUID;
 
-abstract class ImageDbProviderImpl implements ImageDbProvider {
+public abstract class ImageDbProviderImpl implements ImageDbProvider {
 
   byte[] imageDeCompressPng(byte[] file) {
     return Base64.decodeBase64(new String(file).split(",")[1].getBytes());
@@ -13,5 +13,11 @@ abstract class ImageDbProviderImpl implements ImageDbProvider {
 
   String newImageName() {
     return UUID.randomUUID().toString();
+  }
+
+  public String selectImageSource(String userPhoto) {
+    //Please implement image selector
+    //TODO
+    return userPhoto;
   }
 }

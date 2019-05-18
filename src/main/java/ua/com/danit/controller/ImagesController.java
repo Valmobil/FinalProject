@@ -32,9 +32,9 @@ public class ImagesController {
   }
 
   @PutMapping()
-  public ResponseEntity<String> saveImageController(@RequestBody byte[] file,
-                                                    @RequestHeader String authorization,
-                                                    @RequestHeader(value = "Host") String host) {
+  public ResponseEntity<String> putImageController(@RequestBody byte[] file,
+                                                   @RequestHeader String authorization,
+                                                   @RequestHeader(value = "Host") String host) {
     return new ResponseEntity<>(imageService.saveImageToDb(file,
         userTokensService.findUserByAccessToken(authorization), host),
         HttpStatus.OK);

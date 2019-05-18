@@ -14,7 +14,7 @@ spring:
           auth: true
           starttls:
             enable: true
-        debug: true
+        debug: false
   servlet:
     multipart:
       max-file-size: 10MB

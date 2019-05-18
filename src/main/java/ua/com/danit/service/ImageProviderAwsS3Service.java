@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Service
-public class AmazonS3Service {
+public class ImageProviderAwsS3Service {
 
   //  @Autowired
   //  String awsS3Bucket;

@@ -1,12 +1,8 @@
 package ua.com.danit.config;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.com.danit.dto.UserTokenRequest;
-import ua.com.danit.entity.UserToken;
-import ua.com.danit.service.AmazonS3Service;
 
 @Component
 public class ModelMapperConfig {

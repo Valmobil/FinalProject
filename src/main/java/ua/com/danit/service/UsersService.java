@@ -262,7 +262,7 @@ public class UsersService {
     return user;
   }
 
-  public User projection(User user, String... names) {
+  User projection(User user, String... names) {
 
     for (String str : names) {
       if ("car".equals(str)) {
@@ -273,7 +273,8 @@ public class UsersService {
         }
       }
       if ("token".equals(str)) {
-        if (user.getUserTokens() == null || user.getUserTokens().size() == 0) {
+        if (user.getUserTokens() == null || user.getUserTokens().size() == 0
+            || user.getUserTokens().get(0).getUserTokenId() == null) {
           user = updateUserTokenInUserEntity(user);
         }
       }

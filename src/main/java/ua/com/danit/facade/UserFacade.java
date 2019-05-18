@@ -5,18 +5,22 @@ import org.springframework.stereotype.Component;
 import ua.com.danit.dto.UserResponceTrip;
 import ua.com.danit.dto.UserResponse;
 import ua.com.danit.entity.User;
+import ua.com.danit.service.ImageDbProviderImpl;
 import ua.com.danit.service.UsersService;
 
 @Component
 public class UserFacade extends AbstractDtoFacade<User, UserResponceTrip, UserResponse> {
   private UserPointFacade userPointFacade;
   private UserCarFacade userCarFacade;
+  private ImageDbProviderImpl imageDbProviderImpl;
 
   @Autowired
   public UserFacade(UserPointFacade userPointFacade,
-                    UserCarFacade userCarFacade) {
+                    UserCarFacade userCarFacade,
+                    ImageDbProviderImpl imageDbProviderImpl) {
     this.userPointFacade = userPointFacade;
     this.userCarFacade = userCarFacade;
+    this.imageDbProviderImpl = imageDbProviderImpl;
   }
 
   public UserResponse mapEntityToResponse(User user) {
@@ -25,6 +29,7 @@ public class UserFacade extends AbstractDtoFacade<User, UserResponceTrip, UserRe
     userResponse.setUserTokenAccess(user.getUserTokens().get(0).getUserTokenAccess());
     userResponse.setUserPoints(userPointFacade.mapEntityListToResponseDtoList(user.getUserPoints()));
     userResponse.setUserCars(userCarFacade.mapEntityListToResponseDtoList(user.getUserCars()));
+    userResponse.setUserPhoto(imageDbProviderImpl.selectImageSource(user.getUserPhoto()));
     return userResponse;
   }
 }

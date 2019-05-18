@@ -84,7 +84,7 @@ public class MailSenderService {
     contextPath = checkForLocalHost(contextPath);
     String url = contextPath + "/user/changePassword?id=" + "&token=" + token;
     return constructMimeMail("Reset Password",
-        "<html><body>Добридень!<br><br>Ви отримали це повідомлення, бо Ви (маємо таку надію? що це були Ви) "
+        "<html><body>Добридень!<br><br>Ви отримали це повідомлення, бо Ви (маємо таку надію, що це були Ви) "
             + "хочете встановити новий пароль "
             + "<br><a href=\"" + url + "\">Please click for password restore!</a><br><br>З повагою, ваша комманда підтримки!</body></html>",
         "", user.getUserMail());
