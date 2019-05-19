@@ -27,6 +27,14 @@
     margin-top: 30px;
     color: #fff;
 }
+.button-container{
+    display: flex;
+    justify-content: center;
+    position: relative;
+    height: 30px;
+    width: 66px;
+    margin-top: 30px;
+}
 
 
 @media screen and (max-width: 710px) and (min-width: 380px){
