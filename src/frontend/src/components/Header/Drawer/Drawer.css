@@ -9,10 +9,12 @@
 }
 .drawer-link-regular{
     color: #464d73;
+    text-decoration: none;
 }
 .drawer-active-link{
     font-size: 20px;
     font-weight: 800;
+
 }
 .drawer-link-logout{
     color: #ff0000;

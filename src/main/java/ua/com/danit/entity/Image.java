@@ -31,10 +31,10 @@ public class Image extends Auditable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long imageId;
   @Lob
-  private byte[] imageData;
-  @NotNull
+  private String imageName;
   @ManyToOne
-
   @JoinColumn(name = "IMAGE_USER_ID", referencedColumnName = "userId")
   private User user;
+  private String imageListOfServices;
+
 }

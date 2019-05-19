@@ -36,9 +36,6 @@ public class Trip extends Auditable {
   private Long tripId;
   @ManyToOne
   @JoinColumn(name = "TRIP_USER_ID", referencedColumnName = "userId")
-  @JsonIgnoreProperties({"userMail", "userTokenRefresh", "userTokenAccess",
-      "userIsOkUserPhoto", "userIsOkCarPhoto", "userIsConfirmedMail",
-      "userIsConfirmedPhone","userCar"})
   private User user;
   @ManyToOne
   @JoinColumn(name = "TRIP_USER_CAR_ID", referencedColumnName = "userCarId")

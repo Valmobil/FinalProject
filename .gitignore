@@ -1,9 +1,9 @@
 # Compiled class file
-*.class
+#*.class
 .idea/
 /target/
 /src/frontend/.stylelintcache
-.idea/*.iml
+*.iml
 *.log
 
 # BlueJ files
@@ -21,5 +21,4 @@
 *.tar.gz
 *.rar
 
-/src/main/resources/credentials/aws/aws-S3-prd.yml
-/src/main/resources/application-awss3dev.old
+/src/main/resources/credentials/

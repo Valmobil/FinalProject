@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.dto.TripResponse;
+import ua.com.danit.dto.TripResponseId;
 import ua.com.danit.dto.TripResponseWithUser;
 import ua.com.danit.entity.Trip;
+import ua.com.danit.entity.TripPassenger;
 import ua.com.danit.entity.User;
 import ua.com.danit.service.TripsService;
 import ua.com.danit.service.UserTokensService;
@@ -32,8 +34,8 @@ public class TripsController {
   }
 
   @PutMapping
-  public String saveTripToDb(@RequestBody Trip trip) {
-    return tripsService.saveTripToDb(trip);
+  public ResponseEntity<TripResponseId> saveTripToDb(@RequestBody Trip trip) {
+    return new ResponseEntity<>(tripsService.saveTripToDb(trip), HttpStatus.OK);
   }
 
   @PostMapping("list")
@@ -43,20 +45,29 @@ public class TripsController {
   }
 
   @PostMapping("others")
-  public ResponseEntity<List<TripResponseWithUser>> getOtherUsersTripList(@RequestHeader String authorization) {
-    return new ResponseEntity<>(tripsService.getOwnAndOtherTrips(userTokensService.findUserByAccessToken(authorization)),
-        HttpStatus.OK);
+  public ResponseEntity<List<TripResponseWithUser>> getOtherUsersTripList(@RequestBody Trip trip,
+                                                                          @RequestHeader String authorization) {
+    return new ResponseEntity<>(tripsService.getOwnAndOtherTrips(trip,
+        userTokensService.findUserByAccessToken(authorization)), HttpStatus.OK);
   }
 
   @PostMapping("copy")
   public ResponseEntity<List<TripResponse>> copyUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
     User user = userTokensService.findUserByAccessToken(authorization);
     tripsService.copyTripById(trip.getTripId(), user);
-    return new ResponseEntity<>(tripsService.getTripListService(user),HttpStatus.OK);
+    return new ResponseEntity<>(tripsService.getTripListService(user), HttpStatus.OK);
   }
 
   @DeleteMapping
-  public void deleteUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
-    tripsService.deleteTripById(trip.getTripId(), userTokensService.findUserByAccessToken(authorization));
+  public ResponseEntity<String> deleteUserTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
+    return new ResponseEntity<>(tripsService.deleteTripById(trip.getTripId(),
+        userTokensService.findUserByAccessToken(authorization)), HttpStatus.OK);
+  }
+
+  @PostMapping("passengers")
+  public ResponseEntity<String> putSelectedPassangers(@RequestBody List<TripPassenger> tripPassengers,
+                                                      @RequestHeader String authorization) {
+    return new ResponseEntity<>(tripsService.putPassengers(tripPassengers,
+        userTokensService.findUserByAccessToken(authorization)), HttpStatus.OK);
   }
 }

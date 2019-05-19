@@ -6,12 +6,15 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.TripResponse;
+import ua.com.danit.dto.TripResponseId;
 import ua.com.danit.dto.TripResponseWithUser;
 import ua.com.danit.entity.Trip;
+import ua.com.danit.entity.TripPassenger;
 import ua.com.danit.entity.TripPoint;
 import ua.com.danit.entity.User;
 import ua.com.danit.error.KnownException;
 import ua.com.danit.facade.TripFacade;
+import ua.com.danit.repository.TripPassengersRepository;
 import ua.com.danit.repository.TripsRepository;
 
 import java.io.IOException;
@@ -23,18 +26,21 @@ import java.util.List;
 public class TripsService {
   private TripsRepository tripsRepository;
   private TripFacade tripFacade;
+  private TripPassengersRepository tripPassengersRepository;
 
   @Autowired
-  public TripsService(TripsRepository tripsRepository, TripFacade tripFacade) {
+  public TripsService(TripsRepository tripsRepository, TripFacade tripFacade,
+                      TripPassengersRepository tripPassengersRepository) {
     this.tripsRepository = tripsRepository;
     this.tripFacade = tripFacade;
+    this.tripPassengersRepository = tripPassengersRepository;
   }
 
   public Trip getTripById(Long tripId) {
     return tripsRepository.getOne(tripId);
   }
 
-  public String saveTripToDb(Trip trip) {
+  public TripResponseId saveTripToDb(Trip trip) {
     //Set TripId to TripPoints
     for (TripPoint point : trip.getTripPoint()) {
       point.setTrip(trip);
@@ -45,18 +51,15 @@ public class TripsService {
         trip.setUserCar(null);
       }
     }
-    if (tripsRepository.save(trip) != null) {
-      return "Ok";
-    } else {
+    trip = tripsRepository.save(trip);
+    if (trip == null) {
       throw new KnownException("Error! Trip have not been saved!");
     }
+    return new TripResponseId(trip.getTripId());
   }
 
-  public List<TripResponseWithUser> getOwnAndOtherTrips(User user) {
-    List<Trip> trips = new LinkedList<>();
-    trips.add(tripsRepository.getOne(1L));
-    trips.add(tripsRepository.getOne(3L));
-    trips.add(tripsRepository.getOne(4L));
+  public List<TripResponseWithUser> getOwnAndOtherTrips(Trip tripOwn, User user) {
+    List<Trip> trips = tripsRepository.findOwnTripAndOtherTrips(tripOwn.getTripId());
     List<TripResponseWithUser> tripResponses = new LinkedList<>();
     for (Trip trip : trips) {
       tripResponses.add(tripFacade.mapEntityToResponseDtoWithUser(trip));
@@ -67,7 +70,8 @@ public class TripsService {
   public List<TripResponse> getTripListService(User user) {
     List<Trip> trips = new LinkedList<>();
     //Get list of trips except deleted ones
-    for (Trip trip : tripsRepository.findByUser(user)) {
+    Long tripId = 1L;
+    for (Trip trip : tripsRepository.findOwnTripAndOtherTrips(tripId)) {
       if (trip.getTripIsDeleted() == 0) {
         trips.add(trip);
       }
@@ -75,14 +79,15 @@ public class TripsService {
     return tripFacade.mapEntityListToResponseDtoList(trips);
   }
 
-  public void deleteTripById(Long tripId, User user) {
+  public String deleteTripById(Long tripId, User user) {
     Trip trip = tripsRepository.getOne(tripId);
-    if (user != null) {
-      if (trip.getUser().getUserId().equals(user.getUserId())) {
-        trip.setTripIsDeleted(1);
-        tripsRepository.save(trip);
-      }
+    if (trip.getUser().getUserId().equals(user.getUserId())) {
+      trip.setTripIsDeleted(1);
+      tripsRepository.save(trip);
+    } else {
+      throw new KnownException("Error! We try to delete trip of other user! The operation is rejected!");
     }
+    return "Ok";
   }
 
   public void copyTripById(long tripId, User user) {
@@ -112,6 +117,11 @@ public class TripsService {
         }
       }
     }
+  }
+
+  public String putPassengers(List<TripPassenger> tripPassengers, User userByAccessToken) {
+    tripPassengersRepository.saveAll(tripPassengers);
+    return "Ok";
   }
 }
 

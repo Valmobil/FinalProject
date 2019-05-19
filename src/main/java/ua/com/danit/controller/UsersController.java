@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ua.com.danit.dto.UserResponse;
 import ua.com.danit.entity.User;
 import ua.com.danit.service.UserTokensService;
 import ua.com.danit.service.UsersService;
@@ -26,8 +27,8 @@ public class UsersController {
   }
 
   @PutMapping
-  public ResponseEntity<User> saveUserProfile(@RequestBody User user, @RequestHeader String authorization) {
-    return new ResponseEntity<>(usersService.saveUserProfile(user, userTokensService.findUserByAccessToken(authorization)),
+  public ResponseEntity<UserResponse> saveUserProfile(@RequestBody User user, @RequestHeader String authorization) {
+    return new ResponseEntity<>(usersService.putUserProfile(user, userTokensService.findUserByAccessToken(authorization)),
         HttpStatus.OK);
   }
 }
