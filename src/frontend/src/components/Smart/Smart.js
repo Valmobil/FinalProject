@@ -525,7 +525,7 @@ class Smart extends Component {
                             </Slide>
                         </div>
                         {!creatingTrip &&
-                        <span className="welcome-span">Choose from quick trips:</span>
+                        <span className="welcome-span">Quick trips (long tap to edit/delete)</span>
                         }
                     </>
                     }

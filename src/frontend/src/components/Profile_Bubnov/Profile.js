@@ -84,16 +84,16 @@ class Profile extends Component {
 
     validate = () => {
         const { user: { userName, userPhone, userMail, userPhoto }, currentInput } = this.state
-        if ( currentInput !== 'userName' && userName.length === 0){
+        if ( currentInput !== 'userName' && (userName && userName.length === 0)){
             this.setState({alertError: 'Please enter user name', snackbarOpen: true})
         }
-        else if ( currentInput !== 'userPhone' && !phoneNumber.test(userPhone.split('-').join(''))){
+        else if ( currentInput !== 'userPhone' && !(userPhone && phoneNumber.test(userPhone.split('-').join('')))){
             this.setState({alertError: 'Please enter valid phone number', snackbarOpen: true})
         }
         else if ( currentInput !== 'userMail' && !email.test(userMail.toLowerCase())){
             this.setState({alertError: 'Please enter valid email', snackbarOpen: true})
         }
-        else if ( !userPhoto.includes('id')){
+        else if ( !(userPhoto && userPhoto.includes('id'))){
             this.setState({alertError: 'Please upload photo', snackbarOpen: true})
         }
     }

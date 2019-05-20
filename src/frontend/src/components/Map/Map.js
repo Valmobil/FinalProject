@@ -235,12 +235,15 @@ class Map extends Component {
         const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
         this.setUpClickListener()
         if ((!this.props.targetCoordinates || Number(this.props.targetCoordinates.latitude) === 0
-            || Number(this.props.targetCoordinates.longitude) === 0 ) && !this.props.showMainRoute){
-            this.props.setTargetCoordinates({
-                latitude: 50.449394,
-                longitude: 30.525433,
-            })
-        }
+            || Number(this.props.targetCoordinates.longitude) === 0 )){
+            if (!this.props.showMainRoute){
+                this.props.setTargetCoordinates({
+                    latitude: 50.449394,
+                    longitude: 30.525433,
+                })
+            }
+
+        } else this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
     }
 
 
