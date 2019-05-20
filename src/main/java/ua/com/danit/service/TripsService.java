@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.com.danit.dto.TripPassengerResponse;
 import ua.com.danit.dto.TripResponse;
 import ua.com.danit.dto.TripResponseId;
 import ua.com.danit.dto.TripResponseWithUser;
@@ -14,6 +15,7 @@ import ua.com.danit.entity.TripPoint;
 import ua.com.danit.entity.User;
 import ua.com.danit.error.KnownException;
 import ua.com.danit.facade.TripFacade;
+import ua.com.danit.facade.TripPassengerFacade;
 import ua.com.danit.repository.TripPassengersRepository;
 import ua.com.danit.repository.TripsRepository;
 
@@ -27,13 +29,15 @@ public class TripsService {
   private TripsRepository tripsRepository;
   private TripFacade tripFacade;
   private TripPassengersRepository tripPassengersRepository;
+  private TripPassengerFacade tripPassengerFacade;
 
   @Autowired
   public TripsService(TripsRepository tripsRepository, TripFacade tripFacade,
-                      TripPassengersRepository tripPassengersRepository) {
+                      TripPassengersRepository tripPassengersRepository, TripPassengerFacade tripPassengerFacade) {
     this.tripsRepository = tripsRepository;
     this.tripFacade = tripFacade;
     this.tripPassengersRepository = tripPassengersRepository;
+    this.tripPassengerFacade = tripPassengerFacade;
   }
 
   public Trip getTripById(Long tripId) {
@@ -119,7 +123,9 @@ public class TripsService {
     }
   }
 
-  public String putPassengers(List<TripPassenger> tripPassengers, User userByAccessToken) {
+  public String putPassengers(List<TripPassengerResponse> tripPassengerResponse, User user) {
+    List <TripPassenger> tripPassengers = tripPassengerFacade.mapRequestDtoListToEntityList(tripPassengerResponse);
+    tripPassengers.forEach(u -> u.setUser(user));
     tripPassengersRepository.saveAll(tripPassengers);
     return "Ok";
   }

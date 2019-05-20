@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ua.com.danit.dto.TripPassengerResponse;
 import ua.com.danit.dto.TripResponse;
 import ua.com.danit.dto.TripResponseId;
 import ua.com.danit.dto.TripResponseWithUser;
 import ua.com.danit.entity.Trip;
-import ua.com.danit.entity.TripPassenger;
 import ua.com.danit.entity.User;
 import ua.com.danit.service.TripsService;
 import ua.com.danit.service.UserTokensService;
@@ -65,9 +65,10 @@ public class TripsController {
   }
 
   @PostMapping("passengers")
-  public ResponseEntity<String> putSelectedPassangers(@RequestBody List<TripPassenger> tripPassengers,
+  public ResponseEntity<String> putSelectedPassangers(@RequestBody List<TripPassengerResponse> tripPassengersResponse
+      ,
                                                       @RequestHeader String authorization) {
-    return new ResponseEntity<>(tripsService.putPassengers(tripPassengers,
+    return new ResponseEntity<>(tripsService.putPassengers(tripPassengersResponse,
         userTokensService.findUserByAccessToken(authorization)), HttpStatus.OK);
   }
 }
