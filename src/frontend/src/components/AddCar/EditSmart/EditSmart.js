@@ -19,7 +19,7 @@ const style= {
         width: '80%',
     },
     button: {
-        margin: theme.spacing,
+        margin: theme.spacing(1),
         marginTop: 10,
     },
 }
