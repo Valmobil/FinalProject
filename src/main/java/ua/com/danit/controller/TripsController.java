@@ -65,8 +65,7 @@ public class TripsController {
   }
 
   @PostMapping("passengers")
-  public ResponseEntity<String> putSelectedPassangers(@RequestBody List<TripPassengerResponse> tripPassengersResponse
-      ,
+  public ResponseEntity<String> putSelectedPassangers(@RequestBody List<TripPassengerResponse> tripPassengersResponse,
                                                       @RequestHeader String authorization) {
     return new ResponseEntity<>(tripsService.putPassengers(tripPassengersResponse,
         userTokensService.findUserByAccessToken(authorization)), HttpStatus.OK);

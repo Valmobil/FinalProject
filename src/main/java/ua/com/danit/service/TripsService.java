@@ -124,7 +124,7 @@ public class TripsService {
   }
 
   public String putPassengers(List<TripPassengerResponse> tripPassengerResponse, User user) {
-    List <TripPassenger> tripPassengers = tripPassengerFacade.mapRequestDtoListToEntityList(tripPassengerResponse);
+    List<TripPassenger> tripPassengers = tripPassengerFacade.mapRequestDtoListToEntityList(tripPassengerResponse);
     tripPassengers.forEach(u -> u.setUser(user));
     tripPassengersRepository.saveAll(tripPassengers);
     return "Ok";

@@ -36,7 +36,7 @@ public abstract class AbstractDtoFacade<E, I, O> {
   }
 
   protected List<E> mapRequestDtoListToEntityList(List<I> dtoList) {
-    if(dtoList != null) {
+    if (dtoList != null) {
       return dtoList.stream()
           .map(this::mapRequestDtoToEntity)
           .collect(Collectors.toList());
