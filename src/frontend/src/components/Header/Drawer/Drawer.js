@@ -63,7 +63,7 @@ const Drawer = (props) => {
                     >
                         Restore password
                     </NavLink>
-                    <NavLink to={'/C'}
+                    <NavLink to={'/newpassword'}
                              className='drawer-link-regular'
                              activeClassName="drawer-active-link"
                     >

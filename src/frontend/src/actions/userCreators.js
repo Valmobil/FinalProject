@@ -257,7 +257,7 @@ export const confirmEmail = (email) => dispatch => {
 
 export const restorePass = (email) => dispatch =>{
     console.log('email=', email)
-    callApi('post', 'api/logins/email', {userLogin: email})
+    axios('post', 'api/logins/reset/email', {userLogin: email})
       .then(resp => console.log(resp))
       .catch(console.log)
 }

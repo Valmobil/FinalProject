@@ -37,7 +37,7 @@ class App extends Component {
             <ProtectedRoute path='/newtrip' component={NewTrip}/>
             <ProtectedRoute path='/ac' component={AddCar}/>
             <Route path="/restore_password" component={PassRestoration}/>
-            <Route path="/C" component={ChangePassword} />
+            <Route path="/newpassword" component={ChangePassword} />
       <Route exact path="/feedback" component={Button} />
             <Route path='*' component={NoMatch}/>
           </Switch>

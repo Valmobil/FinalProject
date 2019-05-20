@@ -209,10 +209,10 @@ class PassRestoration extends Component {
     return (
       <div className="PassRestoration">
         {/*{!this.state.codeSent*/}
-          {/*? this.renderRequestCodeForm()*/}
-          {/*: !this.state.confirmed*/}
-            {/*? this.renderConfirmationForm()*/}
-            {/*: this.renderSuccessMessage()}*/}
+        {/*? this.renderRequestCodeForm()*/}
+        {/*: !this.state.confirmed*/}
+        {/*? this.renderConfirmationForm()*/}
+        {/*: this.renderSuccessMessage()}*/}
         {this.renderConfirmationForm()}
       </div>
     )
