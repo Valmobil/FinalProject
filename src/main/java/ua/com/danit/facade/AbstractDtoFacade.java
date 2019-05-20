@@ -35,6 +35,15 @@ public abstract class AbstractDtoFacade<E, I, O> {
     return null;
   }
 
+  protected List<E> mapRequestDtoListToEntityList(List<I> dtoList) {
+    if (dtoList != null) {
+      return dtoList.stream()
+          .map(this::mapRequestDtoToEntity)
+          .collect(Collectors.toList());
+    }
+    return null;
+  }
+
   protected List<O> mapEntityListToResponseDtoList(List<E> entityList) {
     if (entityList != null) {
       return entityList.stream()
