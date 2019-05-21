@@ -34,7 +34,7 @@ const styles = theme => ({
   suggestionsContainerOpen: {
     position: 'absolute',
     zIndex: 1,
-    marginTop: theme.spacing,
+    marginTop: theme.spacing(1),
     left: 0,
     right: 0,
   },
