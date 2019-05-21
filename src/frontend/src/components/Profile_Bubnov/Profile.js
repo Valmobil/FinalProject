@@ -18,6 +18,7 @@ import ErrorSnackbar from "./ErrorSnackbar/ErrorSnackbar";
 import AddingCar from "./AddingCar/AddingCar";
 
 
+
 const phoneNumber = /^\+?[0-9]{10}/;
 const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -90,7 +91,7 @@ class Profile extends Component {
         else if ( currentInput !== 'userPhone' && !(userPhone && phoneNumber.test(userPhone.split('-').join('')))){
             this.setState({alertError: 'Please enter valid phone number', snackbarOpen: true})
         }
-        else if ( currentInput !== 'userMail' && !email.test(userMail.toLowerCase())){
+        else if ( currentInput !== 'userMail' && !(userMail && email.test(userMail.toLowerCase()))){
             this.setState({alertError: 'Please enter valid email', snackbarOpen: true})
         }
         else if ( !(userPhoto && userPhoto.includes('id'))){
@@ -122,8 +123,8 @@ class Profile extends Component {
         const { adding, cars, user: { userName, userPhone, userMail, userPhoto }, newCar: { userCarName, userCarColour }} = this.state
         const allChecks = (userPhone && phoneNumber.test(userPhone.split('-').join('')))
             && (userMail && email.test(userMail.toLowerCase()))
-            && userName.length > 0
-            && userPhoto.includes('id')
+            && (userName && userName.length > 0)
+            && (userPhoto && userPhoto.includes('id'))
 
         let carList = cars.map(item => {
           const car =item.userCarName + ' ' + item.userCarColour
@@ -161,6 +162,7 @@ class Profile extends Component {
                   setPhoto={ this.props.setPhoto }
                   photo={ this.props.users.user.userPhoto }
                   sihlouette={ manSihlouette }
+                  error={this.props.users.errorPopupOpen}
               />
               <MuiThemeProvider theme={theme}>
               <TextField
