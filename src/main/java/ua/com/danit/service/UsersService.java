@@ -67,7 +67,7 @@ public class UsersService {
     return user;
   }
 
-  User collectUserPointsAndFillInEmptyOnes(User user) {
+  private User collectUserPointsAndFillInEmptyOnes(User user) {
     if (user == null) {
       throw new KnownException("Error! Empty user entity!");
     }
@@ -107,7 +107,7 @@ public class UsersService {
     user.getUserTokens().get(0).setUserTokenExternal(userLogin.getUserToken());
   }
 
-  User updateUserTokenInUserEntity(User user) {
+  private void updateUserTokenInUserEntity(User user) {
     UserTokenResponse userTokenResponse = userTokensService.generateInitialTokinSet();
     if (user.getUserTokens() == null) {
       user.setUserTokens(new LinkedList<>());
@@ -118,7 +118,6 @@ public class UsersService {
     } else {
       user.getUserTokens().set(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, user.getUserTokens().get(0)));
     }
-    return user;
   }
 
   void checkIfPasswordIsCorrect(UserLogin userLogin, User user) {
@@ -181,7 +180,7 @@ public class UsersService {
       }
     }
     user = usersRepository.save(user);
-    user = projection(user, "car", "token", "point");
+    user = projection(user, "", "car", "token", "point");
     return userFacade.mapEntityToResponse(user);
   }
 
@@ -254,28 +253,28 @@ public class UsersService {
     }
   }
 
-  public User updateUserCars(User user) {
+  private void updateUserCars(User user) {
     List<UserCar> userCars = userCarsRepository.findByUser(user);
     if (userCars != null && userCars.size() > 0) {
       user.setUserCars(userCars);
     }
-    return user;
   }
 
-  User projection(User user, String... names) {
+  User projection(User user, String endPointMode, String... names) {
 
     for (String str : names) {
       if ("car".equals(str)) {
         if (user.getUserId() != null) {
           if (user.getUserCars() == null || user.getUserCars().size() == 0) {
-            user = updateUserCars(user);
+            updateUserCars(user);
           }
         }
       }
       if ("token".equals(str)) {
         if (user.getUserTokens() == null || user.getUserTokens().size() == 0
-            || user.getUserTokens().get(0).getUserTokenId() == null) {
-          user = updateUserTokenInUserEntity(user);
+            || user.getUserTokens().get(0).getUserTokenId() == null
+            || "SignIn".equals(endPointMode) || "SignUp".equals(endPointMode)) {
+          updateUserTokenInUserEntity(user);
         }
       }
       if ("point".equals(str)) {
