@@ -49,7 +49,6 @@ export const axiosRequest = (method, url, data, headers, config) => {
 //* *********************
 
 export const setLocalStorage = (accessToken, refreshToken) => {
-    console.log('setLocalStorage')
     const accessTokenExpires = new Date(Date.now() + 880000).toISOString()
     const refreshTokenExpires = new Date(Date.now() + 2591900000).toISOString()
     window.localStorage.setItem('iTripper_access_token', accessToken)
