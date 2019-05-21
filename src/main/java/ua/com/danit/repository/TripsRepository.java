@@ -11,6 +11,7 @@ public interface TripsRepository extends JpaRepository<Trip, Long> {
 
   List<Trip> findByUser(User user);
 
+
   //The Query get OwnTree + Other Trips where points coincide with OwnTrip Points
   //Results are sorted from journeys with more matches
   @Query(value =
