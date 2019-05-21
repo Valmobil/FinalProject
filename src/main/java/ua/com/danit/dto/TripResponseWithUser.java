@@ -14,5 +14,5 @@ public class TripResponseWithUser {
   private LocalDateTime tripDateTime;
   private int tripSitsQty;
   private int tripIsDeleted;
-  private UserResponceTrip user;
+  private UserResponseTrip user;
 }

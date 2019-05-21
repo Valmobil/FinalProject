@@ -36,6 +36,6 @@ public class PswdResetToken {
   public PswdResetToken(String token, User user) {
     this.token = token;
     this.user = user;
-    this.expiryDate = LocalDateTime.now().minusHours(EXPIRATION);
+    this.expiryDate = LocalDateTime.now().plusHours(EXPIRATION);
   }
 }
