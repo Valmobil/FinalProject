@@ -237,15 +237,16 @@ export const setInitialLoadToFalse = () => dispatch => {
 //* **********************
 
 export const updateProfile = (user) => dispatch =>{
-console.log('user = ', user)
     callApi('put', '/api/users', user)
         .then(response => {
-            console.log('response from \'/api/users = ', response)
-            // dispatch({type: 'UPDATED_PROFILE'})
+            if (response.data) {
+                dispatch({type: SET_USER, payload: response.data})
+                setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+            } else {
+                dispatch(logOut())
+            }
         })
-        .catch( err => {
-            console.log(err)
-        })
+        .catch(console.log)
 }
 
 //* **********************

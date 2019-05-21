@@ -59,7 +59,7 @@ const styles = theme => ({
         width: '100%',
     },
     selectEmpty: {
-        marginTop: theme.spacing.unit * 2,
+        marginTop: theme.spacing(2),
         width: windowWidth * 0.9
     },
     inputColor: {
@@ -458,7 +458,6 @@ class Smart extends Component {
             dependentButton = (
               <Slide direction="up" in={!adDisable} mountOnEnter unmountOnExit>
                 <Button onClick={this.addNewPoint}
-                        type="raised"
                         color="primary"
                         disabled={adDisable}
                         classes={{
@@ -480,7 +479,7 @@ class Smart extends Component {
                 <div className="welcome-user">
                     {!adding && !editing &&
                     <>
-                       <span className="role-question">what is your role today?</span>
+                       <span className="role-question">today you are:</span>
                         <RadioGroup
                             aria-label="position"
                             name="position"
@@ -526,7 +525,7 @@ class Smart extends Component {
                             </Slide>
                         </div>
                         {!creatingTrip &&
-                        <span className="welcome-span">Choose from quick trips:</span>
+                        <span className="welcome-span">Quick trips (long tap to edit/delete)</span>
                         }
                     </>
                     }

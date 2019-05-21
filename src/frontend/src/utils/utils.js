@@ -49,15 +49,28 @@ export const axiosRequest = (method, url, data, headers, config) => {
 //* *********************
 
 export const setLocalStorage = (accessToken, refreshToken) => {
+    console.log('setLocalStorage')
     const accessTokenExpires = new Date(Date.now() + 880000).toISOString()
     const refreshTokenExpires = new Date(Date.now() + 2591900000).toISOString()
     window.localStorage.setItem('iTripper_access_token', accessToken)
     window.localStorage.setItem('iTripper_refresh_token', refreshToken)
     window.localStorage.setItem('iTripper_access_token_expires', accessTokenExpires)
     window.localStorage.setItem('iTripper_refresh_token_expires', refreshTokenExpires)
+    setTimeout(async () => {
+        let response
+        const data = {userTokenRefresh: refreshToken}
+        try {
+            response = await axios.post('/api/usertokens', data)
+            if (response.data) {
+                setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }, 880000)
 }
-//* *********************
 
+//* *********************
 export const removeTokens = () => {
     window.localStorage.removeItem('iTripper_access_token')
     window.localStorage.removeItem('iTripper_access_token_expires')
@@ -65,6 +78,7 @@ export const removeTokens = () => {
     window.localStorage.removeItem('iTripper_refresh_token_expires')
     window.localStorage.removeItem('iTripper_page')
 }
+
 //* *********************
 const memo = Object.create(null);
 

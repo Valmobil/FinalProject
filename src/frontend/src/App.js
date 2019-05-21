@@ -29,7 +29,7 @@ class App extends Component {
         {window.innerWidth < 710 && isAuthenticated && <Header/>}
         <div className="App">
           <Switch>
-            <Route exact path='/' component={Login}/>
+            <Route exact path='/' render={(props) => <Login {...props}/>}/>
             <ProtectedRoute path="/main" component={Main}/>
             <ProtectedRoute path="/smart" component={Smart}/>
             <ProtectedRoute path="/profile" component={Profile}/>

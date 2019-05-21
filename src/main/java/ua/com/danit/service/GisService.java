@@ -1,6 +1,5 @@
 package ua.com.danit.service;
 
-import javafx.geometry.Point2D;
 
 public class GisService {
   //void test(){

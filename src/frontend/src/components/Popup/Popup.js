@@ -6,9 +6,9 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import Slide from '@material-ui/core/Slide'
 import Button from '@material-ui/core/Button'
 
-function Transition (props) {
-    return <Slide direction="up" {...props} />
-}
+const Transition = React.forwardRef((props, ref) => {
+    return <Slide ref={ref} direction="up" {...props} />
+})
 
 const Popup = (props) => {
     const { handleAlertClose, popupOkButtonClick, popupOpen, errorMessage } = props

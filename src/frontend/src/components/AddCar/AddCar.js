@@ -66,7 +66,7 @@ const styles = theme => ({
         width: '100%',
     },
     selectEmpty: {
-        marginTop: theme.spacing.unit * 2,
+        marginTop: theme.spacing(2),
         width: windowWidth * 0.9
     },
     inputColor: {
@@ -91,7 +91,7 @@ const styles = theme => ({
     suggestionsContainerOpen: {
         position: 'absolute',
         zIndex: 1,
-        marginTop: theme.spacing.unit,
+        marginTop: theme.spacing(1),
         left: 0,
         right: 0,
     },
