@@ -5,7 +5,7 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import {connect} from 'react-redux'
-import { setAuthorization, setSocialAuth, setLoginRejected, setAuthByToken } from '../../actions/userCreators'
+import { setAuthorization, setSocialAuth, setAuthByToken } from '../../actions/userCreators'
 import { withStyles } from '@material-ui/core/styles'
 import InputAdornment from '@material-ui/core/InputAdornment';
 import firebase from 'firebase'
@@ -41,7 +41,6 @@ class Login extends Component {
             },
             isSigned: false,
             signType: 'log-in',
-            alertOpen: false,
             passwordIsHidden: true,
             error: {
                 login: '',
@@ -97,10 +96,6 @@ class Login extends Component {
       this.setState({user: {...this.state.user, [name]: value}})
     }
 
-    handleAlertClose = () => {
-      this.setState({alertOpen: false})
-    }
-
     componentDidMount () {
       this.props.setAuthByToken();
 
@@ -147,9 +142,6 @@ class Login extends Component {
         }));
     }
 
-    tryToLoginAgain = () => {
-        this.setState({user: {...this.state.user, login: '', password: '', confirmPassword: ''}}, () => this.props.setLoginRejected(false))
-    }
 
     render () {
       const { classes } = this.props
@@ -284,12 +276,8 @@ class Login extends Component {
             </Button>
           </MuiThemeProvider>
 
-            <Popup
-                handleAlertClose={this.handleAlertClose}
-                popupOkButtonClick={this.tryToLoginAgain}
-                popupOpen={this.props.users.loginRejected}
-                errorMessage={this.props.users.errorMessage}
-            />
+          <Popup />
+
         </div>
       )
     }
@@ -355,7 +343,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setAuthorization: (state, signType) => dispatch(setAuthorization(state, signType)),
     setSocialAuth: (auth) => dispatch(setSocialAuth(auth)),
-    setLoginRejected: (payload) => dispatch(setLoginRejected(payload)),
     setAuthByToken: () => dispatch (setAuthByToken()),
   }
 }

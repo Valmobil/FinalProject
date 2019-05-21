@@ -27,13 +27,13 @@ class ProtectedRoute extends Component {
         const {component: Component, ...rest} = this.props
         const { user: { userName, userPhone, userMail, userPhoto}, isAuthenticated } = rest.users
         return (
-            isAuthenticated ?
-            <Route {...rest} render={(props) => (
+            <Route {...rest} render={(props) => isAuthenticated ? (
                     (userName && userPhone && userMail && (userPhoto && userPhoto.includes('id')))
                     ? <Component {...props} />
                     : ( rest.path !== '/profile' ? <Redirect to='/profile'/> : <Component {...props} /> )
-            )}/>
+            )
                 : <Redirect to='/'/>
+            }/>
         )
     }
 }

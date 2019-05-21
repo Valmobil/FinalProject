@@ -501,31 +501,50 @@ class Smart extends Component {
                                 labelPlacement="top" color="primary"
                             />
                         </RadioGroup>
-
+                        <Slide direction="down" in={true} mountOnEnter unmountOnExit>
                         <div className="type-button-container">
-                            <Slide direction="down" in={true} mountOnEnter unmountOnExit>
-                            <Button onClick={this.newTripRedirect}
-                                    classes={{
-                                        root: classes.typeButtons,
-                                        label: classes.label
-                                    }}
+
+
+                            <div className='type-button'
+                                 onClick={this.newTripRedirect}
                             >
                                 Plan new trip
-                            </Button>
-                            </Slide>
-                            <Slide direction="down" in={true} mountOnEnter unmountOnExit>
-                            <Button onClick ={this.tripsHistoryRedirect}
-                                    classes={{
-                                        root: classes.typeButtons,
-                                        label: classes.label,
-                                    }}
+                            </div>
+
+                            <div className='type-button'
+                                 onClick={this.tripsHistoryRedirect}
                             >
                                 Trip history
-                            </Button>
-                            </Slide>
+                            </div>
+
+
+
+
+
+                            {/*<Slide direction="down" in={true} mountOnEnter unmountOnExit>*/}
+                            {/*<Button onClick={this.newTripRedirect}*/}
+                                    {/*classes={{*/}
+                                        {/*root: classes.typeButtons,*/}
+                                        {/*label: classes.label*/}
+                                    {/*}}*/}
+                            {/*>*/}
+                                {/*Plan new trip*/}
+                            {/*</Button>*/}
+                            {/*</Slide>*/}
+                            {/*<Slide direction="down" in={true} mountOnEnter unmountOnExit>*/}
+                            {/*<Button onClick ={this.tripsHistoryRedirect}*/}
+                                    {/*classes={{*/}
+                                        {/*root: classes.typeButtons,*/}
+                                        {/*label: classes.label,*/}
+                                    {/*}}*/}
+                            {/*>*/}
+                                {/*Trip history*/}
+                            {/*</Button>*/}
+                            {/*</Slide>*/}
                         </div>
+                            </Slide>
                         {!creatingTrip &&
-                        <span className="welcome-span">Quick trips (long tap to edit/delete)</span>
+                        <span className="welcome-span">Quick trips ( long tap to edit/delete )</span>
                         }
                     </>
                     }
