@@ -226,7 +226,7 @@ export const setPhoto = (image) => dispatch => {
        .then(response => {
            dispatch({type: SET_USER_PHOTO, payload: response.data})
        })
-       .catch(dispatch(errorPopupShow()))
+       .catch(err => dispatch(errorPopupShow()))
 }
 //* **********************
 
@@ -237,10 +237,10 @@ export const setInitialLoadToFalse = () => dispatch => {
 //* **********************
 
 export const updateProfile = (user) => dispatch =>{
-    dispatch({type: SET_USER, payload: user})
     callApi('put', '/api/users', user)
         .then(response => {
             if (response.data) {
+                dispatch({type: SET_USER, payload: response.data})
                 setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
             } else {
                 dispatch(logOut())

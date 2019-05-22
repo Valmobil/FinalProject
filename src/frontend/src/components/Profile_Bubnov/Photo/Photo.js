@@ -7,6 +7,7 @@ import Spinner from '../../Spinner/Spinner'
 import './Photo.css'
 
 
+
 const styles = {
     bigAvatar: {
         margin: 10,
@@ -37,18 +38,22 @@ const styles = {
 
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 
-const Photo = ({ classes, setPhoto, photo, sihlouette, error }) => {
-
+const Photo = ({ classes, setPhoto, photo, sihlouette, error, onFocus }) => {
     const [ imgSrc, setImgSrc] = useState(null)
     const [ base64, setBase64] = useState('')
     const [avatarShown, setAvatarShown] = useState(true)
     const [uploadingOpen, setUploadingOpen] = useState(false)
+    const [spinnerAbleShow, setSpinnerAbleShow] = useState(true)
     const cropper = useRef(null);
     const uploadFile = useRef(null);
 
     useEffect(() => {
         avatarShowToggle(true)
     }, [photo])
+
+    useEffect(() => {
+        if (error) setSpinnerAbleShow(false)
+    }, [error])
 
     const avatarShowToggle = (avatarShown, uploadingOpen) => {
         setAvatarShown(avatarShown)
@@ -79,6 +84,7 @@ const Photo = ({ classes, setPhoto, photo, sihlouette, error }) => {
         setBase64(cropper.current.getCroppedCanvas().toDataURL())
     }
 
+
     let conditionalInput = imgSrc === null ?
             <>
                 <label ref={uploadFile} className='photo-input-label'>
@@ -87,6 +93,7 @@ const Photo = ({ classes, setPhoto, photo, sihlouette, error }) => {
                            className='photo-input'
                            accept={acceptedFileTypes}
                            onChange={handleFile}
+                           onClick={onFocus}
                     />
                     Upload photo*
                 </label>
@@ -128,7 +135,7 @@ const Photo = ({ classes, setPhoto, photo, sihlouette, error }) => {
                 <img src={userAvatar} style={{height: 100}} alt=''/>
             </div>
         )
-    } else if (!avatarShown && !uploadingOpen && !error){
+    } else if (!avatarShown && !uploadingOpen && spinnerAbleShow){
         userAvatarBox = <Spinner/>
     }
         return (
@@ -138,6 +145,7 @@ const Photo = ({ classes, setPhoto, photo, sihlouette, error }) => {
             </>
         )
 }
+
 
 
 export default withStyles(styles)(Photo)
