@@ -1,5 +1,5 @@
-import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
-    LOGIN_REJECTED, SET_USER_NAME, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
+import { SET_USER, SET_CARS, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE, SET_CAR_LIST,
+    ERROR_POPUP_OPEN, SET_USER_NAME, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
     USER_LOGOUT,INITIAL_LOAD, SET_PROFILE, SET_USER_PHOTO, ADD_CAR } from './users'
 
 import { callApi, setLocalStorage, removeTokens } from '../utils/utils'
@@ -86,7 +86,6 @@ const authDispatches = (response) => dispatch => {
         userMail: response.data.userMail,
         userPhoto: response.data.userPhoto,
     }
-    dispatch({type: SET_AUTH, payload: true})
     dispatch({type: SET_USER, payload: userData})
     dispatch({type: SET_CARS, payload: response.data.userCars})
     dispatch({type: SET_USER_POINTS, payload: response.data.userPoints})
@@ -119,7 +118,7 @@ export const setAuthorization = (state, signType) => (dispatch) => {
             dispatch({type: INITIAL_LOAD, payload: true})
         })
         .catch(error => {
-            dispatch(setLoginRejected(true))
+            dispatch(setErrorPopupOpen(true))
             dispatch(setErrorMessage(error.response.data))
         })
 }
@@ -148,8 +147,9 @@ export const addNewCar = (carList, car) => dispatch => {
 }
 //* **********************
 
-export const setLoginRejected = (payload) => dispatch => {
-    dispatch({type: LOGIN_REJECTED, payload})
+export const setErrorPopupOpen = (payload) => dispatch => {
+    dispatch({type: ERROR_POPUP_OPEN, payload})
+    if (!payload) dispatch(setErrorMessage(''))
 }
 //* **********************
 
@@ -171,12 +171,12 @@ export const setCar = (newCar) => dispatch => {
 
 }
 //* **********************
+
 export const updateCars = (newCarList) => dispatch => {
     dispatch({type: SET_CARS, payload: newCarList})
 }
 
 //* **********************
-
 
 export const setErrorMessage = (message) => dispatch => {
     dispatch({type: SET_ERROR_MESSAGE, payload: message})
@@ -226,7 +226,7 @@ export const setPhoto = (image) => dispatch => {
        .then(response => {
            dispatch({type: SET_USER_PHOTO, payload: response.data})
        })
-       .catch(console.log)
+       .catch(dispatch(errorPopupShow()))
 }
 //* **********************
 
@@ -237,10 +237,10 @@ export const setInitialLoadToFalse = () => dispatch => {
 //* **********************
 
 export const updateProfile = (user) => dispatch =>{
+    dispatch({type: SET_USER, payload: user})
     callApi('put', '/api/users', user)
         .then(response => {
             if (response.data) {
-                dispatch({type: SET_USER, payload: response.data})
                 setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
             } else {
                 dispatch(logOut())
@@ -250,8 +250,15 @@ export const updateProfile = (user) => dispatch =>{
 }
 
 //* **********************
+
 export const confirmEmail = (email) => dispatch => {
     callApi('post', 'api/logins/confirmemail', {userLogin: email})
         .then(res => console.log('confirmation response = ', res))
         .catch(console.log)
+}
+//* **********************
+
+const errorPopupShow = () => dispatch => {
+    dispatch(setErrorPopupOpen(true))
+    dispatch(setErrorMessage("Sorry, something's gone wrong on server. Please try again."))
 }

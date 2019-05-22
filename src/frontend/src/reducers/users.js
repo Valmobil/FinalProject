@@ -1,5 +1,5 @@
 import { SET_AUTH, SET_USER, SET_CARS, SET_USER_POINTS, SET_COMMON_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE,
-    SET_CAR_LIST, LOGIN_REJECTED, SET_USER_NAME, SET_ERROR_MESSAGE, INITIAL_LOAD, SET_USER_PHOTO, SET_PROFILE, ADD_CAR,
+    SET_CAR_LIST, ERROR_POPUP_OPEN, SET_USER_NAME, SET_ERROR_MESSAGE, INITIAL_LOAD, SET_USER_PHOTO, SET_PROFILE, ADD_CAR,
     DELETE_TRIP_FROM_HISTORY } from '../actions/users'
 
 
@@ -28,7 +28,7 @@ const initialState = {
   isAuthenticated: false,
   auth: null,
   topMenuOpen: false,
-  loginRejected: false,
+  errorPopupOpen: false,
 }
 
 function users (state = initialState, action) {
@@ -36,7 +36,7 @@ function users (state = initialState, action) {
     case SET_AUTH:
       return {...state, isAuthenticated: action.payload}
     case SET_USER:
-      return {...state, user: {...state.user, ...action.payload}}
+      return {...state, user: {...state.user, ...action.payload}, isAuthenticated: true}
     case SET_CARS:
       return {...state, userCars: action.payload}
     case SET_USER_POINTS:
@@ -55,8 +55,8 @@ function users (state = initialState, action) {
       let newCars = [...state.cars]
           newCars.push(action.payload)
       return {...state, cars: newCars}
-    case LOGIN_REJECTED:
-      return {...state, loginRejected: action.payload}
+    case ERROR_POPUP_OPEN:
+      return {...state, errorPopupOpen: action.payload}
     case SET_USER_NAME:
       return {...state, user: action.payload}
     case SET_ERROR_MESSAGE:

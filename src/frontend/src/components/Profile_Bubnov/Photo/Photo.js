@@ -37,7 +37,7 @@ const styles = {
 
 const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif'
 
-const Photo = ({ classes, setPhoto, photo, sihlouette }) => {
+const Photo = ({ classes, setPhoto, photo, sihlouette, error }) => {
 
     const [ imgSrc, setImgSrc] = useState(null)
     const [ base64, setBase64] = useState('')
@@ -128,7 +128,7 @@ const Photo = ({ classes, setPhoto, photo, sihlouette }) => {
                 <img src={userAvatar} style={{height: 100}} alt=''/>
             </div>
         )
-    } else if (!avatarShown && !uploadingOpen){
+    } else if (!avatarShown && !uploadingOpen && !error){
         userAvatarBox = <Spinner/>
     }
         return (
