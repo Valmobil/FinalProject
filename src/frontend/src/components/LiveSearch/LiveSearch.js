@@ -245,7 +245,7 @@ class LiveSearch extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        searchedLocation: state.users.searchedLocation,
+        searchedLocation: state.trips.searchedLocation,
     }
 }
 

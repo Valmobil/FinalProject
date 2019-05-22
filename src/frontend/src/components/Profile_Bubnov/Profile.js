@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import './Profile.css'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
@@ -8,7 +8,6 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Photo from './Photo/Photo'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
-import { connect } from 'react-redux'
 import { updateProfile, setPhoto, confirmEmail } from '../../actions/userCreators'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Car from './Car/Car'
@@ -16,7 +15,7 @@ import ConfirmButton from './ConfirmButton/ConfirmButton'
 import manSihlouette from '../../utils/manSihlouette.svg'
 import ErrorSnackbar from "./ErrorSnackbar/ErrorSnackbar";
 import AddingCar from "./AddingCar/AddingCar";
-
+import './Profile.css'
 
 
 const phoneNumber = /^\+?[0-9]{10}/;
@@ -31,7 +30,7 @@ class Profile extends Component {
             userPhone: this.props.users.user.userPhone,
             userMail: this.props.users.user.userMail,
         },
-     cars: this.props.users.userCars || [],
+     cars: this.props.users.user.userCars || [],
      adding: false,
      snackbarOpen: false,
      alertError: '',
@@ -85,16 +84,16 @@ class Profile extends Component {
 
     validate = () => {
         const { user: { userName, userPhone, userMail, userPhoto }, currentInput } = this.state
-        if ( currentInput !== 'userName' && (userName && userName.length === 0)){
+        if ( currentInput !== 'userName' && userName.length === 0){
             this.setState({alertError: 'Please enter user name', snackbarOpen: true})
         }
         else if ( currentInput !== 'userPhone' && !(userPhone && phoneNumber.test(userPhone.split('-').join('')))){
-            this.setState({alertError: 'Please enter valid phone number', snackbarOpen: true})
+            this.setState({alertError: 'Please enter your phone number', snackbarOpen: true})
         }
         else if ( currentInput !== 'userMail' && !(userMail && email.test(userMail.toLowerCase()))){
-            this.setState({alertError: 'Please enter valid email', snackbarOpen: true})
+            this.setState({alertError: 'Please enter your email', snackbarOpen: true})
         }
-        else if ( !(userPhoto && userPhoto.includes('id'))){
+        else if ( currentInput !== 'fileUpload' && userName && userPhone && userMail && !(userPhoto && userPhoto.includes('id'))){
             this.setState({alertError: 'Please upload photo', snackbarOpen: true})
         }
     }
@@ -163,24 +162,25 @@ class Profile extends Component {
                   photo={ this.props.users.user.userPhoto }
                   sihlouette={ manSihlouette }
                   error={this.props.users.errorPopupOpen}
+                  onFocus={this.onFocus}
               />
-              <MuiThemeProvider theme={theme}>
-              <TextField
-          required
-          label="User Name"
-          name='userName'
-          type='text'
-          onChange={this.handleChange}
-          onBlur={this.check}
-          onFocus={this.onFocus}
-          autoComplete="off"
-          value={ userName || '' }
-          style={ style.input }
-          InputProps={{
-              classes: {
-                  input: classes.inputColor
-              }
-          }}
+          <MuiThemeProvider theme={theme}>
+          <TextField
+              required
+              label="User Name"
+              name='userName'
+              type='text'
+              onChange={this.handleChange}
+              onBlur={this.check}
+              onFocus={this.onFocus}
+              autoComplete="off"
+              value={ userName || '' }
+              style={ style.input }
+              InputProps={{
+                  classes: {
+                      input: classes.inputColor
+                  }
+              }}
           />
           <TextField
               required
@@ -200,22 +200,22 @@ class Profile extends Component {
               }}
           />
           <TextField
-          required
-          label="Email"
-          type="email"
-          name='userMail'
-          onChange={this.handleChange}
-          onBlur={this.check}
-          onFocus={this.onFocus}
-          autoComplete="off"
-          value={ userMail || '' }
-          style={ style.input }
-          InputProps={{
-              classes: {
-                  input: classes.inputColor
-              },
-              endAdornment: adornment,
-          }}
+              required
+              label="Email"
+              type="email"
+              name='userMail'
+              onChange={this.handleChange}
+              onBlur={this.check}
+              onFocus={this.onFocus}
+              autoComplete="off"
+              value={ userMail || '' }
+              style={ style.input }
+              InputProps={{
+                  classes: {
+                      input: classes.inputColor
+                  },
+                  endAdornment: adornment,
+              }}
           />
           {cars.length > 0 &&
           < span className='carlist-header'>List of your cars (swipe to delete)</span>
