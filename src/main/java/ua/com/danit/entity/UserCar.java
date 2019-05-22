@@ -13,11 +13,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 @Builder
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -31,5 +31,25 @@ public class UserCar extends Auditable {
   @ManyToOne
   @JoinColumn(name = "USER_CAR_USER_ID", referencedColumnName = "userId")
   private User user;
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof UserCar)) {
+      return false;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    UserCar userCar = (UserCar) obj;
+    return userCarId == userCar.userCarId;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), userCarId);
+  }
 }
 
