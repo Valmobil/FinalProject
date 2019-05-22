@@ -73,6 +73,6 @@ public class LoginsController {
 
   @GetMapping("confirmemailstatus")
   public ResponseEntity<String> confirmEmailStatus(@RequestParam(value = "token") String token) {
-    return new ResponseEntity<>(mailSenderService.receiveMailConfirmation(token), HttpStatus.OK);
+    return new ResponseEntity<>(loginsService.receiveMailConfirmation(token), HttpStatus.OK);
   }
 }

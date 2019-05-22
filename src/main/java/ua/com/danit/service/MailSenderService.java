@@ -10,9 +10,11 @@ import ua.com.danit.entity.PswdResetToken;
 import ua.com.danit.entity.User;
 import ua.com.danit.error.KnownException;
 import ua.com.danit.repository.PswdResetTokenRepository;
+import ua.com.danit.repository.UsersRepository;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -21,16 +23,19 @@ public class MailSenderService {
   private UsersService usersService;
   private LoginsService loginsService;
   private PswdResetTokenRepository pswdResetTokenRepository;
+  private UsersRepository usersRepository;
 
   @Autowired
   MailSenderService(JavaMailSender javaMailSender,
                     UsersService usersService,
                     LoginsService loginsService,
-                    PswdResetTokenRepository pswdResetTokenRepository) {
+                    PswdResetTokenRepository pswdResetTokenRepository,
+                    UsersRepository usersRepository) {
     this.javaMailSender = javaMailSender;
     this.usersService = usersService;
     this.loginsService = loginsService;
     this.pswdResetTokenRepository = pswdResetTokenRepository;
+    this.usersRepository = usersRepository;
   }
 
 
@@ -50,9 +55,12 @@ public class MailSenderService {
         .mode("")
         .build();
     user = usersService.findUserByEmail(userLogin.getUserLogin(), loginMode, user);
+    loginsService.deletePswdResetTokensByUser(user);
     //Send mail and save token
     sendResetPasswordMail(user, contextPath, loginMode);
-
+    //Set Confirmation letter was sent
+    user.setUserIsConfirmedMail(1);
+    usersRepository.save(user);
     return "Ok. The message was sent!";
   }
 
@@ -91,7 +99,7 @@ public class MailSenderService {
   }
 
   static String checkForLocalHost(String contextPath) {
-    if (contextPath.substring(0,9).equals("localhost")) {
+    if (contextPath.substring(0, 9).equals("localhost")) {
       return "http://" + contextPath;
     }
     return contextPath;
@@ -109,7 +117,7 @@ public class MailSenderService {
       helper.setText(msg, true);
       return message;
     } catch (MessagingException ignored) {
-      return null;
+      throw new KnownException("Error! Cannot generate eMail via MimeMessage");
     }
   }
 
@@ -119,7 +127,5 @@ public class MailSenderService {
     pswdResetTokenRepository.save(myToken);
   }
 
-  public String receiveMailConfirmation(String host) {
-    return "Ok just for test";
-  }
+
 }

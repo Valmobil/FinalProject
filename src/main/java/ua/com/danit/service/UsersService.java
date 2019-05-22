@@ -179,6 +179,16 @@ public class UsersService {
         userCar.setUser(user);
       }
     }
+    //Delete other cars
+    List<UserCar> carsToDelete = new LinkedList<>();
+    for (UserCar userCarOld : userFromToken.getUserCars()) {
+      if (!user.getUserCars().contains(userCarOld)) {
+        carsToDelete.add(userCarOld);
+      }
+    }
+    if (carsToDelete.size() > 0) {
+      userCarsRepository.deleteAll(carsToDelete);
+    }
     user = usersRepository.save(user);
     user = projection(user, "", "car", "token", "point");
     return userFacade.mapEntityToResponse(user);
