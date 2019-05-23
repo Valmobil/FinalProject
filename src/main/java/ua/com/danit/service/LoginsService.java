@@ -14,6 +14,7 @@ import ua.com.danit.repository.PswdResetTokenRepository;
 import ua.com.danit.repository.UsersRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class LoginsService {
@@ -51,6 +52,7 @@ public class LoginsService {
     }
     User user = pswdResetToken.getUser();
     usersService.changePassword(userLogin.getUserPasswordNew(), user);
+    deletePswdResetTokensByUser(user);
     usersRepository.save(user);
     return "Ok. Password was successfully changed!";
   }
@@ -103,14 +105,13 @@ public class LoginsService {
       knownWay = true;
     }
     if (knownWay) {
-      user = usersService.projection(user, "car", "token", "point");
+      user = usersService.projection(user, endPointMode, "car", "token", "point");
       user = usersRepository.save(user);
       return userFacade.mapEntityToResponse(user);
     } else {
       throw new KnownException("Error! Unknown request parameters!");
     }
   }
-
 
   private LoginMode defineMode(UserLogin userLogin, String endPointMode) {
     LoginMode loginMode = new LoginMode();
@@ -144,6 +145,30 @@ public class LoginsService {
       loginMode.setIsEmail(false);
     }
     return loginMode;
+  }
+
+  public String receiveMailConfirmation(String token) {
+    PswdResetToken pswdResetToken = pswdResetTokenRepository.findFirstByToken(token);
+    if (pswdResetToken == null) {
+      throw new KnownException("Error! Please send e-Mail confirmation letter again using Confirm Button "
+          + "from user profile screen!");
+    }
+    if (pswdResetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+      throw new KnownException("Error! Your e-Mail confirmation link is expired! Please send e-Mail confirmation "
+          + "letter again using Confirm Button from user profile screen!");
+    }
+    User user = pswdResetToken.getUser();
+    //Mail is confirmed
+    user.setUserIsConfirmedMail(2);
+    user = usersService.projection(user, "SignIn","token");
+    usersRepository.save(user);
+    deletePswdResetTokensByUser(user);
+    return "Ok. Mail was successfully confirmed! Please sign out and login again!";
+  }
+
+  void deletePswdResetTokensByUser(User user) {
+    List<PswdResetToken> pswdResetTokens = pswdResetTokenRepository.findByUser(user);
+    pswdResetTokenRepository.deleteAll(pswdResetTokens);
   }
 
   void convertUserLoginBlankToNull(UserLogin userLogin) {

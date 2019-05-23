@@ -74,8 +74,7 @@ public class TripsService {
   public List<TripResponse> getTripListService(User user) {
     List<Trip> trips = new LinkedList<>();
     //Get list of trips except deleted ones
-    Long tripId = 1L;
-    for (Trip trip : tripsRepository.findOwnTripAndOtherTrips(tripId)) {
+    for (Trip trip : tripsRepository.findByUser(user)) {
       if (trip.getTripIsDeleted() == 0) {
         trips.add(trip);
       }
