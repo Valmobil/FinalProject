@@ -140,26 +140,19 @@ class Smart extends Component {
     }
 
     setRoute = (userPoint) => {
-        const { userPointLatitude, userPointLongitude } = userPoint
+        console.log('userPoint = ', userPoint)
+        const { userPointLatitude, userPointLongitude, userPointAddress } = userPoint
         this.props.setTargetCoordinates({
             latitude: userPointLatitude,
             longitude: userPointLongitude,
         })
 
         const tripPoint = {
-            tripPointName: 'manual',
+            tripPointName: userPointAddress,
             tripPointLatitude: userPointLatitude,
             tripPointLongitude: userPointLongitude,
             tripPointSequence: this.state.trip.length,
         }
-
-
-        this.getIntermediate()
-            .then(res => {
-                let points = this.props.trips.intermediatePoints
-                points.push(tripPoint)
-                this.setState({trip: [...this.state.trip, ...points]}, () => console.log('Trip = ', this.state.trip))
-            })
 
         this.getIntermediate()
             .then(res => {
@@ -188,7 +181,7 @@ class Smart extends Component {
             this.setState({creatingTrip: true, id: userPoint.userPointId})
 
             const tripPoint = {
-                tripPointName: 'manual',
+                tripPointName: 'My Location',
                 tripPointLatitude: this.props.trips.myCoordinates.latitude,
                 tripPointLongitude: this.props.trips.myCoordinates.longitude,
                 tripPointSequence: 0,
@@ -214,10 +207,6 @@ class Smart extends Component {
         this.setState({creatingTrip: false, trip: [], id: null})
     }
 
-    signOut = (auth) => {
-        if (auth) auth.signOut()
-        this.props.logOut()
-    }
 
     handleEdit = (item) => {
         this.setState({editing: item.userPointId, name: item.userPointName, value: item.userPointAddress, adding: false})
@@ -319,17 +308,12 @@ class Smart extends Component {
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
-// console.log('targetCoordinates = ', this.props.trips.targetCoordinates)
-// console.log('myCoordinates = ', this.props.trips.myCoordinates)
-// console.log('Render: this.props.trips.intermediatePoints = ', this.props.users.intermediatePoints)
-
-
 
         let placesList = null
         if (adding){
             placesList = (
                 <div style={{width: '100%', marginTop: 70}}>
-                    <span>add new smart route</span>
+                    <span>add new favorite point</span>
                     <LiveSearch
                         name={this.state.name}
                         handleInput={this.handleInput}
@@ -348,7 +332,7 @@ class Smart extends Component {
         } else if (editing) {
             placesList = (
                 <div style={{width: '100%', marginTop: 70}}>
-                    <span>edit this smart route</span>
+                    <span>edit this favorite point</span>
                     <LiveSearch
                         name={name}
                         handleInput={this.handleInput}
@@ -443,19 +427,13 @@ class Smart extends Component {
         } else if ( !adding ){
             dependentButton = (
               <Slide direction="up" in={!adDisable} mountOnEnter unmountOnExit>
-                <Button onClick={this.addNewPoint}
-                        color="primary"
-                        disabled={adDisable}
-                        classes={{
-                            root: classes.typeButtons,
-                            label: classes.label
-                        }}
-                        style={{
-                            marginTop: 30
-                        }}
-                >
-                    New quick trip
-                </Button>
+                  <button
+                      className='type-button add-smart-button'
+                      onClick={this.addNewPoint}
+                      disabled={adDisable}
+                  >
+                      New quick trip
+                  </button>
               </Slide>
             )
         }
@@ -489,44 +467,17 @@ class Smart extends Component {
                         </RadioGroup>
                         <Slide direction="down" in={true} mountOnEnter unmountOnExit>
                         <div className="type-button-container">
-
-
-                            <div className='type-button'
+                            <button className='type-button'
                                  onClick={this.newTripRedirect}
                             >
                                 Plan new trip
-                            </div>
+                            </button>
 
-                            <div className='type-button'
+                            <button className='type-button'
                                  onClick={this.tripsHistoryRedirect}
                             >
                                 Trip history
-                            </div>
-
-
-
-
-
-                            {/*<Slide direction="down" in={true} mountOnEnter unmountOnExit>*/}
-                            {/*<Button onClick={this.newTripRedirect}*/}
-                                    {/*classes={{*/}
-                                        {/*root: classes.typeButtons,*/}
-                                        {/*label: classes.label*/}
-                                    {/*}}*/}
-                            {/*>*/}
-                                {/*Plan new trip*/}
-                            {/*</Button>*/}
-                            {/*</Slide>*/}
-                            {/*<Slide direction="down" in={true} mountOnEnter unmountOnExit>*/}
-                            {/*<Button onClick ={this.tripsHistoryRedirect}*/}
-                                    {/*classes={{*/}
-                                        {/*root: classes.typeButtons,*/}
-                                        {/*label: classes.label,*/}
-                                    {/*}}*/}
-                            {/*>*/}
-                                {/*Trip history*/}
-                            {/*</Button>*/}
-                            {/*</Slide>*/}
+                            </button>
                         </div>
                             </Slide>
                         {!creatingTrip &&

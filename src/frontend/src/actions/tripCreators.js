@@ -1,13 +1,14 @@
 import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS,
     SET_TRIP, SET_MY_COORDS, SET_TARGET_COORDS, SET_SEARCHED_LOCATION, SET_INTERMEDIATE_POINTS,
   SET_TRIP_DATE_TIME } from './trips'
+import { errorPopupShow } from './userCreators'
 import {callApi} from "../utils/utils";
 
 
 export const setTrip = (trip) => dispatch => {
     callApi('put', '/api/trips', trip)
         .then(res => console.log('setTrip: ', res))
-        .catch(err => console.log(err))
+        .catch(err => errorPopupShow())
     dispatch({type: SET_TRIP, trip})
 
 }
