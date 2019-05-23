@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './Car.css'
-import {connect} from "react-redux";
-// import { deleteCar } from '../../actions/userCreators'
+
+
 
 class Car extends Component{
     state ={
@@ -38,22 +38,10 @@ class Car extends Component{
             </div>
         )
     }
-
-}
-
-const mapStateToProps = (state) => {
-    return {
-        users: state.users,
-    }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        // deleteCar: (carList, car) => dispatch(deleteCar(carList, car)),
-    }
 }
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Car)
+
+export default Car
 

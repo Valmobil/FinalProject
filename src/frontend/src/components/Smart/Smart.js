@@ -254,7 +254,6 @@ class Smart extends Component {
             }
         })
         this.props.setUserPoints(newUserPoints)
-        this.props.setTargetCoordinates({})
         this.rejectEdit()
     }
 
@@ -300,22 +299,9 @@ class Smart extends Component {
         this.props.history.push('/newtrip')
     }
 
-    // getCurrentPosition = (options) => {
-    //     return new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, options))
-    // }
-    //
-    // getMyLocation = async(options) => {
-    //     try{
-    //         const position = await this.getCurrentPosition(options)
-    //         const { latitude, longitude } = position.coords
-    //         this.props.setMyCoordinates({ latitude, longitude })
-    //     } catch (error) {
-    //         console.log('Error fetching location: ',error)
-    //     }
-    // }
 
     componentDidMount () {
-        if (this.props.users.userCars.length === 1) this.setState({car: this.props.users.userCars[0]})
+        if (this.props.users.user.userCars.length === 1) this.setState({car: this.props.users.user.userCars[0]})
         const options = {
             enableHighAccuracy: true
         };
@@ -328,7 +314,7 @@ class Smart extends Component {
         // console.log(this.props.users)
         const { classes } = this.props
         const { role, car, name, value, editing, adding, creatingTrip } = this.state
-        const { userCars, userPoints } = this.props.users
+        const { user: { userCars }, userPoints } = this.props.users
         let currentCar = userCars.length === 1 ? userCars[0] : car
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
