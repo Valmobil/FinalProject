@@ -1,0 +1,15 @@
+.single-car-line{
+    width: 100%;
+    height: 40px;
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid #ccc;
+
+}
+.single-car{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+}

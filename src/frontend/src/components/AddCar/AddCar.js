@@ -178,7 +178,7 @@ class AddCar extends Component {
     render () {
         const { classes } = this.props
         const { editing, adding} = this.state
-        const { carName, carColour} = this.state.newCar
+        const { carName, carColour} = this.state.newCargi
         const { cars  } = this.props.users;
         console.log('CARS', cars)
 

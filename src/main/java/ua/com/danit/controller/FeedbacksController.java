@@ -19,14 +19,12 @@ import java.util.List;
 @RequestMapping("api/feedbacks")
 public class FeedbacksController {
   private FeedbacksService feedbacksService;
-  private UsersService usersService;
   private UserTokensService userTokensService;
 
   @Autowired
   FeedbacksController(FeedbacksService feedbacksService, UsersService usersService,
                       UserTokensService userTokensService) {
     this.feedbacksService = feedbacksService;
-    this.usersService = usersService;
     this.userTokensService = userTokensService;
   }
 

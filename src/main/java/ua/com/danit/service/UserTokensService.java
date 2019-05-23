@@ -28,13 +28,13 @@ public class UserTokensService {
       userTokens = userTokensRepository.findByUserTokenAccess(accessToken);
     }
     if (userTokens.size() != 1) {
-      return null;
+      throw new KnownException("Error! User not found for mentioned Access Token!");
     } else {
       if (userTokens.get(0).getUserTokenAccessTo().isAfter(LocalDateTime.now())) {
         return userTokens.get(0).getUser();
       }
+      throw new KnownException("Error! Access Token is not valid!");
     }
-    return null;
   }
 
 
