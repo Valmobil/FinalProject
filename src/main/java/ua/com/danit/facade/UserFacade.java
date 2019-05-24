@@ -11,15 +11,12 @@ import ua.com.danit.service.ImageDbProviderImpl;
 public class UserFacade extends AbstractDtoFacade<User, UserResponseTrip, UserResponse> {
   private UserPointFacade userPointFacade;
   private UserCarFacade userCarFacade;
-  private ImageDbProviderImpl imageDbProviderImpl;
 
   @Autowired
   public UserFacade(UserPointFacade userPointFacade,
-                    UserCarFacade userCarFacade,
-                    ImageDbProviderImpl imageDbProviderImpl) {
+                    UserCarFacade userCarFacade) {
     this.userPointFacade = userPointFacade;
     this.userCarFacade = userCarFacade;
-    this.imageDbProviderImpl = imageDbProviderImpl;
   }
 
   public UserResponse mapEntityToResponse(User user) {
@@ -28,7 +25,7 @@ public class UserFacade extends AbstractDtoFacade<User, UserResponseTrip, UserRe
     userResponse.setUserTokenAccess(user.getUserTokens().get(0).getUserTokenAccess());
     userResponse.setUserPoints(userPointFacade.mapEntityListToResponseDtoList(user.getUserPoints()));
     userResponse.setUserCars(userCarFacade.mapEntityListToResponseDtoList(user.getUserCars()));
-    userResponse.setUserPhoto(imageDbProviderImpl.selectImageSource(user.getUserPhoto()));
+    userResponse.setUserPhoto(user.getUserPhoto());
     return userResponse;
   }
 }

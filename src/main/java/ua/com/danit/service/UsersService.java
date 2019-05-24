@@ -11,7 +11,7 @@ import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
 import ua.com.danit.entity.UserToken;
 import ua.com.danit.dto.UserLogin;
-import ua.com.danit.error.KnownException;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.facade.UserFacade;
 import ua.com.danit.facade.UserTokenFacade;
 import ua.com.danit.repository.PointsRepository;
@@ -20,7 +20,6 @@ import ua.com.danit.repository.UserPointsRepository;
 import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -69,7 +68,7 @@ public class UsersService {
 
   private User collectUserPointsAndFillInEmptyOnes(User user) {
     if (user == null) {
-      throw new KnownException("Error! Empty user entity!");
+      throw new ApplicationException("Error! Empty user entity!");
     }
     List<UserPoint> userPoints;
     if (user.getUserId() == null) {
@@ -122,11 +121,11 @@ public class UsersService {
 
   void checkIfPasswordIsCorrect(UserLogin userLogin, User user) {
     if (user.getUserPassword() == null) {
-      throw new KnownException("Error: Your account was found! But... in order to set new password please user Forgot"
+      throw new ApplicationException("Error: Your account was found! But... in order to set new password please user Forgot"
           + " Password link!");
     }
     if (!user.getUserPassword().equals(passwordEncrypt(userLogin.getUserPassword()))) {
-      throw new KnownException("Error: incorrect login or password!");
+      throw new ApplicationException("Error: incorrect login or password!");
     }
   }
 
@@ -136,7 +135,7 @@ public class UsersService {
 
     Matcher matcher = validEmailAddressRegex.matcher(userMail);
     if (!matcher.find()) {
-      throw new KnownException("Error: Incorrect eMail, please check!");
+      throw new ApplicationException("Error: Incorrect eMail, please check!");
     }
   }
 
@@ -157,7 +156,7 @@ public class UsersService {
         Pattern.compile("\\+[0-9]+$");
     Matcher matcher = validEmailAddressRegex.matcher(phone);
     if (!matcher.find()) {
-      throw new KnownException("Error: Incorrect phone number!");
+      throw new ApplicationException("Error: Incorrect phone number!");
     }
     return phone;
   }
@@ -169,7 +168,7 @@ public class UsersService {
 
   public UserResponse putUserProfile(User user, User userFromToken) {
     if (userFromToken == null) {
-      throw new KnownException("Error: Access token not found!");
+      throw new ApplicationException("Error: Access token not found!");
     }
     //Update some fields
     user.setUserId(userFromToken.getUserId());
@@ -200,16 +199,16 @@ public class UsersService {
       if ("LoginByExternalToken".equals(mode.getMode()) || "SignUp".equals(mode.getEndPoint())) {
         user.setUserMail(userLogin);
       } else {
-        throw new KnownException("Error: User with eMail " + userLogin + " has not been found!");
+        throw new ApplicationException("Error: User with eMail " + userLogin + " has not been found!");
       }
     }
     if (users.size() > 1) {
-      throw new KnownException("Error: Several Users with eMail " + userLogin + " have been found! Please "
+      throw new ApplicationException("Error: Several Users with eMail " + userLogin + " have been found! Please "
           + "contact support team!");
     }
     if (users.size() == 1) {
       if ("SignUp".equals(mode.getEndPoint())) {
-        throw new KnownException("Error: User with eMail " + userLogin + " already registered in database! Please Login!");
+        throw new ApplicationException("Error: User with eMail " + userLogin + " already registered in database! Please Login!");
       } else {
         user = users.get(0);
       }
@@ -223,16 +222,16 @@ public class UsersService {
       if ("SignUp".equals(mode.getEndPoint())) {
         user.setUserPhone(userLogin);
       } else {
-        throw new KnownException("Error: User with Phone " + userLogin + " has not been found!");
+        throw new ApplicationException("Error: User with Phone " + userLogin + " has not been found!");
       }
     }
     if (users.size() > 1) {
-      throw new KnownException("Error: Several Users with Phone " + userLogin + " have been found! Please contact"
+      throw new ApplicationException("Error: Several Users with Phone " + userLogin + " have been found! Please contact"
           + " support team!");
     }
     if (users.size() == 1) {
       if ("SignUp".equals(mode.getEndPoint())) {
-        throw new KnownException("Error: Several Users with Phone " + userLogin + " already registered in database!"
+        throw new ApplicationException("Error: Several Users with Phone " + userLogin + " already registered in database!"
             + " Please login!");
       } else {
         user = users.get(0);
@@ -255,7 +254,7 @@ public class UsersService {
       user.setUserTokens(new LinkedList<>());
     }
     if (user.getUserTokens().size() > 1) {
-      throw new KnownException("Error: User has Several Users Tokens by system mistake! Please contact support team");
+      throw new ApplicationException("Error: User has Several Users Tokens by system mistake! Please contact support team");
     }
     if (user.getUserTokens().size() == 0) {
       user.getUserTokens().add(new UserToken());
