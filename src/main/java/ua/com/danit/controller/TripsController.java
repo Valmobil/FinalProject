@@ -35,7 +35,8 @@ public class TripsController {
 
   @PutMapping
   public ResponseEntity<TripResponseId> saveTripToDb(@RequestBody Trip trip, @RequestHeader String authorization) {
-    return new ResponseEntity<>(tripsService.putTripToDb(trip, userTokensService.findUserByAccessToken(authorization)), HttpStatus.OK);
+    return new ResponseEntity<>(tripsService.putTripToDb(trip, userTokensService.findUserByAccessToken(authorization)),
+        HttpStatus.OK);
   }
 
   @PostMapping("list")

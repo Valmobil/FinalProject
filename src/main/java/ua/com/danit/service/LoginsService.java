@@ -44,7 +44,8 @@ public class LoginsService {
     }
     PswdResetToken pswdResetToken = pswdResetTokenRepository.findFirstByToken(userLogin.getUserToken());
     if (pswdResetToken == null) {
-      throw new ApplicationException("Error! Please send new Restore Password letter using Forgot Password link on login page!");
+      throw new ApplicationException("Error! Please send new Restore Password letter using Forgot Password link on "
+          + "login page!");
     }
     if (pswdResetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
       throw new ApplicationException("Error! Your restore password link is expired! Please send new Restore Password letter"
@@ -160,7 +161,7 @@ public class LoginsService {
     User user = pswdResetToken.getUser();
     //Mail is confirmed
     user.setUserIsConfirmedMail(2);
-    user = usersService.projection(user, "SignIn","token");
+    user = usersService.projection(user, "SignIn", "token");
     usersRepository.save(user);
     deletePswdResetTokensByUser(user);
     return "Ok. Mail was successfully confirmed! Please sign out and login again!";

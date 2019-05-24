@@ -211,7 +211,8 @@ public class UsersService {
     }
     if (users.size() == 1) {
       if ("SignUp".equals(mode.getEndPoint())) {
-        throw new ApplicationException("Error: User with eMail " + userLogin + " already registered in database! Please Login!");
+        throw new ApplicationException("Error: User with eMail " + userLogin + " already registered in database! "
+            + "Please Login!");
       } else {
         user = users.get(0);
       }

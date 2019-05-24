@@ -32,7 +32,7 @@ public class ImageService {
   private static final String linkToLocalPicture = "/api/images/?id=";
 
   public String saveImageToDb(byte[] file, User user, String host) {
-//    String imageName = imageProviderAwsS3Service.putImage(file, user, "");
+    //    String imageName = imageProviderAwsS3Service.putImage(file, user, "");
     String imageName = imageProviderLocalDb.putImage(file, user, "");
     return addServerToImageName(imageName, host);
   }
