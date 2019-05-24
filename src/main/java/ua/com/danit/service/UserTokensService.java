@@ -1,15 +1,12 @@
 package ua.com.danit.service;
 
-import com.amazonaws.services.dynamodbv2.xspec.L;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.UserTokenRequest;
 import ua.com.danit.dto.UserTokenResponse;
 import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserToken;
-import ua.com.danit.error.KnownException;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.facade.UserTokenFacade;
 import ua.com.danit.repository.UserTokensRepository;
 
@@ -40,12 +37,12 @@ public class UserTokensService {
       userTokens = userTokensRepository.findByUserTokenAccess(accessToken);
     }
     if (userTokens.size() != 1) {
-      throw new KnownException("Error! User not found for mentioned Access Token!");
+      throw new ApplicationException("Error! User not found for mentioned Access Token!");
     } else {
       if (userTokens.get(0).getUserTokenAccessTo().isAfter(LocalDateTime.now())) {
         return userTokens.get(0).getUser();
       }
-      throw new KnownException("Error! Access Token is not valid!");
+      throw new ApplicationException("Error! Access Token is not valid!");
     }
   }
 
@@ -58,17 +55,17 @@ public class UserTokensService {
 
   public UserTokenResponse requestNewTokenService(UserTokenRequest userTokenRequest) {
     if (userTokenRequest == null) {
-      throw new KnownException("Error! Empty JSON input!");
+      throw new ApplicationException("Error! Empty JSON input!");
     }
 
     UserToken userTokenDb = findByUserTokenRefresh(userTokenRequest.getUserTokenRefresh());
     if (userTokenDb == null) {
-      throw new KnownException("Error! Incorrect Refresh Token!");
+      throw new ApplicationException("Error! Incorrect Refresh Token!");
     }
     if (userTokenDb.getUserTokenRefreshTo().isBefore(LocalDateTime.now())) {
       //if Refresh token is expired
       userTokensRepository.delete(userTokenDb);
-      throw new KnownException("Error! Refresh Token has expired! Please login again!");
+      throw new ApplicationException("Error! Refresh Token has expired! Please login again!");
     } else {
       //If Refresh token are valid
       UserTokenResponse userTokenResponse = new UserTokenResponse();
@@ -106,6 +103,10 @@ public class UserTokensService {
 
   void deleteAllByUser(User user) {
     userTokensRepository.deleteAllByUser(user);
+  }
+
+  public List<UserToken> findByUser(User user) {
+    return userTokensRepository.findByUser(user);
   }
 }
 

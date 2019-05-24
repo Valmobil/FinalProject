@@ -13,7 +13,7 @@ import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.TripPassenger;
 import ua.com.danit.entity.TripPoint;
 import ua.com.danit.entity.User;
-import ua.com.danit.error.KnownException;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.facade.TripFacade;
 import ua.com.danit.facade.TripPassengerFacade;
 import ua.com.danit.repository.TripPassengersRepository;
@@ -44,7 +44,7 @@ public class TripsService {
     return tripsRepository.getOne(tripId);
   }
 
-  public TripResponseId saveTripToDb(Trip trip) {
+  public TripResponseId putTripToDb(Trip trip, User user) {
     //Set TripId to TripPoints
     for (TripPoint point : trip.getTripPoint()) {
       point.setTrip(trip);
@@ -55,9 +55,10 @@ public class TripsService {
         trip.setUserCar(null);
       }
     }
+    trip.setUser(user);
     trip = tripsRepository.save(trip);
     if (trip == null) {
-      throw new KnownException("Error! Trip have not been saved!");
+      throw new ApplicationException("Error! Trip have not been saved!");
     }
     return new TripResponseId(trip.getTripId());
   }
@@ -88,7 +89,7 @@ public class TripsService {
       trip.setTripIsDeleted(1);
       tripsRepository.save(trip);
     } else {
-      throw new KnownException("Error! We try to delete trip of other user! The operation is rejected!");
+      throw new ApplicationException("Error! We try to delete trip of other user! The operation is rejected!");
     }
     return "Ok";
   }

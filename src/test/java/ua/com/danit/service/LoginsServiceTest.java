@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.com.danit.dto.UserLogin;
 import ua.com.danit.dto.UserResponse;
-import ua.com.danit.error.KnownException;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.repository.UsersRepository;
 
 import java.util.UUID;
@@ -38,7 +38,7 @@ public class LoginsServiceTest {
     boolean isThrow = false;
     try {
       UserResponse userResponse = loginsService.checkLoginSignInSignUp(userLogin, "SignIn");
-    } catch (KnownException e) {
+    } catch (ApplicationException e) {
       isThrow = true;
     }
     assertThat(isThrow);
@@ -53,7 +53,7 @@ public class LoginsServiceTest {
     boolean isThrow = false;
     try {
       UserResponse userResponse = loginsService.checkLoginSignInSignUp(userLogin, "SignUp");
-    } catch (KnownException e) {
+    } catch (ApplicationException e) {
       isThrow = true;
     }
     assertThat(isThrow);
@@ -74,7 +74,7 @@ public class LoginsServiceTest {
     boolean isThrow = false;
     try {
       UserResponse userResponse = loginsService.checkLoginSignInSignUp(userLogin, "SignUp");
-    } catch (KnownException e) {
+    } catch (ApplicationException e) {
       isThrow = true;
     }
     assertThat(isThrow);

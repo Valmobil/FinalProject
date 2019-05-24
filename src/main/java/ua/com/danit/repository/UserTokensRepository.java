@@ -20,4 +20,6 @@ public interface UserTokensRepository extends JpaRepository<UserToken, Long> {
     deleteInBatch(userTokens);
   }
 
+
+  void getOneByUser(User user);
 }

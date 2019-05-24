@@ -3,8 +3,11 @@ package ua.com.danit.config;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.PropertiesFileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,43 +37,16 @@ public class ApplicationBeans {
 
 
   //AWS S3 config
-  //  @Value("${aws.s3.credentials.path}")
-  //  private String s3CredentialsPath;
-  //  @Value("${aws.s3.credentials.accessKey}")
-  //  private String awsKeyId;
-  //  @Value("${aws.s3.credentials.secretKey}")
-  //  private String awsKeySecret;
-  //  @Value("${aws.s3.credentials.region}")
-  //  String awsRegion;
-  //  @Value("${aws.s3.credentials.bucket}")
-  //  private String awsS3Bucket;
-  //
-  //
-  //  @Bean(name = "awsKeyId")
-  //  public String getAwsKeyId() {
-  //    return awsKeyId;
-  //  }
-  //
-  //  @Bean(name = "awsKeySecret")
-  //  public String getAwsKeySecret() {
-  //    return awsKeySecret;
-  //  }
-  //
-  //  @Bean(name = "awsRegion")
-  //  public Region getAwsPollyRegion() {
-  //    return Region.getRegion(Regions.fromName(awsRegion));
-  //  }
-  //
-  //  @Bean(name = "awsCredentialsProvider")
-  //  public AWSCredentialsProvider getAwsCredentials() {
-  //    BasicAWSCredentials awsCredentials = new BasicAWSCredentials(this.awsKeyId, this.awsKeySecret);
-  //    return new AWSStaticCredentialsProvider(awsCredentials);
-  //  }
-  //
-  //  @Bean(name = "awsS3Bucket")
-  //  public String getAws3Bucket() {
-  //    return awsS3Bucket;
-  //  }
+  @Value("${aws.s3.credentials.path}")
+  private String s3CredentialsPath;
 
+  @Bean
+  public AmazonS3Client amazonS3() {
+    return (AmazonS3Client) AmazonS3ClientBuilder
+        .standard()
+        .withRegion(Regions.EU_CENTRAL_1)
+        .withCredentials(new PropertiesFileCredentialsProvider(s3CredentialsPath))
+        .build();
+  }
 
 }
