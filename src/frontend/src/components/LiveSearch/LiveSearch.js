@@ -110,8 +110,8 @@ class LiveSearch extends Component {
 
         let suggestionsList = []
 
-        if (inputLength >= 4){
-            // let response = await callApi('post', '/api/points/', data)
+        if (inputLength > 0){
+
             let response = await singleCallApi(this.props.method, this.props.url, this.props.data)
             suggestionsList = response.data
         }
@@ -203,6 +203,7 @@ class LiveSearch extends Component {
     componentDidUpdate(prevProps){
         if (this.props.searchedLocation !== prevProps.searchedLocation){
             this.setState({value: this.props.searchedLocation})
+            this.props.setValue(this.props.searchedLocation)
         }
     }
 
