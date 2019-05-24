@@ -8,27 +8,40 @@ import {
 } from "@material-ui/pickers";
 import { connect } from 'react-redux';
 import { setTripDateTime } from '../../../actions/tripCreators';
+import './ForDateTimePickers.css'
+
+const theme = styles =>{
+
+}
 
 class ForDateTimePickers extends Component {
 
   handleDateTimeChange = newDateTime => {
-      this.props.setTripDateTime(newDateTime)
+      this.props.setTripDateTime(newDateTime);
   }
 
   render(){
-    const dateTime = this.props.tripDateTime;
+    const dateTime = this.props.trips.newTrip.tripDateTime;
     return (
       <div>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <DatePicker
-            style ={{width:'25%', paddingRight: 20}}
+            className = 'date-picker'
+            style ={{
+              width:'25%',
+              paddingRight: 20
+            }}
             autoFocus={true}
             value={dateTime}
+            minDate={dateTime}
             onChange={this.handleDateTimeChange}
             autoOk={true}
           />
           <TimePicker
-            style= {{width:'18%',justifyContent:'center' ,paddingLeft: 20}}
+            style= {{
+              width:'18%',
+              paddingLeft: 20,
+            }}
             value={dateTime}
             ampm={false}
             minutesStep = {5}
@@ -43,7 +56,7 @@ class ForDateTimePickers extends Component {
 
 const mapStateToProps = state => {
   return{
-    tripDateTime: state.trips.tripDateTime,
+    trips:state.trips
   }
 }
 

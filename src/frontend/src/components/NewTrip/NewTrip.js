@@ -43,38 +43,9 @@ const styles = theme => ({
 class NewTrip extends Component {
 
      state = {
-       car: '',
-       tripDateTime: '',
-       tripPoint: [],
        valueFrom:'',
        valueTo:''
      }
-
-    editClose = (pointId) => {
-      let id = null
-      if (pointId) {
-        id = pointId
-      } else {
-        id = this.props.users.userPoints.length > 0 ?
-          this.props.users.userPoints.find(item => item.userPointName === '<no point>').userPointId : 1
-      }
-      let newUserPoints = this.props.users.userPoints.map(item => {
-        if (item.userPointId === id) {
-          // let pointAddress = this.props.users.searchedLocation || this.state.value
-          return {...item,
-            // userPointName: this.state.name,
-            // userPointAddress: pointAddress,
-            userPointLatitude: this.props.users.targetCoordinates.latitude,
-            userPointLongitude: this.props.users.targetCoordinates.longitude,
-            pointNameEn: this.state.name,
-          }
-        } else {
-          return item
-        }
-      })
-      this.props.setUserPoints(newUserPoints)
-      this.rejectEdit()
-    }
 
     setValueFrom = (valueFrom) => {
       this.setState({valueFrom})
@@ -102,54 +73,58 @@ class NewTrip extends Component {
 
     render() {
       const { classes } = this.props;
+      console.log('state new trip',this.state);
       return (
             <form className='trip-container' onSubmit={this.submitTrip}>
-              <h1>new trip</h1>
-              <ForDateTimePickers/>
+                <div className='new-trip' style={{marginTop: 70}}>
 
-              <AutoSuggestions
-                  label = 'Search from'
-                  editClose={() => this.editClose(null)}
-                  setCoordinates={this.props.setTargetCoordinates}
-                  setValue ={this.setValueFrom}
-                  method='post'
-                  url='/api/points'
-                  data={{ pointSearchText: this.state.valueFrom }}
-                  value={this.state.valueFrom}
-                  rejectEdit={this.rejectEdit}
-                />
-                <AutoSuggestions
-                  label = 'Search to'
-                  editClose={() => this.editClose(null)}
-                  setCoordinates={this.props.setTargetCoordinates}
-                  setValue ={this.setValueTo}
-                  method='post'
-                  url='/api/points'
-                  data={{ pointSearchText: this.state.valueTo }}
-                  value={this.state.valueTo}
-                  rejectEdit={this.rejectEdit}
-                />
-                <Map />
-                <div className="trip-btn-container">
-                    <Button
-                         onClick={this.editClose}
-                         classes={{
-                             root: classes.acceptButton,
-                             label: classes.label
-                         }}
-                         disabled = {this.state.valueFrom.length === 0 || this.state.valueTo.length === 0}
-                    >
-                        Submit trip
-                    </Button>
-                    <Button
-                        onClick = {this.rejectEdit}
-                        classes={{
-                            root: classes.rejectButton,
-                            label: classes.label
-                        }}
-                    >
-                        Reject trip
-                    </Button>
+                  <span>want create new trip?</span>
+                  <ForDateTimePickers/>
+
+                  <AutoSuggestions
+                      label = 'Search from'
+                      editClose={() => this.editClose(null)}
+                      setCoordinates={this.props.setTargetCoordinates}
+                      setValue ={this.setValueFrom}
+                      method='post'
+                      url='/api/points'
+                      data={{ pointSearchText: this.state.valueFrom }}
+                      value={this.state.valueFrom}
+                      rejectEdit={this.rejectEdit}
+                    />
+                    <AutoSuggestions
+                      label = 'Search to'
+                      editClose={() => this.editClose(null)}
+                      setCoordinates={this.props.setTargetCoordinates}
+                      setValue ={this.setValueTo}
+                      method='post'
+                      url='/api/points'
+                      data={{ pointSearchText: this.state.valueTo }}
+                      value={this.state.valueTo}
+                      rejectEdit={this.rejectEdit}
+                    />
+                    <Map />
+                    <div className="trip-btn-container">
+                        <Button
+                             onClick={this.editClose}
+                             classes={{
+                                 root: classes.acceptButton,
+                                 label: classes.label
+                             }}
+                             disabled = {this.state.valueFrom.length === 0 || this.state.valueTo.length === 0}
+                        >
+                            Submit trip
+                        </Button>
+                        <Button
+                            onClick = {this.rejectEdit}
+                            classes={{
+                                root: classes.rejectButton,
+                                label: classes.label
+                            }}
+                        >
+                            Reject trip
+                        </Button>
+                    </div>
                 </div>
             </form>
         );

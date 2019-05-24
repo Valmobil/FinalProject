@@ -16,11 +16,11 @@ const initialState = {
     mainTripPointNames: [],
     userMainTripParams: null,
     currentMainTripParams: null,
-    tripDateTime: Date(),
+    // tripDateTime: Date(),
     liveSearchShow: true,
     newTrip:{
         car:'',
-        tripDateTime:'',
+        tripDateTime:Date(),
         tripPoint:[],
     },
 }
@@ -46,9 +46,9 @@ function trips (state = initialState, action) {
         case SET_CURRENT_TRIP_PARAMS:
             return {...state, currentMainTripParams: action.payload}
         case SET_TRIP_DATE_TIME:
-            return {...state, tripDateTime: action.payload}
-        case ADD_TRIP_DATE:
-            return {...state, newTrip: {...state.newTrip, tripDate:action.payload}}
+            return {...state, newTrip: {...state.newTrip, tripDateTime:action.payload}}
+        // case ADD_TRIP_DATE:
+        //     return {...state, newTrip: {...state.newTrip, tripDate:action.payload}}
         case ADD_NEW_TRIP:
             return{...state, newTrip: action.payload}
         case LIVE_SEARCH_SHOW:
