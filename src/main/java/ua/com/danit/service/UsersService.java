@@ -109,7 +109,10 @@ public class UsersService {
   private void updateUserTokenInUserEntity(User user) {
     UserTokenResponse userTokenResponse = userTokensService.generateInitialTokinSet();
     if (user.getUserTokens() == null) {
-      user.setUserTokens(new LinkedList<>());
+      user.setUserTokens(userTokensService.findByUser(user));
+      if (user.getUserTokens() == null) {
+        user.setUserTokens(new LinkedList<>());
+      }
     }
     if (user.getUserTokens().size() == 0) {
       user.getUserTokens().add(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, new UserToken()));
@@ -188,8 +191,8 @@ public class UsersService {
     if (carsToDelete.size() > 0) {
       userCarsRepository.deleteAll(carsToDelete);
     }
-    user = usersRepository.save(user);
     user = projection(user, "", "car", "token", "point");
+    usersRepository.save(user);
     return userFacade.mapEntityToResponse(user);
   }
 

@@ -104,5 +104,9 @@ public class UserTokensService {
   void deleteAllByUser(User user) {
     userTokensRepository.deleteAllByUser(user);
   }
+
+  public List<UserToken> findByUser(User user) {
+    return userTokensRepository.findByUser(user);
+  }
 }
 

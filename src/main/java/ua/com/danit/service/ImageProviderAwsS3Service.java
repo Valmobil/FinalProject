@@ -11,7 +11,7 @@ import java.io.ByteArrayInputStream;
 @Service
 public class ImageProviderAwsS3Service extends ImageDbProviderImpl {
 
-  private static final String S3_BUCKET_NAME = "imagestoredev";
+  private static final String S3_BUCKET_NAME = "imagestoredev/users/";
   public static final String IMAGE_EXTENSION = ".png";
   private AmazonS3Client s3;
 
