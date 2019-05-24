@@ -27,13 +27,36 @@
     margin-top: 10px;
 }
 .type-button{
+    position: relative;
     width: 47%;
     height: 30px;
     padding: 0;
+    background-color: transparent;
     border: 1px solid #fff;
     border-radius: 3px;
     color: #fff;
+    font-weight: 500;
+    overflow: hidden;
 }
+.add-smart-button{
+    margin-top: 30px;
+}
+.type-button:before{
+    content: "";
+    position: absolute;
+    top: -2px;
+    height: 110%;
+    width: 20%;
+    background: linear-gradient(90deg, rgba(255,255,255,.1), rgba(255,255,255,.5));
+    transform: skewX(-15deg);
+    animation: highlight .7s ease-in forwards;
+}
+
+@keyframes highlight {
+    0% {left: -24%}
+    100% {left: 103%}
+}
+
 .dependent-button-container{
     margin-top: 30px;
 }
