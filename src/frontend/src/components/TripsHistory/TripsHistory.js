@@ -115,9 +115,6 @@ const mapDispatchToProps = (dispatch) => {
         deleteTripFromHistory: (newTripsHistory) => dispatch(deleteTripFromHistory(newTripsHistory))
     }
 }
-TripsHistory.propTypes ={
-    tripsHistory: PropTypes.array.isRequired,
-}
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TripsHistory))
 
