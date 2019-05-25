@@ -189,10 +189,11 @@ public class UsersService {
       }
     }
     if (carsToDelete.size() > 0) {
-      userCarsRepository.deleteAll(carsToDelete);
+      userCarsRepository.deleteInBatch(carsToDelete);
     }
     user = projection(user, "", "car", "token", "point");
-    usersRepository.save(user);
+    user = usersRepository.save(user);
+    //    user = projection(user, "",  "token", "point");
     return userFacade.mapEntityToResponse(user);
   }
 
