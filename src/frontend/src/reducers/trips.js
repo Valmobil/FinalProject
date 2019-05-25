@@ -16,8 +16,6 @@ const initialState = {
     mainTripPointNames: [],
     userMainTripParams: null,
     currentMainTripParams: null,
-    // tripDateTime: Date(),
-    liveSearchShow: true,
     newTrip:{
         car:'',
         tripDateTime:Date(),
