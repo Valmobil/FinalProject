@@ -26,19 +26,21 @@ class TripsHistoryForm extends Component {
         const { classes } = this.props
         return (
             <div className='trip-history'>
-                <h3>My Trips</h3>
-                <div className="trip-button">
-                    <Button
-                      onClick={this.newTripRedirect}
-                        classes={{
-                        root: classes.typeButtons,
-                        label: classes.label
-                    }}
-                    >
-                        Plan New Trip
-                    </Button>
+                <div className="trip-history-container" style={{marginTop:70}}>
+                    <span className='trip-history-header'>my trips</span>
+                    <div className="new-trip-button">
+                        <Button
+                          onClick={this.newTripRedirect}
+                            classes={{
+                            root: classes.typeButtons,
+                            label: classes.label
+                        }}
+                        >
+                            Plan New Trip
+                        </Button>
+                    </div>
+                    <TripsHistory/>
                 </div>
-                <TripsHistory/>
             </div>
         );
     }

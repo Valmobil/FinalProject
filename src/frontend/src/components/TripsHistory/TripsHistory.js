@@ -95,7 +95,7 @@ class TripsHistory extends Component {
           tripsHistoryList = 'No Trips Yet'
         }
         return (
-            <div className='trip-history-list'>
+            <div className='trip-history-block'>
                 <ul className='list-history'>
                     {this.state.fetchingTripsHistory ? 'Loading...' : tripsHistoryList }
                 </ul>
