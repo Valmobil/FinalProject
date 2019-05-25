@@ -61,9 +61,9 @@ class SmartRoute extends Component {
 
     render(){
         const { classes } = this.props
-        const { item, handleEdit, handleDelete } = this.props
+        const { item, handleEdit, handleDelete, index } = this.props
         const { editing } = this.state
-        const transitionDelay = 100*item.userPointId + 'ms'
+        const transitionDelay = 50*index + 'ms'
         return(
             <>
 
