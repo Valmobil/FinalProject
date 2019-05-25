@@ -8,13 +8,12 @@ import ua.com.danit.dto.LoginMode;
 import ua.com.danit.dto.UserLogin;
 import ua.com.danit.entity.PswdResetToken;
 import ua.com.danit.entity.User;
-import ua.com.danit.error.KnownException;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.repository.PswdResetTokenRepository;
 import ua.com.danit.repository.UsersRepository;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -41,11 +40,11 @@ public class MailSenderService {
 
   public String sendEmailWithMailConfirmation(UserLogin userLogin, String contextPath, String endPoint) {
     if (userLogin == null) {
-      throw new KnownException("Error: Please fill e-Mail cell!");
+      throw new ApplicationException("Error: Please fill e-Mail cell!");
     }
     loginsService.convertUserLoginBlankToNull(userLogin);
     if (userLogin.getUserLogin() == null) {
-      throw new KnownException("Error: Please fill e-Mail cell!");
+      throw new ApplicationException("Error: Please fill e-Mail cell!");
     }
     usersService.checkEmailFormat(userLogin.getUserLogin());
     User user = usersService.createNewEmptyUser();
@@ -117,7 +116,7 @@ public class MailSenderService {
       helper.setText(msg, true);
       return message;
     } catch (MessagingException ignored) {
-      throw new KnownException("Error! Cannot generate eMail via MimeMessage");
+      throw new ApplicationException("Error! Cannot generate eMail via MimeMessage");
     }
   }
 
