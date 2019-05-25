@@ -10,7 +10,6 @@ const initialState = {
     myCoordinates: null,
     searchedLocation: '',
     targetCoordinates: null,
-    initialLoad: true,
     intermediatePoints: [],
     mainTripParams: null,
     mainTripPointNames: [],

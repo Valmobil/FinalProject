@@ -28,6 +28,7 @@ const initialState = {
     role: 'passenger',
     isAuthenticated: false,
     auth: null,
+    initialLoad: true,
     topMenuOpen: false,
     errorPopupOpen: false,
 }
