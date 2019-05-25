@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class GenericExceptionHandler {
 
-  @ExceptionHandler({KnownException.class})
-  public ResponseEntity<String> handleKnownException(KnownException exc) {
+  @ExceptionHandler({ApplicationException.class})
+  public ResponseEntity<String> handleKnownException(ApplicationException exc) {
     // after creating controllers add known exceptions to annotation and
     // use different status code if needed
     log.warn(exc.getMessage());

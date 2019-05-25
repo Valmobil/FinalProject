@@ -3,7 +3,7 @@ package ua.com.danit.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.User;
-import ua.com.danit.error.KnownException;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.repository.ImageDbRepository;
 import ua.com.danit.repository.ImagesRepository;
 
@@ -32,6 +32,7 @@ public class ImageService {
   private static final String linkToLocalPicture = "/api/images/?id=";
 
   public String saveImageToDb(byte[] file, User user, String host) {
+    //    String imageName = imageProviderAwsS3Service.putImage(file, user, "");
     String imageName = imageProviderLocalDb.putImage(file, user, "");
     return addServerToImageName(imageName, host);
   }
@@ -43,7 +44,7 @@ public class ImageService {
 
   public byte[] getImageService(String imageId) {
     if (imageId == null || "null".equals(imageId) || "".equals(imageId)) {
-      throw new KnownException("Error! Image not found!");
+      throw new ApplicationException("Error! Image not found!");
     }
     return imageDbRepository.getOne(UUID.fromString(imageId)).getImageDbData();
   }

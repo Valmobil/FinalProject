@@ -51,7 +51,7 @@ server:
 aws:
   s3:
     credentials:
-      path: src/main/resources/credentials/aws/aws-S3-dev.csv
+      path: src/main/resources/credentials/aws/aws-S3-dev.yml
       endpointUrl: https://s3.us-east-2.amazonaws.com
       bucketName: imagestoredev
 
