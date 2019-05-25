@@ -10,10 +10,6 @@ import { connect } from 'react-redux';
 import { setTripDateTime } from '../../../actions/tripCreators';
 import './ForDateTimePickers.css'
 
-const theme = styles =>{
-
-}
-
 class ForDateTimePickers extends Component {
 
   handleDateTimeChange = newDateTime => {

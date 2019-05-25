@@ -9,7 +9,6 @@ import './NewTrip.css';
 import Map from '../Map/Map';
 import ForDateTimePickers from './ForDateTimePickers/ForDateTimePickers';
 import AutoSuggestions from '../AutoSuggestions/AutoSuggestions'
-import {callApi} from "../../utils/utils";
 
 const styles = theme => ({
     acceptButton: {

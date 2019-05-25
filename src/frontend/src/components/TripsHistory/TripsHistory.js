@@ -5,7 +5,6 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
 import { deleteTripFromHistory } from '../../actions/userCreators'
 import { callApi } from '../../utils/utils'
-import PropTypes from 'prop-types'
 import './TripsHistory.css'
 
 const styles = theme => ({
