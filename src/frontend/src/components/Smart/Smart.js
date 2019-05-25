@@ -175,6 +175,7 @@ class Smart extends Component {
 
 
     setStartRoute = (userPoint) => {
+        console.log('userPoint = ', userPoint)
         if (!userPoint.userPointLatitude || !userPoint.userPointLongitude || userPoint.userPointLatitude === 0 || userPoint.userPointLongitude === 0){
             this.handleEdit(userPoint)
         } else {
@@ -307,15 +308,13 @@ class Smart extends Component {
         let currentCar = userCars.length === 1 ? userCars[0] : car
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
-
-
         let placesList = null
         if (adding){
             placesList = (
                 <div style={{width: '100%', marginTop: 70}}>
                     <span>add new favorite point</span>
                     <LiveSearch
-                        name={this.state.name}
+                        name={name}
                         handleInput={this.handleInput}
                         editClose={() => this.editClose(null)}
                         setCoordinates={this.props.setTargetCoordinates}
@@ -424,7 +423,7 @@ class Smart extends Component {
                     </Button>
                 </div>
             )
-        } else if ( !adding ){
+        } else if ( !adding && !editing ){
             dependentButton = (
               <Slide direction="up" in={!adDisable} mountOnEnter unmountOnExit>
                   <button

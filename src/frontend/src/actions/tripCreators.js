@@ -6,6 +6,7 @@ import {callApi} from "../utils/utils";
 
 
 export const setTrip = (trip) => dispatch => {
+    console.log('setTrip: trip = ', trip)
     callApi('put', '/api/trips', trip)
         .then(res => console.log('setTrip: ', res))
         .catch(err => errorPopupShow())
@@ -31,7 +32,14 @@ export const setTargetCoordinates = (coordinates) => dispatch => {
 
 
 export const setIntermediatePoints = (points) => dispatch => {
-    dispatch({type: SET_INTERMEDIATE_POINTS, payload: points})
+    const newPoints = points.map(item => {
+        return(
+            {
+              tripPointLatitude: item.latitude,
+              tripPointLongitude: item.longitude,
+            }
+        )})
+    dispatch({type: SET_INTERMEDIATE_POINTS, payload: newPoints})
 }
 //* **********************
 
@@ -61,7 +69,7 @@ export const setMainTrips = (id) => dispatch => {
             dispatch({type: SET_MAIN_TRIPS_POINT_NAMES, payload: allRoutesArray})
             dispatch({type: SET_USER_TRIP_PARAMS, payload: parameterArray[0]})
         })
-        .catch(console.log)
+        .catch(err => dispatch(errorPopupShow()))
 }
 // * *********************
 
