@@ -1,0 +1,19 @@
+.dependent-buttons{
+    width: 45%;
+    height: 30px;
+    padding: 0;
+    background: #fff;
+    border-radius: 3px;
+    border: none;
+    outline: none;
+}
+.accept-button {
+    color: #008000;
+}
+.accept-button:disabled{
+    color: #a9a9a9;
+}
+
+.reject-button {
+    color: #FC2847;
+}
