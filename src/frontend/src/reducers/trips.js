@@ -1,6 +1,6 @@
 import { SET_INTERMEDIATE_POINTS, SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_MY_COORDS,
     SET_SEARCHED_LOCATION, SET_TARGET_COORDS, SET_USER_TRIP_PARAMS, SET_CURRENT_TRIP_PARAMS, SET_TRIP,
-  SET_TRIP_DATE_TIME, ADD_NEW_TRIP, ADD_TRIP_DATE, LIVE_SEARCH_SHOW } from "../actions/trips";
+  SET_TRIP_DATE_TIME, ADD_NEW_TRIP, LIVE_SEARCH_SHOW } from "../actions/trips";
 
 
 
@@ -10,17 +10,14 @@ const initialState = {
     myCoordinates: null,
     searchedLocation: '',
     targetCoordinates: null,
-    initialLoad: true,
     intermediatePoints: [],
     mainTripParams: null,
     mainTripPointNames: [],
     userMainTripParams: null,
     currentMainTripParams: null,
-    tripDateTime: Date(),
-    liveSearchShow: true,
     newTrip:{
         car:'',
-        tripDateTime:'',
+        tripDateTime:Date(),
         tripPoint:[],
     },
 }
@@ -46,9 +43,7 @@ function trips (state = initialState, action) {
         case SET_CURRENT_TRIP_PARAMS:
             return {...state, currentMainTripParams: action.payload}
         case SET_TRIP_DATE_TIME:
-            return {...state, tripDateTime: action.payload}
-        case ADD_TRIP_DATE:
-            return {...state, newTrip: {...state.newTrip, tripDate:action.payload}}
+            return {...state, newTrip: {...state.newTrip, tripDateTime:action.payload}}
         case ADD_NEW_TRIP:
             return{...state, newTrip: action.payload}
         case LIVE_SEARCH_SHOW:

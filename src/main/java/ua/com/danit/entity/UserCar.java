@@ -40,9 +40,6 @@ public class UserCar extends Auditable {
     if (!(obj instanceof UserCar)) {
       return false;
     }
-    if (!super.equals(obj)) {
-      return false;
-    }
     UserCar userCar = (UserCar) obj;
     return userCarId == userCar.userCarId;
   }
