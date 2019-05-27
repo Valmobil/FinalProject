@@ -84,7 +84,7 @@ class Profile extends Component {
 
     validate = () => {
         const {user: {userName, userPhone, userMail, userPhoto}, currentInput} = this.state
-        if (currentInput !== 'userName' && userName.length === 0) {
+        if (currentInput !== 'userName' && !userName) {
             this.setState({alertError: 'Please enter user name', snackbarOpen: true})
         }
         else if (currentInput !== 'userPhone' && !(userPhone && phoneNumber.test(userPhone.split('-').join('')))) {
@@ -98,9 +98,6 @@ class Profile extends Component {
         }
     }
 
-    confirmEmail = () => {
-        this.props.confirmEmail(this.state.user.userMail)
-    }
 
     setProfile = () => {
         this.props.updateProfile(this.state.user)
@@ -136,7 +133,7 @@ class Profile extends Component {
         const adornment = !userIsConfirmedMail || userIsConfirmedMail < 2 ?
             <InputAdornment position="end">
                 <ConfirmButton
-                    confirmEmail={this.confirmEmail}
+                    confirmEmail={() => this.props.confirmEmail(this.state.user.userMail)}
                 />
             </InputAdornment>
             : null

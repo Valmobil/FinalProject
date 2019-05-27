@@ -80,6 +80,7 @@ class SmartRoute extends Component {
                         onContextMenu={this.contextMenuDisable}
                         onTouchStart={this.touchStart}
                         onTouchEnd={this.touchEnd}
+                        onClick={() => this.props.handleRoute(this.props.item)}
                         variant="contained"
                         color="primary"
                         className={classes.smartRoute}

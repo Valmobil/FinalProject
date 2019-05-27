@@ -1,6 +1,6 @@
 import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS,
-    SET_TRIP, SET_MY_COORDS, SET_TARGET_COORDS, SET_SEARCHED_LOCATION, SET_INTERMEDIATE_POINTS,
-  SET_TRIP_DATE_TIME } from './trips'
+         SET_TRIP, SET_MY_COORDS, SET_TARGET_COORDS, SET_SEARCHED_LOCATION, SET_INTERMEDIATE_POINTS,
+         SET_TRIP_DATE_TIME, SET_MAIN_TRIP_ID } from './trips'
 import { errorPopupShow } from './userCreators'
 import {callApi} from "../utils/utils";
 
@@ -8,7 +8,7 @@ import {callApi} from "../utils/utils";
 export const setTrip = (trip) => dispatch => {
     console.log('setTrip: trip = ', trip)
     callApi('put', '/api/trips', trip)
-        .then(res => console.log('setTrip: ', res))
+        .then(res => dispatch({type: SET_MAIN_TRIP_ID, payload: res}))
         .catch(err => errorPopupShow())
     dispatch({type: SET_TRIP, trip})
 

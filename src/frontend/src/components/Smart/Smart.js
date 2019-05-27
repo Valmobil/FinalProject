@@ -104,6 +104,7 @@ class Smart extends Component {
     }
 
     handleRoute = (userPoint) => {
+        console.log('handleRoute')
         if (this.state.trip.length === 0){
             this.setStartRoute(userPoint)
         } else this.setRoute(userPoint)
