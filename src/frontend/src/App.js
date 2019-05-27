@@ -6,6 +6,7 @@ import Login from './components/Login/Login'
 import Profile from './components/Profile/Profile'
 import NoMatch from './components/NoMatch/NoMatch'
 import ProtectedRoute from './components/hoc/ProtectedRoute/ProtectedRoute'
+import AuthorizedRoute from "./components/hoc/AuthorizedRoute/AuthorizedRoute";
 import Header from './components/Header/Header'
 import PassRestoration from './components/PassRestoration'
 import ChangePassword from './components/ChangePassword'
@@ -16,21 +17,22 @@ import Popup from './components/Popup/Popup'
 import './App.css'
 
 
+
 class App extends Component {
     render() {
         const { isAuthenticated } = this.props.users
 
         return (
             <>
-                {window.innerWidth < 710 && isAuthenticated && <Header/>}
+                { window.innerWidth < 710 && isAuthenticated && <Header/> }
                 <div className="App">
                     <Switch>
                         <Route exact path='/' render={(props) => <Login {...props}/>}/>
                         <ProtectedRoute path="/profile" component={Profile}/>
-                        <ProtectedRoute path="/main" component={Main}/>
-                        <ProtectedRoute path="/smart" component={Smart}/>
-                        <ProtectedRoute path='/mytrips' component={TripsHistoryForm}/>
-                        <ProtectedRoute path='/newtrip' component={NewTrip}/>
+                        <AuthorizedRoute userRole='user' path="/main" component={Main}/>
+                        <AuthorizedRoute userRole='user' path="/smart" component={Smart}/>
+                        <AuthorizedRoute userRole='user' path='/mytrips' component={TripsHistoryForm}/>
+                        <AuthorizedRoute userRole='user' path='/newtrip' component={NewTrip}/>
                         <Route path="/restore_password" component={PassRestoration}/>
                         <Route path="/C" component={ChangePassword}/>
                         <Route path='*' component={NoMatch}/>

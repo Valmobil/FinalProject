@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
-import { deleteTripFromHistory } from '../../actions/userCreators'
+import { deleteTripFromHistory } from '../../actions/tripCreators'
 import { callApi } from '../../utils/utils'
 import './TripsHistory.css'
 
@@ -40,7 +40,6 @@ class TripsHistory extends Component {
     componentDidMount(){
         callApi('post', '/api/trips/list')
             .then(resp => {
-              console.log('response data from trips history',resp.data)
                 this.setState({
                 tripsHistory: resp.data,
                 fetchingTripsHistory: false
@@ -62,23 +61,34 @@ class TripsHistory extends Component {
         this.props.deleteTripFromHistory(id);
     }
 
+    redirectOnMain = (id) =>{
+        console.log('redirect to main')
+    }
+
     render() {
         const { classes  } = this.props
         let nameOfPoint = '';
         const tripsHistoryPointArray = this.state.tripsHistory;
         let tripsHistoryList = null;
-        if (tripsHistoryPointArray.length > 0) {
+        if (tripsHistoryPointArray !== undefined && tripsHistoryPointArray.length > 0 ) {
           tripsHistoryList = this.state.tripsHistory.map((item) => {
             return (
-                <li key={item.tripId}>
-                    {
-                        item.tripPoint.forEach((name) => {
-                            if (name.tripPointName != null){
-                                nameOfPoint += name.tripPointName + ' - '
-                            }
-                        })
-                    }
-                    {nameOfPoint}
+                <li key={item.tripId} onClick={(item)=>{this.redirectOnMain(item.tripId)}}>
+                    <div className='trip-data'>
+                        <div className='trip-date-time'>
+                          {item.tripDateTime.replace('T',' ').substring(0,16)}
+                        </div>
+                        {
+                            item.tripPoint.forEach((name) => {
+                                if (name.tripPointName != null){
+                                    nameOfPoint += name.tripPointName + ' - '
+                                }
+                            })
+                        }
+                        <div>
+                            {nameOfPoint}
+                        </div>
+                    </div>
                     <div className="icon-trip">
                         <IconButton
                             onClick={() => this.handleDelete(item.tripId)}
@@ -87,6 +97,7 @@ class TripsHistory extends Component {
                             <DeleteIcon />
                         </IconButton>
                     </div>
+
                     {nameOfPoint=''}
                 </li>
             )
@@ -105,7 +116,7 @@ class TripsHistory extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        tripsHistory: state.users.tripsHistory,
+        tripsHistory: state.trips.tripsHistory,
     }
 }
 
