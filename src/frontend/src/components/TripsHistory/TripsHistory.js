@@ -71,7 +71,7 @@ class TripsHistory extends Component {
         let nameOfPoint = '';
         const tripsHistoryPointArray = this.state.tripsHistory;
         let tripsHistoryList = null;
-        if (tripsHistoryPointArray != undefined && tripsHistoryPointArray.length > 0 ) {
+        if (tripsHistoryPointArray !== undefined && tripsHistoryPointArray.length > 0 ) {
           tripsHistoryList = this.state.tripsHistory.map((item) => {
             return (
                 <li key={item.tripId} onClick={(item)=>{this.redirectOnMain(item.tripId)}}>
