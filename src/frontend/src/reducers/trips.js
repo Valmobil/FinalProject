@@ -4,7 +4,6 @@ import { SET_INTERMEDIATE_POINTS, SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NA
 
 
 
-
 const initialState = {
     trip: {},
     myCoordinates: null,
@@ -21,8 +20,10 @@ const initialState = {
         tripPoint:[],
     },
     mainTripId: null,
+
     tripsHistoryRequest: false,
     tripsHistory: [],
+
 }
 
 function trips (state = initialState, action) {
@@ -53,6 +54,7 @@ function trips (state = initialState, action) {
             return {...state, mainTripId: action.payload}
         case DELETE_TRIP_FROM_HISTORY:
             return {...state, tripsHistory: action.payload}
+
         default:
             return {...state}
     }

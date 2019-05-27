@@ -50,6 +50,7 @@ function users(state = initialState, action) {
             return {...state, user: action.payload}
         case SET_ERROR_MESSAGE:
             return {...state, errorMessage: action.payload}
+
         case SET_USER_PHOTO:
             return {...state, user: {...state.user, userPhoto: action.payload}}
         case INITIAL_LOAD:

@@ -168,10 +168,10 @@ class NewTrip extends Component {
       const { classes } = this.props;
       console.log('state new trip',this.state);
       console.log('state new trip',this.props);
+
       return (
             <form className='trip-container' onSubmit={this.submitTrip}>
                 <div className='new-trip' style={{marginTop: 70}}>
-
                   <span>want to create new trip?</span>
                   <ForDateTimePickers/>
 
@@ -214,6 +214,7 @@ class NewTrip extends Component {
                                 label: classes.label
                             }}
                         >
+
                             Reject
                         </Button>
                     </div>

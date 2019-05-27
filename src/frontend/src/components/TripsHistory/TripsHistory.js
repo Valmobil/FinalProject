@@ -73,6 +73,7 @@ class TripsHistory extends Component {
         if (tripsHistoryPointArray !== undefined && tripsHistoryPointArray.length > 0 ) {
           tripsHistoryList = this.state.tripsHistory.map((item) => {
             return (
+
                 <li key={item.tripId} onClick={(item)=>{this.redirectOnMain(item.tripId)}}>
                     <div className='trip-data'>
                         <div className='trip-date-time'>
@@ -89,6 +90,7 @@ class TripsHistory extends Component {
                             {nameOfPoint}
                         </div>
                     </div>
+
                     <div className="icon-trip">
                         <IconButton
                             onClick={() => this.handleDelete(item.tripId)}
