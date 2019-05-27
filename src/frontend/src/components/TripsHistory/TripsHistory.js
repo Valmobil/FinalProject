@@ -1,15 +1,10 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux'
-// import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
-import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
 import { deleteTripFromHistory } from '../../actions/userCreators'
 import { callApi } from '../../utils/utils'
-import PropTypes from 'prop-types'
-// import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-// import orange from "@material-ui/core/colors/orange";
 import './TripsHistory.css'
 
 const styles = theme => ({
@@ -67,28 +62,35 @@ class TripsHistory extends Component {
         this.props.deleteTripFromHistory(id);
     }
 
+    redirectOnMain = (id) =>{
+        console.log('redirect to main')
+    }
+
     render() {
         const { classes  } = this.props
         let nameOfPoint = '';
         const tripsHistoryPointArray = this.state.tripsHistory;
         let tripsHistoryList = null;
-        if (tripsHistoryPointArray.length > 0) {
+        if (tripsHistoryPointArray != undefined && tripsHistoryPointArray.length > 0 ) {
           tripsHistoryList = this.state.tripsHistory.map((item) => {
             return (
-                <li key={item.tripId}>
-                    {
-                        item.tripPoint.forEach((name) => {
-                            nameOfPoint += name.tripPointName + ' - '
-                        })
-                    }
-                    {nameOfPoint}
+                <li key={item.tripId} onClick={(item)=>{this.redirectOnMain(item.tripId)}}>
+                    <div className='trip-data'>
+                        <div className='trip-date-time'>
+                          {item.tripDateTime.replace('T',' ').substring(0,16)}
+                        </div>
+                        {
+                            item.tripPoint.forEach((name) => {
+                                if (name.tripPointName != null){
+                                    nameOfPoint += name.tripPointName + ' - '
+                                }
+                            })
+                        }
+                        <div>
+                            {nameOfPoint}
+                        </div>
+                    </div>
                     <div className="icon-trip">
-                        <IconButton
-                            // onClick={() => this.handleEdit(item)}
-                            className={classes.iconButton}
-                            aria-label="Copy">
-                            <EditIcon />
-                        </IconButton>
                         <IconButton
                             onClick={() => this.handleDelete(item.tripId)}
                             className={classes.iconButton}
@@ -96,6 +98,7 @@ class TripsHistory extends Component {
                             <DeleteIcon />
                         </IconButton>
                     </div>
+
                     {nameOfPoint=''}
                 </li>
             )
@@ -103,7 +106,7 @@ class TripsHistory extends Component {
           tripsHistoryList = 'No Trips Yet'
         }
         return (
-            <div className='trip-history-list'>
+            <div className='trip-history-block'>
                 <ul className='list-history'>
                     {this.state.fetchingTripsHistory ? 'Loading...' : tripsHistoryList }
                 </ul>
@@ -122,9 +125,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         deleteTripFromHistory: (newTripsHistory) => dispatch(deleteTripFromHistory(newTripsHistory))
     }
-}
-TripsHistory.propTypes ={
-    tripsHistory: PropTypes.array.isRequired,
 }
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TripsHistory))

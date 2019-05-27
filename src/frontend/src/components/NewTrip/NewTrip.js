@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { withStyles } from '@material-ui/core/styles';
 // import { addNewTrip } from '../../actions/userCreators';
-import { setTargetCoordinates } from '../../actions/tripCreators';
+import {setTargetCoordinates, setTripDateTime} from '../../actions/tripCreators';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 
@@ -48,42 +48,135 @@ class NewTrip extends Component {
      }
 
     setValueFrom = (valueFrom) => {
-      this.setState({valueFrom})
-    }
-
-    setValueTo = (valueTo) => {
-      this.setState({valueTo})
-    }
-
-    rejectEdit = () => {
-      this.props.setSearchedLocation('')
-      this.setState({ value: ''})
-    }
-
-    addTripDate = (tripDate)=>{
       this.setState({
-        tripDateTime:tripDate,
+          valueFrom
       })
     }
 
+    setValueTo = (valueTo) => {
+      this.setState({
+          valueTo
+      })
+    }
+
+    handleRoute = (userPoint) => {
+        if (this.state.trip.length === 0){
+            this.setStartRoute(userPoint)
+        } else this.setRoute(userPoint)
+    }
+
+    setRoute = (userPoint) => {
+        console.log('userPoint = ', userPoint)
+        const { userPointLatitude, userPointLongitude, userPointAddress } = userPoint
+        this.props.setTargetCoordinates({
+            latitude: userPointLatitude,
+            longitude: userPointLongitude,
+        })
+
+        const tripPoint = {
+            tripPointName: userPointAddress,
+            tripPointLatitude: userPointLatitude,
+            tripPointLongitude: userPointLongitude,
+            tripPointSequence: this.state.trip.length,
+        }
+
+        this.getIntermediate()
+            .then(res => {
+                let points = this.props.trips.intermediatePoints
+                points.push(tripPoint)
+                this.setState({trip: [...this.state.trip, ...points]})
+            })
+    }
+
+    getIntermediate = () => new Promise((resolve) => {
+        let check = () => {
+            if (this.props.trips.intermediatePoints.length > 0){
+                resolve()
+            } else {
+                setTimeout(check, 50)
+            }
+        }
+        setTimeout(check, 50)
+    })
+
+
+    setStartRoute = (userPoint) => {
+        console.log('userPoint = ', userPoint)
+        if (!userPoint.userPointLatitude || !userPoint.userPointLongitude || userPoint.userPointLatitude === 0 || userPoint.userPointLongitude === 0){
+            this.handleEdit(userPoint)
+        } else {
+            this.setState({creatingTrip: true, id: userPoint.userPointId})
+
+            const tripPoint = {
+                tripPointName: 'My Location',
+                tripPointLatitude: this.props.trips.myCoordinates.latitude,
+                tripPointLongitude: this.props.trips.myCoordinates.longitude,
+                tripPointSequence: 0,
+            }
+            this.setState({trip: [tripPoint]}, () => this.setRoute(userPoint))
+        }
+
+    }
+
+    submitRoute = () => {
+        let trip = {
+            car: {
+                carId: this.state.car.carId
+            },
+            tripPoint: this.state.trip,
+            tripDateTime: new Date().toISOString(),
+        }
+        this.props.setTrip(trip)
+        this.rejectRoute()
+    }
+
+    rejectRoute = () => {
+        this.setState({creatingTrip: false, trip: [], id: null})
+    }
+
+
+    handleEdit = (item) => {
+        this.setState({editing: item.userPointId, name: item.userPointName, value: item.userPointAddress, adding: false})
+        this.props.setTargetCoordinates({
+            latitude: item.userPointLatitude,
+            longitude: item.userPointLongitude,
+        })
+    }
+
+    handleEditInput = (e) => {
+        this.setState({[e.target.name]: e.target.value})
+    }
+
+
+    rejectEdit = () => {
+      this.props.setSearchedLocation('')
+      this.setState({
+          valueFrom: '',
+          valueTo: '',
+      })
+    }
+
+    addTripDate = (tripDate)=>{
+      this.props.setTripDateTime(tripDate)
+    }
+
     submitTrip = (newTrip) =>{
-      // this.props.addNewTrip(newTrip),
-      this.props.history.push('/main')
+      this.props.addNewTrip(newTrip)
     }
 
     render() {
       const { classes } = this.props;
       console.log('state new trip',this.state);
+      console.log('state new trip',this.props);
       return (
             <form className='trip-container' onSubmit={this.submitTrip}>
                 <div className='new-trip' style={{marginTop: 70}}>
 
-                  <span>want create new trip?</span>
+                  <span>want to create new trip?</span>
                   <ForDateTimePickers/>
 
                   <AutoSuggestions
                       label = 'Search from'
-                      editClose={() => this.editClose(null)}
                       setCoordinates={this.props.setTargetCoordinates}
                       setValue ={this.setValueFrom}
                       method='post'
@@ -94,7 +187,6 @@ class NewTrip extends Component {
                     />
                     <AutoSuggestions
                       label = 'Search to'
-                      editClose={() => this.editClose(null)}
                       setCoordinates={this.props.setTargetCoordinates}
                       setValue ={this.setValueTo}
                       method='post'
@@ -106,14 +198,14 @@ class NewTrip extends Component {
                     <Map />
                     <div className="trip-btn-container">
                         <Button
-                             onClick={this.editClose}
+                             onClick={this.submitTrip}
                              classes={{
                                  root: classes.acceptButton,
                                  label: classes.label
                              }}
                              disabled = {this.state.valueFrom.length === 0 || this.state.valueTo.length === 0}
                         >
-                            Submit trip
+                            Accept
                         </Button>
                         <Button
                             onClick = {this.rejectEdit}
@@ -122,7 +214,7 @@ class NewTrip extends Component {
                                 label: classes.label
                             }}
                         >
-                            Reject trip
+                            Reject
                         </Button>
                     </div>
                 </div>
@@ -134,6 +226,7 @@ class NewTrip extends Component {
 const mapStateToProps = state => {
   return{
     users: state.users,
+    trips: state.trips,
     // newTrip: state.users.newTrip
   }
 }
@@ -141,6 +234,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setTargetCoordinates: (coords) => dispatch(setTargetCoordinates(coords)),
+    setTripDateTime: (newTripDate) => dispatch(setTripDateTime(newTripDate)),
   }
 }
 
