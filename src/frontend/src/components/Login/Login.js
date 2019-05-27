@@ -113,16 +113,14 @@ class Login extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const {userName, userPhone, userMail, userPhoto} = this.props.users.user
         if (this.props.users.isAuthenticated !== prevProps.users.isAuthenticated && this.props.users.isAuthenticated) {
-            // const path = this.state.signType === 'log-in' ? `/smart` : `/profile`
             let path = null
             if (this.state.signType === 'log-in') {
                 if (localStorage.getItem('iTripper_page')) {
                     path = localStorage.getItem('iTripper_page')
-                } else if (userName && userPhone && userMail && userPhoto.includes('id')) {
+                } else {
                     path = '/smart'
-                } else path = '/profile'
+                }
             } else path = '/profile'
             this.props.history.push({pathname: path})
         }

@@ -259,15 +259,12 @@ class Map extends Component {
         if (this.props.userMainTripParams !== prevProps.userMainTripParams && this.props.showMainRoute){
             this.removeObjectById('route')
             this.currentRender = 'user'
-            // this.setState({current: this.props.userMainTripParams}, () => this.calculateRouteFromAtoB())
             this.calculateRouteFromAtoB(this.props.userMainTripParams)
-
         }
 
         if (this.props.currentMainTripParams !== prevProps.currentMainTripParams && this.props.showMainRoute){
             this.removeObjectById('route')
             this.currentRender = 'current'
-            // this.setState({current: this.props.currentMainTripParams}, () => this.calculateRouteFromAtoB())
             this.calculateRouteFromAtoB(this.props.currentMainTripParams)
 
         }

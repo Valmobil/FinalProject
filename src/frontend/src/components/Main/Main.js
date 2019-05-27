@@ -53,7 +53,7 @@ class Main extends Component{
 
 
     componentDidMount(){
-       this.props.setMainTrips(1)
+       this.props.setMainTrips(this.props.trips.mainTripId)
     }
 
     render(){
@@ -71,11 +71,13 @@ class Main extends Component{
                                 <Typography className={classes.heading}>{item[0]} - {item[item.length - 1]}</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails className={classes.details}>
-                                   {item.map((element, i) => (
-                                       <Typography style={{textAlign: 'left'}} key={i}>
-                                           {i + 1}. {element}
+                                       <Typography style={{textAlign: 'left'}}>
+                                           {item[0]}
                                        </Typography>
-                                   ))}
+                                       <Typography style={{textAlign: 'left'}}>
+                                           {item[item.length - 1]}
+                                       </Typography>
+
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
 
