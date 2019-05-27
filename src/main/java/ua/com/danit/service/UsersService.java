@@ -36,6 +36,8 @@ public class UsersService {
   private UserCarsRepository userCarsRepository;
   private UserTokensRepository userTokensRepository;
 
+  private static final int userPointsMaxQty = 5;
+
   @Autowired
   public UsersService(UsersRepository usersRepository,
                       PointsRepository pointsRepository,
@@ -54,7 +56,6 @@ public class UsersService {
     this.userCarsRepository = userCarsRepository;
     this.userTokensRepository = userTokensRepository;
   }
-
 
   private String passwordEncrypt(String userPasswordNew) {
     //!!!!! Write password encryption procedure
@@ -76,25 +77,9 @@ public class UsersService {
     } else {
       userPoints = userPointsRepository.findByUser(user);
     }
-    if (userPoints.size() < 5) {
-      if (userPoints.size() < 1) {
-        UserPoint pointHome = new UserPoint(null, "Home", "adress", user, 0, 0);
-        userPoints.add(pointHome);
-      }
-      if (userPoints.size() < 2) {
-        UserPoint pointWork = new UserPoint(null, "Work", "Kyivska obl.", user, 50.570425, 30.2637260);
-        userPoints.add(pointWork);
-      }
-      //for test purposes
-      if (userPoints.size() < 3) {
-        Point point = pointsRepository.getOne(4L);
-        UserPoint pointWork = new UserPoint(null, "Boryspil", "Kyivska obl.", user, 0, 0);
-        userPoints.add(pointWork);
-      }
-      for (int i = userPoints.size(); i < 5; i++) {
-        UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0);
-        userPoints.add(pointOther);
-      }
+    String[] userPointsDefaultNames = {"Home","Work","<no point>","<no point>","<no point>"};
+    for (int i = userPoints.size(); i < userPointsMaxQty ; i++) {
+      userPoints.add(new UserPoint(null, userPointsDefaultNames[i], "", user, 0, 0));
     }
     user.setUserPoints(userPoints);
     return user;
@@ -193,7 +178,6 @@ public class UsersService {
     }
     user = projection(user, "", "car", "token", "point");
     user = usersRepository.save(user);
-    //    user = projection(user, "",  "token", "point");
     return userFacade.mapEntityToResponse(user);
   }
 
