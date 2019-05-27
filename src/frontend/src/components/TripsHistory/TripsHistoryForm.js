@@ -44,6 +44,7 @@ class TripsHistoryForm extends Component {
                         </Button>
                     </div>
                     <TripsHistory />
+
                 </div>
             </div>
         );

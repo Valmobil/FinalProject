@@ -132,6 +132,7 @@ class NewTrip extends Component {
 
     rejectRoute = () => {
         this.setState({creatingTrip: false, trip: [], id: null})
+
     }
 
 
@@ -142,6 +143,7 @@ class NewTrip extends Component {
             longitude: item.userPointLongitude,
         })
     }
+
 
     handleEditInput = (e) => {
         this.setState({[e.target.name]: e.target.value})
@@ -167,12 +169,16 @@ class NewTrip extends Component {
     render() {
       const { classes } = this.props;
       console.log('state new trip',this.state);
+
       console.log('state new trip',this.props);
+
       return (
             <form className='trip-container' onSubmit={this.submitTrip}>
                 <div className='new-trip' style={{marginTop: 70}}>
 
+
                   <span>want to create new trip?</span>
+
                   <ForDateTimePickers/>
 
                   <AutoSuggestions
@@ -181,7 +187,6 @@ class NewTrip extends Component {
                       setValue ={this.setValueFrom}
                       method='post'
                       url='/api/points'
-
                       data={{ pointSearchText: this.state.valueFrom }}
                       value={this.state.valueFrom}
                       rejectEdit={this.rejectEdit}
@@ -207,6 +212,7 @@ class NewTrip extends Component {
                              disabled = {this.state.valueFrom.length === 0 || this.state.valueTo.length === 0}
                         >
                             Accept
+
                         </Button>
                         <Button
                             onClick = {this.rejectEdit}
@@ -215,7 +221,9 @@ class NewTrip extends Component {
                                 label: classes.label
                             }}
                         >
+
                             Reject
+
                         </Button>
                     </div>
                 </div>
