@@ -174,12 +174,6 @@ export const setPhoto = (image) => dispatch => {
 }
 //* **********************
 
-export const setInitialLoadToFalse = () => dispatch => {
-    dispatch({type: INITIAL_LOAD, payload: false})
-}
-
-//* **********************
-
 export const updateProfile = (user) => dispatch => {
     dispatch({type: SET_USER, payload: user})
     callApi('put', '/api/users', user)
@@ -207,4 +201,9 @@ export const confirmEmail = (email) => dispatch => {
 export const errorPopupShow = () => dispatch => {
     dispatch(setErrorPopupOpen(true))
     dispatch(setErrorMessage("Sorry, something's gone wrong on server. Please try again."))
+}
+//* **********************
+
+export const setInitialLoadToFalse = () => dispatch => {
+    dispatch({type: INITIAL_LOAD, payload: false})
 }

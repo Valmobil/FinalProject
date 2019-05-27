@@ -1,7 +1,7 @@
 import {
     SET_USER, SET_USER_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE,
-    ERROR_POPUP_OPEN, SET_USER_NAME, SET_ERROR_MESSAGE, INITIAL_LOAD, SET_USER_PHOTO,
-    DELETE_TRIP_FROM_HISTORY
+    ERROR_POPUP_OPEN, SET_USER_NAME, SET_ERROR_MESSAGE, SET_USER_PHOTO,
+    DELETE_TRIP_FROM_HISTORY, INITIAL_LOAD
 } from '../actions/users'
 
 
@@ -28,9 +28,9 @@ const initialState = {
     role: 'passenger',
     isAuthenticated: false,
     auth: null,
-    initialLoad: true,
     topMenuOpen: false,
     errorPopupOpen: false,
+    initialLoad: true,
 }
 
 function users(state = initialState, action) {
@@ -53,10 +53,10 @@ function users(state = initialState, action) {
             return {...state, errorMessage: action.payload}
         case DELETE_TRIP_FROM_HISTORY:
             return {...state, tripsHistory: action.payload}
-        case INITIAL_LOAD:
-            return {...state, initialLoad: action.payload}
         case SET_USER_PHOTO:
             return {...state, user: {...state.user, userPhoto: action.payload}}
+        case INITIAL_LOAD:
+            return {...state, initialLoad: action.payload}
 
 
         default:

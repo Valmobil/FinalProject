@@ -26,7 +26,7 @@ public class ImagesController {
     this.userTokensService = userTokensService;
   }
 
-  @GetMapping(value = "", produces = MediaType.IMAGE_PNG_VALUE)
+  @GetMapping(produces = MediaType.IMAGE_PNG_VALUE)
   public byte[] getImageControllerGet(@RequestParam String id) {
     return imageService.getImageService(id);
   }
