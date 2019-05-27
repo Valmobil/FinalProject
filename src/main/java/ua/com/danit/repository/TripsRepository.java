@@ -27,12 +27,11 @@ public interface TripsRepository extends JpaRepository<Trip, Long> {
           + " WHERE CONCAT(CAST(TRIP_POINT_LATITUDE AS CHAR(10)) , '-', CAST(TRIP_POINT_LONGITUDE AS CHAR(10))) in ("
           + "  SELECT CONCAT(CAST(TRIP_POINT_LATITUDE AS CHAR(10)) , '-', CAST(TRIP_POINT_LONGITUDE AS CHAR(10))) FROM TRIP "
           + "  INNER JOIN TRIP_POINT ON TRIP_POINT_ID = TRIP_ID"
-          + "  WHERE TRIP_POINT_ID = ?1"
+          + "  WHERE TRIP_USER_ID != ?2"
           + " ) "
           + " GROUP BY TRIP_ID"
           + " ) TRIPS ON IDS = TRIP_ID"
-          + " WHERE TRIP_POINT_ID != ?1"
           + " ORDER BY COUNTS DESC", nativeQuery = true)
-  List<Trip> findOwnTripAndOtherTrips(Long tripId);
+  List<Trip> findOwnTripAndOtherTrips(Long tripId, Long userId);
 
 }
