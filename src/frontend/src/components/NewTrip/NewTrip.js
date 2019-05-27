@@ -181,6 +181,7 @@ class NewTrip extends Component {
                       setValue ={this.setValueFrom}
                       method='post'
                       url='/api/points'
+
                       data={{ pointSearchText: this.state.valueFrom }}
                       value={this.state.valueFrom}
                       rejectEdit={this.rejectEdit}
