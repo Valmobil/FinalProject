@@ -6,8 +6,7 @@ import {
 
 
 const initialState = {
-    tripsHistoryRequest: false,
-    tripsHistory: [],
+
     allPointRequest: false,
     allPoints: [],
     user: {
@@ -51,8 +50,6 @@ function users(state = initialState, action) {
             return {...state, user: action.payload}
         case SET_ERROR_MESSAGE:
             return {...state, errorMessage: action.payload}
-        case DELETE_TRIP_FROM_HISTORY:
-            return {...state, tripsHistory: action.payload}
         case SET_USER_PHOTO:
             return {...state, user: {...state.user, userPhoto: action.payload}}
         case INITIAL_LOAD:

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
-import { deleteTripFromHistory } from '../../actions/userCreators'
+import { deleteTripFromHistory } from '../../actions/tripCreators'
 import { callApi } from '../../utils/utils'
 import './TripsHistory.css'
 
@@ -40,7 +40,6 @@ class TripsHistory extends Component {
     componentDidMount(){
         callApi('post', '/api/trips/list')
             .then(resp => {
-              console.log('response data from trips history',resp.data)
                 this.setState({
                 tripsHistory: resp.data,
                 fetchingTripsHistory: false
@@ -117,7 +116,7 @@ class TripsHistory extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        tripsHistory: state.users.tripsHistory,
+        tripsHistory: state.trips.tripsHistory,
     }
 }
 
