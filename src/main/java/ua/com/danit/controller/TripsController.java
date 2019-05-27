@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.com.danit.dto.TripPassengerResponse;
 import ua.com.danit.dto.TripResponse;
-import ua.com.danit.dto.TripResponseId;
 import ua.com.danit.dto.TripResponseWithUser;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.User;
@@ -34,7 +33,7 @@ public class TripsController {
   }
 
   @PutMapping
-  public ResponseEntity<TripResponseId> saveTripToDb(@RequestBody Trip trip, @RequestHeader String authorization) {
+  public ResponseEntity<String> saveTripToDb(@RequestBody Trip trip, @RequestHeader String authorization) {
     return new ResponseEntity<>(tripsService.putTripToDb(trip, userTokensService.findUserByAccessToken(authorization)),
         HttpStatus.OK);
   }

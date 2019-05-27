@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.TripPassengerResponse;
 import ua.com.danit.dto.TripResponse;
-import ua.com.danit.dto.TripResponseId;
 import ua.com.danit.dto.TripResponseWithUser;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.TripPassenger;
@@ -44,7 +43,7 @@ public class TripsService {
     return tripsRepository.getOne(tripId);
   }
 
-  public TripResponseId putTripToDb(Trip trip, User user) {
+  public String putTripToDb(Trip trip, User user) {
     //Set TripId to TripPoints
     for (TripPoint point : trip.getTripPoint()) {
       point.setTrip(trip);
@@ -60,11 +59,11 @@ public class TripsService {
     if (trip == null) {
       throw new ApplicationException("Error! Trip have not been saved!");
     }
-    return new TripResponseId(trip.getTripId());
+    return "{\"tripId\": " + trip.getTripId().toString() + "}";
   }
 
   public List<TripResponseWithUser> getOwnAndOtherTrips(Trip tripOwn, User user) {
-    List<Trip> trips = tripsRepository.findOwnTripAndOtherTrips(tripOwn.getTripId());
+    List<Trip> trips = tripsRepository.findOwnTripAndOtherTrips(tripOwn.getTripId(), user.getUserId());
     List<TripResponseWithUser> tripResponses = new LinkedList<>();
     for (Trip trip : trips) {
       tripResponses.add(tripFacade.mapEntityToResponseDtoWithUser(trip));
