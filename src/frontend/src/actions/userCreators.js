@@ -1,6 +1,6 @@
 import {
     SET_USER, SET_USER_POINTS, SET_SOCIAL_AUTH, MENU_TOGGLE,
-    ERROR_POPUP_OPEN, SET_ERROR_MESSAGE, DELETE_TRIP_FROM_HISTORY,
+    ERROR_POPUP_OPEN, SET_ERROR_MESSAGE,
     USER_LOGOUT, INITIAL_LOAD, SET_USER_PHOTO,
 } from './users'
 
@@ -155,13 +155,7 @@ export const setErrorMessage = (message) => dispatch => {
 
 //* **********************
 
-export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch => {
-    dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
-    callApi('delete', 'api/trips', {tripId})
-        .then(resp => console.log(resp))
-        .catch(err => dispatch(errorPopupShow()))
-}
-//* **********************
+
 
 export const setPhoto = (image) => dispatch => {
     let data = new FormData();

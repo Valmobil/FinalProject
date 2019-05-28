@@ -1,6 +1,6 @@
 import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS,
          SET_TRIP, SET_MY_COORDS, SET_TARGET_COORDS, SET_SEARCHED_LOCATION, SET_INTERMEDIATE_POINTS,
-         SET_TRIP_DATE_TIME, SET_MAIN_TRIP_ID } from './trips'
+         SET_TRIP_DATE_TIME, SET_MAIN_TRIP_ID, DELETE_TRIP_FROM_HISTORY, } from './trips'
 import { errorPopupShow } from './userCreators'
 import {callApi} from "../utils/utils";
 
@@ -85,4 +85,12 @@ export const setTripDateTime = dateTime => dispatch => {
   dispatch({type: SET_TRIP_DATE_TIME, payload: dateTime})
 }
 // * *********************
+
+export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch => {
+    dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
+    callApi('delete', 'api/trips', {tripId})
+        .then(resp => console.log(resp))
+        .catch(err => dispatch(errorPopupShow()))
+}
+//* **********************
 

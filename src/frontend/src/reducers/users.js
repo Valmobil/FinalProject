@@ -1,13 +1,13 @@
 import {
     SET_USER, SET_USER_POINTS, SET_ROLE, SET_SOCIAL_AUTH, MENU_TOGGLE,
     ERROR_POPUP_OPEN, SET_USER_NAME, SET_ERROR_MESSAGE, SET_USER_PHOTO,
-    DELETE_TRIP_FROM_HISTORY, INITIAL_LOAD
+    INITIAL_LOAD
+
 } from '../actions/users'
 
 
 const initialState = {
-    tripsHistoryRequest: false,
-    tripsHistory: [],
+
     allPointRequest: false,
     allPoints: [],
     user: {
@@ -51,8 +51,6 @@ function users(state = initialState, action) {
             return {...state, user: action.payload}
         case SET_ERROR_MESSAGE:
             return {...state, errorMessage: action.payload}
-        case DELETE_TRIP_FROM_HISTORY:
-            return {...state, tripsHistory: action.payload}
         case SET_USER_PHOTO:
             return {...state, user: {...state.user, userPhoto: action.payload}}
         case INITIAL_LOAD:
