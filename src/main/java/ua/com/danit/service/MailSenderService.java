@@ -1,8 +1,10 @@
 package ua.com.danit.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.LoginMode;
 import ua.com.danit.dto.UserLogin;
@@ -42,8 +44,7 @@ public class MailSenderService {
     if (userLogin == null) {
       throw new ApplicationException("Error: Please fill e-Mail cell!");
     }
-    loginsService.convertUserLoginBlankToNull(userLogin);
-    if (userLogin.getUserLogin() == null) {
+    if (StringUtils.isEmpty(userLogin.getUserLogin())) {
       throw new ApplicationException("Error: Please fill e-Mail cell!");
     }
     usersService.checkEmailFormat(userLogin.getUserLogin());
@@ -68,11 +69,19 @@ public class MailSenderService {
     //save token in DB
     createPasswordResetTokenForUser(user, token);
     //Mail to user
+    MimeMessage mimeMessage;
     if ("email".equals(loginMode.getEndPoint())) {
-      javaMailSender.send(constructResetTokenEmail(contextPath, token, user));
+      mimeMessage = constructResetTokenEmail(contextPath, token, user);
     } else {
-      javaMailSender.send(constructConfirmEmail(contextPath, token, user));
+      mimeMessage = constructConfirmEmail(contextPath, token, user);
     }
+    sendEmailInTread(mimeMessage);
+
+  }
+
+  @Async
+  void sendEmailInTread(MimeMessage mimeMessage) {
+    javaMailSender.send(mimeMessage);
   }
 
   private MimeMessage constructConfirmEmail(

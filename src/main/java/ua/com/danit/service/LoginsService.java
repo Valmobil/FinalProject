@@ -1,5 +1,6 @@
 package ua.com.danit.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.LoginMode;
@@ -22,7 +23,6 @@ public class LoginsService {
   private UsersService usersService;
   private UserTokensService userTokensService;
   private UserFacade userFacade;
-  private UserTokenFacade userTokenFacade;
   private PswdResetTokenRepository pswdResetTokenRepository;
 
   @Autowired
@@ -33,13 +33,11 @@ public class LoginsService {
     this.usersService = usersService;
     this.userTokensService = userTokensService;
     this.userFacade = userFacade;
-    this.userTokenFacade = userTokenFacade;
     this.pswdResetTokenRepository = pswdResetTokenRepository;
   }
 
   public String passwordRestore(UserLogin userLogin) {
-    convertUserLoginBlankToNull(userLogin);
-    if (userLogin.getUserPasswordNew() == null) {
+    if (StringUtils.isEmpty(userLogin.getUserPasswordNew())) {
       throw new ApplicationException("Error! Please fill in new password!");
     }
     PswdResetToken pswdResetToken = pswdResetTokenRepository.findFirstByToken(userLogin.getUserToken());
@@ -59,7 +57,6 @@ public class LoginsService {
   }
 
   public String passwordChange(UserLogin userLogin, User user) {
-    convertUserLoginBlankToNull(userLogin);
     if (userLogin.getUserPassword().equals(userLogin.getUserPasswordNew())) {
       throw new ApplicationException("Error! We cannot set tha same password!");
     }
@@ -70,7 +67,6 @@ public class LoginsService {
   }
 
   public UserResponse checkLoginSignInSignUp(UserLogin userLogin, String endPointMode) {
-    convertUserLoginBlankToNull(userLogin);
     User user = usersService.createNewEmptyUser();
     LoginMode mode = defineMode(userLogin, endPointMode);
     boolean knownWay = false;
@@ -117,8 +113,8 @@ public class LoginsService {
   private LoginMode defineMode(UserLogin userLogin, String endPointMode) {
     LoginMode loginMode = new LoginMode();
     loginMode.setEndPoint(endPointMode);
-    if (userLogin.getUserToken() != null) {
-      if (userLogin.getUserLogin() == null) {
+    if (StringUtils.isNotBlank(userLogin.getUserToken())) {
+      if (StringUtils.isBlank(userLogin.getUserLogin())) {
         loginMode.setMode("LoginByAccessToken");
         return loginMode;
       } else {
@@ -131,7 +127,7 @@ public class LoginsService {
         return loginMode;
       }
     }
-    if (userLogin.getUserPassword() == null) {
+    if (StringUtils.isBlank(userLogin.getUserPassword())) {
       throw new ApplicationException("Error: incorrect login or password!");
     }
     if (endPointMode.equals("SignUp")) {
@@ -169,29 +165,7 @@ public class LoginsService {
 
   void deletePswdResetTokensByUser(User user) {
     List<PswdResetToken> pswdResetTokens = pswdResetTokenRepository.findByUser(user);
-    pswdResetTokenRepository.deleteAll(pswdResetTokens);
+    pswdResetTokenRepository.deleteInBatch(pswdResetTokens);
   }
 
-  void convertUserLoginBlankToNull(UserLogin userLogin) {
-    if (userLogin.getUserLogin() != null) {
-      if (userLogin.getUserLogin().trim().equals("")) {
-        userLogin.setUserLogin(null);
-      }
-    }
-    if (userLogin.getUserToken() != null) {
-      if (userLogin.getUserToken().trim().equals("")) {
-        userLogin.setUserToken(null);
-      }
-    }
-    if (userLogin.getUserPasswordNew() != null) {
-      if (userLogin.getUserPasswordNew().trim().equals("")) {
-        userLogin.setUserPasswordNew(null);
-      }
-    }
-    if (userLogin.getUserPassword() != null) {
-      if (userLogin.getUserPassword().trim().equals("")) {
-        userLogin.setUserPassword(null);
-      }
-    }
-  }
 }
