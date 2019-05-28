@@ -8,7 +8,7 @@ import {callApi} from "../utils/utils";
 export const setTrip = (trip) => dispatch => {
     console.log('setTrip: trip = ', trip)
     callApi('put', '/api/trips', trip)
-        .then(res => dispatch({type: SET_MAIN_TRIP_ID, payload: res}))
+        .then(res => dispatch({type: SET_MAIN_TRIP_ID, payload: res.data.tripId}))
         .catch(err => errorPopupShow())
     dispatch({type: SET_TRIP, trip})
 
