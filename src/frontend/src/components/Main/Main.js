@@ -53,6 +53,8 @@ class Main extends Component{
 
 
     componentDidMount(){
+      console.log('Main: this.props.trips.mainTripId = ', this.props.trips.mainTripId)
+
        this.props.setMainTrips(this.props.trips.mainTripId)
     }
 

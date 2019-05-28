@@ -19,8 +19,8 @@ public interface PointsRepository extends JpaRepository<Point, Long> {
       + " ON (f.POINT_ID = POINT.POINT_ID"
       + " AND f.Rank = 1)"
       + " WHERE   "
-      + " UCASE(POINT.POINT_NAME_UA) LIKE ?1"
-      + " OR UCASE(POINT.POINT_NAME_EN) LIKE ?1"
-      + " OR UCASE(POINT.POINT_NAME_RU) LIKE ?1", nativeQuery = true)
+      + " UCASE(POINT.POINT_NAME_UA) LIKE %?1%"
+      + " OR UCASE(POINT.POINT_NAME_EN) LIKE %?1%"
+      + " OR UCASE(POINT.POINT_NAME_RU) LIKE %?1%", nativeQuery = true)
   List<Point> findMyTop10ByName(String searchPattern);
 }

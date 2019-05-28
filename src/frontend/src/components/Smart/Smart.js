@@ -171,7 +171,6 @@ class Smart extends Component {
         }
         this.props.setTrip(trip)
         this.rejectRoute()
-        this.props.history.push({pathname: '/main'})
     }
 
     rejectRoute = () => {
@@ -263,6 +262,12 @@ class Smart extends Component {
             enableHighAccuracy: true
         };
         navigator.geolocation.getCurrentPosition(this.locationFetchSuccess, this.locationFetchError, options);
+    }
+
+    componentDidUpdate(prevProps){
+        if (this.props.trips.mainTripId !== prevProps.trips.mainTripId && this.props.trips.mainTripId){
+            this.props.history.push({pathname: '/main'})
+        }
     }
 
 

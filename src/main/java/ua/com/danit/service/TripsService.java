@@ -62,8 +62,8 @@ public class TripsService {
     return "{\"tripId\": " + trip.getTripId().toString() + "}";
   }
 
-  public List<TripResponseWithUser> getOwnAndOtherTrips(Trip tripOwn, User user) {
-    List<Trip> trips = tripsRepository.findOwnTripAndOtherTrips(tripOwn.getTripId(), user.getUserId());
+  public List<TripResponseWithUser> getOwnAndOtherTrips(Trip ownTrip, User user) {
+    List<Trip> trips = tripsRepository.findOwnTripAndOtherTrips(ownTrip.getTripId(), user.getUserId());
     List<TripResponseWithUser> tripResponses = new LinkedList<>();
     for (Trip trip : trips) {
       tripResponses.add(tripFacade.mapEntityToResponseDtoWithUser(trip));
