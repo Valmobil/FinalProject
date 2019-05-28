@@ -7,7 +7,7 @@ import {callApi} from "../utils/utils";
 
 export const setTrip = (trip) => dispatch => {
     console.log('setTrip: trip = ', trip)
-    callApi('put', '/api/trips', trip)
+    callApi('post', '/api/trips', trip)
         .then(res => {
           console.log('setTrip: res = ', res.data.tripId)
           dispatch({type: SET_MAIN_TRIP_ID, payload: res.data.tripId})
