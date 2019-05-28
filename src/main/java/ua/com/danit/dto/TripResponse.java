@@ -12,5 +12,4 @@ public class TripResponse {
   private List<TripPointResponse> tripPoint;
   private LocalDateTime tripDateTime;
   private int tripSitsQty;
-  private int tripIsDeleted;
 }
