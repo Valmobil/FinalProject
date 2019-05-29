@@ -155,9 +155,8 @@ export const setErrorMessage = (message) => dispatch => {
 
 //* **********************
 
-
-
-export const setPhoto = (image) => dispatch => {
+export const setPhoto = (image, user) => dispatch => {
+    dispatch({type: SET_USER, payload: user})
     let data = new FormData();
     data.append('fileUpload', image);
     callApi('put', 'api/images', data)

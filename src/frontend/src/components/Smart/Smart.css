@@ -10,21 +10,12 @@
 .logout-button{
     margin-top: 30px;
 }
-.role-question{
-    margin-top: 40px;
-    margin-bottom: 15px;
-    animation: question .5s forwards;
-}
-@keyframes question {
-    from {opacity: 0}
-    to {opacity: 1}
-}
 .type-button-container{
     display: flex;
     justify-content: space-between;
     width: 80%;
     height: 40px;
-    margin-top: 10px;
+    margin-top: 70px;
 }
 .type-button{
     position: relative;
@@ -62,4 +53,7 @@
 }
 .smart-button{
     border: 1px solid red;
+}
+.quick-trips{
+    margin-top: 20px;
 }
