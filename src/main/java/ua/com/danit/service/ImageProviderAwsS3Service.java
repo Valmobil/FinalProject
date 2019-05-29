@@ -11,8 +11,8 @@ import java.io.ByteArrayInputStream;
 @Service
 public class ImageProviderAwsS3Service extends ImageDbProviderImpl {
 
-  private static final String S3_BUCKET_NAME = "imagestoredev/users/";
-  public static final String IMAGE_EXTENSION = ".png";
+  private static final String S3_BUCKET_NAME = "imagestoredev/users";
+  private static final String IMAGE_EXTENSION = ".png";
   private AmazonS3Client s3;
 
   @Autowired
@@ -35,9 +35,16 @@ public class ImageProviderAwsS3Service extends ImageDbProviderImpl {
 
   @Override
   public String putImage(byte[] file, User user, String name) {
+    file = this.imageDeCompressPng(file);
+    if ("".equals(name)) {
+      name = newImageName()+IMAGE_EXTENSION;
+    }
     s3.putObject(S3_BUCKET_NAME, name, new ByteArrayInputStream(file), null);
     return getUrlFromFileKey(name);
   }
+
+
+
 
   @Override
   public void getImage() {
