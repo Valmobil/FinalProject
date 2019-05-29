@@ -1,5 +1,6 @@
 package ua.com.danit.config;
 
+import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -42,6 +43,7 @@ public class ApplicationBeans {
 
   @Bean
   public AmazonS3Client amazonS3() {
+
     return (AmazonS3Client) AmazonS3ClientBuilder
         .standard()
         .withRegion(Regions.EU_CENTRAL_1)
