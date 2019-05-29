@@ -37,13 +37,11 @@ public class ImageProviderAwsS3Service extends ImageDbProviderImpl {
   public String putImage(byte[] file, User user, String name) {
     file = this.imageDeCompressPng(file);
     if ("".equals(name)) {
-      name = newImageName()+IMAGE_EXTENSION;
+      name = newImageName() + IMAGE_EXTENSION;
     }
     s3.putObject(S3_BUCKET_NAME, name, new ByteArrayInputStream(file), null);
     return getUrlFromFileKey(name);
   }
-
-
 
 
   @Override
