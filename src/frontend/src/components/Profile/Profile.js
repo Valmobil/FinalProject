@@ -104,6 +104,10 @@ class Profile extends Component {
         this.props.history.push({pathname: '/smart'})
     }
 
+    setPhotoAndProfile = (photo) => {
+        this.props.setPhoto(photo, this.state.user)
+    }
+
     componentDidUpdate(prevProps) {
         if (this.props.users.user !== prevProps.users.user) {
             this.setState({user: {...this.state.user, ...this.props.users.user}})
@@ -152,7 +156,7 @@ class Profile extends Component {
             dependentOutput = (
                 <>
                     <Photo
-                        setPhoto={this.props.setPhoto}
+                        setPhoto={this.setPhotoAndProfile}
                         photo={this.props.users.user.userPhoto}
                         sihlouette={manSihlouette}
                         error={this.props.users.errorPopupOpen}
@@ -355,7 +359,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         updateProfile: (user) => dispatch(updateProfile(user)),
-        setPhoto: (photo) => dispatch(setPhoto(photo)),
+        setPhoto: (photo, user) => dispatch(setPhoto(photo, user)),
         confirmEmail: (email) => dispatch(confirmEmail(email)),
     }
 }

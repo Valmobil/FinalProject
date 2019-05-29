@@ -1,6 +1,7 @@
 import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS,
          SET_TRIP, SET_MY_COORDS, SET_TARGET_COORDS, SET_SEARCHED_LOCATION, SET_INTERMEDIATE_POINTS,
-         SET_TRIP_DATE_TIME, SET_MAIN_TRIP_ID, DELETE_TRIP_FROM_HISTORY, } from './trips'
+         SET_TRIP_DATE_TIME, SET_MAIN_TRIP_ID, DELETE_TRIP_FROM_HISTORY, SET_START_LOCATION,
+         SET_FINISH_LOCATION, CLEAR_MAP } from './trips'
 import { errorPopupShow } from './userCreators'
 import {callApi} from "../utils/utils";
 
@@ -11,7 +12,6 @@ export const setTrip = (trip) => dispatch => {
         .then(res => dispatch({type: SET_MAIN_TRIP_ID, payload: res.data.tripId}))
         .catch(err => errorPopupShow())
     dispatch({type: SET_TRIP, trip})
-
 }
 //* **********************
 
@@ -89,5 +89,16 @@ export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch => {
         .then(resp => console.log(resp))
         .catch(err => dispatch(errorPopupShow()))
 }
-//* **********************
+// * *********************
 
+export const setEndLocation = (location, end) => dispatch => {
+    dispatch(setSearchedLocation(''))
+    if (end === 'start'){
+        dispatch({type: SET_START_LOCATION, payload: location})
+    } else dispatch({type: SET_FINISH_LOCATION, payload: location})
+}
+// * *********************
+
+export const clearMap = () => dispatch => {
+    dispatch({type: CLEAR_MAP})
+}

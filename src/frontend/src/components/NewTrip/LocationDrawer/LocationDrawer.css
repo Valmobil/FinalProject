@@ -1,0 +1,15 @@
+.location-button{
+    background: transparent;
+    border: none;
+    font-weight: 500;
+}
+.location-buttons-container{
+    display: flex;
+    justify-content: space-around;
+    margin: 10px 0;
+}
+.location-drawer-header{
+    margin: 10px;
+    text-align: center;
+    font-weight: 500;
+}
