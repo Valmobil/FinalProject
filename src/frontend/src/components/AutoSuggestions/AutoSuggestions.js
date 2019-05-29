@@ -167,8 +167,8 @@ class AutoSuggestions extends Component {
   }
 
   componentDidUpdate(prevProps){
-    if (this.props.searchedLocation !== prevProps.searchedLocation){
-      this.setState({value: this.props.searchedLocation})
+    if (this.props.value !== prevProps.value){
+      this.setState({value: this.props.value})
     }
   }
 

@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -104,6 +103,10 @@ class Profile extends Component {
         this.props.history.push({pathname: '/smart'})
     }
 
+    setPhotoAndProfile = (photo) => {
+        this.props.setPhoto(photo, this.state.user)
+    }
+
     componentDidUpdate(prevProps) {
         if (this.props.users.user !== prevProps.users.user) {
             this.setState({user: {...this.state.user, ...this.props.users.user}})
@@ -152,7 +155,7 @@ class Profile extends Component {
             dependentOutput = (
                 <>
                     <Photo
-                        setPhoto={this.props.setPhoto}
+                        setPhoto={this.setPhotoAndProfile}
                         photo={this.props.users.user.userPhoto}
                         sihlouette={manSihlouette}
                         error={this.props.users.errorPopupOpen}
@@ -342,10 +345,6 @@ const style = {
     },
 }
 
-Profile.propTypes = {
-    classes: PropTypes.object.isRequired
-}
-
 const mapStateToProps = (state) => {
     return {
         users: state.users
@@ -355,7 +354,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         updateProfile: (user) => dispatch(updateProfile(user)),
-        setPhoto: (photo) => dispatch(setPhoto(photo)),
+        setPhoto: (photo, user) => dispatch(setPhoto(photo, user)),
         confirmEmail: (email) => dispatch(confirmEmail(email)),
     }
 }
