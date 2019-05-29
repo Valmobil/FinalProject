@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
+import {withStyles} from '@material-ui/core/styles';
+import {connect} from 'react-redux';
 import {setTargetCoordinates, setTripDateTime, setMyCoordinates, clearMap, setTrip} from '../../actions/tripCreators';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Radio from '@material-ui/core/Radio'
@@ -29,7 +29,7 @@ const styles = theme => ({
         height: 30,
         padding: 0,
         width: '40%',
-        '&:focus':{
+        '&:focus': {
             background: '#fff',
             outline: 'none',
         },
@@ -41,7 +41,7 @@ const styles = theme => ({
         height: 30,
         padding: 0,
         width: '40%',
-        '&:focus':{
+        '&:focus': {
             background: '#fff',
             outline: 'none',
         },
@@ -79,21 +79,21 @@ const theme = createMuiTheme({
     palette: {
         primary: orange
     },
-    typography: { useNextVariants: true }
+    typography: {useNextVariants: true}
 })
 
 
 class NewTrip extends Component {
 
-     state = {
-       valueFrom: this.props.trips.startLocation,
-       valueTo: this.props.trips.finishLocation,
-       car: '',
-       role: 'passenger',
-     }
+    state = {
+        valueFrom: this.props.trips.startLocation,
+        valueTo: this.props.trips.finishLocation,
+        car: '',
+        role: 'passenger',
+    }
 
     handleRadio = event => {
-        this.setState({ role: event.target.value })
+        this.setState({role: event.target.value})
     };
 
     handleInput = ({target: {name, value}}) => {
@@ -101,20 +101,20 @@ class NewTrip extends Component {
     }
 
     setValueFrom = (valueFrom) => {
-      this.setState({
-          valueFrom
-      })
+        this.setState({
+            valueFrom
+        })
     }
 
     setValueTo = (valueTo) => {
-      this.setState({
-          valueTo
-      })
+        this.setState({
+            valueTo
+        })
     }
 
     getIntermediate = () => new Promise((resolve) => {
         let check = () => {
-            if (this.props.trips.intermediatePoints.length > 0){
+            if (this.props.trips.intermediatePoints.length > 0) {
                 resolve(this.props.trips.intermediatePoints)
             } else {
                 setTimeout(check, 10)
@@ -158,77 +158,77 @@ class NewTrip extends Component {
     }
 
     rejectRoute = () => {
-        this.setState({ valueFrom: '', valueTo: ''})
+        this.setState({valueFrom: '', valueTo: ''})
         this.props.setTargetCoordinates(null)
         this.props.setMyCoordinates(null)
         this.props.clearMap()
     }
 
 
-    componentDidUpdate(prevProps){
-         if (this.props.trips.startLocation !== prevProps.trips.startLocation
-             || this.props.trips.finishLocation !== prevProps.trips.finishLocation){
-             this.setState({valueFrom: this.props.trips.startLocation, valueTo: this.props.trips.finishLocation})
-         }
+    componentDidUpdate(prevProps) {
+        if (this.props.trips.startLocation !== prevProps.trips.startLocation
+            || this.props.trips.finishLocation !== prevProps.trips.finishLocation) {
+            this.setState({valueFrom: this.props.trips.startLocation, valueTo: this.props.trips.finishLocation})
+        }
     }
 
     render() {
-        const { classes } = this.props;
-        const { role, car, valueFrom, valueTo } = this.state
-        const { userCars } = this.props.users.user
+        const {classes} = this.props;
+        const {role, car, valueFrom, valueTo} = this.state
+        const {userCars} = this.props.users.user
         let currentCar = userCars.length === 1 ? userCars[0] : car
         const carList = userCars.map((item) => {
-            return <MenuItem value={item} key = {item.userCarId}>{item.userCarName + ' ' + item.userCarColour}</MenuItem>
+            return <MenuItem value={item} key={item.userCarId}>{item.userCarName + ' ' + item.userCarColour}</MenuItem>
         })
-      return (
-            <div className='trip-container' >
+        return (
+            <div className='trip-container'>
                 <LocationDrawer/>
                 <div className='new-trip' style={{marginTop: 60}}>
-                  <span>creating new trip</span>
+                    <span>creating new trip</span>
                     <ForDateTimePickers/>
                     <MuiThemeProvider theme={theme}>
-                    <RadioGroup
-                        aria-label="position"
-                        name="position"
-                        value={role}
-                        onChange={this.handleRadio}
-                        row
-                        style={style.radio}
-                    >
-                        <FormControlLabel
-                            value="passenger"
-                            control={<Radio color="primary" />}
-                            label="passenger"
-                            labelPlacement="top"
-                        />
-                        <FormControlLabel
-                            value="driver"
-                            control={<Radio color="primary" />}
-                            label="driver"
-                            labelPlacement="top" color="primary"
-                        />
-                    </RadioGroup>
+                        <RadioGroup
+                            aria-label="position"
+                            name="position"
+                            value={role}
+                            onChange={this.handleRadio}
+                            row
+                            style={style.radio}
+                        >
+                            <FormControlLabel
+                                value="passenger"
+                                control={<Radio color="primary"/>}
+                                label="passenger"
+                                labelPlacement="top"
+                            />
+                            <FormControlLabel
+                                value="driver"
+                                control={<Radio color="primary"/>}
+                                label="driver"
+                                labelPlacement="top" color="primary"
+                            />
+                        </RadioGroup>
                     </MuiThemeProvider>
 
-                  <AutoSuggestions
-                      label = 'Start point'
-                      setCoordinates={this.props.setMyCoordinates}
-                      setValue ={this.setValueFrom}
-                      method='post'
-                      url='/api/points'
-                      data={{ pointSearchText: this.state.valueFrom }}
-                      value={valueFrom}
-                      rejectEdit={this.rejectEdit}
+                    <AutoSuggestions
+                        label='Start point'
+                        setCoordinates={this.props.setMyCoordinates}
+                        setValue={this.setValueFrom}
+                        method='post'
+                        url='/api/points'
+                        data={{pointSearchText: this.state.valueFrom}}
+                        value={valueFrom}
+                        rejectEdit={this.rejectEdit}
                     />
                     <AutoSuggestions
-                      label = 'End point'
-                      setCoordinates={this.props.setTargetCoordinates}
-                      setValue ={this.setValueTo}
-                      method='post'
-                      url='/api/points'
-                      data={{ pointSearchText: this.state.valueTo }}
-                      value={valueTo}
-                      rejectEdit={this.rejectEdit}
+                        label='End point'
+                        setCoordinates={this.props.setTargetCoordinates}
+                        setValue={this.setValueTo}
+                        method='post'
+                        url='/api/points'
+                        data={{pointSearchText: this.state.valueTo}}
+                        value={valueTo}
+                        rejectEdit={this.rejectEdit}
                     />
 
                     <Map
@@ -256,17 +256,17 @@ class NewTrip extends Component {
 
                     <div className="trip-btn-container">
                         <Button
-                             onClick={this.submitRoute}
-                             classes={{
-                                 root: classes.acceptButton,
-                                 label: classes.label
-                             }}
-                             disabled = {valueFrom.length === 0 || valueTo.length === 0 || (role === 'driver' && car.length === 0)}
+                            onClick={this.submitRoute}
+                            classes={{
+                                root: classes.acceptButton,
+                                label: classes.label
+                            }}
+                            disabled={valueFrom.length === 0 || valueTo.length === 0 || (role === 'driver' && car.length === 0)}
                         >
                             Accept
                         </Button>
                         <Button
-                            onClick = {this.rejectRoute}
+                            onClick={this.rejectRoute}
                             classes={{
                                 root: classes.rejectButton,
                                 label: classes.label
@@ -282,21 +282,21 @@ class NewTrip extends Component {
 }
 
 const mapStateToProps = state => {
-  return{
-    users: state.users,
-    trips: state.trips,
-    // newTrip: state.users.newTrip
-  }
+    return {
+        users: state.users,
+        trips: state.trips,
+        // newTrip: state.users.newTrip
+    }
 }
 
 const mapDispatchToProps = dispatch => {
-  return {
-    setTargetCoordinates: (coords) => dispatch(setTargetCoordinates(coords)),
-    setMyCoordinates: (coordinates) => dispatch(setMyCoordinates(coordinates)),
-    setTripDateTime: (newTripDate) => dispatch(setTripDateTime(newTripDate)),
-    clearMap: () => dispatch(clearMap()),
-    setTrip: (trip) => dispatch(setTrip(trip)),
-  }
+    return {
+        setTargetCoordinates: (coords) => dispatch(setTargetCoordinates(coords)),
+        setMyCoordinates: (coordinates) => dispatch(setMyCoordinates(coordinates)),
+        setTripDateTime: (newTripDate) => dispatch(setTripDateTime(newTripDate)),
+        clearMap: () => dispatch(clearMap()),
+        setTrip: (trip) => dispatch(setTrip(trip)),
+    }
 }
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(NewTrip));

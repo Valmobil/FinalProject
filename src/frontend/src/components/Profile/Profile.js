@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -344,10 +343,6 @@ const style = {
     input: {
         width: '100%',
     },
-}
-
-Profile.propTypes = {
-    classes: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => {
