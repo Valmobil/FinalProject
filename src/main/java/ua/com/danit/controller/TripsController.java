@@ -33,7 +33,7 @@ public class TripsController {
     this.userTokensService = userTokensService;
   }
 
-  @PutMapping
+  @PostMapping
   public ResponseEntity<String> saveTripToDb(@RequestBody Trip trip, @RequestHeader String authorization) {
     return new ResponseEntity<>(tripsService.putTripToDb(trip, userTokensService.findUserByAccessToken(authorization)),
         HttpStatus.OK);
