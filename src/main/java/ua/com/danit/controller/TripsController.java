@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,13 +33,13 @@ public class TripsController {
     this.userTokensService = userTokensService;
   }
 
-  @PutMapping
+  @PostMapping
   public ResponseEntity<String> saveTripToDb(@RequestBody Trip trip, @RequestHeader String authorization) {
     return new ResponseEntity<>(tripsService.putTripToDb(trip, userTokensService.findUserByAccessToken(authorization)),
         HttpStatus.OK);
   }
 
-  @PostMapping("list")
+  @GetMapping()
   public ResponseEntity<List<TripResponse>> getUserTripList(@RequestHeader String authorization) {
     return new ResponseEntity<>(tripsService.getTripListService(userTokensService.findUserByAccessToken(authorization)),
         HttpStatus.OK);
