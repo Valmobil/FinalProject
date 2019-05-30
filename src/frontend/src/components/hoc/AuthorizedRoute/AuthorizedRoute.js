@@ -8,7 +8,7 @@ const AuthorizedRoute = (props) => {
 
     const {component: Component, userRole, path, ...rest} = props
     const {userName, userPhone, userMail, userPhoto} = rest.user
-    const user =  userName && userPhone && userMail && (userPhoto && userPhoto.includes('id'))
+    const user =  userName && userPhone && userMail && userPhoto
     let isApproved = false
     if (userRole === 'user') {
         isApproved = user
