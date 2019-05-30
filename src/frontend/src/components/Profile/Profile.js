@@ -92,7 +92,7 @@ class Profile extends Component {
         else if (currentInput !== 'userMail' && !(userMail && email.test(userMail.toLowerCase()))) {
             this.setState({alertError: 'Please enter your email', snackbarOpen: true})
         }
-        else if (currentInput !== 'fileUpload' && userName && userPhone && userMail && !(userPhoto && userPhoto.includes('id'))) {
+        else if (currentInput !== 'fileUpload' && userName && userPhone && userMail && !userPhoto) {
             this.setState({alertError: 'Please upload photo', snackbarOpen: true})
         }
     }
@@ -120,7 +120,7 @@ class Profile extends Component {
         const allChecks = (userPhone && phoneNumber.test(userPhone.split('-').join('')))
             && (userMail && email.test(userMail.toLowerCase()))
             && (userName && userName.length > 0)
-            && (userPhoto && userPhoto.includes('id'))
+            && userPhoto
 
         let carList = userCars.map(item => {
             const car = item.userCarName + ' ' + item.userCarColour
