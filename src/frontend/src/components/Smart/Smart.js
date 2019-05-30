@@ -1,8 +1,14 @@
 import React, {Component} from 'react'
-import { connect } from 'react-redux'
-import { logOut, setUserPoints } from '../../actions/userCreators'
-import { setTrip, setMyCoordinates, setSearchedLocation, setTargetCoordinates, setEndLocation} from '../../actions/tripCreators'
-import { withStyles } from '@material-ui/core/styles'
+import {connect} from 'react-redux'
+import {logOut, setUserPoints} from '../../actions/userCreators'
+import {
+    setTrip,
+    setMyCoordinates,
+    setSearchedLocation,
+    setTargetCoordinates,
+    setEndLocation
+} from '../../actions/tripCreators'
+import {withStyles} from '@material-ui/core/styles'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
@@ -45,7 +51,7 @@ const styles = theme => ({
         padding: '0 10px',
         marginLeft: 10,
         marginTop: 20,
-        '&:focus':{
+        '&:focus': {
             background: '#fff',
             outline: 'none',
             color: '#008000',
@@ -81,7 +87,7 @@ const theme = createMuiTheme({
     palette: {
         primary: orange
     },
-    typography: { useNextVariants: true }
+    typography: {useNextVariants: true}
 })
 
 
@@ -95,7 +101,6 @@ class Smart extends Component {
         id: null,
         value: '',
     };
-
 
 
     handleInput = ({target: {name, value}}) => {
@@ -112,7 +117,12 @@ class Smart extends Component {
 
 
     handleEdit = (item) => {
-        this.setState({editing: item.userPointId, name: item.userPointName, value: item.userPointAddress, adding: false})
+        this.setState({
+            editing: item.userPointId,
+            name: item.userPointName,
+            value: item.userPointAddress,
+            adding: false
+        })
         this.props.setTargetCoordinates({
             latitude: item.userPointLatitude,
             longitude: item.userPointLongitude,
@@ -131,7 +141,8 @@ class Smart extends Component {
         let newUserPoints = this.props.users.userPoints.map(item => {
             if (item.userPointId === id) {
                 let pointAddress = this.props.users.searchedLocation || this.state.value
-                return {...item,
+                return {
+                    ...item,
                     userPointName: this.state.name,
                     userPointAddress: pointAddress,
                     userPointLatitude: this.props.trips.targetCoordinates.latitude,
@@ -180,16 +191,16 @@ class Smart extends Component {
         this.setState({value})
     }
 
-    tripsHistoryRedirect = () =>{
+    tripsHistoryRedirect = () => {
         this.props.history.push('/mytrips')
     }
 
-    newTripRedirect = () =>{
+    newTripRedirect = () => {
         this.props.history.push('/newtrip')
     }
 
 
-    componentDidMount () {
+    componentDidMount() {
         if (this.props.users.user.userCars.length === 1) this.setState({car: this.props.users.user.userCars[0]})
         const options = {
             enableHighAccuracy: true
@@ -197,21 +208,21 @@ class Smart extends Component {
         navigator.geolocation.getCurrentPosition(this.locationFetchSuccess, this.locationFetchError, options);
     }
 
-    componentDidUpdate(prevProps){
-        if (this.props.trips.mainTripId !== prevProps.trips.mainTripId && this.props.trips.mainTripId){
+    componentDidUpdate(prevProps) {
+        if (this.props.trips.mainTripId !== prevProps.trips.mainTripId && this.props.trips.mainTripId) {
             this.props.history.push({pathname: '/main'})
         }
     }
 
 
-    render () {
-        const { name, value, editing, adding, creatingTrip, id } = this.state
-        const { userPoints } = this.props.users
+    render() {
+        const {name, value, editing, adding, creatingTrip, id} = this.state
+        const {userPoints} = this.props.users
         const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
         let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
         let placesList = null
-        if (adding){
+        if (adding) {
             placesList = (
                 <div style={{width: '100%', marginTop: 70}}>
                     <span>add new favorite point</span>
@@ -223,7 +234,7 @@ class Smart extends Component {
                         setValue={this.setValue}
                         method='post'
                         url='/api/points/'
-                        data={{ pointSearchText: value }}
+                        data={{pointSearchText: value}}
                         value={value}
                         rejectEdit={this.rejectEdit}
                     />
@@ -274,7 +285,7 @@ class Smart extends Component {
                 return output
             })
         let dependentButton = null
-        if ( !adding && !editing ) {
+        if (!adding && !editing) {
             dependentButton = (
                 <Slide direction="up" in={!adDisable} mountOnEnter unmountOnExit>
                     <button
@@ -294,24 +305,24 @@ class Smart extends Component {
                     {!adding && !editing &&
                     <>
                         {!creatingTrip &&
-                            <>
-                        <Slide direction="down" in={true} mountOnEnter unmountOnExit>
-                            <div className="type-button-container">
-                                <button className='type-button'
-                                        onClick={this.newTripRedirect}
-                                >
-                                    Plan new trip
-                                </button>
+                        <>
+                            <Slide direction="down" in={true} mountOnEnter unmountOnExit>
+                                <div className="type-button-container">
+                                    <button className='type-button'
+                                            onClick={this.newTripRedirect}
+                                    >
+                                        Plan new trip
+                                    </button>
 
-                                <button className='type-button'
-                                        onClick={this.tripsHistoryRedirect}
-                                >
-                                    Trip history
-                                </button>
-                            </div>
-                        </Slide>
-                        <span className="quick-trips">Quick trips ( long tap to edit/delete )</span>
-                            </>
+                                    <button className='type-button'
+                                            onClick={this.tripsHistoryRedirect}
+                                    >
+                                        Trip history
+                                    </button>
+                                </div>
+                            </Slide>
+                            <span className="quick-trips">Quick trips ( long tap to edit/delete )</span>
+                        </>
                         }
                     </>
                     }
@@ -322,6 +333,7 @@ class Smart extends Component {
         )
     }
 }
+
 const mapStateToProps = (state) => {
     return {
         users: state.users,
@@ -340,16 +352,6 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Smart))
-
-
-
-
-
-
-
-
-
-
 
 
 // import React, {Component} from 'react'
