@@ -287,6 +287,8 @@ class Map extends Component {
     }
 
     render() {
+        // console.log('MAP: myCoordinates = ', this.props.coords)
+        // console.log('MAP: targetCoordinates = ', this.props.targetCoordinates)
         let height = this.props.height ? this.props.height : 350
         let marginTop = this.props.marginTop ? this.props.marginTop : '20px'
         return (
