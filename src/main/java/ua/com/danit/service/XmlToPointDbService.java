@@ -42,11 +42,13 @@ public class XmlToPointDbService extends Thread {
     System.out.println("Map Points export from XML to DB start.");
     String xmlFileName = env.getProperty("application.map.xmlsource");
     String xmlFileReadRowsQty = env.getProperty("application.map.xmlsourcesavetodbqty");
-    loadXmlFile(xmlFileName, xmlFileReadRowsQty);
+    if (pointsRepository.count() == 0 ) {
+      loadXmlFile(xmlFileName, xmlFileReadRowsQty);
+    }
     System.out.println("Map Points export from XML to DB is finished");
   }
 
-  void loadXmlFile(String fileName, String xmlFileReadRowsQty) {
+  private void loadXmlFile(String fileName, String xmlFileReadRowsQty) {
     //Read Root of XLS file
     File file = new File(fileName);
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -55,11 +57,7 @@ public class XmlToPointDbService extends Thread {
     try {
       builder = factory.newDocumentBuilder();
       xmlDoc = builder.parse(file);
-    } catch (ParserConfigurationException e) {
-      e.printStackTrace();
-    } catch (SAXException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
+    } catch (ParserConfigurationException | SAXException | IOException e) {
       e.printStackTrace();
     }
 

@@ -43,12 +43,10 @@ public class ApplicationBeans {
 
   @Bean
   public AmazonS3Client amazonS3() {
-
     return (AmazonS3Client) AmazonS3ClientBuilder
         .standard()
         .withRegion(Regions.EU_CENTRAL_1)
         .withCredentials(new PropertiesFileCredentialsProvider(s3CredentialsPath))
         .build();
   }
-
 }
