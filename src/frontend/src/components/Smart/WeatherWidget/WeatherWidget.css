@@ -1,0 +1,17 @@
+.widget-container{
+    display: flex;
+    margin: 60px calc(10% - 30px) auto auto;
+    color: #fff;
+    animation: weather .5s forwards;
+}
+@keyframes weather {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+.widget-paragraph{
+    margin-bottom: 0;
+}
+.wi:not(.wi-thermometer){
+    margin-right: 10px;
+    margin-left: 10px;
+}

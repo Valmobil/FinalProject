@@ -17,6 +17,7 @@ import SmartRoute from "./SmartRoute/SmartRoute";
 import LiveSearch from "../LiveSearch/LiveSearch";
 import Map from "../Map/Map";
 import './Smart.css'
+import WeatherWidget from "./WeatherWidget/WeatherWidget";
 
 
 const windowWidth = window.innerWidth <= 380 ? window.innerWidth : 380
@@ -108,11 +109,16 @@ class Smart extends Component {
     }
 
     handleRoute = (userPoint) => {
-        this.props.setTargetCoordinates({
-            latitude: userPoint.userPointLatitude,
-            longitude: userPoint.userPointLongitude,
-        })
-        this.setState({creatingTrip: true, id: userPoint.userPointId})
+        if (!userPoint.userPointLatitude || !userPoint.userPointLongitude || userPoint.userPointLatitude === 0 || userPoint.userPointLongitude === 0){
+            this.handleEdit(userPoint)
+        } else {
+            this.props.setTargetCoordinates({
+                latitude: userPoint.userPointLatitude,
+                longitude: userPoint.userPointLongitude,
+            })
+            this.setState({creatingTrip: true, id: userPoint.userPointId})
+        }
+
     }
 
 
@@ -300,7 +306,9 @@ class Smart extends Component {
         }
 
         return (
+
             <MuiThemeProvider theme={theme}>
+                <WeatherWidget />
                 <div className="welcome-user">
                     {!adding && !editing &&
                     <>

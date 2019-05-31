@@ -127,7 +127,7 @@ const Photo = ({ classes, setPhoto, photo, sihlouette, error, onFocus }) => {
                     </Button>
                 </div>
             </>
-    let userAvatar = photo && photo.includes('id') ? photo : sihlouette
+    let userAvatar = photo ? photo : sihlouette
     let userAvatarBox = null;
     if (avatarShown && !uploadingOpen){
         userAvatarBox = (
