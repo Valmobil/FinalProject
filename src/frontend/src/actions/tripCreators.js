@@ -47,6 +47,7 @@ export const setIntermediatePoints = (points) => dispatch => {
 //* **********************
 
 export const setMainTrips = (id) => dispatch => {
+    console.log('tripCreators: id = ', id)
     callApi('post', 'api/trips/others', {tripId: id})
         .then(res => {
             console.log('tripCreators: res = ', res)

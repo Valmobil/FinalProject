@@ -11,8 +11,13 @@ import { singleCallApi } from "../../utils/utils";
 import orange from "@material-ui/core/colors/orange";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import MicIcon from '@material-ui/icons/Mic'
+import MicOffIcon from '@material-ui/icons/MicOff'
 
 import {connect} from "react-redux";
+import VoiceSearch from "../VoiceSearch/VoiceSearch";
 
 const theme = createMuiTheme({
     palette: {
@@ -69,6 +74,13 @@ const styles = theme => ({
         padding: 0,
         width: '47%'
     },
+    microphone: {
+        cursor: 'pointer',
+        color: '#3E4566',
+        '&:focus': {
+            outline: 'none',
+        }
+    },
 })
 
 class LiveSearch extends Component {
@@ -76,6 +88,7 @@ class LiveSearch extends Component {
     state = {
         value: '',
         suggestions: [],
+        start: false,
     };
 
     getSuggestionValue = suggestion => suggestion.pointNameEn ? suggestion.pointNameEn : null;
@@ -133,6 +146,15 @@ class LiveSearch extends Component {
         this.props.setValue(newValue)
     };
 
+    voiceHandle = (value) => {
+        this.setState({value})
+        this.props.setValue(value)
+    }
+
+    handleStart = () => {
+        this.setState({start: !this.state.start})
+    }
+
     onSuggestionSelected = (e, {suggestion}) => {
         this.props.setCoordinates({
             latitude: suggestion.pointLatitude.toFixed(6),
@@ -168,6 +190,17 @@ class LiveSearch extends Component {
                 classes: {
                     input: classes.inputColor,
                 },
+                endAdornment: (
+                <InputAdornment position="end">
+                <IconButton
+                aria-label="microphone"
+                className={classes.microphone}
+                onClick={this.handleStart}
+                >
+                    {this.state.start ? <MicIcon/> : <MicOffIcon/>}
+                </IconButton>
+                </InputAdornment>
+                ),
             }}
             {...other}
         />
@@ -220,6 +253,7 @@ class LiveSearch extends Component {
             onSuggestionSelected: this.onSuggestionSelected,
         };
         return(
+            <>
             <Autosuggest
                 {...autosuggestProps}
                 inputProps={{
@@ -240,6 +274,11 @@ class LiveSearch extends Component {
                     </Paper>
                 )}
             />
+                <VoiceSearch
+                voiceHandle={this.voiceHandle}
+                start={this.state.start}
+                />
+            </>
         )
     }
 }

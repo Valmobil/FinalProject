@@ -144,10 +144,12 @@ class NewTrip extends Component {
                 tripPoint = tripPoint.concat(res)
                 endPoint.tripPointSequence = tripPoint.length
                 tripPoint.push(endPoint)
-                const carId = this.state.role === 'driver' ? this.state.car.carId : null
+                const {userCars} = this.props.users.user
+                let currentCar = userCars.length === 1 ? userCars[0] : this.state.car
+                const userCarId = this.state.role === 'driver' ? currentCar.userCarId : null
                 let trip = {
-                    car: {
-                        carId,
+                    userCar: {
+                        userCarId,
                     },
                     tripPoint,
                     tripDateTime: new Date().toISOString(),
@@ -173,8 +175,9 @@ class NewTrip extends Component {
     }
 
     render() {
-        const {classes} = this.props;
-        const {role, car, valueFrom, valueTo} = this.state
+        const { classes } = this.props;
+        const { smart } = this.props.location
+        const { role, car, valueFrom, valueTo } = this.state
         const {userCars} = this.props.users.user
         let currentCar = userCars.length === 1 ? userCars[0] : car
         const carList = userCars.map((item) => {
@@ -234,10 +237,11 @@ class NewTrip extends Component {
                     <Map
                         height={230}
                         showSmartRoute={true}
+                        smart={smart}
                     />
                     {this.state.role === 'driver' &&
                     <FormControl className={classes.formControl}>
-                        <InputLabel style={{color: '#fff'}}>{car.length === 0 ? 'Your car*' : ''}</InputLabel>
+                        <InputLabel style={{color: '#fff'}}>{currentCar.length === 0 ? 'Your car*' : ''}</InputLabel>
                         <Select
                             value={currentCar}
                             onChange={this.handleInput}
@@ -261,7 +265,7 @@ class NewTrip extends Component {
                                 root: classes.acceptButton,
                                 label: classes.label
                             }}
-                            disabled={valueFrom.length === 0 || valueTo.length === 0 || (role === 'driver' && car.length === 0)}
+                            disabled={valueFrom.length === 0 || valueTo.length === 0 || (role === 'driver' && currentCar.length === 0)}
                         >
                             Accept
                         </Button>

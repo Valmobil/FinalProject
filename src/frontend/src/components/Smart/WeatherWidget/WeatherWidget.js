@@ -18,7 +18,7 @@ const WeatherWidget = (props) => {
         }
     }, [props.coordinates])
     const weatherIcon = `wi wi-owm-${icon}`
-    let widget = props.coordinates ?
+    let widget = temperature ?
         (
             <div className='widget-container'>
                 <i className={weatherIcon}></i>
