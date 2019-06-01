@@ -230,7 +230,7 @@ class Smart extends Component {
         let placesList = null
         if (adding) {
             placesList = (
-                <div style={{width: '100%', marginTop: 70}}>
+                <div style={{width: '100%'}}>
                     <span>add new favorite point</span>
                     <LiveSearch
                         name={name}
@@ -273,7 +273,7 @@ class Smart extends Component {
                     const address = userPoints.find(item => item.userPointId === id).userPointName
                     this.props.setEndLocation('My location', 'start')
                     this.props.setEndLocation(address, 'end')
-                    this.props.history.push({pathname: '/newtrip'})
+                    this.props.history.push({pathname: '/newtrip', smart: true})
                 } else {
                     output = (
                         item.userPointName !== '<no point>' &&
