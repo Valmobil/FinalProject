@@ -52,13 +52,21 @@ const styles = theme => ({
 class Main extends Component{
 
 
-    componentDidMount(){
-      console.log('Main: this.props.trips.mainTripId = ', this.props.trips.mainTripId)
+    componentDidUpdate(prevProps){
+        if (this.props.trips.mainTripId !== prevProps.trips.mainTripId){
+            this.props.setMainTrips(this.props.trips.mainTripId)
+        }
+    }
 
-       this.props.setMainTrips(this.props.trips.mainTripId)
+    componentDidMount(){
+        if (this.props.trips.mainTripId){
+            this.props.setMainTrips(this.props.trips.mainTripId)
+        }
+
     }
 
     render(){
+
         const { classes } = this.props;
         const { mainTripParams, mainTripPointNames } = this.props.trips
         const routesArray = mainTripPointNames.slice()

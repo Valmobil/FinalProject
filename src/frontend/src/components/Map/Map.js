@@ -125,7 +125,8 @@ class Map extends Component {
     }
 
     calculateRouteFromAtoB = (params) => {
-        if (this.props.showSmartRoute){
+        console.log('Map: params = ', params)
+        if (this.props.showSmartRoute || this.props.showMainRoute){
             const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
             this.map.addObject(currentMarker);
         }
@@ -240,7 +241,7 @@ class Map extends Component {
         const behavior = new H.mapevents.Behavior(events);
         // eslint-disable-next-line
         const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
-        this.setUpClickListener()
+        if (!this.props.smart) this.setUpClickListener()
         if (this.props.targetCoordinates) this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
         if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute ){
             this.calculateRouteFromAtoB()
@@ -289,6 +290,8 @@ class Map extends Component {
     render() {
         // console.log('MAP: myCoordinates = ', this.props.coords)
         // console.log('MAP: targetCoordinates = ', this.props.targetCoordinates)
+        // console.log('Map: this.props.userMainTripParams = ', this.props.userMainTripParams)
+        // console.log('Map: this.props.currentMainTripParams = ', this.props.currentMainTripParams)
         let height = this.props.height ? this.props.height : 350
         let marginTop = this.props.marginTop ? this.props.marginTop : '20px'
         return (
