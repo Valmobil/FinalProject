@@ -33,5 +33,5 @@ public class TripPassenger {
   @NonNull
   @JoinColumn(name = "TRIP_PASSENGER_USER_ID", referencedColumnName = "userId")
   private User user;
-  private int tripPassengerEmptySitsQty;
+  private Integer tripPassengerJoinStatus;
 }

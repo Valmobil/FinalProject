@@ -15,4 +15,5 @@ public class TripResponseWithUser {
   private int tripSitsQty;
   private int tripIsDeleted;
   private UserResponseTrip user;
+  private int tripJoinStatus;
 }

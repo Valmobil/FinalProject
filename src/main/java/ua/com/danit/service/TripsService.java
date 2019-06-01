@@ -19,8 +19,12 @@ import ua.com.danit.repository.TripPassengersRepository;
 import ua.com.danit.repository.TripsRepository;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -30,6 +34,15 @@ public class TripsService {
   private TripPassengersRepository tripPassengersRepository;
   private TripPassengerFacade tripPassengerFacade;
 
+  private static final Map<String, String> TRIP_JOIN_MATRIX = Stream.of(new String[][]{
+      {"0_0", "0"}, {"1_0", "1"}, {"2_0", "2"}, {"3_0", "4"}, {"4_0", "4"},
+      {"0_1", "1"}, {"1_1", "1"}, {"2_1", "3"}, {"3_1", "3"}, {"4_1", "4"},
+      {"0_2", "2"}, {"1_2", "3"}, {"2_2", "2"}, {"3_2", "3"}, {"4_2", "2"},
+      {"0_3", "3"}, {"1_3", "3"}, {"2_3", "3"}, {"3_3", "3"}, {"4_3", "3"},
+      {"0_4", "4"}, {"1_4", "4"}, {"2_4", "4"}, {"3_4", "4"}, {"4_4", "4"}})
+      .collect(Collectors.toMap(data -> data[0], data -> data[1]));
+
+
   @Autowired
   public TripsService(TripsRepository tripsRepository, TripFacade tripFacade,
                       TripPassengersRepository tripPassengersRepository, TripPassengerFacade tripPassengerFacade) {
@@ -37,10 +50,6 @@ public class TripsService {
     this.tripFacade = tripFacade;
     this.tripPassengersRepository = tripPassengersRepository;
     this.tripPassengerFacade = tripPassengerFacade;
-  }
-
-  public Trip getTripById(Long tripId) {
-    return tripsRepository.getOne(tripId);
   }
 
   public String putTripToDb(Trip trip, User user) {
@@ -125,8 +134,38 @@ public class TripsService {
   public String putPassengers(List<TripPassengerResponse> tripPassengerResponse, User user) {
     List<TripPassenger> tripPassengers = tripPassengerFacade.mapRequestDtoListToEntityList(tripPassengerResponse);
     tripPassengers.forEach(u -> u.setUser(user));
+
+    //Combine DB data with user response
+    if (tripPassengers.size() == 0) {
+      throw new ApplicationException("Error! Have no any trip passengers!");
+    }
+    Trip basicTrip = new Trip()
+        .builder()
+        .tripId(tripPassengers.get(0).getTripDriver().getTripId())
+        .build();
+    Boolean changesExists = combineStatuses(tripPassengers, user, basicTrip);
     tripPassengersRepository.saveAll(tripPassengers);
-    return "Ok";
+    if (changesExists) {
+      return "Please refresh list of trips!";
+    } else {
+      return "Ok";
+    }
+  }
+
+  private Boolean combineStatuses(List<TripPassenger> tripPassengers, User user, Trip basicTrip) {
+    List<TripPassenger> oldTripPass = tripPassengersRepository.findByUserAndAndTripDriver(user, basicTrip);
+    Boolean sentMessageAboutChanges = false;
+    for (TripPassenger oldTripPassenger : oldTripPass) {
+      for (TripPassenger newTripPassenger : tripPassengers) {
+        if (oldTripPassenger.getTripPassenger() == newTripPassenger.getTripPassenger()) {
+          newTripPassenger.setTripPassengerJoinStatus(
+              Integer.parseInt(TRIP_JOIN_MATRIX.get(oldTripPassenger.getTripPassengerJoinStatus().toString()
+                  + "_" + newTripPassenger.getTripPassengerJoinStatus().toString())));
+        }
+      }
+    }
+
+    return sentMessageAboutChanges;
   }
 }
 
