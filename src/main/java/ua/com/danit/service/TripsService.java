@@ -158,9 +158,12 @@ public class TripsService {
     for (TripPassenger oldTripPassenger : oldTripPass) {
       for (TripPassenger newTripPassenger : tripPassengers) {
         if (oldTripPassenger.getTripPassenger() == newTripPassenger.getTripPassenger()) {
-          newTripPassenger.setTripPassengerJoinStatus(
-              Integer.parseInt(TRIP_JOIN_MATRIX.get(oldTripPassenger.getTripPassengerJoinStatus().toString()
-                  + "_" + newTripPassenger.getTripPassengerJoinStatus().toString())));
+          int newStatus = Integer.parseInt(TRIP_JOIN_MATRIX.get(oldTripPassenger.getTripPassengerJoinStatus().toString()
+              + "_" + newTripPassenger.getTripPassengerJoinStatus().toString()));
+          if (oldTripPassenger.getTripPassengerJoinStatus() != newStatus) {
+            newTripPassenger.setTripPassengerJoinStatus(newStatus);
+            sentMessageAboutChanges = true;
+          }
         }
       }
     }
