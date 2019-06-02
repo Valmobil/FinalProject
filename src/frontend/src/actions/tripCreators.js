@@ -12,6 +12,7 @@ export const setTrip = (trip) => dispatch => {
         .then(res => {
           console.log('setTrip: res = ', res.data.tripId)
           dispatch({type: SET_MAIN_TRIP_ID, payload: res.data.tripId})
+          window.localStorage.setItem('tripId', res.data.tripId)
     })
         .catch(err => errorPopupShow())
     dispatch({type: SET_TRIP, trip})
@@ -118,5 +119,12 @@ export const clearMap = () => dispatch => {
 
 export const setMyLocation = (location) => dispatch => {
     dispatch({type: SET_MY_LOCATION, payload: location})
+}
+//* **********************
+
+export const setMainTripIdFromStorage = () => dispatch => {
+        const tripId = Number(localStorage.getItem('tripId'))
+        dispatch({type: SET_MAIN_TRIP_ID, payload: tripId})
+        dispatch(setMainTrips(tripId))
 }
 
