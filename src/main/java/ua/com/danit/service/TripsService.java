@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.TripPassengerRequest;
 import ua.com.danit.dto.TripPassengerResponse;
@@ -34,6 +35,9 @@ public class TripsService {
   private TripFacade tripFacade;
   private TripPassengersRepository tripPassengersRepository;
   private TripPassengerFacade tripPassengerFacade;
+
+  @Value("${spring.profiles.active}")
+  private String springProfileActive;
 
   private static final Map<String, String> TRIP_JOIN_MATRIX = Stream.of(new String[][]{
       {"0_0", "0"}, {"1_0", "1"}, {"2_0", "2"}, {"3_0", "4"}, {"4_0", "4"},
@@ -73,7 +77,12 @@ public class TripsService {
   }
 
   public List<TripResponseWithUser> getOwnAndOtherTrips(Trip ownTrip, User user) {
-    List<Trip> trips = tripsRepository.findOwnTripAndOtherTrips(ownTrip.getTripId(), user.getUserId());
+    List<Trip> trips;
+    if (springProfileActive.equals("local")) {
+      trips = tripsRepository.findOwnTripAndOtherTripsH2(ownTrip.getTripId(), user.getUserId());
+    } else {
+      trips = tripsRepository.findOwnTripAndOtherTripsPg(ownTrip.getTripId(), user.getUserId());
+    }
     List<TripResponseWithUser> tripResponses = new LinkedList<>();
     for (Trip trip : trips) {
       tripResponses.add(tripFacade.mapEntityToResponseDtoWithUser(trip));
