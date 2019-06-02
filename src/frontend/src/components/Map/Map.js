@@ -72,8 +72,6 @@ class Map extends Component {
 
     reverseGeocode = (myCoordinates) => {
 
-            console.log('targetCoordinates = ', this.props.targetCoordinates)
-            console.log('myCoordinates = ', myCoordinates)
         let latitude = null
         let longitude = null
         if (myCoordinates){
@@ -136,7 +134,6 @@ class Map extends Component {
     }
 
     calculateRouteFromAtoB = (params) => {
-        console.log('Map: params = ', params)
         if (this.props.showSmartRoute || this.props.showMainRoute){
             const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
             this.map.addObject(currentMarker);
