@@ -70,11 +70,10 @@ class Main extends Component{
         this.setState({joinArray})
         const joinTrip = {
             tripPassengerDriverTripId: this.props.trips.joinIdArray[0],
-            tripPassengerUserTripId: this.props.trips.joinIdArray[index + 1],
+            tripPassengerTripId: this.props.trips.joinIdArray[index + 1],
             tripPassengerJoinStatus: joinArray[index]
         }
-        console.log('joinTrip = ', joinTrip)
-        sendJoinTripRequest([joinTrip])
+        sendJoinTripRequest(joinTrip)
     }
 
 
@@ -95,7 +94,6 @@ class Main extends Component{
     }
 
     render(){
-        console.log('this.state.joinArray = ', this.state.joinArray)
         const { classes } = this.props;
         const { joinArray } = this.state
         const { mainTripParams, mainTripPointNames } = this.props.trips

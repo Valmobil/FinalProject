@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: dev
   resources:
     static-locations: src/main/resources/static/
   mail:
@@ -28,17 +28,14 @@ application:
     save: AwsS3Db0,LocalDb
 #    save: AwsS3Db0
 #    save: LocalDb
+  credentials:
+    dev-awsdb:  src/main/resources/credentials/aws/dev-awsdb.properties
+    prod-awsdb: src/main/resources/credentials/aws/db-prod.properties
 
 ---
 
 spring:
   profiles: local
-
-  datasource:
-    url: jdbc:h2:mem:final-project-preparation
-    username: root
-    password:
-    driver-class-name: org.h2.Driver
 
   h2:
     console:
@@ -60,27 +57,36 @@ aws:
 
 spring:
   profiles: dev
-
-  datasource:
-    url: jdbc:mysql://danit.cukm9c6zpjo8.us-west-2.rds.amazonaws.com:3306/fs5
-    username: fs5_user
-    password: bArceloNa
-    data: classpath*:data.sql
-
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+        temp:
+          use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+
+server:
+  port: 9000
 
 aws:
   s3:
     credentials:
-      path:
-        src/main/resources/aws/s3/credentials/dev
+      path: src/main/resources/credentials/aws/credentials.properties
+      endpointUrl: https://s3.eu-central-1.amazonaws.com
+      bucketName: imagestoredev/users
+      imageExtension: .png
 
 ---
 
 spring:
   profiles: prod
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
 
 aws:
   s3:
