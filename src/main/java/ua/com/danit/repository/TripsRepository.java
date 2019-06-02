@@ -58,8 +58,9 @@ public interface TripsRepository extends JpaRepository<Trip, Long> {
           + " GROUP BY TRIP_ID "
           + " ) TRIPS ON IDS = TRIP_ID"
           + " WHERE TRIP_USER_ID != ?2 and TRIP_IS_DELETED = 0 AND COUNTS > 1"
-          + "    AND COALESCE(CAST(TRIP_USER_CAR_ID as varchar), 'null') = CASE WHEN (SELECT TRIP_USER_CAR_ID FROM TRIP WHERE TRIP_ID = ?1) IS NULL \n" +
-          "             THEN CAST(TRIP_USER_CAR_ID as varchar) ELSE 'null' END"
+          + "    AND COALESCE(CAST(TRIP_USER_CAR_ID as varchar), 'null') = CASE WHEN (SELECT TRIP_USER_CAR_ID "
+          + " FROM TRIP WHERE TRIP_ID = ?1) IS NULL"
+          + "             THEN CAST(TRIP_USER_CAR_ID as varchar) ELSE 'null' END"
           + " ORDER BY COUNTS DESC", nativeQuery = true)
   List<Trip> findOwnTripAndOtherTripsPg(Long tripId, Long userId);
 
