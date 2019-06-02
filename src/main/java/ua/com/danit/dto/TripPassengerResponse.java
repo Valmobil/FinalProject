@@ -16,7 +16,7 @@ import javax.persistence.ManyToOne;
 
 @Data
 public class TripPassengerResponse {
-  private long tripPassengerId;
   private long tripPassengerDriverTripId;
   private long tripPassengerUserTripId;
+  private int tripPassengerJoinStatus;
 }
