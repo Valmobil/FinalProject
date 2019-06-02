@@ -1,6 +1,7 @@
 package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Point;
 import ua.com.danit.dto.PointSearch;
@@ -12,6 +13,9 @@ import java.util.List;
 public class PointsService {
   private PointsRepository pointsRepository;
 
+  @Value("${spring.profiles.active}")
+  private String springProfileActive;
+
   @Autowired
   public PointsService(PointsRepository pointsRepository) {
     this.pointsRepository = pointsRepository;
@@ -19,6 +23,10 @@ public class PointsService {
 
   public List<Point> getPointByName(PointSearch pointSearch) {
     String findPattern = pointSearch.getPointSearchText().toUpperCase();
-    return pointsRepository.findMyTop10ByNameH2(findPattern);
+    if (springProfileActive.equals("local")) {
+      return pointsRepository.findMyTop10ByNameH2(findPattern);
+    } else {
+      return pointsRepository.findMyTop10ByNamePg(findPattern);
+    }
   }
 }

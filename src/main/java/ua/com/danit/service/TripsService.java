@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.com.danit.dto.TripPassengerRequest;
 import ua.com.danit.dto.TripPassengerResponse;
 import ua.com.danit.dto.TripResponse;
 import ua.com.danit.dto.TripResponseWithUser;
@@ -131,20 +132,16 @@ public class TripsService {
     }
   }
 
-  public String putPassengers(List<TripPassengerResponse> tripPassengerResponse, User user) {
-    List<TripPassenger> tripPassengers = tripPassengerFacade.mapRequestDtoListToEntityList(tripPassengerResponse);
-    tripPassengers.forEach(u -> u.setUser(user));
+  public String putPassengers(TripPassengerRequest tripPassengerRequest, User user) {
+    TripPassenger tripPassengers = tripPassengerFacade.mapRequestDtoToEntity(tripPassengerRequest);
+    tripPassengers.setUser(user);
 
-    //Combine DB data with user response
-    if (tripPassengers.size() == 0) {
-      throw new ApplicationException("Error! Have no any trip passengers!");
-    }
     Trip basicTrip = new Trip()
         .builder()
-        .tripId(tripPassengers.get(0).getTripDriver().getTripId())
+        .tripId(tripPassengers.getTripDriver().getTripId())
         .build();
     Boolean changesExists = combineStatuses(tripPassengers, user, basicTrip);
-    tripPassengersRepository.saveAll(tripPassengers);
+    tripPassengersRepository.save(tripPassengers);
     if (changesExists) {
       return "Please refresh list of trips!";
     } else {
@@ -152,22 +149,19 @@ public class TripsService {
     }
   }
 
-  private Boolean combineStatuses(List<TripPassenger> tripPassengers, User user, Trip basicTrip) {
+  private Boolean combineStatuses(TripPassenger tripPassenger, User user, Trip basicTrip) {
     List<TripPassenger> oldTripPass = tripPassengersRepository.findByUserAndAndTripDriver(user, basicTrip);
     Boolean sentMessageAboutChanges = false;
     for (TripPassenger oldTripPassenger : oldTripPass) {
-      for (TripPassenger newTripPassenger : tripPassengers) {
-        if (oldTripPassenger.getTripPassenger() == newTripPassenger.getTripPassenger()) {
-          int newStatus = Integer.parseInt(TRIP_JOIN_MATRIX.get(oldTripPassenger.getTripPassengerJoinStatus().toString()
-              + "_" + newTripPassenger.getTripPassengerJoinStatus().toString()));
-          if (oldTripPassenger.getTripPassengerJoinStatus() != newStatus) {
-            newTripPassenger.setTripPassengerJoinStatus(newStatus);
-            sentMessageAboutChanges = true;
-          }
+      if (oldTripPassenger.getTripPassenger() == tripPassenger.getTripPassenger()) {
+        int newStatus = Integer.parseInt(TRIP_JOIN_MATRIX.get(oldTripPassenger.getTripPassengerJoinStatus().toString()
+            + "_" + tripPassenger.getTripPassengerJoinStatus().toString()));
+        if (oldTripPassenger.getTripPassengerJoinStatus() != newStatus) {
+          tripPassenger.setTripPassengerJoinStatus(newStatus);
+          sentMessageAboutChanges = true;
         }
       }
     }
-
     return sentMessageAboutChanges;
   }
 }

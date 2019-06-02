@@ -9,8 +9,4 @@ import java.util.List;
 @Component
 public class UserCarFacade extends AbstractDtoFacade<UserCar, UserCarResponse, UserCarResponse> {
 
-  @Override
-  protected List<UserCarResponse> mapEntityListToResponseDtoList(List<UserCar> entityList) {
-    return super.mapEntityListToResponseDtoList(entityList);
-  }
 }
