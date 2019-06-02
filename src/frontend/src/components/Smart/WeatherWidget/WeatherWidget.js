@@ -1,5 +1,6 @@
 import React, { useState, useEffect }  from 'react'
 import {connect} from "react-redux";
+import Zoom from '@material-ui/core/Zoom'
 import './WeatherWidget.css'
 import axios from 'axios'
 
@@ -20,10 +21,12 @@ const WeatherWidget = (props) => {
     const weatherIcon = `wi wi-owm-${icon}`
     let widget = temperature ?
         (
+            <Zoom in={temperature !== null}>
             <div className='widget-container'>
                 <i className={weatherIcon}></i>
                 <p className='widget-paragraph'>{temperature} &#176;C</p>
             </div>
+            </Zoom>
         ) : null
     return(
         widget
