@@ -19,6 +19,6 @@ public class PointsService {
 
   public List<Point> getPointByName(PointSearch pointSearch) {
     String findPattern = pointSearch.getPointSearchText().toUpperCase();
-    return pointsRepository.findMyTop10ByName(findPattern);
+    return pointsRepository.findMyTop10ByNameH2(findPattern);
   }
 }

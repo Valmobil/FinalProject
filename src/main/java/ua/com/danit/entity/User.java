@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ import java.util.Set;
 @Entity
 @ToString
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name = "users")
 public class User extends Auditable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
