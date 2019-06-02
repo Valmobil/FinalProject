@@ -21,20 +21,20 @@ import ua.com.danit.service.UsersService;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@AutoConfigureMockMvc
-@Transactional
+//@RunWith(SpringRunner.class)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+//@AutoConfigureMockMvc
+//@Transactional
 //@WithMockUser(value = "first.user@test.com")
 public class LoginControllerTest {
-  @Autowired
-  private MockMvc mockMvc;
-
-  @Autowired
-  private ObjectMapper objectMapper;
-
-  @Autowired
-  UsersService usersService;
+//  @Autowired
+//  private MockMvc mockMvc;
+//
+//  @Autowired
+//  private ObjectMapper objectMapper;
+//
+//  @Autowired
+//  UsersService usersService;
 
 //  @Test
 //  public void signUpByMailAndPassword() throws Exception {

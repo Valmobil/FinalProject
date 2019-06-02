@@ -14,19 +14,19 @@ import ua.com.danit.repository.UsersRepository;
 
 import java.util.UUID;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 public class LoginsServiceTest {
 
   //  @Autowired
   //  private LoginController loginController;
 
-  @Autowired
-  private LoginsService loginsService;
-  @Autowired
-  private UsersRepository usersRepository;
-  @Autowired
-  private UsersService usersService;
+//  @Autowired
+//  private LoginsService loginsService;
+//  @Autowired
+//  private UsersRepository usersRepository;
+//  @Autowired
+//  private UsersService usersService;
 
 //  @Test
 //  public void checkForNonExistingUserCredential() {
@@ -83,7 +83,8 @@ public class LoginsServiceTest {
 //    userLogin.setUserLogin("val@gmail.com");
 //    UserResponse userResponse = loginsService.checkLoginSignInSignUp(userLogin, "SignUp");
 //    assertThat(userResponse.getUserMail().equals(userLogin.getUserLogin()));
-//    assertThat(userResponse.getUserPoints()).size().isEqualTo(5);
+//    assertThat(userResponse.ge
+//    tUserPoints()).size().isEqualTo(5);
 //  }
 
 }
