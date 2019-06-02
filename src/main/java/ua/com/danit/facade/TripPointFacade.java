@@ -10,8 +10,4 @@ import java.util.List;
 @Component
 public class TripPointFacade extends AbstractDtoFacade<TripPoint, TripPointResponse, TripPointResponse> {
 
-  @Override
-  protected List<TripPointResponse> mapEntityListToResponseDtoList(List<TripPoint> entityList) {
-    return super.mapEntityListToResponseDtoList(entityList);
-  }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ua.com.danit.dto.TripPassengerRequest;
 import ua.com.danit.dto.TripPassengerResponse;
 import ua.com.danit.dto.TripResponse;
 import ua.com.danit.dto.TripResponseWithUser;
@@ -66,9 +67,9 @@ public class TripsController {
   }
 
   @PostMapping("passengers")
-  public ResponseEntity<String> putSelectedPassangers(@RequestBody List<TripPassengerResponse> tripPassengersResponse,
+  public ResponseEntity<String> putSelectedPassengers(@RequestBody TripPassengerRequest tripPassengersRequest,
                                                       @RequestHeader String authorization) {
-    return new ResponseEntity<>(tripsService.putPassengers(tripPassengersResponse,
+    return new ResponseEntity<>(tripsService.putPassengers(tripPassengersRequest,
         userTokensService.findUserByAccessToken(authorization)), HttpStatus.OK);
   }
 }
