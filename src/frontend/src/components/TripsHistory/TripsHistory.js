@@ -6,10 +6,6 @@ import {withStyles} from "@material-ui/core/styles/index";
 import {
     deleteTripFromHistory,
     setMainTrips,
-    setMyCoordinates,
-    setTargetCoordinates,
-    setIntermediatePoints,
-    setTrip
 } from '../../actions/tripCreators'
 import { errorPopupShow } from '../../actions/userCreators'
 import { callApi  } from '../../utils/utils'
@@ -77,10 +73,10 @@ class TripsHistory extends Component {
         let currentTripId = currentTrip[0].tripId
         callApi('post','api/trips/others',{tripId:currentTripId})
             .then(resp=> resp.data)
-            .then(() => this.props.redirectOnMain())
+            .then(data => this.props.setMainTrips(data[0].tripId))
+            .then(()=> this.props.redirectOnMain())
             .catch((err)=> this.props.errorPopupShow(err))
     }
-
 
     render() {
         const { classes } = this.props
