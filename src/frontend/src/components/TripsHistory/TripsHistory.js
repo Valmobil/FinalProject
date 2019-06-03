@@ -77,7 +77,7 @@ class TripsHistory extends Component {
         let currentTripId = currentTrip[0].tripId
         callApi('post','api/trips/others',{tripId:currentTripId})
             .then(resp=> resp.data)
-            .then(() => this.redirectOnMain())
+            .then(() => this.props.redirectOnMain())
             .catch((err)=> this.props.errorPopupShow(err))
     }
 
