@@ -13,6 +13,7 @@ export const setTrip = (trip) => dispatch => {
           console.log('setTrip: res = ', res.data.tripId)
           dispatch({type: SET_MAIN_TRIP_ID, payload: res.data.tripId})
     })
+
         .catch(err => errorPopupShow())
     dispatch({type: SET_TRIP, trip})
 }
