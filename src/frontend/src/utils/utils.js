@@ -69,7 +69,7 @@ export const setLocalStorage = (accessToken, refreshToken) => {
     }, 880000)
 }
 
-//* *********************
+//* *********************git pull
 export const removeTokens = () => {
     window.localStorage.removeItem('iTripper_access_token')
     window.localStorage.removeItem('iTripper_access_token_expires')
