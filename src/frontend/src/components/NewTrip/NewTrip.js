@@ -37,7 +37,7 @@ const styles = theme => ({
     rejectButton: {
         borderRadius: 3,
         background: '#fff',
-        color: '#FC2847',
+        color: '#FC0500',
         height: 30,
         padding: 0,
         width: '40%',
@@ -91,6 +91,7 @@ class NewTrip extends Component {
         car: '',
         role: 'passenger',
     }
+
 
     handleRadio = event => {
         this.setState({role: event.target.value})
@@ -172,6 +173,15 @@ class NewTrip extends Component {
             || this.props.trips.finishLocation !== prevProps.trips.finishLocation) {
             this.setState({valueFrom: this.props.trips.startLocation, valueTo: this.props.trips.finishLocation})
         }
+        if (this.props.trips.myLocation !== prevProps.trips.myLocation){
+            this.setState({valueFrom: this.props.trips.myLocation})
+        }
+    }
+
+    componentDidMount(){
+        if (this.props.trips.myLocation){
+            this.setState({valueFrom: this.props.trips.myLocation})
+        }
     }
 
     render() {
@@ -197,6 +207,7 @@ class NewTrip extends Component {
                             onChange={this.handleRadio}
                             row
                             style={style.radio}
+
                         >
                             <FormControlLabel
                                 value="passenger"
@@ -236,6 +247,7 @@ class NewTrip extends Component {
 
                     <Map
                         height={230}
+                        marginTop={20}
                         showSmartRoute={true}
                         smart={smart}
                     />

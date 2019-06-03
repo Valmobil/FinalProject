@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './Map.css'
-import { setTargetCoordinates, setSearchedLocation, setIntermediatePoints, setMyCoordinates } from "../../actions/tripCreators";
+import { setTargetCoordinates, setSearchedLocation, setIntermediatePoints, setMyCoordinates, setMyLocation } from "../../actions/tripCreators";
 import { connect } from "react-redux";
 
 
@@ -70,12 +70,20 @@ class Map extends Component {
     }
 
 
-    reverseGeocode = () => {
+    reverseGeocode = (myCoordinates) => {
 
-            console.log('targetCoordinates = ', this.props.targetCoordinates)
+        let latitude = null
+        let longitude = null
+        if (myCoordinates){
+                latitude = this.props.coords.latitude
+                longitude = this.props.coords.longitude
+        } else {
+                latitude = this.state.targetLatitude
+                longitude = this.state.targetLongitude
+        }
             const geocoder = this.platform.getGeocodingService(),
                 parameters = {
-                    prox: this.state.targetLatitude + ',' + this.state.targetLongitude + ',250',
+                    prox: latitude + ',' + longitude + ',250',
                     mode: 'retrieveAddresses',
                     maxresults: '1',
                     gen: '9'};
@@ -87,7 +95,8 @@ class Map extends Component {
                     const city = address.City ? address.City + (address.Street || address.HouseNumber ? ', ' : '') : ''
                     const street = address.Street ? address.Street + (address.HouseNumber ? ', ' : '') : ''
                     const houseNumber = address.HouseNumber ? address.HouseNumber : ''
-                    this.props.setSearchedLocation(city + street + houseNumber);
+                    if (myCoordinates) this.props.setMyLocation(city + street + houseNumber)
+                    else this.props.setSearchedLocation(city + street + houseNumber);
                 }, (error) => {
                     console.log(error);
                 });
@@ -125,8 +134,7 @@ class Map extends Component {
     }
 
     calculateRouteFromAtoB = (params) => {
-        console.log('Map: params = ', params)
-        if (this.props.showSmartRoute || this.props.showMainRoute){
+        if ((this.props.showSmartRoute || this.props.showMainRoute) && this.props.coords){
             const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
             this.map.addObject(currentMarker);
         }
@@ -136,10 +144,10 @@ class Map extends Component {
                   '<path fill="#FFFFFF" d="M18.5,9c0,5-9,15-9,15s-9-10-9-15s4-9,9-9S18.5,4,18.5,9z"/>' +
                   '<path fill="#F57C00" d="M17.8,9.3c0,4.6-8.3,13.8-8.3,13.8S1.3,13.8,1.3,9.3S4.9,1,9.5,1S17.8,4.7,17.8,9.3z"/></svg>'
 
-
-            for (let key in params){
-                if (params.hasOwnProperty(key) && key.substring(0, 8) === 'waypoint'){
-                    let value = params[key].split(',')
+            const waypointArray = Object.keys(params).filter(item => item.substring(0, 8) === 'waypoint')
+            waypointArray.splice(1, waypointArray.length - 2)
+            waypointArray.forEach(item => {
+                    let value = params[item].split(',')
                     let currentMarker = null;
                     if (this.currentRender === 'user') currentMarker = new H.map.Marker({lat: value[0], lng: value[1]});
                     else {
@@ -148,8 +156,7 @@ class Map extends Component {
                         currentMarker = new H.map.Marker(coords, {icon: icon});
                     }
                     this.map.addObject(currentMarker);
-                }
-            }
+            })
         }
         const router = this.platform.getRoutingService(),
             routeRequestParams = params ? params : {
@@ -243,6 +250,9 @@ class Map extends Component {
         const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
         if (!this.props.smart) this.setUpClickListener()
         if (this.props.targetCoordinates) this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
+        if (this.props.coords){
+            this.reverseGeocode(true)
+        }
         if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute ){
             this.calculateRouteFromAtoB()
         }
@@ -257,12 +267,14 @@ class Map extends Component {
         if (this.props.targetCoordinates !== prevProps.targetCoordinates && this.props.targetCoordinates){
             this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
             if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute ){
+                this.removeObjectById('route')
                 this.calculateRouteFromAtoB()
             }
         }
         if (this.props.coords !== prevProps.coords && this.props.coords){
             this.setMarker(this.props.coords.latitude, this.props.coords.longitude)
             if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute ){
+                this.removeObjectById('route')
                 this.calculateRouteFromAtoB()
             }
         }
@@ -319,7 +331,8 @@ const mapDispatchToProps = (dispatch) => {
         setTargetCoordinates: (coordinates) => dispatch(setTargetCoordinates(coordinates)),
         setSearchedLocation: (location) => dispatch(setSearchedLocation(location)),
         setIntermediatePoints: (points) => dispatch(setIntermediatePoints(points)),
-        setMyCoordinates: (coordinates) => dispatch(setMyCoordinates(coordinates))
+        setMyCoordinates: (coordinates) => dispatch(setMyCoordinates(coordinates)),
+        setMyLocation: (location) => dispatch(setMyLocation(location)),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Map)

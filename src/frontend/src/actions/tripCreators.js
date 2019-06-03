@@ -1,7 +1,7 @@
 import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS,
          SET_TRIP, SET_MY_COORDS, SET_TARGET_COORDS, SET_SEARCHED_LOCATION, SET_INTERMEDIATE_POINTS,
          SET_TRIP_DATE_TIME, SET_MAIN_TRIP_ID, DELETE_TRIP_FROM_HISTORY, SET_START_LOCATION,
-         SET_FINISH_LOCATION, CLEAR_MAP } from './trips'
+         SET_FINISH_LOCATION, CLEAR_MAP, SET_MY_LOCATION, SET_JOIN_STATUS_ARRAY, SET_JOIN_ID_ARRAY } from './trips'
 import { errorPopupShow } from './userCreators'
 import {callApi} from "../utils/utils";
 
@@ -12,6 +12,7 @@ export const setTrip = (trip) => dispatch => {
         .then(res => {
           console.log('setTrip: res = ', res.data.tripId)
           dispatch({type: SET_MAIN_TRIP_ID, payload: res.data.tripId})
+          window.localStorage.setItem('tripId', res.data.tripId)
     })
 
         .catch(err => errorPopupShow())
@@ -48,13 +49,17 @@ export const setIntermediatePoints = (points) => dispatch => {
 //* **********************
 
 export const setMainTrips = (id) => dispatch => {
-    console.log('tripCreators: id = ', id)
+
     callApi('post', 'api/trips/others', {tripId: id})
         .then(res => {
             console.log('tripCreators: res = ', res)
             let parameterArray = []
             let allRoutesArray = []
+            let joinStatusArray = []
+            let idArray = []
             res.data.forEach(element => {
+                joinStatusArray.push(element.tripJoinStatus)
+                idArray.push(element.tripId)
                 let currentRouteArray = []
                 let routeRequestParams = {
                     mode: 'fastest;car',
@@ -70,6 +75,10 @@ export const setMainTrips = (id) => dispatch => {
                 parameterArray.push(routeRequestParams)
                 allRoutesArray.push(currentRouteArray)
             })
+            const joinArray = [...joinStatusArray]
+            joinArray.splice(0,1)
+            dispatch({type: SET_JOIN_ID_ARRAY, payload: idArray})
+            dispatch({type: SET_JOIN_STATUS_ARRAY, payload: joinArray})
             dispatch({type: SET_MAIN_TRIPS_PARAMS, payload: parameterArray})
             dispatch({type: SET_MAIN_TRIPS_POINT_NAMES, payload: allRoutesArray})
             dispatch({type: SET_USER_TRIP_PARAMS, payload: parameterArray[0]})
@@ -107,3 +116,16 @@ export const setEndLocation = (location, end) => dispatch => {
 export const clearMap = () => dispatch => {
     dispatch({type: CLEAR_MAP})
 }
+// * *********************
+
+export const setMyLocation = (location) => dispatch => {
+    dispatch({type: SET_MY_LOCATION, payload: location})
+}
+//* **********************
+
+export const setMainTripIdFromStorage = () => dispatch => {
+        const tripId = Number(localStorage.getItem('tripId'))
+        dispatch({type: SET_MAIN_TRIP_ID, payload: tripId})
+        dispatch(setMainTrips(tripId))
+}
+

@@ -249,7 +249,7 @@ class Smart extends Component {
             )
         } else if (editing) {
             placesList = (
-                <div style={{width: '100%', marginTop: 70}}>
+                <div style={{width: '100%'}}>
                     <span>edit this favorite point</span>
                     <LiveSearch
                         name={name}

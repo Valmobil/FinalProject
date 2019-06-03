@@ -1,7 +1,8 @@
 import { SET_INTERMEDIATE_POINTS, SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_MY_COORDS,
          SET_SEARCHED_LOCATION, SET_TARGET_COORDS, SET_USER_TRIP_PARAMS, SET_CURRENT_TRIP_PARAMS, SET_TRIP,
          SET_TRIP_DATE_TIME, ADD_NEW_TRIP, SET_MAIN_TRIP_ID, DELETE_TRIP_FROM_HISTORY,
-         SET_START_LOCATION, SET_FINISH_LOCATION, CLEAR_MAP } from "../actions/trips";
+         SET_START_LOCATION, SET_FINISH_LOCATION, CLEAR_MAP, SET_MY_LOCATION,
+         SET_JOIN_STATUS_ARRAY, SET_JOIN_ID_ARRAY } from "../actions/trips";
 
 
 
@@ -11,6 +12,7 @@ const initialState = {
     trip: {},
     myCoordinates: null,
     searchedLocation: '',
+    myLocation: '',
     targetCoordinates: null,
     intermediatePoints: [],
     mainTripParams: null,
@@ -28,6 +30,8 @@ const initialState = {
     startLocation: '',
     finishLocation: '',
     clearMap: false,
+    joinStatusArray: [],
+    joinIdArray: [],
 }
 
 function trips (state = initialState, action) {
@@ -64,6 +68,12 @@ function trips (state = initialState, action) {
             return {...state, finishLocation: action.payload}
         case CLEAR_MAP:
             return {...state, clearMap: true}
+        case SET_MY_LOCATION:
+            return {...state, myLocation: action.payload}
+        case SET_JOIN_STATUS_ARRAY:
+            return {...state, joinStatusArray: action.payload}
+        case SET_JOIN_ID_ARRAY:
+            return {...state, joinIdArray: action.payload}
 
         default:
             return {...state}
