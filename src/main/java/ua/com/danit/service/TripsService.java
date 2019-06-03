@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.TripPassengerRequest;
-import ua.com.danit.dto.TripPassengerResponse;
 import ua.com.danit.dto.TripResponse;
 import ua.com.danit.dto.TripResponseWithUser;
 import ua.com.danit.entity.Trip;
@@ -21,7 +20,6 @@ import ua.com.danit.repository.TripPassengersRepository;
 import ua.com.danit.repository.TripsRepository;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -39,15 +37,6 @@ public class TripsService {
   @Value("${spring.profiles.active}")
   private String springProfileActive;
 
-  private static final Map<String, String> TRIP_JOIN_MATRIX = Stream.of(new String[][]{
-      {"0_0", "0"}, {"1_0", "1"}, {"2_0", "2"}, {"3_0", "4"}, {"4_0", "4"},
-      {"0_1", "1"}, {"1_1", "1"}, {"2_1", "3"}, {"3_1", "3"}, {"4_1", "4"},
-      {"0_2", "2"}, {"1_2", "3"}, {"2_2", "2"}, {"3_2", "3"}, {"4_2", "2"},
-      {"0_3", "3"}, {"1_3", "3"}, {"2_3", "3"}, {"3_3", "3"}, {"4_3", "3"},
-      {"0_4", "4"}, {"1_4", "4"}, {"2_4", "4"}, {"3_4", "4"}, {"4_4", "4"}})
-      .collect(Collectors.toMap(data -> data[0], data -> data[1]));
-
-
   @Autowired
   public TripsService(TripsRepository tripsRepository, TripFacade tripFacade,
                       TripPassengersRepository tripPassengersRepository, TripPassengerFacade tripPassengerFacade) {
@@ -55,6 +44,10 @@ public class TripsService {
     this.tripFacade = tripFacade;
     this.tripPassengersRepository = tripPassengersRepository;
     this.tripPassengerFacade = tripPassengerFacade;
+  }
+
+  public Trip getOne(Long trioId) {
+    return tripsRepository.getOne(trioId);
   }
 
   public String putTripToDb(Trip trip, User user) {
@@ -141,35 +134,36 @@ public class TripsService {
     }
   }
 
+
   public String putPassengers(TripPassengerRequest tripPassengerRequest, User user) {
     TripPassenger tripPassengers = tripPassengerFacade.mapRequestDtoToEntity(tripPassengerRequest);
-    tripPassengers.setUser(user);
-
-    Trip basicTrip = new Trip()
-        .builder()
-        .tripId(tripPassengers.getTripDriver().getTripId())
-        .build();
-    Boolean changesExists = combineStatuses(tripPassengers, user, basicTrip);
+    Boolean userIsDriver = false;
+    if (tripPassengerRequest.getTripPassengerDriverTripId() == tripPassengers.getTripDriver().getTripId()) {
+      userIsDriver = true;
+    }
+    Boolean changesExists = combineStatuses(tripPassengers, userIsDriver);
     tripPassengersRepository.save(tripPassengers);
     if (changesExists) {
       return "Please refresh list of trips!";
     } else {
-      return "Ok";
+      return "No changes!";
     }
   }
 
-  private Boolean combineStatuses(TripPassenger tripPassenger, User user, Trip basicTrip) {
-    List<TripPassenger> oldTripPass = tripPassengersRepository.findByUserAndAndTripDriver(user, basicTrip);
+  private Boolean combineStatuses(TripPassenger tripPassenger, boolean userIsDriver) {
+    List<TripPassenger> oldTripPass = tripPassengersRepository.findByTripDriverAndAndTripPassenger(tripPassenger.getTripDriver(),tripPassenger.getTripPassenger());
     Boolean sentMessageAboutChanges = false;
-    for (TripPassenger oldTripPassenger : oldTripPass) {
-      if (oldTripPassenger.getTripPassenger() == tripPassenger.getTripPassenger()) {
-        int newStatus = Integer.parseInt(TRIP_JOIN_MATRIX.get(oldTripPassenger.getTripPassengerJoinStatus().toString()
-            + "_" + tripPassenger.getTripPassengerJoinStatus().toString()));
-        if (oldTripPassenger.getTripPassengerJoinStatus() != newStatus) {
-          tripPassenger.setTripPassengerJoinStatus(newStatus);
-          sentMessageAboutChanges = true;
-        }
+    if (oldTripPass.size() == 0) {
+      tripPassengersRepository.save(tripPassenger);
+    } else if (oldTripPass.size() == 1) {
+      if (userIsDriver) {
+        oldTripPass.get(0).setTripPassengerDriverJoinStatus(tripPassenger.getTripPassengerDriverJoinStatus());
+      } else {
+        oldTripPass.get(0).setTripPassengerUserJoinStatus(tripPassenger.getTripPassengerUserJoinStatus());
       }
+      tripPassengersRepository.save(oldTripPass.get(0));
+    } else {
+      throw new ApplicationException("Error! The combination driverTripId and UserTripId has several instances!!!");
     }
     return sentMessageAboutChanges;
   }
