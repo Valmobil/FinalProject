@@ -14,7 +14,7 @@ const AuthorizedRoute = (props) => {
         isApproved = user
     }
     if (userRole === 'route-set'){
-        isApproved = user// && rest.myCoordinates && rest.targetCoordinates
+        isApproved = user && rest.myCoordinates && rest.targetCoordinates
     }
     return (
         <Route path={path} {...rest} render={(props) => isApproved ?
