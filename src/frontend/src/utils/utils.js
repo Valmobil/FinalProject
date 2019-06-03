@@ -4,8 +4,8 @@ import { logOut } from "../actions/userCreators";
 export const callApi = (method, url, data, config) => {
     let headers = null
     if (window.localStorage.getItem('iTripper_access_token')){
-        const refreshTokenExpires = Date.parse(window.localStorage.getItem('iTripper_refresh_token_expires'))
-        const accessTokenExpires = Date.parse(window.localStorage.getItem('iTripper_access_token_expires'))
+        const refreshTokenExpires = Date.parse(localStorage.getItem('iTripper_refresh_token_expires'))
+        const accessTokenExpires = Date.parse(localStorage.getItem('iTripper_access_token_expires'))
         if (refreshTokenExpires && (Date.now() > refreshTokenExpires)){
             logOut();
         } else if (Date.now() >= accessTokenExpires){
@@ -31,7 +31,7 @@ export const callApi = (method, url, data, config) => {
         headers = {
             Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}`,
         }
-        headers = Object.assign({ Authorization: `Bearer ${window.localStorage.getItem('iTripper_access_token')}` }, config)
+        headers = Object.assign({ Authorization: `Bearer ${localStorage.getItem('iTripper_access_token')}` }, config)
     }
     return axiosRequest(method, url, data, headers, config)
 }
@@ -51,10 +51,10 @@ export const axiosRequest = (method, url, data, headers, config) => {
 export const setLocalStorage = (accessToken, refreshToken) => {
     const accessTokenExpires = new Date(Date.now() + 880000).toISOString()
     const refreshTokenExpires = new Date(Date.now() + 2591900000).toISOString()
-    window.localStorage.setItem('iTripper_access_token', accessToken)
-    window.localStorage.setItem('iTripper_refresh_token', refreshToken)
-    window.localStorage.setItem('iTripper_access_token_expires', accessTokenExpires)
-    window.localStorage.setItem('iTripper_refresh_token_expires', refreshTokenExpires)
+    localStorage.setItem('iTripper_access_token', accessToken)
+    localStorage.setItem('iTripper_refresh_token', refreshToken)
+    localStorage.setItem('iTripper_access_token_expires', accessTokenExpires)
+    localStorage.setItem('iTripper_refresh_token_expires', refreshTokenExpires)
     setTimeout(async () => {
         let response
         const data = {userTokenRefresh: refreshToken}
@@ -71,11 +71,12 @@ export const setLocalStorage = (accessToken, refreshToken) => {
 
 //* *********************
 export const removeTokens = () => {
-    window.localStorage.removeItem('iTripper_access_token')
-    window.localStorage.removeItem('iTripper_access_token_expires')
-    window.localStorage.removeItem('iTripper_refresh_token')
-    window.localStorage.removeItem('iTripper_refresh_token_expires')
-    window.localStorage.removeItem('iTripper_page')
+    localStorage.removeItem('iTripper_access_token')
+    localStorage.removeItem('iTripper_access_token_expires')
+    localStorage.removeItem('iTripper_refresh_token')
+    localStorage.removeItem('iTripper_refresh_token_expires')
+    localStorage.removeItem('iTripper_page')
+    localStorage.removeItem('tripId')
 }
 
 //* *********************
