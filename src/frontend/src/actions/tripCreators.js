@@ -52,7 +52,6 @@ export const setMainTrips = (id) => dispatch => {
 
     callApi('post', 'api/trips/others', {tripId: id})
         .then(res => {
-            console.log('tripCreators: res = ', res)
             let parameterArray = []
             let allRoutesArray = []
             let joinStatusArray = []
