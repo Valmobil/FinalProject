@@ -14,6 +14,7 @@ export const setTrip = (trip) => dispatch => {
           dispatch({type: SET_MAIN_TRIP_ID, payload: res.data.tripId})
           window.localStorage.setItem('tripId', res.data.tripId)
     })
+
         .catch(err => errorPopupShow())
     dispatch({type: SET_TRIP, trip})
 }

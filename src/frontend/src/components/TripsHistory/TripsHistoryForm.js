@@ -19,12 +19,12 @@ const styles = theme => ({
 class TripsHistoryForm extends Component {
 
     newTripRedirect = () =>{
-      this.props.history.push('/newtrip')
+        this.props.history.push({pathname:'/newtrip'})
     }
 
-
-
-
+    redirectOnMain = () => {
+        this.props.history.push({pathname:'/main'})
+    }
 
     render() {
         const { classes } = this.props
@@ -34,16 +34,16 @@ class TripsHistoryForm extends Component {
                     <span className='trip-history-header'>my trips</span>
                     <div className="new-trip-button">
                         <Button
-                          onClick={this.newTripRedirect}
+                            onClick={this.newTripRedirect}
                             classes={{
-                            root: classes.typeButtons,
-                            label: classes.label
-                        }}
+                                root: classes.typeButtons,
+                                label: classes.label
+                            }}
                         >
                             Plan New Trip
                         </Button>
                     </div>
-                    <TripsHistory />
+                    <TripsHistory redirectOnMain={this.redirectOnMain}/>
 
                 </div>
             </div>
