@@ -69,7 +69,7 @@ export const setLocalStorage = (accessToken, refreshToken) => {
     }, 880000)
 }
 
-//* *********************git pull
+//* *********************
 export const removeTokens = () => {
     localStorage.removeItem('iTripper_access_token')
     localStorage.removeItem('iTripper_access_token_expires')
@@ -112,6 +112,7 @@ export const singleCallApi = search()
 // * *********************
 
 export const sendJoinTripRequest = (joinTrip) => {
+    console.log('sendJoinTripRequest: joinTrip = ', joinTrip)
     callApi('post', 'api/trips/passengers', joinTrip)
         .then(res => console.log('sendJoinTripRequest: res = ', res))
 }
