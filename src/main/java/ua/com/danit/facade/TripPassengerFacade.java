@@ -6,21 +6,22 @@ import ua.com.danit.dto.TripPassengerRequest;
 import ua.com.danit.dto.TripPassengerResponse;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.TripPassenger;
+import ua.com.danit.repository.TripsRepository;
 import ua.com.danit.service.TripsService;
 
 @Component
 public class TripPassengerFacade extends AbstractDtoFacade<TripPassenger, TripPassengerRequest, TripPassengerResponse> {
-  private TripsService tripsService;
+  private TripsRepository tripsRepository;
 
   @Autowired
-  public TripPassengerFacade(TripsService tripsService) {
-    this.tripsService = tripsService;
+  public TripPassengerFacade(TripsRepository tripsRepository) {
+    this.tripsRepository = tripsRepository;
   }
 
   @Override
   public TripPassenger mapRequestDtoToEntity(TripPassengerRequest dto) {
     TripPassenger tripPassenger = new TripPassenger();
-    Trip basicTrip = tripsService.getOne(dto.getTripPassengerDriverTripId());
+    Trip basicTrip = tripsRepository.getOne(dto.getTripPassengerDriverTripId());
     tripPassenger.setTripPassenger(new Trip());
     tripPassenger.setTripDriver(new Trip());
     if (basicTrip.getUserCar() == null) {
