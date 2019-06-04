@@ -9,8 +9,8 @@ import MainRender from "./MainRender/MainRender";
 
 class Main extends Component {
     state = {
-        checkboxArray: [],
-        joinArray: [],
+        checkboxArray: null,
+        joinIdArray: null,
     }
 
     componentDidUpdate(prevProps) {
@@ -18,7 +18,7 @@ class Main extends Component {
             this.props.setMainTrips(this.props.trips.mainTripId)
         }
         if (this.props.trips.joinStatusArray !== prevProps.trips.joinStatusArray) {
-            this.setState({joinArray: this.props.trips.joinStatusArray})
+            this.setState({joinIdArray: this.props.trips.joinIdArray})
         }
         if (this.props.trips.mainTripPointNames !== prevProps.trips.mainTripPointNames)
         this.setState({checkboxArray: Array(this.props.trips.mainTripPointNames.length).fill(false)})
@@ -28,23 +28,27 @@ class Main extends Component {
         if (this.props.trips.mainTripId) {
             this.props.setMainTrips(this.props.trips.mainTripId)
         }
-
     }
 
     render() {
-
-        const { mainTripPointNames, joinIdArray } = this.props.trips
+        const { mainTripParams, mainTripPointNames, joinStatusArray } = this.props.trips
+        const { checkboxArray, joinIdArray } = this.state
         let output = (
             <div style={{marginTop: 100}}>
                 <Spinner/>
             </div>
         )
-        if (mainTripPointNames && joinIdArray) output =
-            <MainRender
-            mainTripPointNames={mainTripPointNames}
-            checkboxArray={this.state.checkboxArray}
-            joinIdArray={this.state.joinArray}
-            />
+        if (mainTripParams && checkboxArray && joinIdArray && joinStatusArray){
+        output =    <MainRender
+                    mainTripPointNames={mainTripPointNames}
+                    checkboxArray={checkboxArray}
+                    joinIdArray={joinIdArray}
+                    joinStatusArray={joinStatusArray}
+                    mainTripParams={mainTripParams}
+                    />
+
+        }
+
         return (
             output
         )

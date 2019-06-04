@@ -55,7 +55,7 @@ const style = {
             color: '#008000',
         }
     },
-    rajected: {
+    rejected: {
         color: '#FC0500',
         '&:checked': {
             color: '#FC0500',
@@ -66,42 +66,41 @@ const style = {
 class MainRender extends Component {
     state = {
         checkboxArray: this.props.checkboxArray,
-        joinArray: this.props.joinIdArray,
+        joinIdArray: this.props.joinIdArray,
+        joinStatusArray: this.props.joinStatusArray,
     }
 
     handleChange = (index) => event => {
-        const joinArray = [...this.state.joinArray]
+        const joinStatusArray = [...this.state.joinStatusArray]
         const checkboxArray = [...this.state.checkboxArray]
         checkboxArray[index] = event.target.checked
         this.setState({checkboxArray})
-        if (joinArray[index] === 0) {
-            joinArray[index] = 1
-            this.setState({joinArray})
+        if (joinStatusArray[index] === 0) {
+            joinStatusArray[index] = 1
+            this.setState({joinStatusArray})
         }
-        else if (joinArray[index] === 1) {
-            joinArray[index] = 0
-            this.setState({joinArray})
+        else if (joinStatusArray[index] === 1) {
+            joinStatusArray[index] = 0
+            this.setState({joinStatusArray})
         }
-        else if (joinArray[index] === 2) {
-            joinArray[index] = 3
-            this.setState({joinArray})
+        else if (joinStatusArray[index] === 2) {
+            joinStatusArray[index] = 3
+            this.setState({joinStatusArray})
         }
-        else if (joinArray[index] === 3) {
-            joinArray[index] = 4
-            this.setState({joinArray})
+        else if (joinStatusArray[index] === 3) {
+            joinStatusArray[index] = 4
+            this.setState({joinStatusArray})
         }
-
-        this.setState({joinArray})
         const joinTrip = {
-            tripPassengerDriverTripId: this.state.joinArray[0],
-            tripPassengerTripId: this.state.joinArray[index + 1],
-            tripPassengerJoinStatus: this.state.joinArray[index]
+            tripPassengerDriverTripId: this.state.joinIdArray[0],
+            tripPassengerTripId: this.state.joinIdArray[index + 1],
+            tripPassengerJoinStatus: this.state.joinIdArray[index]
         }
         sendJoinTripRequest(joinTrip)
     }
 
     setCheckboxStyle = (index) => {
-        switch (this.state.joinArray[index]) {
+        switch (this.state.joinStatusArray[index]) {
             case 1:
                 return 'chosen'
             case 2:
@@ -117,12 +116,7 @@ class MainRender extends Component {
 
 
     render() {
-
         const { classes, mainTripParams, mainTripPointNames } = this.props
-
-console.log('mainTripPointNames = ', mainTripPointNames)
-        console.log('MainRender: checkboxArray = ', this.state.checkboxArray)
-        console.log('MainRender: joinArray = ', this.state.joinArray)
         const routesArray = [...mainTripPointNames]
         routesArray.splice(0, 1)
         const routesList = routesArray.map((item, index) => (<div className={classes.rectangle} key={index}>
@@ -146,7 +140,7 @@ console.log('mainTripPointNames = ', mainTripPointNames)
                     <Checkbox
                         style={style[this.setCheckboxStyle(index)]}
                         onChange={this.handleChange(index)}
-                        checked={this.state.checkboxArray[index + 1]}
+                        checked={this.state.checkboxArray[index]}
                     />
                 </div>
             )
@@ -160,9 +154,10 @@ console.log('mainTripPointNames = ', mainTripPointNames)
                     />
 
                     <div style={{width: '100%', margin: '20px 0'}}>
-
-                        {routesList}
-
+                        {
+                            routesList.length > 0 ? routesList
+                            : <span style={{color: '#fff'}}>You have no matching routes yet</span>
+                        }
                     </div>
                 </>
         )
