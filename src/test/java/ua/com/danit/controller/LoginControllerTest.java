@@ -14,8 +14,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import ua.com.danit.dto.UserLogin;
 import ua.com.danit.dto.UserResponse;
-import ua.com.danit.service.LoginsService;
-import ua.com.danit.service.UsersService;
 
 
 import static org.junit.Assert.assertEquals;

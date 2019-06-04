@@ -75,12 +75,16 @@ public class TripsService {
       TripResponseWithUser tripResponseWithUser = tripFacade.mapEntityToResponseDtoWithUser(trip);
       tripResponsesWithUser.add(tripResponseWithUser);
       for (TripPassenger tripPassenger : tripPassengers) {
-        if (tripPassenger.getTripDriver().getTripId() == ownTrip.getTripId() &&
-            tripPassenger.getTripPassenger().getTripId() == trip.getTripId()) {
-          tripResponseWithUser.setTripJoinStatus(generateJoinStatus("Driver", tripPassenger.getTripPassengerDriverJoinStatus(), tripPassenger.getTripPassengerUserJoinStatus()));
-        } else if (tripPassenger.getTripPassenger().getTripId() == ownTrip.getTripId() &&
-            tripPassenger.getTripDriver().getTripId() == trip.getTripId()) {
-          tripResponseWithUser.setTripJoinStatus(generateJoinStatus("Passenger", tripPassenger.getTripPassengerDriverJoinStatus(), tripPassenger.getTripPassengerUserJoinStatus()));
+        if (tripPassenger.getTripDriver().getTripId() == ownTrip.getTripId()
+            && tripPassenger.getTripPassenger().getTripId() == trip.getTripId()) {
+          tripResponseWithUser.setTripJoinStatus(generateJoinStatus("Driver",
+              tripPassenger.getTripPassengerDriverJoinStatus(),
+              tripPassenger.getTripPassengerUserJoinStatus()));
+        } else if (tripPassenger.getTripPassenger().getTripId() == ownTrip.getTripId()
+            && tripPassenger.getTripDriver().getTripId() == trip.getTripId()) {
+          tripResponseWithUser.setTripJoinStatus(generateJoinStatus("Passenger",
+              tripPassenger.getTripPassengerDriverJoinStatus(),
+              tripPassenger.getTripPassengerUserJoinStatus()));
         }
       }
     }
@@ -171,7 +175,9 @@ public class TripsService {
   }
 
   private Boolean combineStatuses(TripPassenger tripPassenger, boolean userIsDriver) {
-    List<TripPassenger> oldTripPass = tripPassengersRepository.findByTripDriverAndTripPassenger(tripPassenger.getTripDriver(), tripPassenger.getTripPassenger());
+    List<TripPassenger> oldTripPass = tripPassengersRepository.findByTripDriverAndTripPassenger(
+        tripPassenger.getTripDriver(),
+        tripPassenger.getTripPassenger());
     Boolean sentMessageAboutChanges = false;
     if (oldTripPass.size() == 0) {
       tripPassengersRepository.save(tripPassenger);
