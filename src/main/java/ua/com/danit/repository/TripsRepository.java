@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TripsRepository extends JpaRepository<Trip, Long> {
 
-  List<Trip> findByUser(User user);
+  List<Trip> findByUserAndTripIsDeleted(User user, int isDeleted);
 
 
   //The Query get OwnTrip + Other Trips where points coincide with OwnTrip Points
