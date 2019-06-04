@@ -25,7 +25,7 @@ export const postNewPassword = value => dispatch => {
   dispatch({
     type: POST_NEW_PASSWORD_REQUESTED
   })
-  axios.post('/users/update-profile/password', {
+  axios.post('api/logins/pswdchange', {
     newPassword: value
     // newPasswordToken: state.token
   })

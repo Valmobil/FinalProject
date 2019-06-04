@@ -264,7 +264,7 @@ export const errorPopupShow = () => dispatch => {
     dispatch(setErrorMessage("Sorry, something's gone wrong on server. Please try again."))
 }
 
-export const restorePass = (email) => dispatch =>{
+export const restorePassword = (email) => dispatch =>{
     // console.log('email=', email)
     callApi('post', 'api/logins/email', {userLogin: email})
       .then(resp => console.log(resp))

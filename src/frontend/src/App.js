@@ -8,7 +8,7 @@ import NoMatch from './components/NoMatch/NoMatch'
 import ProtectedRoute from './components/hoc/ProtectedRoute/ProtectedRoute'
 import Header from './components/Header/Header'
 import PassRestoration from './components/PassRestoration/PassRestoration'
-import ChangePassword from './components/ChangePassword'
+import ChangePassword from './components/ChangePassword/ChangePassword'
 import TripsHistoryForm from "./components/TripsHistory/TripsHistoryForm";
 import NewTrip from './components/NewTrip/NewTrip'
 import Card from './components/FeedbackForms/Cards/Card'

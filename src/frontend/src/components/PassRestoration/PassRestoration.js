@@ -14,7 +14,7 @@ import orange from '@material-ui/core/colors/orange'
 import TextField from '@material-ui/core/TextField'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Button from '@material-ui/core/Button'
-import {restorePass} from '../../actions/userCreators'
+import {restorePassword} from '../../actions/userCreators'
 import { postNewPassword } from '../../actions/passwordCreater'
 // import Button from '../Login/Login'
 
@@ -33,7 +33,7 @@ const style = {
     width: '100%',
   },
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     marginTop: '30px',
   },
   radio: {
@@ -103,6 +103,10 @@ class PassRestoration extends Component {
     this.setState({
       [event.target.name]: event.target.value
     })
+  }
+  restorePass = (email) =>{
+    this.props.restorePassword(email)
+    this.props.history.push('/main')
   }
 
   handleSendCodeClick = async event => {
@@ -179,7 +183,7 @@ class PassRestoration extends Component {
           onBlur={this.onBlur}
           onFocus={this.onFocus}
         />
-        <Button onClick={() => this.props.restorePass(this.state.email)}
+        <Button onClick={() => this.restorePass(this.state.email)}
                 style={style.button}
                 classes={{
                   root: classes.root,
@@ -222,7 +226,7 @@ class PassRestoration extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    restorePass: email => dispatch(restorePass(email))
+    restorePassword: email => dispatch(restorePassword(email))
   }
 }
 
