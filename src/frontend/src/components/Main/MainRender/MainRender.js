@@ -154,9 +154,10 @@ class MainRender extends Component {
                     />
 
                     <div style={{width: '100%', margin: '20px 0'}}>
-
-                        {routesList}
-
+                        {
+                            routesList.length > 0 ? routesList
+                            : <span style={{color: '#fff'}}>You have no matching routes yet</span>
+                        }
                     </div>
                 </>
         )
