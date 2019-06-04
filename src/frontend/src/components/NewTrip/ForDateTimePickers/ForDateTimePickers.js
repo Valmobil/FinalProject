@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import DateFnsUtils from "@date-io/date-fns"
+import { addHours } from 'date-fns'
+
 import "@material-ui/pickers"
 import {
   DatePicker,
@@ -13,7 +15,8 @@ import './ForDateTimePickers.css'
 class ForDateTimePickers extends Component {
 
   handleDateTimeChange = newDateTime => {
-
+    let result = addHours(newDateTime, 3);
+    console.log(result.toISOString());
     let tripTime = newDateTime;
     const timeZone = new Date().getTimezoneOffset()/-60;
     this.props.setTripDateTime(tripTime.toISOString());
