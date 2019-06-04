@@ -34,7 +34,7 @@ public interface TripsRepository extends JpaRepository<Trip, Long> {
           + " GROUP BY TRIP_ID "
           + " ) TRIPS ON IDS = TRIP_ID"
           + " WHERE TRIP_USER_ID != ?2 and TRIP_IS_DELETED = 0 AND COUNTS > 1"
-          + "AND TRIP_USER_CAR_ID = NVL2(SELECT TRIP_USER_CAR_ID FROM TRIP WHERE TRIP_ID = ?1,null,TRIP_USER_CAR_ID) "
+          + "AND  NVL(TRIP_USER_CAR_ID,-1) = NVL2(SELECT TRIP_USER_CAR_ID FROM TRIP WHERE TRIP_ID = ?1,-1,TRIP_USER_CAR_ID) "
           + " ORDER BY COUNTS DESC", nativeQuery = true)
   List<Trip> findOwnTripAndOtherTripsH2(Long tripId, Long userId);
 
