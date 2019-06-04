@@ -10,6 +10,8 @@ import { SET_INTERMEDIATE_POINTS, SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NA
 
 const initialState = {
     trip: {},
+    tripDateTime: Date(),
+    timeZone: false,
     myCoordinates: null,
     searchedLocation: '',
     myLocation: '',
@@ -19,11 +21,6 @@ const initialState = {
     mainTripPointNames: null,
     userMainTripParams: null,
     currentMainTripParams: null,
-    newTrip:{
-        car:'',
-        tripDateTime:Date(),
-        tripPoint:[],
-    },
     mainTripId: null,
     tripsHistoryRequest: false,
     tripsHistory: [],
@@ -55,7 +52,7 @@ function trips (state = initialState, action) {
         case SET_CURRENT_TRIP_PARAMS:
             return {...state, currentMainTripParams: action.payload}
         case SET_TRIP_DATE_TIME:
-            return {...state, newTrip: {...state.newTrip, tripDateTime:action.payload}}
+            return {...state, tripDateTime:action.payload}
         case ADD_NEW_TRIP:
             return{...state, newTrip: action.payload}
         case SET_MAIN_TRIP_ID:

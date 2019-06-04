@@ -153,7 +153,8 @@ class NewTrip extends Component {
                         userCarId,
                     },
                     tripPoint,
-                    tripDateTime: new Date().toISOString(),
+                        tripDateTime: new Date().toISOString(),
+                    // tripDateTime: this.props.trips.tripDateTime,
                 }
                 this.props.setTrip(trip)
             })

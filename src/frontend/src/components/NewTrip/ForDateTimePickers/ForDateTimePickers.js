@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import DateFnsUtils from "@date-io/date-fns";
+import DateFnsUtils from "@date-io/date-fns"
 import "@material-ui/pickers"
 import {
   DatePicker,
@@ -13,11 +13,26 @@ import './ForDateTimePickers.css'
 class ForDateTimePickers extends Component {
 
   handleDateTimeChange = newDateTime => {
-      this.props.setTripDateTime(newDateTime);
+
+    let year = newDateTime.getFullYear();
+    console.log(year)
+    let timeString = `${newDateTime.getFullYear()}-${newDateTime.getMonth()+1}-${newDateTime.getDate()}
+      // T${newDateTime.getHours()}}`
+    console.log(timeString)
+    // const timeZoneOffset = new Date().getTimezoneOffset()/-60;
+    // let startTime = newDateTime + timeZoneOffset;
+    // let startTime = new Date().toISOString()
+    // console.log('time string', startTime)
+    // this.props.setTripDateTime(startTime);
+    // const timeZoneOffset = new Date().getTimezoneOffset()/-60;
+    // let myTime = newDateTime + timeZoneOffset;
+    // console.log('my time string', myTime)
+
   }
 
   render(){
-    const dateTime = this.props.trips.newTrip.tripDateTime;
+    const dateTime = this.props.trips.tripDateTime;
+
     return (
       <div>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
