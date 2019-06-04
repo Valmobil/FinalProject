@@ -14,10 +14,9 @@ import orange from '@material-ui/core/colors/orange'
 import TextField from '@material-ui/core/TextField'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Button from '@material-ui/core/Button'
-import {restorePassword} from '../../actions/userCreators'
+import { restorePassword } from '../../actions/userCreators'
 import { postNewPassword } from '../../actions/passwordCreater'
 // import Button from '../Login/Login'
-
 
 const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -79,32 +78,13 @@ class PassRestoration extends Component {
 
   }
 
-  // validateCodeForm () {
-  //   return this.state.email.length > 0
-  // }
-
-  // onBlur = ({ target: { name } }) => {
-  //   this.validate(name)
-  // }
-  //
-  // onFocus = ({ target: { name } }) => {
-  //   this.setState({ error: { ...this.state.error, [name]: '' } })
-  // }
-  //
-  // validate = (name) => {
-  //   const { login, password, confirmPassword } = this.state.user
-  //
-  //   if (!(email.test)) {
-  //     this.setState({ error: { ...this.state.error, login: 'Please enter valid email or phone number' } })
-  //   }
-  // }
 
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value
     })
   }
-  restorePass = (email) =>{
+  restorePass = (email) => {
     this.props.restorePassword(email)
     this.props.history.push('/main')
   }
@@ -123,51 +103,8 @@ class PassRestoration extends Component {
     }
   }
 
-  handleInput = ({target: {name, value}}) => {
-    this.setState({[name]: value})
-  }
-
-  handleConfirmClick = async event => {
-    event.preventDefault()
-
-    this.setState({ isConfirming: true })
-
-    try {
-      await Auth.forgotPasswordSubmit(
-        this.state.email,
-        this.state.code,
-        this.state.password
-      )
-      this.setState({ confirmed: true })
-    } catch (e) {
-      alert(e.message)
-      this.setState({ isConfirming: false })
-    }
-  }
-
-  renderRequestCodeForm () {
-    return (
-      <form onSubmit={this.handleSendCodeClick}>
-        <FormGroup bsSize="large" controlId="email">
-          <div className='block'>Email</div>
-          <FormControl
-            autoFocus
-            type="email"
-            value={this.state.email}
-            onChange={this.handleChange}
-          />
-        </FormGroup>
-        <LoaderButton
-          block
-          type="submit"
-          bsSize="large"
-          loadingText="Sending…"
-          text="Send Confirmation"
-          isLoading={this.state.isSendingCode}
-          disabled={!this.validateCodeForm()}
-        />
-      </form>
-    )
+  handleInput = ({ target: { name, value } }) => {
+    this.setState({ [name]: value })
   }
 
   renderConfirmationForm () {
@@ -195,28 +132,10 @@ class PassRestoration extends Component {
       </MuiThemeProvider>)
   }
 
-  renderSuccessMessage () {
-    return (
-      <div className="success">
-        <p>Your password has been reset.</p>
-        <p>
-          <Link to="/">
-            Click here to login with your new credentials.
-          </Link>
-        </p>
-      </div>
-    )
-  }
-
   render () {
 
     return (
       <div className="PassRestoration">
-        {/*{!this.state.codeSent*/}
-        {/*? this.renderRequestCodeForm()*/}
-        {/*: !this.state.confirmed*/}
-        {/*? this.renderConfirmationForm()*/}
-        {/*: this.renderSuccessMessage()}*/}
         {this.renderConfirmationForm()}
       </div>
     )
@@ -230,4 +149,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default withStyles(styles)(connect(null,mapDispatchToProps)(PassRestoration))
+export default withStyles(styles)(connect(null, mapDispatchToProps)(PassRestoration))
