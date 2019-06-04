@@ -37,7 +37,7 @@ const styles = theme => ({
     rejectButton: {
         borderRadius: 3,
         background: '#fff',
-        color: '#FC2847',
+        color: '#FC0500',
         height: 30,
         padding: 0,
         width: '40%',

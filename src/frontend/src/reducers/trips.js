@@ -16,7 +16,7 @@ const initialState = {
     targetCoordinates: null,
     intermediatePoints: [],
     mainTripParams: null,
-    mainTripPointNames: [],
+    mainTripPointNames: null,
     userMainTripParams: null,
     currentMainTripParams: null,
     newTrip:{
@@ -31,7 +31,7 @@ const initialState = {
     finishLocation: '',
     clearMap: false,
     joinStatusArray: [],
-    joinIdArray: [],
+    joinIdArray: null,
 }
 
 function trips (state = initialState, action) {

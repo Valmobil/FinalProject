@@ -134,7 +134,7 @@ class Map extends Component {
     }
 
     calculateRouteFromAtoB = (params) => {
-        if (this.props.showSmartRoute || this.props.showMainRoute){
+        if ((this.props.showSmartRoute || this.props.showMainRoute) && this.props.coords){
             const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
             this.map.addObject(currentMarker);
         }

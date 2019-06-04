@@ -43,10 +43,6 @@ public class TripsService {
     this.tripPassengerFacade = tripPassengerFacade;
   }
 
-  public Trip getOne(Long trioId) {
-    return tripsRepository.getOne(trioId);
-  }
-
   public String putTripToDb(Trip trip, User user) {
     //Set TripId to TripPoints
     for (TripPoint point : trip.getTripPoint()) {
