@@ -120,7 +120,6 @@ public class MailSenderService {
       message.setSubject(subject);
       MimeMessageHelper helper;
       helper = new MimeMessageHelper(message, true);
-      //      helper.setFrom(from);
       helper.setTo(to);
       helper.setText(msg, true);
       return message;
