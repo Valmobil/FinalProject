@@ -11,7 +11,6 @@ import { SET_INTERMEDIATE_POINTS, SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NA
 const initialState = {
     trip: {},
     tripDateTime: Date(),
-    timeZone: false,
     myCoordinates: null,
     searchedLocation: '',
     myLocation: '',

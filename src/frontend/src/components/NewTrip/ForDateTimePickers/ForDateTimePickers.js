@@ -14,20 +14,9 @@ class ForDateTimePickers extends Component {
 
   handleDateTimeChange = newDateTime => {
 
-    let year = newDateTime.getFullYear();
-    console.log(year)
-    let timeString = `${newDateTime.getFullYear()}-${newDateTime.getMonth()+1}-${newDateTime.getDate()}
-      // T${newDateTime.getHours()}}`
-    console.log(timeString)
-    // const timeZoneOffset = new Date().getTimezoneOffset()/-60;
-    // let startTime = newDateTime + timeZoneOffset;
-    // let startTime = new Date().toISOString()
-    // console.log('time string', startTime)
-    // this.props.setTripDateTime(startTime);
-    // const timeZoneOffset = new Date().getTimezoneOffset()/-60;
-    // let myTime = newDateTime + timeZoneOffset;
-    // console.log('my time string', myTime)
-
+    let tripTime = newDateTime;
+    const timeZone = new Date().getTimezoneOffset()/-60;
+    this.props.setTripDateTime(tripTime.toISOString());
   }
 
   render(){
@@ -44,7 +33,6 @@ class ForDateTimePickers extends Component {
             }}
             autoFocus={true}
             value={dateTime}
-            minDate={dateTime}
             onChange={this.handleDateTimeChange}
             autoOk={true}
           />
