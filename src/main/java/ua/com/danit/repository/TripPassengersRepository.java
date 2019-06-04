@@ -9,5 +9,9 @@ import java.util.List;
 
 
 public interface TripPassengersRepository extends JpaRepository<TripPassenger, Long> {
-  List<TripPassenger> findByUserAndAndTripDriver(User user, Trip trip);
+  List<TripPassenger> findByTripDriverAndTripPassenger(Trip tripDriver, Trip tripPassenger);
+
+  List<TripPassenger> findByTripDriverOrTripPassenger(Trip tripDriver, Trip tripPassenger);
+
+
 }
