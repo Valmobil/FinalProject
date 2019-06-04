@@ -29,9 +29,6 @@ public class TripPassenger {
   @NonNull
   @JoinColumn(name = "TRIP_PASSENGER_DRIVER_TRIP_ID", referencedColumnName = "tripId")
   private Trip tripDriver;
-  @ManyToOne
-  @NonNull
-  @JoinColumn(name = "TRIP_PASSENGER_USER_ID", referencedColumnName = "userId")
-  private User user;
-  private Integer tripPassengerJoinStatus;
+  private Integer tripPassengerDriverJoinStatus;
+  private Integer tripPassengerUserJoinStatus;
 }
