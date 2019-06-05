@@ -325,7 +325,7 @@ class Smart extends Component {
                                     <button className='type-button'
                                             onClick={this.tripsHistoryRedirect}
                                     >
-                                        Trip history
+                                        My trips
                                     </button>
                                 </div>
                             </Slide>
