@@ -158,6 +158,8 @@ public class UsersService {
     if (userFromToken == null) {
       throw new ApplicationException("Error: Access token not found!");
     }
+    checkEmailFormat(user.getUserMail());
+    user.setUserPhone(normalizeAndCheckPhoneFormat(user.getUserPhone()));
     //Update some fields
     user.setUserId(userFromToken.getUserId());
     user.setUserPassword(userFromToken.getUserPassword());

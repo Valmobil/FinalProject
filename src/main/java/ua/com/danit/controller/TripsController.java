@@ -18,6 +18,7 @@ import ua.com.danit.entity.User;
 import ua.com.danit.service.TripsService;
 import ua.com.danit.service.UserTokensService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -65,7 +66,7 @@ public class TripsController {
   }
 
   @PostMapping("passengers")
-  public ResponseEntity<String> putSelectedPassengers(@RequestBody TripPassengerRequest tripPassengersRequest,
+  public ResponseEntity<String> putSelectedPassengers(@Valid @RequestBody TripPassengerRequest tripPassengersRequest,
                                                       @RequestHeader String authorization) {
     return new ResponseEntity<>(tripsService.putPassengers(tripPassengersRequest,
         userTokensService.findUserByAccessToken(authorization)), HttpStatus.OK);
