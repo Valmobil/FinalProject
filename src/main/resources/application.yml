@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: dev
   resources:
     static-locations: src/main/resources/static/
   mail:
@@ -59,7 +59,7 @@ spring:
   profiles: dev
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: false
     properties:
       hibernate:
