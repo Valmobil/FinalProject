@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import {connect} from 'react-redux';
-import {setTargetCoordinates, setTripDateTime, setMyCoordinates, clearMap, setTrip} from '../../actions/tripCreators';
+import {setTargetCoordinates, setTripDateTime, setMyCoordinates, clearMap, setTrip, setEndLocation} from '../../actions/tripCreators';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -159,6 +159,7 @@ class NewTrip extends Component {
                 }
                 this.props.setTrip(trip)
             })
+        this.rejectRoute()
         this.props.history.push({pathname: '/main'})
     }
 
@@ -175,11 +176,12 @@ class NewTrip extends Component {
 
     rejectRoute = () => {
         this.setState({valueFrom: '', valueTo: ''})
+        this.props.clearMap()
+        this.props.setEndLocation('', 'start');
+        this.props.setEndLocation('', 'end');
         this.props.setTargetCoordinates(null)
         this.props.setMyCoordinates(null)
-        this.props.clearMap()
     }
-
 
     componentDidUpdate(prevProps) {
         if (this.props.trips.startLocation !== prevProps.trips.startLocation
@@ -327,6 +329,7 @@ const mapDispatchToProps = dispatch => {
         setTripDateTime: (newTripDate) => dispatch(setTripDateTime(newTripDate)),
         clearMap: () => dispatch(clearMap()),
         setTrip: (trip) => dispatch(setTrip(trip)),
+        setEndLocation: (location, end) => dispatch(setEndLocation(location, end)),
     }
 }
 

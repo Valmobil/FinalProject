@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { setCurrentMainTripParams } from "../../../actions/tripCreators";
+import {setCurrentMainTripParams} from "../../../actions/tripCreators";
 import {withStyles} from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -10,7 +10,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Map from '../../Map/Map'
 import Checkbox from '@material-ui/core/Checkbox';
 import {sendJoinTripRequest} from '../../../utils/utils'
-
 
 
 const styles = theme => ({
@@ -70,39 +69,44 @@ class MainRender extends Component {
         joinStatusArray: this.props.joinStatusArray,
     }
 
+    setJoinStatusArray = (joinStatusArray, index) => {
+        this.setState({joinStatusArray}, () => {
+            const joinTrip = {
+                tripPassengerDriverTripId: this.props.mainTripId,
+                tripPassengerTripId: this.state.joinIdArray[index],
+                tripPassengerJoinStatus: this.state.joinStatusArray[index]
+            }
+            sendJoinTripRequest(joinTrip)
+        })
+    }
+
     handleChange = (index) => event => {
+        console.log('index = ', index)
         const joinStatusArray = [...this.state.joinStatusArray]
         const checkboxArray = [...this.state.checkboxArray]
         checkboxArray[index] = event.target.checked
         this.setState({checkboxArray})
         if (joinStatusArray[index] === 0) {
             joinStatusArray[index] = 1
-            this.setState({joinStatusArray})
+            this.setJoinStatusArray(joinStatusArray, index)
         }
         else if (joinStatusArray[index] === 1) {
             joinStatusArray[index] = 0
-            this.setState({joinStatusArray})
+            this.setJoinStatusArray(joinStatusArray, index)
         }
         else if (joinStatusArray[index] === 2) {
             joinStatusArray[index] = 3
-            this.setState({joinStatusArray})
+            this.setJoinStatusArray(joinStatusArray, index)
         }
         else if (joinStatusArray[index] === 3) {
             joinStatusArray[index] = 4
-            this.setState({joinStatusArray})
+            this.setJoinStatusArray(joinStatusArray, index)
         }
-        const joinTrip = {
-            tripPassengerDriverTripId: this.state.joinIdArray[0],
-            tripPassengerTripId: this.state.joinIdArray[index + 1],
-            tripPassengerJoinStatus: this.state.joinIdArray[index]
-        }
-        sendJoinTripRequest(joinTrip)
     }
 
     setCheckboxStyle = (index) => {
         switch (this.state.joinStatusArray[index]) {
             case 1:
-                return 'chosen'
             case 2:
                 return 'chosen'
             case 3:
@@ -116,7 +120,7 @@ class MainRender extends Component {
 
 
     render() {
-        const { classes, mainTripParams, mainTripPointNames } = this.props
+        const {classes, mainTripParams, mainTripPointNames} = this.props
         const routesArray = [...mainTripPointNames]
         routesArray.splice(0, 1)
         const routesList = routesArray.map((item, index) => (<div className={classes.rectangle} key={index}>
@@ -146,20 +150,20 @@ class MainRender extends Component {
             )
         )
         return (
-                <>
-                    <Map
-                        height={250}
-                        showMainRoute={true}
-                        marginTop={'50px'}
-                    />
+            <>
+                <Map
+                    height={250}
+                    showMainRoute={true}
+                    marginTop={'50px'}
+                />
 
-                    <div style={{width: '100%', margin: '20px 0'}}>
-                        {
-                            routesList.length > 0 ? routesList
+                <div style={{width: '100%', margin: '20px 0'}}>
+                    {
+                        routesList.length > 0 ? routesList
                             : <span style={{color: '#fff'}}>You have no matching routes yet</span>
-                        }
-                    </div>
-                </>
+                    }
+                </div>
+            </>
         )
     }
 }

@@ -106,9 +106,14 @@ class Map extends Component {
     setMarker = (lat, lng) => {
         this.group.removeAll()
         const currentMarker = new H.map.Marker({lat, lng});
+        this.addMarker(currentMarker)
+        this.map.setCenter(this.group.getBounds().getCenter());
+    }
+
+    addMarker = (currentMarker) => {
+        this.map.addObject(currentMarker);
         this.group.addObject(currentMarker);
         this.map.addObject(this.group);
-        this.map.setCenter(this.group.getBounds().getCenter());
     }
 
     setUpClickListener = () => {
@@ -136,7 +141,7 @@ class Map extends Component {
     calculateRouteFromAtoB = (params) => {
         if ((this.props.showSmartRoute || this.props.showMainRoute) && this.props.coords){
             const currentMarker = new H.map.Marker({lat: this.props.coords.latitude, lng: this.props.coords.longitude});
-            this.map.addObject(currentMarker);
+            this.addMarker(currentMarker)
         }
         if (this.props.showMainRoute && params){
             const svgMarker = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"' +
@@ -155,7 +160,7 @@ class Map extends Component {
                         const coords = {lat: value[0], lng: value[1]}
                         currentMarker = new H.map.Marker(coords, {icon: icon});
                     }
-                    this.map.addObject(currentMarker);
+                this.addMarker(currentMarker)
             })
         }
         const router = this.platform.getRoutingService(),
@@ -225,6 +230,12 @@ class Map extends Component {
         }
     }
 
+    clearMap = () => {
+        this.forceUpdate()
+        this.removeObjectById()
+        this.group.removeAll()
+    }
+
 
 
     componentDidMount() {
@@ -249,7 +260,9 @@ class Map extends Component {
         // eslint-disable-next-line
         const ui = new H.ui.UI.createDefault(this.map, layer, 'ru-RU')
         if (!this.props.smart) this.setUpClickListener()
-        if (this.props.targetCoordinates) this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
+        if (this.props.targetCoordinates) {
+            this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
+        }
         if (this.props.coords){
             this.reverseGeocode(true)
         }
@@ -261,32 +274,33 @@ class Map extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.clearMap !== prevProps.clearMap){
-            this.removeObjectById('route')
-            this.group.removeAll()
+            this.clearMap()
         }
-        if (this.props.targetCoordinates !== prevProps.targetCoordinates && this.props.targetCoordinates){
+        if (this.props.targetCoordinates !== prevProps.targetCoordinates && this.props.targetCoordinates &&
+            this.props.userMainTripParams === prevProps.userMainTripParams &&
+            this.props.currentMainTripParams === prevProps.currentMainTripParams){
             this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
             if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute ){
-                this.removeObjectById('route')
+                this.clearMap()
                 this.calculateRouteFromAtoB()
             }
         }
         if (this.props.coords !== prevProps.coords && this.props.coords){
             this.setMarker(this.props.coords.latitude, this.props.coords.longitude)
             if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute ){
-                this.removeObjectById('route')
+                this.clearMap()
                 this.calculateRouteFromAtoB()
             }
         }
 
         if (this.props.userMainTripParams !== prevProps.userMainTripParams && this.props.showMainRoute){
-            this.removeObjectById('route')
+            this.clearMap()
             this.currentRender = 'user'
             this.calculateRouteFromAtoB(this.props.userMainTripParams)
         }
 
         if (this.props.currentMainTripParams !== prevProps.currentMainTripParams && this.props.showMainRoute){
-            this.removeObjectById('route')
+            this.clearMap()
             this.currentRender = 'current'
             this.calculateRouteFromAtoB(this.props.currentMainTripParams)
 
@@ -297,6 +311,7 @@ class Map extends Component {
         if (this.listen){
             this.map.removeEventListener(this.listen)
         }
+        this.clearMap()
     }
 
     render() {
