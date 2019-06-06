@@ -52,6 +52,7 @@ export const setMainTrips = (id) => dispatch => {
 
     callApi('post', 'api/trips/others', {tripId: id})
         .then(res => {
+            console.log('setMainTrips: res = ', res.data)
             let parameterArray = []
             let allRoutesArray = []
             let joinStatusArray = []
@@ -76,6 +77,7 @@ export const setMainTrips = (id) => dispatch => {
             })
             const joinArray = [...joinStatusArray]
             joinArray.splice(0,1)
+            idArray.splice(0,1)
             dispatch({type: SET_JOIN_ID_ARRAY, payload: idArray})
             dispatch({type: SET_JOIN_STATUS_ARRAY, payload: joinArray})
             dispatch({type: SET_MAIN_TRIPS_PARAMS, payload: parameterArray})

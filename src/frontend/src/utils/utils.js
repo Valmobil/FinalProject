@@ -112,6 +112,7 @@ export const singleCallApi = search()
 // * *********************
 
 export const sendJoinTripRequest = (joinTrip) => {
+    console.log('sendJoinTripRequest: joinTrip = ', joinTrip)
     callApi('post', 'api/trips/passengers', joinTrip)
         .then(res => console.log('sendJoinTripRequest: res = ', res))
 }

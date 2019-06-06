@@ -122,7 +122,7 @@ class TripsHistory extends Component {
         return (
             <div className='trip-history-block'>
                 <ul className='list-history'>
-                    {this.state.fetchingTripsHistory ? <Spinner style={{alignItems:'center'}}/> : tripsHistoryList }
+                    {this.state.fetchingTripsHistory ? <Spinner/> : tripsHistoryList }
                 </ul>
             </div>
         );
