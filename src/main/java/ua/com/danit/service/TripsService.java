@@ -43,7 +43,7 @@ public class TripsService {
     this.tripPassengerFacade = tripPassengerFacade;
   }
 
-  public String putTripToDb(Trip trip, User user) {
+  public String putTrip(Trip trip, User user) {
     //Set TripId to TripPoints
     for (TripPoint point : trip.getTripPoint()) {
       point.setTrip(trip);
@@ -78,27 +78,31 @@ public class TripsService {
         if (tripPassenger.getTripDriver().getTripId() == ownTrip.getTripId()
             && tripPassenger.getTripPassenger().getTripId() == trip.getTripId()) {
           tripResponseWithUser.setTripJoinStatus(generateJoinStatus("Driver",
-              tripPassenger.getTripPassengerDriverJoinStatus(),
-              tripPassenger.getTripPassengerUserJoinStatus()));
+              nullToEmpty(tripPassenger.getTripPassengerDriverJoinStatus()),
+              nullToEmpty(tripPassenger.getTripPassengerUserJoinStatus())));
         } else if (tripPassenger.getTripPassenger().getTripId() == ownTrip.getTripId()
             && tripPassenger.getTripDriver().getTripId() == trip.getTripId()) {
           tripResponseWithUser.setTripJoinStatus(generateJoinStatus("Passenger",
-              tripPassenger.getTripPassengerDriverJoinStatus(),
-              tripPassenger.getTripPassengerUserJoinStatus()));
+              nullToEmpty(tripPassenger.getTripPassengerDriverJoinStatus()),
+              nullToEmpty(tripPassenger.getTripPassengerUserJoinStatus())));
         }
       }
     }
     return tripResponsesWithUser;
   }
 
-  private int generateJoinStatus(String mode, Integer driverJoinStatus, Integer userJoinStatus) {
+  private Integer nullToEmpty(Integer integer) {
+    return (integer == null) ? 0 : integer;
+  }
+
+  private Integer generateJoinStatus(String mode, Integer driverJoinStatus, Integer userJoinStatus) {
     if (driverJoinStatus == 0 && userJoinStatus == 0) {
       return 0;
     }
     if (mode.equals("Driver") && driverJoinStatus > 0 && userJoinStatus == 0) {
       return 1;
     }
-    if (!mode.equals("Driver") && driverJoinStatus > 0 && userJoinStatus == 0) {
+    if (!mode.equals("Driver") && driverJoinStatus == 0 && userJoinStatus > 0) {
       return 1;
     }
     if (mode.equals("Driver") && driverJoinStatus == 0 && userJoinStatus > 0) {
@@ -119,10 +123,10 @@ public class TripsService {
   }
 
   public String deleteTripById(Long tripId, User user) {
-    Trip trip = tripsRepository.getOne(tripId);
+    Trip trip = tripsRepository.findById(tripId).get();
     if (trip.getUser().getUserId().equals(user.getUserId())) {
       trip.setTripIsDeleted(1);
-      tripsRepository.save(trip);
+      tripsRepository.saveAndFlush(trip);
     } else {
       throw new ApplicationException("Error! We try to delete trip of other user! The operation is rejected!");
     }
@@ -130,7 +134,7 @@ public class TripsService {
   }
 
   public void copyTripById(long tripId, User user) {
-    Trip trip = tripsRepository.getOne(tripId);
+    Trip trip = tripsRepository.findById(tripId).get();
     if (user != null) {
       if (trip.getUser().getUserId().equals(user.getUserId())) {
         //create copy
@@ -150,7 +154,7 @@ public class TripsService {
           }
           //Shift trip date 24 hours forward
           tripDeepCopy.setTripDateTime(trip.getTripDateTime().plusDays(1));
-          tripsRepository.save(tripDeepCopy);
+          tripsRepository.saveAndFlush(tripDeepCopy);
         } catch (IOException e) {
           e.printStackTrace();
         }
@@ -166,7 +170,6 @@ public class TripsService {
       userIsDriver = true;
     }
     Boolean changesExists = combineStatuses(tripPassengers, userIsDriver);
-    tripPassengersRepository.save(tripPassengers);
     if (changesExists) {
       return "Please refresh list of trips!";
     } else {
@@ -180,14 +183,15 @@ public class TripsService {
         tripPassenger.getTripPassenger());
     Boolean sentMessageAboutChanges = false;
     if (oldTripPass.size() == 0) {
-      tripPassengersRepository.save(tripPassenger);
+      tripPassenger.setTripPassengerId(null);
+      tripPassengersRepository.saveAndFlush(tripPassenger);
     } else if (oldTripPass.size() == 1) {
       if (userIsDriver) {
         oldTripPass.get(0).setTripPassengerDriverJoinStatus(tripPassenger.getTripPassengerDriverJoinStatus());
       } else {
         oldTripPass.get(0).setTripPassengerUserJoinStatus(tripPassenger.getTripPassengerUserJoinStatus());
       }
-      tripPassengersRepository.save(oldTripPass.get(0));
+      tripPassengersRepository.saveAndFlush(oldTripPass.get(0));
     } else {
       throw new ApplicationException("Error! The combination driverTripId and UserTripId has several instances!!!");
     }

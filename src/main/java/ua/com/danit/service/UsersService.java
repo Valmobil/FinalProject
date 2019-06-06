@@ -77,8 +77,8 @@ public class UsersService {
     } else {
       userPoints = userPointsRepository.findByUser(user);
     }
-    String[] userPointsDefaultNames = {"Home","Work","<no point>","<no point>","<no point>"};
-    for (int i = userPoints.size(); i < userPointsMaxQty ; i++) {
+    String[] userPointsDefaultNames = {"Home", "Work", "<no point>", "<no point>", "<no point>"};
+    for (int i = userPoints.size(); i < userPointsMaxQty; i++) {
       userPoints.add(new UserPoint(null, userPointsDefaultNames[i], "", user, 0, 0));
     }
     user.setUserPoints(userPoints);
@@ -127,7 +127,7 @@ public class UsersService {
     }
   }
 
-  public String normalizeAndCheckPhoneFormat(String userPhone) {
+  String normalizeAndCheckPhoneFormat(String userPhone) {
     String phone = userPhone.replace("(", "")
         .replace(")", "")
         .replace(" ", "")
@@ -161,6 +161,14 @@ public class UsersService {
     //Update some fields
     user.setUserId(userFromToken.getUserId());
     user.setUserPassword(userFromToken.getUserPassword());
+    user.setCreatedDate(userFromToken.getCreatedDate());
+    if (user.getUserPoints() != null && user.getUserPoints().size() > 0) {
+      for (UserPoint userPoint : user.getUserPoints()) {
+        userPoint.setUser(user);
+      }
+    } else {
+      user.setUserPoints(null);
+    }
     if (user.getUserCars() != null) {
       for (UserCar userCar : user.getUserCars()) {
         userCar.setUser(user);

@@ -21,12 +21,12 @@ public class TripPassengerFacade extends AbstractDtoFacade<TripPassenger, TripPa
   @Override
   public TripPassenger mapRequestDtoToEntity(TripPassengerRequest dto) {
     TripPassenger tripPassenger = new TripPassenger();
-    Trip basicTrip = tripsRepository.getOne(dto.getTripPassengerDriverTripId());
+    Trip basicTrip = tripsRepository.findById(dto.getTripPassengerDriverTripId()).get();
     tripPassenger.setTripPassenger(new Trip());
     tripPassenger.setTripDriver(new Trip());
     if (basicTrip.getUserCar() == null) {
-      tripPassenger.getTripPassenger().setTripId(dto.getTripPassengerTripId());
-      tripPassenger.getTripDriver().setTripId(dto.getTripPassengerDriverTripId());
+      tripPassenger.getTripDriver().setTripId(dto.getTripPassengerTripId());
+      tripPassenger.getTripPassenger().setTripId(dto.getTripPassengerDriverTripId());
       tripPassenger.setTripPassengerUserJoinStatus(dto.getTripPassengerJoinStatus());
     } else {
       tripPassenger.getTripPassenger().setTripId(dto.getTripPassengerTripId());
