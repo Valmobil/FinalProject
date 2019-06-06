@@ -1,9 +1,9 @@
 package ua.com.danit.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import ua.com.danit.entity.User;
 
 import java.io.ByteArrayInputStream;
