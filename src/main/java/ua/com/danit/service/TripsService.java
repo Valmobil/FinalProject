@@ -22,6 +22,7 @@ import ua.com.danit.repository.TripsRepository;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -118,12 +119,18 @@ public class TripsService {
   }
 
   public List<TripResponse> getTripListService(User user) {
-    List<Trip> trips = tripsRepository.findByUserAndTripIsDeleted(user, 0);
+    List<Trip> trips = tripsRepository.findByUserAndTripIsDeletedOrderByTripDateTimeDesc(user, 0);
     return tripFacade.mapEntityListToResponseDtoList(trips);
   }
 
   public String deleteTripById(Long tripId, User user) {
-    Trip trip = tripsRepository.findById(tripId).get();
+    Optional<Trip> op = tripsRepository.findById(tripId);
+    Trip trip = null;
+    if (op.isPresent()) {
+       trip = op.get();
+    } else {
+      throw new ApplicationException("Error! Have no trip with this TripId! The operation is rejected!");
+    }
     if (trip.getUser().getUserId().equals(user.getUserId())) {
       trip.setTripIsDeleted(1);
       tripsRepository.saveAndFlush(trip);
@@ -165,7 +172,7 @@ public class TripsService {
 
   public String putPassengers(TripPassengerRequest tripPassengerRequest, User user) {
     TripPassenger tripPassengers = tripPassengerFacade.mapRequestDtoToEntity(tripPassengerRequest);
-    Boolean userIsDriver = false;
+    boolean userIsDriver = false;
     if (tripPassengerRequest.getTripPassengerDriverTripId() == tripPassengers.getTripDriver().getTripId()) {
       userIsDriver = true;
     }
