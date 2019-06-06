@@ -45,6 +45,7 @@ class Main extends Component {
                     joinIdArray={joinIdArray}
                     joinStatusArray={joinStatusArray}
                     mainTripParams={mainTripParams}
+                    mainTripId={this.props.trips.mainTripId}
                     />
 
         }
