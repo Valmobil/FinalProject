@@ -20,7 +20,7 @@ import javax.persistence.ManyToOne;
 public class TripPassenger {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long tripPassengerId;
+  private Long tripPassengerId;
   @ManyToOne
   @NonNull
   @JoinColumn(name = "TRIP_PASSENGER_TRIP_ID", referencedColumnName = "tripId")
