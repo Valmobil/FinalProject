@@ -6,6 +6,7 @@ import {withStyles} from "@material-ui/core/styles/index";
 import {
     deleteTripFromHistory,
     setMainTrips,
+    setTrip,
 } from '../../actions/tripCreators'
 import { errorPopupShow } from '../../actions/userCreators'
 import { callApi  } from '../../utils/utils'
@@ -70,10 +71,12 @@ class TripsHistory extends Component {
         const currentTrip = this.state.tripsHistory.filter(item => {
             return (item.tripId === id)
         })
-        console.log('current trip id', currentTrip[0].tripId)
-        this.props.setMainTrips(currentTrip[0].tripId)
+        console.log('current trip',currentTrip)
+        let tempDate = new Date()
+        currentTrip[0].tripDateTime = new Date(tempDate.getTime() - tempDate.getTimezoneOffset()*60000).toISOString()
+        this.props.setTrip(currentTrip[0])
         this.props.redirectOnMain()
-     }
+    }
 
     render() {
         const { classes } = this.props
@@ -144,22 +147,7 @@ class TripsHistory extends Component {
                             {nameOfPoint=''}
                           </div>
                         )
-
                       }
-                      {/*<div className='trip-date-time' style ={{color: 'white'}}>*/}
-                      {/*{*/}
-                      {/*(item.tripDateTime ) ?*/}
-                      {/*(item.tripDateTime.replace('T',' ').substring(0,16)) : <span>time was lost</span>*/}
-                      {/*}*/}
-                      {/*</div>*/}
-                      {/*{*/}
-                      {/*item.tripPoint.forEach((name) => {*/}
-                      {/*if (name.tripPointName != null){*/}
-                      {/*nameOfPoint += name.tripPointName + ' - '*/}
-                      {/*}*/}
-                      {/*})*/}
-                      {/*}*/}
-                      {/*{nameOfPoint}*/}
                     </li>
                 )
             })
@@ -188,6 +176,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         deleteTripFromHistory: (newTripsHistory) => dispatch(deleteTripFromHistory(newTripsHistory)),
         callApi:(id) => dispatch(callApi(id)),
+        setTrip: (trip) => dispatch(setTrip(trip)),
         setMainTrips:(id) => dispatch(setMainTrips(id)),
         errorPopupShow: () => dispatch(errorPopupShow()),
     }
