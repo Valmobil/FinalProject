@@ -70,13 +70,10 @@ class TripsHistory extends Component {
         const currentTrip = this.state.tripsHistory.filter(item => {
             return (item.tripId === id)
         })
-        let currentTripId = currentTrip[0].tripId
-        callApi('post','api/trips/others',{tripId:currentTripId})
-            .then(resp=> resp.data)
-            .then(data => this.props.setMainTrips(data[0].tripId))
-            .then(()=> this.props.redirectOnMain())
-            .catch((err)=> this.props.errorPopupShow(err))
-    }
+        console.log('current trip id', currentTrip[0].tripId)
+        this.props.setMainTrips(currentTrip[0].tripId)
+        this.props.redirectOnMain()
+     }
 
     render() {
         const { classes } = this.props
@@ -87,35 +84,86 @@ class TripsHistory extends Component {
             tripsHistoryList = this.state.tripsHistory.map((item) => {
                 return (
                     <li key={item.tripId}>
-                        <div className='trip-data'  onClick={()=>{this.defineElement(item.tripId)}} >
-                            <div className='trip-date-time' style ={{color: 'black'}}>
+                      {
+                        (new Date(item.tripDateTime)>new Date()) ? (
+                          <div className='trip-card' style={{backgroundColor:'orange'}}   >
+                            <div className='trip-data' onClick={()=>{this.defineElement(item.tripId)}}>
+                                <div className='trip-date-time' style ={{color: '#464d73'}}>
                                 {
                                   (item.tripDateTime ) ?
-                                       (item.tripDateTime.replace('T',' ').substring(0,16)) : <span>time was lost</span>
+                                  (item.tripDateTime.replace('T',' ').substring(0,16)) : <span>time was lost</span>
                                 }
-                            </div>
-                            {
-                                item.tripPoint.forEach((name) => {
-                                    if (name.tripPointName != null){
-                                        nameOfPoint += name.tripPointName + ' - '
-                                    }
+                                </div>
+                                {
+                                  item.tripPoint.forEach((name) => {
+                                  if (name.tripPointName != null){
+                                  nameOfPoint += name.tripPointName + ' - '
+                                }
                                 })
-                            }
-                            {nameOfPoint}
-                        </div>
-                        <div className="icon-trip">
-                            <IconButton
+                                }
+                                {nameOfPoint}
+                            </div>
+                            <div className="icon-trip">
+                              <IconButton
+                              onClick={() => this.handleDelete(item.tripId)}
+                              className={classes.iconButton}
+                              aria-label="Delete">
+                              <DeleteIcon />
+                              </IconButton>
+                            </div>
+
+                            {nameOfPoint=''}
+                          </div>
+                        ):(
+                          <div className = 'trip-card' style={{backgroundColor:' white'}}  >
+                            <div className='trip-data' onClick={()=>{this.defineElement(item.tripId)}}>
+                              <div className='trip-date-time' style ={{color: 'black'}}>
+                              {
+                              (item.tripDateTime ) ?
+                              (item.tripDateTime.replace('T',' ').substring(0,16)) : <span>time was lost</span>
+                              }
+                              </div>
+                              {
+                              item.tripPoint.forEach((name) => {
+                              if (name.tripPointName != null){
+                              nameOfPoint += name.tripPointName + ' - '
+                              }
+                              })
+                              }
+                              {nameOfPoint}
+                            </div>
+                            <div className="icon-trip">
+                              <IconButton
                                 onClick={() => this.handleDelete(item.tripId)}
                                 className={classes.iconButton}
                                 aria-label="Delete">
                                 <DeleteIcon />
-                            </IconButton>
-                        </div>
+                              </IconButton>
+                            </div>
 
-                        {nameOfPoint=''}
+                            {nameOfPoint=''}
+                          </div>
+                        )
+
+                      }
+                      {/*<div className='trip-date-time' style ={{color: 'white'}}>*/}
+                      {/*{*/}
+                      {/*(item.tripDateTime ) ?*/}
+                      {/*(item.tripDateTime.replace('T',' ').substring(0,16)) : <span>time was lost</span>*/}
+                      {/*}*/}
+                      {/*</div>*/}
+                      {/*{*/}
+                      {/*item.tripPoint.forEach((name) => {*/}
+                      {/*if (name.tripPointName != null){*/}
+                      {/*nameOfPoint += name.tripPointName + ' - '*/}
+                      {/*}*/}
+                      {/*})*/}
+                      {/*}*/}
+                      {/*{nameOfPoint}*/}
                     </li>
                 )
-            })} else{
+            })
+        } else{
             tripsHistoryList = 'No Trips Yet'
         }
 
