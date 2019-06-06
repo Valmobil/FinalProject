@@ -90,7 +90,8 @@ class TripsHistory extends Component {
                         <div className='trip-data'  onClick={()=>{this.defineElement(item.tripId)}} >
                             <div className='trip-date-time' style ={{color: 'black'}}>
                                 {
-                                  (item.tripDateTime) ? (item.tripDateTime.replace('T',' ').substring(0,16)): <span>time was lost</span>
+                                  (item.tripDateTime ) ?
+                                       (item.tripDateTime.replace('T',' ').substring(0,16)) : <span>time was lost</span>
                                 }
                             </div>
                             {
@@ -117,6 +118,7 @@ class TripsHistory extends Component {
             })} else{
             tripsHistoryList = 'No Trips Yet'
         }
+
         return (
             <div className='trip-history-block'>
                 <ul className='list-history'>

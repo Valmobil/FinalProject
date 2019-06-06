@@ -10,6 +10,12 @@
   list-style-type: none;
   background-color: #ffffff;
 }
+.trip-data-future{
+  background-color: orangered;
+}
+.trip-data-past{
+  background-color: yellow;
+}
 .trip-data{
   padding:10px;
   width: 232px;
