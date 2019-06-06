@@ -127,7 +127,7 @@ public class TripsService {
     Optional<Trip> op = tripsRepository.findById(tripId);
     Trip trip = null;
     if (op.isPresent()) {
-       trip = op.get();
+      trip = op.get();
     } else {
       throw new ApplicationException("Error! Have no trip with this TripId! The operation is rejected!");
     }
