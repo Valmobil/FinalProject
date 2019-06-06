@@ -20,7 +20,7 @@ const styles = theme => ({
         marginTop: 15,
     },
     root: {
-        width: '55%',
+        width: '85%',
         borderRadius: 4,
     },
     heading: {
@@ -28,7 +28,7 @@ const styles = theme => ({
         fontWeight: theme.typography.fontWeightRegular,
     },
     expandIcon: {
-        color: '#f57c00',
+        color: '#fff',
     },
     details: {
         display: 'block',
@@ -36,30 +36,27 @@ const styles = theme => ({
 });
 
 const style = {
-    checkbox: {
+    unselected: {
         color: '#888',
-        '&:checked': {
-            color: '#888',
-        }
     },
-    chosen: {
-        color: '#f57c00',
-        '&:checked': {
-            color: '#f57c00',
-        }
+    selected: {
+        backgroundColor: '#F59F49',
+        color: '#fff',
     },
     mutual: {
-        color: '#008000',
-        '&:checked': {
-            color: '#008000',
-        }
+        backgroundColor: '#338033',
+        color: '#fff',
     },
     rejected: {
-        color: '#FC0500',
-        '&:checked': {
-            color: '#FC0500',
-        }
+        backgroundColor: '#FA4E4B',
+        color: '#fff',
     },
+    checkbox: {
+        color: 'fff',
+        '&:checked':{
+            color: 'fff'
+        }
+    }
 }
 
 class MainRender extends Component {
@@ -81,7 +78,6 @@ class MainRender extends Component {
     }
 
     handleChange = (index) => event => {
-        console.log('index = ', index)
         const joinStatusArray = [...this.state.joinStatusArray]
         const checkboxArray = [...this.state.checkboxArray]
         checkboxArray[index] = event.target.checked
@@ -102,51 +98,60 @@ class MainRender extends Component {
             joinStatusArray[index] = 4
             this.setJoinStatusArray(joinStatusArray, index)
         }
+        else if (joinStatusArray[index] === 4) {
+            joinStatusArray[index] = 3
+            this.setJoinStatusArray(joinStatusArray, index)
+        }
     }
 
-    setCheckboxStyle = (index) => {
+    setTabStyle = (index) => {
         switch (this.state.joinStatusArray[index]) {
             case 1:
             case 2:
-                return 'chosen'
+                return 'selected'
             case 3:
                 return 'mutual'
             case 4:
                 return 'rejected'
             default:
-                return 'checkbox'
+                return 'unselected'
         }
     }
 
 
     render() {
-        const {classes, mainTripParams, mainTripPointNames} = this.props
+        const {classes, mainTripParams, mainTripPointNames, mainTripUserArray} = this.props
         const routesArray = [...mainTripPointNames]
         routesArray.splice(0, 1)
-        const routesList = routesArray.map((item, index) => (<div className={classes.rectangle} key={index}>
+        const routesList = routesArray.map((item, index) => (
+            <div className={classes.rectangle} key={index}>
                     <ExpansionPanel className={classes.root}>
                         <ExpansionPanelSummary
                             onClick={() => this.props.setCurrentMainTripParams(mainTripParams[index + 1])}
                             expandIcon={<ExpandMoreIcon className={classes.expandIcon}/>}
+                            style={style[this.setTabStyle(index)]}
                         >
                             <Typography className={classes.heading}>{item[0]} - {item[item.length - 1]}</Typography>
                         </ExpansionPanelSummary>
-                        <ExpansionPanelDetails className={classes.details}>
+                        <ExpansionPanelDetails className={classes.details} style={style[this.setTabStyle(index)]}>
                             <Typography style={{textAlign: 'left'}}>
-                                {item[0]}
+                                {mainTripUserArray[index].userName}
                             </Typography>
                             <Typography style={{textAlign: 'left'}}>
-                                {item[item.length - 1]}
+                                {mainTripUserArray[index].userPhone}
+                            </Typography>
+                            <Typography style={{textAlign: 'left'}}>
+                                <img src={mainTripUserArray[index].userPhoto} style={{height: 100}} alt=''/>
                             </Typography>
 
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
                     <Checkbox
-                        style={style[this.setCheckboxStyle(index)]}
                         onChange={this.handleChange(index)}
                         checked={this.state.checkboxArray[index]}
+                        style={{color: '#fff'}}
                     />
-                </div>
+            </div>
             )
         )
         return (

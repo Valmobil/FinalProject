@@ -1,5 +1,5 @@
 import axios from "axios/index";
-import { logOut } from "../actions/userCreators";
+import { logOut, errorPopupShow } from "../actions/userCreators";
 
 export const callApi = (method, url, data, config) => {
     let headers = null
@@ -112,7 +112,6 @@ export const singleCallApi = search()
 // * *********************
 
 export const sendJoinTripRequest = (joinTrip) => {
-    console.log('sendJoinTripRequest: joinTrip = ', joinTrip)
     callApi('post', 'api/trips/passengers', joinTrip)
-        .then(res => console.log('sendJoinTripRequest: res = ', res))
+        .catch(err => errorPopupShow())
 }

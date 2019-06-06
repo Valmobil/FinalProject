@@ -276,22 +276,22 @@ class Map extends Component {
         if (this.props.clearMap !== prevProps.clearMap){
             this.clearMap()
         }
-        if (this.props.targetCoordinates !== prevProps.targetCoordinates && this.props.targetCoordinates &&
-            this.props.userMainTripParams === prevProps.userMainTripParams &&
+        if (this.props.targetCoordinates !== prevProps.targetCoordinates && this.props.targetCoordinates
+            && this.props.coords && this.props.userMainTripParams === prevProps.userMainTripParams &&
             this.props.currentMainTripParams === prevProps.currentMainTripParams){
+            this.clearMap()
             this.setMarker(this.props.targetCoordinates.latitude, this.props.targetCoordinates.longitude)
             if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute ){
-                this.clearMap()
                 this.calculateRouteFromAtoB()
             }
         }
-        if (this.props.coords !== prevProps.coords && this.props.coords){
-            this.setMarker(this.props.coords.latitude, this.props.coords.longitude)
-            if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute ){
-                this.clearMap()
-                this.calculateRouteFromAtoB()
-            }
-        }
+        // if (this.props.coords !== prevProps.coords && this.props.coords){
+        //     this.setMarker(this.props.coords.latitude, this.props.coords.longitude)
+        //     if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute ){
+        //         this.clearMap()
+        //         this.calculateRouteFromAtoB()
+        //     }
+        // }
 
         if (this.props.userMainTripParams !== prevProps.userMainTripParams && this.props.showMainRoute){
             this.clearMap()

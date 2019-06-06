@@ -11,6 +11,9 @@ class Main extends Component {
     state = {
         checkboxArray: null,
         joinIdArray: null,
+        tripPointNames: false,
+        tripPointParams: false,
+        userArray: false,
     }
 
     componentDidUpdate(prevProps) {
@@ -18,10 +21,21 @@ class Main extends Component {
             this.props.setMainTrips(this.props.trips.mainTripId)
         }
         if (this.props.trips.joinStatusArray !== prevProps.trips.joinStatusArray) {
-            this.setState({joinIdArray: this.props.trips.joinIdArray})
+            const checkboxArray = this.props.trips.joinStatusArray.map(item => {
+                return !(item === 1 || item === 4);
+            })
+            this.setState({joinIdArray: this.props.trips.joinIdArray, checkboxArray})
         }
-        if (this.props.trips.mainTripPointNames !== prevProps.trips.mainTripPointNames)
-        this.setState({checkboxArray: Array(this.props.trips.mainTripPointNames.length).fill(false)})
+        if (this.props.trips.mainTripPointNames !== prevProps.trips.mainTripPointNames){
+            this.setState({tripPointNames: true})
+        }
+        if (this.props.trips.mainTripParams !== prevProps.trips.mainTripParams){
+            this.setState({tripPointParams: true})
+        }
+        if (this.props.trips.mainTripUserArray !== prevProps.trips.mainTripUserArray){
+            this.setState({userArray: true})
+        }
+
     }
 
     componentDidMount() {
@@ -31,14 +45,14 @@ class Main extends Component {
     }
 
     render() {
-        const { mainTripParams, mainTripPointNames, joinStatusArray } = this.props.trips
-        const { checkboxArray, joinIdArray } = this.state
+        const { mainTripParams, joinStatusArray, mainTripPointNames, mainTripUserArray } = this.props.trips
+        const { checkboxArray, joinIdArray, tripPointNames, tripPointParams, userArray } = this.state
         let output = (
             <div style={{marginTop: 100}}>
                 <Spinner/>
             </div>
         )
-        if (mainTripParams && checkboxArray && joinIdArray && joinStatusArray){
+        if (tripPointParams && joinStatusArray && tripPointNames && userArray){
         output =    <MainRender
                     mainTripPointNames={mainTripPointNames}
                     checkboxArray={checkboxArray}
@@ -46,6 +60,7 @@ class Main extends Component {
                     joinStatusArray={joinStatusArray}
                     mainTripParams={mainTripParams}
                     mainTripId={this.props.trips.mainTripId}
+                    mainTripUserArray={mainTripUserArray}
                     />
 
         }
