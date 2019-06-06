@@ -65,7 +65,7 @@ public class ImageService {
     if (imageId == null || "null".equals(imageId) || "".equals(imageId)) {
       throw new ApplicationException("Error! Image not found!");
     }
-    return imageDbRepository.getOne(UUID.fromString(imageId)).getImageDbData();
+    return imageDbRepository.findById(UUID.fromString(imageId)).get().getImageDbData();
   }
 
 

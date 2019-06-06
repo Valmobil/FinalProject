@@ -9,11 +9,10 @@ import java.util.List;
 
 public interface TripsRepository extends JpaRepository<Trip, Long> {
 
-  List<Trip> findByUserAndTripIsDeleted(User user, int isDeleted);
-
-
-  //The Query get OwnTrip + Other Trips where points coincide with OwnTrip Points
-  //Results are sorted starting from journeys with more matches
+  /**
+   * The Query get OwnTrip + Other Trips where points coincide with OwnTrip Points
+   * Results are sorted starting from journeys with more matches
+   **/
   @Query(value =
       "SELECT *, 5000 as COUNTS FROM TRIP"
           + " WHERE TRIP_ID = ?1"
@@ -37,6 +36,8 @@ public interface TripsRepository extends JpaRepository<Trip, Long> {
           + "AND  NVL(TRIP_USER_CAR_ID,-1) = NVL2(SELECT TRIP_USER_CAR_ID FROM TRIP WHERE TRIP_ID = ?1,-1,TRIP_USER_CAR_ID) "
           + " ORDER BY COUNTS DESC", nativeQuery = true)
   List<Trip> findOwnTripAndOtherTripsH2(Long tripId, Long userId);
+
+  List<Trip> findByUserAndTripIsDeleted(User user, int isDeleted);
 
   @Query(value =
       "SELECT *, 5000 as COUNTS FROM TRIP"
