@@ -90,6 +90,7 @@ class NewTrip extends Component {
         valueTo: this.props.trips.finishLocation,
         car: '',
         role: 'passenger',
+        tripTime: new Date().toISOString()
     }
 
 
@@ -148,17 +149,29 @@ class NewTrip extends Component {
                 const {userCars} = this.props.users.user
                 let currentCar = userCars.length === 1 ? userCars[0] : this.state.car
                 const userCarId = this.state.role === 'driver' ? currentCar.userCarId : null
+                let result = this.setTimeWithTimezoneOffset(this.state.tripTime)
                 let trip = {
                     userCar: {
                         userCarId,
                     },
                     tripPoint,
-                    tripDateTime: new Date().toISOString(),
+                    tripDateTime: result,
                 }
                 this.props.setTrip(trip)
             })
         this.rejectRoute()
         this.props.history.push({pathname: '/main'})
+    }
+
+    setTripTime = (time) =>{
+      this.setState({
+        tripTime: time
+      })
+    }
+
+    setTimeWithTimezoneOffset = (currentTime) => {
+      let tempDate = new Date(currentTime)
+      return new Date(tempDate.getTime() - tempDate.getTimezoneOffset()*60000)
     }
 
     rejectRoute = () => {
@@ -187,9 +200,11 @@ class NewTrip extends Component {
     }
 
     render() {
+
+
         const { classes } = this.props;
         const { smart } = this.props.location
-        const { role, car, valueFrom, valueTo } = this.state
+        const { role, car, valueFrom, valueTo, tripTime } = this.state
         const {userCars} = this.props.users.user
         let currentCar = userCars.length === 1 ? userCars[0] : car
         const carList = userCars.map((item) => {
@@ -200,7 +215,7 @@ class NewTrip extends Component {
                 <LocationDrawer/>
                 <div className='new-trip' style={{marginTop: 60}}>
                     <span>creating new trip</span>
-                    <ForDateTimePickers/>
+                    <ForDateTimePickers setTripTime={this.setTripTime} tripTime={tripTime}/>
                     <MuiThemeProvider theme={theme}>
                         <RadioGroup
                             aria-label="position"

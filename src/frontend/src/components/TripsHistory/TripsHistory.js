@@ -89,7 +89,9 @@ class TripsHistory extends Component {
                     <li key={item.tripId}>
                         <div className='trip-data'  onClick={()=>{this.defineElement(item.tripId)}} >
                             <div className='trip-date-time' style ={{color: 'black'}}>
-                                {item.tripDateTime.replace('T',' ').substring(0,16)}
+                                {
+                                  (item.tripDateTime) ? (item.tripDateTime.replace('T',' ').substring(0,16)): <span>time was lost</span>
+                                }
                             </div>
                             {
                                 item.tripPoint.forEach((name) => {
