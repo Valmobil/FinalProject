@@ -37,7 +37,7 @@ public interface TripsRepository extends JpaRepository<Trip, Long> {
           + " ORDER BY COUNTS DESC", nativeQuery = true)
   List<Trip> findOwnTripAndOtherTripsH2(Long tripId, Long userId);
 
-  List<Trip> findByUserAndTripIsDeleted(User user, int isDeleted);
+  List<Trip> findByUserAndTripIsDeletedOrderByTripDateTimeDesc(User user, int isDeleted);
 
   @Query(value =
       "SELECT *, 5000 as COUNTS FROM TRIP"

@@ -2,7 +2,7 @@ import { SET_INTERMEDIATE_POINTS, SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NA
          SET_SEARCHED_LOCATION, SET_TARGET_COORDS, SET_USER_TRIP_PARAMS, SET_CURRENT_TRIP_PARAMS, SET_TRIP,
          SET_TRIP_DATE_TIME, ADD_NEW_TRIP, SET_MAIN_TRIP_ID, DELETE_TRIP_FROM_HISTORY,
          SET_START_LOCATION, SET_FINISH_LOCATION, CLEAR_MAP, SET_MY_LOCATION,
-         SET_JOIN_STATUS_ARRAY, SET_JOIN_ID_ARRAY } from "../actions/trips";
+         SET_JOIN_STATUS_ARRAY, SET_JOIN_ID_ARRAY, SET_MAIN_TRIP_USER_ARRAY } from "../actions/trips";
 
 
 
@@ -27,6 +27,7 @@ const initialState = {
     clearMap: false,
     joinStatusArray: [],
     joinIdArray: null,
+    mainTripUserArray: null,
 }
 
 function trips (state = initialState, action) {
@@ -69,6 +70,8 @@ function trips (state = initialState, action) {
             return {...state, joinStatusArray: action.payload}
         case SET_JOIN_ID_ARRAY:
             return {...state, joinIdArray: action.payload}
+        case SET_MAIN_TRIP_USER_ARRAY:
+            return {...state, mainTripUserArray: action.payload}
 
         default:
             return {...state}
