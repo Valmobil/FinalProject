@@ -1,0 +1,15 @@
+.companion-details{
+    display: flex;
+    align-items: center;
+}
+.companion-details-left{
+    height: 33px;
+    text-align: left;
+}
+.companion-details-right{
+    height: 100px;
+    text-align: right;
+}
+.phone-link, .phone-link:active, .phone-link:visited, .phone-link:focus{
+    text-decoration: none;
+}
