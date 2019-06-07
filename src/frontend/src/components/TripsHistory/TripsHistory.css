@@ -2,6 +2,11 @@
   display: block;
   width: 80%;
 }
+.list-history{
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
 .trip-history li{
   color: #464d73;
   justify-content: center;
@@ -12,31 +17,6 @@
 .trip-card{
   display: flex;
 }
-.trip-data{
-  padding:10px;
-  width: 232px;
-}
-.trip-data-future{
-  background-color: orangered;
-}
-.trip-data-past{
-  background-color: #ffffff;
-}
-
-.trip-date-time{
-  height: 35px;
-}
-/*.list-history{*/
-  /*color: #ffffff;*/
-/*}*/
-.icon-trip{
-  display: flex;
-}
 .icon-trip button{
-  margin:10px 20px;
-}
-.list-history{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin:10px;
 }
