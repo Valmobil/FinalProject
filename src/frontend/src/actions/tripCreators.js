@@ -62,6 +62,7 @@ export const setMainTrips = (id) => dispatch => {
             res.data.forEach(element => {
                 joinStatusArray.push(element.tripJoinStatus)
                 idArray.push(element.tripId)
+                element.user.userCar = element.userCar.userCarName + ' ' + element.userCar.userCarColour
                 userArray.push(element.user)
                 let currentRouteArray = []
                 let routeRequestParams = {

@@ -10,6 +10,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Map from '../../Map/Map'
 import Checkbox from '@material-ui/core/Checkbox';
 import {sendJoinTripRequest} from '../../../utils/utils'
+import './MainRender.css'
 
 
 const styles = theme => ({
@@ -28,7 +29,7 @@ const styles = theme => ({
         fontWeight: theme.typography.fontWeightRegular,
     },
     expandIcon: {
-        color: '#fff',
+        color: '#1A1A1A',
     },
     details: {
         display: 'block',
@@ -37,11 +38,13 @@ const styles = theme => ({
 
 const style = {
     unselected: {
-        color: '#888',
+        backgroundColor: '#fff',
+        color: '#1A1A1A'
     },
     selected: {
         backgroundColor: '#F59F49',
         color: '#fff',
+
     },
     mutual: {
         backgroundColor: '#338033',
@@ -53,7 +56,7 @@ const style = {
     },
     checkbox: {
         color: 'fff',
-        '&:checked':{
+        '&:checked': {
             color: 'fff'
         }
     }
@@ -124,7 +127,7 @@ class MainRender extends Component {
         const routesArray = [...mainTripPointNames]
         routesArray.splice(0, 1)
         const routesList = routesArray.map((item, index) => (
-            <div className={classes.rectangle} key={index}>
+                <div className={classes.rectangle} key={index}>
                     <ExpansionPanel className={classes.root}>
                         <ExpansionPanelSummary
                             onClick={() => this.props.setCurrentMainTripParams(mainTripParams[index + 1])}
@@ -134,16 +137,23 @@ class MainRender extends Component {
                             <Typography className={classes.heading}>{item[0]} - {item[item.length - 1]}</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails className={classes.details} style={style[this.setTabStyle(index)]}>
-                            <Typography style={{textAlign: 'left'}}>
-                                {mainTripUserArray[index].userName}
-                            </Typography>
-                            <Typography style={{textAlign: 'left'}}>
-                                {mainTripUserArray[index].userPhone}
-                            </Typography>
-                            <Typography style={{textAlign: 'left'}}>
-                                <img src={mainTripUserArray[index].userPhoto} style={{height: 100}} alt=''/>
-                            </Typography>
-
+                            <div style={{display: 'flex', justifyContent: 'space-between', height: 100}}>
+                                <div>
+                                    <div className='companion-details companion-details-left'>
+                                        {mainTripUserArray[index].userName}
+                                    </div>
+                                    <div className='companion-details companion-details-left'>
+                                        {mainTripUserArray[index].userCar ? mainTripUserArray[index].userCar : null}
+                                    </div>
+                                    <div className='companion-details companion-details-left'>
+                                        <a className='phone-link'
+                                           href={`tel:${mainTripUserArray[index].userPhone}`}>{mainTripUserArray[index].userPhone}</a>
+                                    </div>
+                                </div>
+                                <div className='companion-details companion-details-right'>
+                                    <img src={mainTripUserArray[index].userPhoto} style={{height: 100}} alt=''/>
+                                </div>
+                            </div>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
                     <Checkbox
@@ -151,7 +161,7 @@ class MainRender extends Component {
                         checked={this.state.checkboxArray[index]}
                         style={{color: '#fff'}}
                     />
-            </div>
+                </div>
             )
         )
         return (
@@ -165,7 +175,7 @@ class MainRender extends Component {
                 <div style={{width: '100%', margin: '20px 0'}}>
                     {
                         routesList.length > 0 ? routesList
-                            : <span style={{color: '#fff'}}>You have no matching routes yet</span>
+                            : <span style={{color: '#fff'}}>Unfortunately you have no matching routes now</span>
                     }
                 </div>
             </>
