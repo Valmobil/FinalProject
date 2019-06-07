@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: dev
   resources:
     static-locations: src/main/resources/static/
   mail:
@@ -19,7 +19,6 @@ spring:
     multipart:
       max-file-size: 10MB
 #      max-request-size: 10MB
-
 application:
   map:
     xmlsource: src/main/resources/maps/map.xml

@@ -3,12 +3,14 @@ package ua.com.danit.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ua.com.danit.entity.ImageDb;
 import ua.com.danit.entity.User;
 import ua.com.danit.error.ApplicationException;
 import ua.com.danit.repository.ImageDbRepository;
 import ua.com.danit.repository.ImagesRepository;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -65,7 +67,12 @@ public class ImageService {
     if (imageId == null || "null".equals(imageId) || "".equals(imageId)) {
       throw new ApplicationException("Error! Image not found!");
     }
-    return imageDbRepository.findById(UUID.fromString(imageId)).get().getImageDbData();
+    Optional<ImageDb> image = imageDbRepository.findById(UUID.fromString(imageId));
+    if (image.isPresent()) {
+      return image.get().getImageDbData();
+    } else {
+      throw new ApplicationException("Error! Image not found!");
+    }
   }
 
 
