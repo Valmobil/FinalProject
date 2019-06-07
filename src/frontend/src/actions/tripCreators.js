@@ -1,7 +1,8 @@
 import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS,
          SET_TRIP, SET_MY_COORDS, SET_TARGET_COORDS, SET_SEARCHED_LOCATION, SET_INTERMEDIATE_POINTS,
          SET_TRIP_DATE_TIME, SET_MAIN_TRIP_ID, DELETE_TRIP_FROM_HISTORY, SET_START_LOCATION,
-         SET_FINISH_LOCATION, CLEAR_MAP, SET_MY_LOCATION, SET_JOIN_STATUS_ARRAY, SET_JOIN_ID_ARRAY } from './trips'
+         SET_FINISH_LOCATION, CLEAR_MAP, SET_MY_LOCATION, SET_JOIN_STATUS_ARRAY, SET_JOIN_ID_ARRAY,
+         SET_MAIN_TRIP_USER_ARRAY } from './trips'
 import { errorPopupShow } from './userCreators'
 import {callApi} from "../utils/utils";
 
@@ -57,9 +58,11 @@ export const setMainTrips = (id) => dispatch => {
             let allRoutesArray = []
             let joinStatusArray = []
             let idArray = []
+            let userArray = []
             res.data.forEach(element => {
                 joinStatusArray.push(element.tripJoinStatus)
                 idArray.push(element.tripId)
+                userArray.push(element.user)
                 let currentRouteArray = []
                 let routeRequestParams = {
                     mode: 'fastest;car',
@@ -78,11 +81,13 @@ export const setMainTrips = (id) => dispatch => {
             const joinArray = [...joinStatusArray]
             joinArray.splice(0,1)
             idArray.splice(0,1)
+            userArray.splice(0,1)
             dispatch({type: SET_JOIN_ID_ARRAY, payload: idArray})
             dispatch({type: SET_JOIN_STATUS_ARRAY, payload: joinArray})
             dispatch({type: SET_MAIN_TRIPS_PARAMS, payload: parameterArray})
             dispatch({type: SET_MAIN_TRIPS_POINT_NAMES, payload: allRoutesArray})
             dispatch({type: SET_USER_TRIP_PARAMS, payload: parameterArray[0]})
+            dispatch({type: SET_MAIN_TRIP_USER_ARRAY, payload: userArray})
         })
         .catch(err => dispatch(errorPopupShow()))
 }

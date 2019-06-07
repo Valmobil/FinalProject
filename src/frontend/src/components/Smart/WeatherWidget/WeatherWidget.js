@@ -21,7 +21,9 @@ const WeatherWidget = (props) => {
     const weatherIcon = `wi wi-owm-${icon}`
     let widget = temperature ?
         (
-            <Zoom in={temperature !== null}>
+            <Zoom in={temperature !== null}
+                  timeout={100}
+            >
             <div className='widget-container'>
                 <i className={weatherIcon}></i>
                 <p className='widget-paragraph'>{temperature} &#176;C</p>
