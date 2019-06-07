@@ -1,6 +1,6 @@
 .trip-history{
   display: block;
-  width: 80%;
+  width: 70%;
 }
 .list-history{
    display: flex;
@@ -18,5 +18,8 @@
   display: flex;
 }
 .icon-trip button{
-  margin:10px;
+  padding:10px;
+}
+.notrips-list{
+    color: #ffffff;
 }

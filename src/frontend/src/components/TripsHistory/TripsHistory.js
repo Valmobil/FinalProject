@@ -171,7 +171,7 @@ class TripsHistory extends Component {
                 )
             })
         } else{
-            tripsHistoryList = 'No Trips Yet'
+          tripsHistoryList = <span>trips are displayed here</span>
         }
 
         return (
