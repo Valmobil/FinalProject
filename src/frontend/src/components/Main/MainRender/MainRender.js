@@ -146,7 +146,7 @@ class MainRender extends Component {
                                         {mainTripUserArray[index].userCar ? mainTripUserArray[index].userCar : null}
                                     </div>
                                     <div className='companion-details companion-details-left'>
-                                        <a className='phone-link'
+                                        <a className='phone-link' style={style[this.setTabStyle(index)]}
                                            href={`tel:${mainTripUserArray[index].userPhone}`}>{mainTripUserArray[index].userPhone}</a>
                                     </div>
                                 </div>
