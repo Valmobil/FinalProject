@@ -22,7 +22,7 @@ class Main extends Component {
         }
         if (this.props.trips.joinStatusArray !== prevProps.trips.joinStatusArray) {
             const checkboxArray = this.props.trips.joinStatusArray.map(item => {
-                return !(item === 1 || item === 4);
+                return !(item % 2 === 0);
             })
             this.setState({joinIdArray: this.props.trips.joinIdArray, checkboxArray})
         }
