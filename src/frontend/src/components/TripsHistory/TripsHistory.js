@@ -115,7 +115,7 @@ class TripsHistory extends Component {
                                       }
                                     })
                                   }
-                                  {nameOfPoint}
+                                  {nameOfPoint.slice(0, nameOfPoint.length -3)}
                                 </Typography>
                               </CardContent>
                           </CardContent>
@@ -150,7 +150,7 @@ class TripsHistory extends Component {
                                       }
                                     })
                                   }
-                                  {nameOfPoint}
+                                  {nameOfPoint.slice(0, nameOfPoint.length-3)}
                                 </Typography>
                               </CardContent>
                             </CardContent>
