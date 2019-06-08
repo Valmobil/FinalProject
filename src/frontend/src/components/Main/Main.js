@@ -62,7 +62,6 @@ class Main extends Component {
                     mainTripId={this.props.trips.mainTripId}
                     mainTripUserArray={mainTripUserArray}
                     />
-
         }
 
         return (
