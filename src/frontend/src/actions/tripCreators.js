@@ -50,7 +50,6 @@ export const setIntermediatePoints = (points) => dispatch => {
 //* **********************
 
 export const setMainTrips = (id) => dispatch => {
-
     callApi('post', 'api/trips/others', {tripId: id})
         .then(res => {
             console.log('setMainTrips: res = ', res.data)
@@ -62,6 +61,9 @@ export const setMainTrips = (id) => dispatch => {
             res.data.forEach(element => {
                 joinStatusArray.push(element.tripJoinStatus)
                 idArray.push(element.tripId)
+                if (element.userCar){
+                    element.user.userCar = element.userCar.userCarName + ' ' + element.userCar.userCarColour
+                }
                 userArray.push(element.user)
                 let currentRouteArray = []
                 let routeRequestParams = {
@@ -89,7 +91,10 @@ export const setMainTrips = (id) => dispatch => {
             dispatch({type: SET_USER_TRIP_PARAMS, payload: parameterArray[0]})
             dispatch({type: SET_MAIN_TRIP_USER_ARRAY, payload: userArray})
         })
-        .catch(err => dispatch(errorPopupShow()))
+        .catch(err => {
+            console.log('setMainTrips: err = ', err)
+            dispatch(errorPopupShow())
+        })
 }
 // * *********************
 
