@@ -133,10 +133,6 @@ class Map extends Component {
         });
     }
 
-    myRoute = () => {
-        this.calculateRouteFromAtoB ();
-        // this.reverseGeocode()
-    }
 
     calculateRouteFromAtoB = (params) => {
         if ((this.props.showSmartRoute || this.props.showMainRoute) && this.props.coords){
@@ -144,7 +140,7 @@ class Map extends Component {
             this.addMarker(currentMarker)
         }
         if (this.props.showMainRoute && params){
-            const svgMarker = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"' +
+            const svgMarker = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"' +
 	              ' width="19px" height="24px" enable-background="new 0 0 19 24" xml:space="preserve">' +
                   '<path fill="#FFFFFF" d="M18.5,9c0,5-9,15-9,15s-9-10-9-15s4-9,9-9S18.5,4,18.5,9z"/>' +
                   '<path fill="#F57C00" d="M17.8,9.3c0,4.6-8.3,13.8-8.3,13.8S1.3,13.8,1.3,9.3S4.9,1,9.5,1S17.8,4.7,17.8,9.3z"/></svg>'
@@ -299,11 +295,17 @@ class Map extends Component {
             this.calculateRouteFromAtoB(this.props.userMainTripParams)
         }
 
+        if (this.props.userMainTripShown !== prevProps.userMainTripShown && this.props.showMainRoute){
+            this.currentRender = 'user'
+            this.calculateRouteFromAtoB(this.props.userMainTripParams)
+        }
+
         if (this.props.currentMainTripParams !== prevProps.currentMainTripParams && this.props.showMainRoute){
-            this.clearMap()
+            if (!this.props.userMainTripShown) {
+                this.clearMap()
+            }
             this.currentRender = 'current'
             this.calculateRouteFromAtoB(this.props.currentMainTripParams)
-
         }
     }
 
@@ -315,10 +317,6 @@ class Map extends Component {
     }
 
     render() {
-        // console.log('MAP: myCoordinates = ', this.props.coords)
-        // console.log('MAP: targetCoordinates = ', this.props.targetCoordinates)
-        // console.log('Map: this.props.userMainTripParams = ', this.props.userMainTripParams)
-        // console.log('Map: this.props.currentMainTripParams = ', this.props.currentMainTripParams)
         let height = this.props.height ? this.props.height : 350
         let marginTop = this.props.marginTop ? this.props.marginTop : '20px'
         return (
@@ -338,6 +336,7 @@ const mapStateToProps = (state) => {
         userMainTripParams: state.trips.userMainTripParams,
         currentMainTripParams: state.trips.currentMainTripParams,
         clearMap: state.trips.clearMap,
+        userMainTripShown: state.trips.userMainTripShown,
     }
 }
 
