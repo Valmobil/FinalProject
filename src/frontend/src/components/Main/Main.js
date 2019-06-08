@@ -1,111 +1,71 @@
-import React, { Component, Suspense } from 'react'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { setMainTrips, setCurrentMainTripParams } from "../../actions/tripCreators";
-import { withStyles } from '@material-ui/core/styles';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Button from '@material-ui/core/Button'
-import Spinner from '../Spinner/Spinner'
-import Map from '../Map/Map'
+import { setMainTrips } from "../../actions/tripCreators";
+import Spinner from "../Spinner/Spinner";
+import MainRender from "./MainRender/MainRender";
 
 
-const styles = theme => ({
-    rectangle: {
-        display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        marginTop: 15,
-    },
-    root: {
-        width: '55%',
-        borderRadius: 4,
-    },
-    heading: {
-        fontSize: theme.typography.pxToRem(15),
-        fontWeight: theme.typography.fontWeightRegular,
-    },
-    expandIcon: {
-        color: '#f57c00',
-    },
-    details: {
-        display: 'block',
-    },
-    button: {
-        background: 'linear-gradient(45deg, #ff9800 30%, #f57c00 90%)',
-        borderRadius: 3,
-        border: 0,
-        color: 'white',
-        height: 30,
-        padding: 0,
-        '&:focus':{
-            outline: 'none',
-        }
-    },
-    label: {
-        textTransform: 'capitalize'
-    },
-});
-
-class Main extends Component{
 
 
-    componentDidMount(){
-       this.props.setMainTrips(1)
+class Main extends Component {
+    state = {
+        checkboxArray: null,
+        joinIdArray: null,
+        tripPointNames: false,
+        tripPointParams: false,
+        userArray: false,
     }
 
-    render(){
-        const { classes } = this.props;
-        const { mainTripParams, mainTripPointNames } = this.props.trips
-        const routesArray = mainTripPointNames.slice()
-        routesArray.splice(0, 1)
-        const routesList = routesArray.map((item, index) =>
-            (<div className={classes.rectangle} key={index}>
-                        <ExpansionPanel className={classes.root}>
-                            <ExpansionPanelSummary
-                                onClick={() => this.props.setCurrentMainTripParams(mainTripParams[index + 1])}
-                                expandIcon={<ExpandMoreIcon className={classes.expandIcon}/>}
-                            >
-                                <Typography className={classes.heading}>{item[0]} - {item[item.length - 1]}</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails className={classes.details}>
-                                   {item.map((element, i) => (
-                                       <Typography style={{textAlign: 'left'}} key={i}>
-                                           {i + 1}. {element}
-                                       </Typography>
-                                   ))}
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
+    componentDidUpdate(prevProps) {
+        if (this.props.trips.mainTripId !== prevProps.trips.mainTripId) {
+            this.props.setMainTrips(this.props.trips.mainTripId)
+        }
+        if (this.props.trips.joinStatusArray !== prevProps.trips.joinStatusArray) {
+            const checkboxArray = this.props.trips.joinStatusArray.map(item => {
+                return !(item % 2 === 0);
+            })
+            this.setState({joinIdArray: this.props.trips.joinIdArray, checkboxArray})
+        }
+        if (this.props.trips.mainTripPointNames !== prevProps.trips.mainTripPointNames){
+            this.setState({tripPointNames: true})
+        }
+        if (this.props.trips.mainTripParams !== prevProps.trips.mainTripParams){
+            this.setState({tripPointParams: true})
+        }
+        if (this.props.trips.mainTripUserArray !== prevProps.trips.mainTripUserArray){
+            this.setState({userArray: true})
+        }
 
-                    <Button
-                            classes={{
-                                root: classes.button,
-                                label: classes.label
-                            }}
-                    >
-                        Accept
-                    </Button>
-                    </div>
-                )
-            )
-        return(
+    }
 
-            <>
+    componentDidMount() {
+        if (this.props.trips.mainTripId) {
+            this.props.setMainTrips(this.props.trips.mainTripId)
+        }
+    }
 
-                <Map
-                height={250}
-                showMainRoute={true}
-                marginTop={'50px'}
-                />
-
-            <div style={{width: '100%', margin: '20px 0'}}>
-            <Suspense fallback={<Spinner />}>
-                {routesList}
-            </Suspense>
+    render() {
+        const { mainTripParams, joinStatusArray, mainTripPointNames, mainTripUserArray } = this.props.trips
+        const { checkboxArray, joinIdArray, tripPointNames, tripPointParams, userArray } = this.state
+        let output = (
+            <div style={{marginTop: 100}}>
+                <Spinner/>
             </div>
-            </>
+        )
+        if (tripPointParams && joinStatusArray && tripPointNames && userArray){
+        output =    <MainRender
+                    mainTripPointNames={mainTripPointNames}
+                    checkboxArray={checkboxArray}
+                    joinIdArray={joinIdArray}
+                    joinStatusArray={joinStatusArray}
+                    mainTripParams={mainTripParams}
+                    mainTripId={this.props.trips.mainTripId}
+                    mainTripUserArray={mainTripUserArray}
+                    />
+        }
+
+        return (
+            output
         )
     }
 }
@@ -119,8 +79,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         setMainTrips: (id) => dispatch(setMainTrips(id)),
-        setCurrentMainTripParams: (array) => dispatch(setCurrentMainTripParams(array)),
     }
 }
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Main))
+export default connect(mapStateToProps, mapDispatchToProps)(Main)

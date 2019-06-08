@@ -2,9 +2,16 @@
     margin: 0;
     padding: 0;
 }
-.trip-button{
+.trip-history-header{
+    color: #ffffff;
+}
+.new-trip-button{
     justify-content: center;
     width: 100%;
-    margin-top: 60px;
+    margin-top: 20px;
     margin-bottom: 20px;
+}
+.list-history{
+    display: flex;
+    justify-content: center;
 }

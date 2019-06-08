@@ -1,20 +1,21 @@
 package ua.com.danit.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.LoginMode;
 import ua.com.danit.dto.UserLogin;
 import ua.com.danit.entity.PswdResetToken;
 import ua.com.danit.entity.User;
-import ua.com.danit.error.KnownException;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.repository.PswdResetTokenRepository;
 import ua.com.danit.repository.UsersRepository;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -41,11 +42,10 @@ public class MailSenderService {
 
   public String sendEmailWithMailConfirmation(UserLogin userLogin, String contextPath, String endPoint) {
     if (userLogin == null) {
-      throw new KnownException("Error: Please fill e-Mail cell!");
+      throw new ApplicationException("Error: Please fill e-Mail cell!");
     }
-    loginsService.convertUserLoginBlankToNull(userLogin);
-    if (userLogin.getUserLogin() == null) {
-      throw new KnownException("Error: Please fill e-Mail cell!");
+    if (StringUtils.isEmpty(userLogin.getUserLogin())) {
+      throw new ApplicationException("Error: Please fill e-Mail cell!");
     }
     usersService.checkEmailFormat(userLogin.getUserLogin());
     User user = usersService.createNewEmptyUser();
@@ -69,11 +69,19 @@ public class MailSenderService {
     //save token in DB
     createPasswordResetTokenForUser(user, token);
     //Mail to user
+    MimeMessage mimeMessage;
     if ("email".equals(loginMode.getEndPoint())) {
-      javaMailSender.send(constructResetTokenEmail(contextPath, token, user));
+      mimeMessage = constructResetTokenEmail(contextPath, token, user);
     } else {
-      javaMailSender.send(constructConfirmEmail(contextPath, token, user));
+      mimeMessage = constructConfirmEmail(contextPath, token, user);
     }
+    sendEmailInTread(mimeMessage);
+
+  }
+
+  @Async
+  void sendEmailInTread(MimeMessage mimeMessage) {
+    javaMailSender.send(mimeMessage);
   }
 
   private MimeMessage constructConfirmEmail(
@@ -112,12 +120,11 @@ public class MailSenderService {
       message.setSubject(subject);
       MimeMessageHelper helper;
       helper = new MimeMessageHelper(message, true);
-      //      helper.setFrom(from);
       helper.setTo(to);
       helper.setText(msg, true);
       return message;
     } catch (MessagingException ignored) {
-      throw new KnownException("Error! Cannot generate eMail via MimeMessage");
+      throw new ApplicationException("Error! Cannot generate eMail via MimeMessage");
     }
   }
 

@@ -1,5 +1,6 @@
 package ua.com.danit.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.danit.dto.LoginMode;
@@ -7,7 +8,7 @@ import ua.com.danit.dto.UserResponse;
 import ua.com.danit.entity.PswdResetToken;
 import ua.com.danit.entity.User;
 import ua.com.danit.dto.UserLogin;
-import ua.com.danit.error.KnownException;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.facade.UserFacade;
 import ua.com.danit.facade.UserTokenFacade;
 import ua.com.danit.repository.PswdResetTokenRepository;
@@ -22,7 +23,6 @@ public class LoginsService {
   private UsersService usersService;
   private UserTokensService userTokensService;
   private UserFacade userFacade;
-  private UserTokenFacade userTokenFacade;
   private PswdResetTokenRepository pswdResetTokenRepository;
 
   @Autowired
@@ -33,21 +33,20 @@ public class LoginsService {
     this.usersService = usersService;
     this.userTokensService = userTokensService;
     this.userFacade = userFacade;
-    this.userTokenFacade = userTokenFacade;
     this.pswdResetTokenRepository = pswdResetTokenRepository;
   }
 
   public String passwordRestore(UserLogin userLogin) {
-    convertUserLoginBlankToNull(userLogin);
-    if (userLogin.getUserPasswordNew() == null) {
-      throw new KnownException("Error! Please fill in new password!");
+    if (StringUtils.isEmpty(userLogin.getUserPasswordNew())) {
+      throw new ApplicationException("Error! Please fill in new password!");
     }
     PswdResetToken pswdResetToken = pswdResetTokenRepository.findFirstByToken(userLogin.getUserToken());
     if (pswdResetToken == null) {
-      throw new KnownException("Error! Please send new Restore Password letter using Forgot Password link on login page!");
+      throw new ApplicationException("Error! Please send new Restore Password letter using Forgot Password link on "
+          + "login page!");
     }
     if (pswdResetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-      throw new KnownException("Error! Your restore password link is expired! Please send new Restore Password letter"
+      throw new ApplicationException("Error! Your restore password link is expired! Please send new Restore Password letter"
           + " using Forgot Password link on login page!");
     }
     User user = pswdResetToken.getUser();
@@ -58,9 +57,8 @@ public class LoginsService {
   }
 
   public String passwordChange(UserLogin userLogin, User user) {
-    convertUserLoginBlankToNull(userLogin);
     if (userLogin.getUserPassword().equals(userLogin.getUserPasswordNew())) {
-      throw new KnownException("Error! We cannot set tha same password!");
+      throw new ApplicationException("Error! We cannot set tha same password!");
     }
     usersService.checkIfPasswordIsCorrect(userLogin, user);
     usersService.changePassword(userLogin.getUserPasswordNew(), user);
@@ -69,7 +67,6 @@ public class LoginsService {
   }
 
   public UserResponse checkLoginSignInSignUp(UserLogin userLogin, String endPointMode) {
-    convertUserLoginBlankToNull(userLogin);
     User user = usersService.createNewEmptyUser();
     LoginMode mode = defineMode(userLogin, endPointMode);
     boolean knownWay = false;
@@ -83,7 +80,7 @@ public class LoginsService {
         usersService.checkEmailFormat(userLogin.getUserLogin());
         user = usersService.findUserByEmail(userLogin.getUserLogin(), mode, user);
       } else {
-        throw new KnownException("Error: External system provides incorrect eMail! Please contact support!");
+        throw new ApplicationException("Error: External system provides incorrect eMail! Please contact support!");
       }
       usersService.checkUserStructure(user);
       usersService.checkExternalTokenAndUpdateUser(userLogin, user);
@@ -109,15 +106,15 @@ public class LoginsService {
       user = usersRepository.save(user);
       return userFacade.mapEntityToResponse(user);
     } else {
-      throw new KnownException("Error! Unknown request parameters!");
+      throw new ApplicationException("Error! Unknown request parameters!");
     }
   }
 
   private LoginMode defineMode(UserLogin userLogin, String endPointMode) {
     LoginMode loginMode = new LoginMode();
     loginMode.setEndPoint(endPointMode);
-    if (userLogin.getUserToken() != null) {
-      if (userLogin.getUserLogin() == null) {
+    if (StringUtils.isNotBlank(userLogin.getUserToken())) {
+      if (StringUtils.isBlank(userLogin.getUserLogin())) {
         loginMode.setMode("LoginByAccessToken");
         return loginMode;
       } else {
@@ -130,12 +127,12 @@ public class LoginsService {
         return loginMode;
       }
     }
-    if (userLogin.getUserPassword() == null) {
-      throw new KnownException("Error: incorrect login or password!");
+    if (StringUtils.isBlank(userLogin.getUserPassword())) {
+      throw new ApplicationException("Error: incorrect login or password!");
     }
     if (endPointMode.equals("SignUp")) {
       if (!userLogin.getUserPassword().equals(userLogin.getUserPasswordNew())) {
-        throw new KnownException("Error: Please repeat password correctly!");
+        throw new ApplicationException("Error: Please repeat password correctly!");
       }
     }
     loginMode.setMode("LoginByPassword");
@@ -150,17 +147,17 @@ public class LoginsService {
   public String receiveMailConfirmation(String token) {
     PswdResetToken pswdResetToken = pswdResetTokenRepository.findFirstByToken(token);
     if (pswdResetToken == null) {
-      throw new KnownException("Error! Please send e-Mail confirmation letter again using Confirm Button "
+      throw new ApplicationException("Error! Please send e-Mail confirmation letter again using Confirm Button "
           + "from user profile screen!");
     }
     if (pswdResetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-      throw new KnownException("Error! Your e-Mail confirmation link is expired! Please send e-Mail confirmation "
+      throw new ApplicationException("Error! Your e-Mail confirmation link is expired! Please send e-Mail confirmation "
           + "letter again using Confirm Button from user profile screen!");
     }
     User user = pswdResetToken.getUser();
     //Mail is confirmed
     user.setUserIsConfirmedMail(2);
-    user = usersService.projection(user, "SignIn","token");
+    user = usersService.projection(user, "SignIn", "token");
     usersRepository.save(user);
     deletePswdResetTokensByUser(user);
     return "Ok. Mail was successfully confirmed! Please sign out and login again!";
@@ -168,29 +165,7 @@ public class LoginsService {
 
   void deletePswdResetTokensByUser(User user) {
     List<PswdResetToken> pswdResetTokens = pswdResetTokenRepository.findByUser(user);
-    pswdResetTokenRepository.deleteAll(pswdResetTokens);
+    pswdResetTokenRepository.deleteInBatch(pswdResetTokens);
   }
 
-  void convertUserLoginBlankToNull(UserLogin userLogin) {
-    if (userLogin.getUserLogin() != null) {
-      if (userLogin.getUserLogin().trim().equals("")) {
-        userLogin.setUserLogin(null);
-      }
-    }
-    if (userLogin.getUserToken() != null) {
-      if (userLogin.getUserToken().trim().equals("")) {
-        userLogin.setUserToken(null);
-      }
-    }
-    if (userLogin.getUserPasswordNew() != null) {
-      if (userLogin.getUserPasswordNew().trim().equals("")) {
-        userLogin.setUserPasswordNew(null);
-      }
-    }
-    if (userLogin.getUserPassword() != null) {
-      if (userLogin.getUserPassword().trim().equals("")) {
-        userLogin.setUserPassword(null);
-      }
-    }
-  }
 }

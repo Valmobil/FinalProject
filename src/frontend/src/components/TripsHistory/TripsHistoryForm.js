@@ -18,27 +18,34 @@ const styles = theme => ({
 
 class TripsHistoryForm extends Component {
 
-  newTripRedirect = () =>{
-    this.props.history.push('/newtrip')
-  }
+    newTripRedirect = () =>{
+        this.props.history.push({pathname:'/newtrip'})
+    }
+
+    redirectOnMain = () => {
+        this.props.history.push({pathname:'/main'})
+    }
 
     render() {
         const { classes } = this.props
         return (
             <div className='trip-history'>
-                <h3>My Trips</h3>
-                <div className="trip-button">
-                    <Button
-                      onClick={this.newTripRedirect}
-                        classes={{
-                        root: classes.typeButtons,
-                        label: classes.label
-                    }}
-                    >
-                        Plan New Trip
-                    </Button>
+                <div className="trip-history-container" style={{marginTop:70}}>
+                    <span className='trip-history-header'>my trips</span>
+                    <div className="new-trip-button">
+                        <Button
+                            onClick={this.newTripRedirect}
+                            classes={{
+                                root: classes.typeButtons,
+                                label: classes.label
+                            }}
+                        >
+                            Plan New Trip
+                        </Button>
+                    </div>
+                    <TripsHistory redirectOnMain={this.redirectOnMain}/>
+
                 </div>
-                <TripsHistory/>
             </div>
         );
     }

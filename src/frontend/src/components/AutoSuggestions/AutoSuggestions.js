@@ -110,7 +110,7 @@ class AutoSuggestions extends Component {
 
     let suggestionsList = []
 
-    if (inputLength >= 4){
+    if (inputLength >= 1){
       // let response = await callApi('post', '/api/points/', data)
       let response = await singleCallApi(this.props.method, this.props.url, this.props.data)
       suggestionsList = response.data
@@ -167,8 +167,8 @@ class AutoSuggestions extends Component {
   }
 
   componentDidUpdate(prevProps){
-    if (this.props.searchedLocation !== prevProps.searchedLocation){
-      this.setState({value: this.props.searchedLocation})
+    if (this.props.value !== prevProps.value){
+      this.setState({value: this.props.value})
     }
   }
 

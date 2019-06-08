@@ -1,35 +1,39 @@
 import React, { Component } from "react";
-import DateFnsUtils from "@date-io/date-fns";
-import "@material-ui/pickers"
+import DateFnsUtils from "@date-io/date-fns"
 import {
   DatePicker,
   TimePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
-import { connect } from 'react-redux';
-import { setTripDateTime } from '../../../actions/tripCreators';
 
 class ForDateTimePickers extends Component {
 
   handleDateTimeChange = newDateTime => {
-      this.props.setTripDateTime(newDateTime)
+    this.props.setTripTime(newDateTime)
   }
 
   render(){
-    const dateTime = this.props.tripDateTime;
+
     return (
       <div>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <DatePicker
-            style ={{width:'25%', paddingRight: 20}}
+            className = 'date-picker'
+            style ={{
+              width:'25%',
+              paddingRight: 20
+            }}
             autoFocus={true}
-            value={dateTime}
+            value={this.props.tripTime}
             onChange={this.handleDateTimeChange}
             autoOk={true}
           />
           <TimePicker
-            style= {{width:'18%',justifyContent:'center' ,paddingLeft: 20}}
-            value={dateTime}
+            style= {{
+              width:'18%',
+              paddingLeft: 20,
+            }}
+            value={this.props.tripTime}
             ampm={false}
             minutesStep = {5}
             onChange={this.handleDateTimeChange}
@@ -41,16 +45,4 @@ class ForDateTimePickers extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return{
-    tripDateTime: state.trips.tripDateTime,
-  }
-}
-
-const mapDispatchToProps = dispatch =>{
-  return {
-    setTripDateTime: (dateTime) => dispatch(setTripDateTime(dateTime)),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ForDateTimePickers);
+export default ForDateTimePickers;

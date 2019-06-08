@@ -1,12 +1,16 @@
 package ua.com.danit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ua.com.danit.entity.ImageDb;
 import ua.com.danit.entity.User;
-import ua.com.danit.error.KnownException;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.repository.ImageDbRepository;
 import ua.com.danit.repository.ImagesRepository;
 
+import java.io.File;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,23 +33,46 @@ public class ImageService {
   }
 
 
+  @Value("${aws.s3.credentials.path}")
+  private String s3CredentialsPath;
   private static final String linkToLocalPicture = "/api/images/?id=";
 
-  public String saveImageToDb(byte[] file, User user, String host) {
-    String imageName = imageProviderLocalDb.putImage(file, user, "");
-    return addServerToImageName(imageName, host);
+  public String saveImageToStorage(byte[] file, User user, String host) {
+    String imageName;
+    if (checkWitchServiceCanBeUsed()) {
+      imageName = imageProviderAwsS3Service.putImage(file, user, "");
+      return addServerToImageName(imageName, "");
+    } else {
+      imageName = imageProviderLocalDb.putImage(file, user, "");
+      return addServerToImageName(imageName, host);
+    }
+  }
+
+  private boolean checkWitchServiceCanBeUsed() {
+    //Check if S3 credentials is available
+    File s3File = new File(s3CredentialsPath);
+    return s3File.exists();
   }
 
   private String addServerToImageName(String imageName, String host) {
-    host = MailSenderService.checkForLocalHost(host);
-    return host + linkToLocalPicture + imageName;
+    if ("".equals(host)) {
+      return imageName;
+    } else {
+      host = MailSenderService.checkForLocalHost(host);
+      return host + linkToLocalPicture + imageName;
+    }
   }
 
   public byte[] getImageService(String imageId) {
     if (imageId == null || "null".equals(imageId) || "".equals(imageId)) {
-      throw new KnownException("Error! Image not found!");
+      throw new ApplicationException("Error! Image not found!");
     }
-    return imageDbRepository.getOne(UUID.fromString(imageId)).getImageDbData();
+    Optional<ImageDb> image = imageDbRepository.findById(UUID.fromString(imageId));
+    if (image.isPresent()) {
+      return image.get().getImageDbData();
+    } else {
+      throw new ApplicationException("Error! Image not found!");
+    }
   }
 
 

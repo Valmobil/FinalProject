@@ -11,7 +11,7 @@ import ua.com.danit.entity.User;
 import ua.com.danit.entity.UserPoint;
 import ua.com.danit.entity.UserToken;
 import ua.com.danit.dto.UserLogin;
-import ua.com.danit.error.KnownException;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.facade.UserFacade;
 import ua.com.danit.facade.UserTokenFacade;
 import ua.com.danit.repository.PointsRepository;
@@ -20,7 +20,6 @@ import ua.com.danit.repository.UserPointsRepository;
 import ua.com.danit.repository.UserTokensRepository;
 import ua.com.danit.repository.UsersRepository;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,6 +35,8 @@ public class UsersService {
   private UserFacade userFacade;
   private UserCarsRepository userCarsRepository;
   private UserTokensRepository userTokensRepository;
+
+  private static final int userPointsMaxQty = 5;
 
   @Autowired
   public UsersService(UsersRepository usersRepository,
@@ -56,7 +57,6 @@ public class UsersService {
     this.userTokensRepository = userTokensRepository;
   }
 
-
   private String passwordEncrypt(String userPasswordNew) {
     //!!!!! Write password encryption procedure
     return userPasswordNew;
@@ -69,7 +69,7 @@ public class UsersService {
 
   private User collectUserPointsAndFillInEmptyOnes(User user) {
     if (user == null) {
-      throw new KnownException("Error! Empty user entity!");
+      throw new ApplicationException("Error! Empty user entity!");
     }
     List<UserPoint> userPoints;
     if (user.getUserId() == null) {
@@ -77,25 +77,9 @@ public class UsersService {
     } else {
       userPoints = userPointsRepository.findByUser(user);
     }
-    if (userPoints.size() < 5) {
-      if (userPoints.size() < 1) {
-        UserPoint pointHome = new UserPoint(null, "Home", "adress", user, 0, 0);
-        userPoints.add(pointHome);
-      }
-      if (userPoints.size() < 2) {
-        UserPoint pointWork = new UserPoint(null, "Work", "Kyivska obl.", user, 50.570425, 30.2637260);
-        userPoints.add(pointWork);
-      }
-      //for test purposes
-      if (userPoints.size() < 3) {
-        Point point = pointsRepository.getOne(4L);
-        UserPoint pointWork = new UserPoint(null, "Boryspil", "Kyivska obl.", user, 0, 0);
-        userPoints.add(pointWork);
-      }
-      for (int i = userPoints.size(); i < 5; i++) {
-        UserPoint pointOther = new UserPoint(null, "<no point>", "no address", user, 0, 0);
-        userPoints.add(pointOther);
-      }
+    String[] userPointsDefaultNames = {"Home", "Work", "<no point>", "<no point>", "<no point>"};
+    for (int i = userPoints.size(); i < userPointsMaxQty; i++) {
+      userPoints.add(new UserPoint(null, userPointsDefaultNames[i], "", user, 0, 0));
     }
     user.setUserPoints(userPoints);
     return user;
@@ -110,7 +94,10 @@ public class UsersService {
   private void updateUserTokenInUserEntity(User user) {
     UserTokenResponse userTokenResponse = userTokensService.generateInitialTokinSet();
     if (user.getUserTokens() == null) {
-      user.setUserTokens(new LinkedList<>());
+      user.setUserTokens(userTokensService.findByUser(user));
+      if (user.getUserTokens() == null) {
+        user.setUserTokens(new LinkedList<>());
+      }
     }
     if (user.getUserTokens().size() == 0) {
       user.getUserTokens().add(0, userTokenFacade.mapRequestDtoToEntity(userTokenResponse, new UserToken()));
@@ -122,11 +109,11 @@ public class UsersService {
 
   void checkIfPasswordIsCorrect(UserLogin userLogin, User user) {
     if (user.getUserPassword() == null) {
-      throw new KnownException("Error: Your account was found! But... in order to set new password please user Forgot"
+      throw new ApplicationException("Error: Your account was found! But... in order to set new password please user Forgot"
           + " Password link!");
     }
     if (!user.getUserPassword().equals(passwordEncrypt(userLogin.getUserPassword()))) {
-      throw new KnownException("Error: incorrect login or password!");
+      throw new ApplicationException("Error: incorrect login or password!");
     }
   }
 
@@ -136,11 +123,11 @@ public class UsersService {
 
     Matcher matcher = validEmailAddressRegex.matcher(userMail);
     if (!matcher.find()) {
-      throw new KnownException("Error: Incorrect eMail, please check!");
+      throw new ApplicationException("Error: Incorrect eMail, please check!");
     }
   }
 
-  public String normalizeAndCheckPhoneFormat(String userPhone) {
+  String normalizeAndCheckPhoneFormat(String userPhone) {
     String phone = userPhone.replace("(", "")
         .replace(")", "")
         .replace(" ", "")
@@ -157,7 +144,7 @@ public class UsersService {
         Pattern.compile("\\+[0-9]+$");
     Matcher matcher = validEmailAddressRegex.matcher(phone);
     if (!matcher.find()) {
-      throw new KnownException("Error: Incorrect phone number!");
+      throw new ApplicationException("Error: Incorrect phone number!");
     }
     return phone;
   }
@@ -169,11 +156,21 @@ public class UsersService {
 
   public UserResponse putUserProfile(User user, User userFromToken) {
     if (userFromToken == null) {
-      throw new KnownException("Error: Access token not found!");
+      throw new ApplicationException("Error: Access token not found!");
     }
+    checkEmailFormat(user.getUserMail());
+    user.setUserPhone(normalizeAndCheckPhoneFormat(user.getUserPhone()));
     //Update some fields
     user.setUserId(userFromToken.getUserId());
     user.setUserPassword(userFromToken.getUserPassword());
+    user.setCreatedDate(userFromToken.getCreatedDate());
+    if (user.getUserPoints() != null && user.getUserPoints().size() > 0) {
+      for (UserPoint userPoint : user.getUserPoints()) {
+        userPoint.setUser(user);
+      }
+    } else {
+      user.setUserPoints(null);
+    }
     if (user.getUserCars() != null) {
       for (UserCar userCar : user.getUserCars()) {
         userCar.setUser(user);
@@ -187,10 +184,10 @@ public class UsersService {
       }
     }
     if (carsToDelete.size() > 0) {
-      userCarsRepository.deleteAll(carsToDelete);
+      userCarsRepository.deleteInBatch(carsToDelete);
     }
-    user = usersRepository.save(user);
     user = projection(user, "", "car", "token", "point");
+    user = usersRepository.save(user);
     return userFacade.mapEntityToResponse(user);
   }
 
@@ -200,16 +197,17 @@ public class UsersService {
       if ("LoginByExternalToken".equals(mode.getMode()) || "SignUp".equals(mode.getEndPoint())) {
         user.setUserMail(userLogin);
       } else {
-        throw new KnownException("Error: User with eMail " + userLogin + " has not been found!");
+        throw new ApplicationException("Error: User with eMail " + userLogin + " has not been found!");
       }
     }
     if (users.size() > 1) {
-      throw new KnownException("Error: Several Users with eMail " + userLogin + " have been found! Please "
+      throw new ApplicationException("Error: Several Users with eMail " + userLogin + " have been found! Please "
           + "contact support team!");
     }
     if (users.size() == 1) {
       if ("SignUp".equals(mode.getEndPoint())) {
-        throw new KnownException("Error: User with eMail " + userLogin + " already registered in database! Please Login!");
+        throw new ApplicationException("Error: User with eMail " + userLogin + " already registered in database! "
+            + "Please Login!");
       } else {
         user = users.get(0);
       }
@@ -223,16 +221,16 @@ public class UsersService {
       if ("SignUp".equals(mode.getEndPoint())) {
         user.setUserPhone(userLogin);
       } else {
-        throw new KnownException("Error: User with Phone " + userLogin + " has not been found!");
+        throw new ApplicationException("Error: User with Phone " + userLogin + " has not been found!");
       }
     }
     if (users.size() > 1) {
-      throw new KnownException("Error: Several Users with Phone " + userLogin + " have been found! Please contact"
+      throw new ApplicationException("Error: Several Users with Phone " + userLogin + " have been found! Please contact"
           + " support team!");
     }
     if (users.size() == 1) {
       if ("SignUp".equals(mode.getEndPoint())) {
-        throw new KnownException("Error: Several Users with Phone " + userLogin + " already registered in database!"
+        throw new ApplicationException("Error: Several Users with Phone " + userLogin + " already registered in database!"
             + " Please login!");
       } else {
         user = users.get(0);
@@ -255,7 +253,7 @@ public class UsersService {
       user.setUserTokens(new LinkedList<>());
     }
     if (user.getUserTokens().size() > 1) {
-      throw new KnownException("Error: User has Several Users Tokens by system mistake! Please contact support team");
+      throw new ApplicationException("Error: User has Several Users Tokens by system mistake! Please contact support team");
     }
     if (user.getUserTokens().size() == 0) {
       user.getUserTokens().add(new UserToken());

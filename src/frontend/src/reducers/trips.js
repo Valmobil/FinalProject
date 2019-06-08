@@ -1,6 +1,9 @@
 import { SET_INTERMEDIATE_POINTS, SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_MY_COORDS,
-    SET_SEARCHED_LOCATION, SET_TARGET_COORDS, SET_USER_TRIP_PARAMS, SET_CURRENT_TRIP_PARAMS, SET_TRIP,
-  SET_TRIP_DATE_TIME, ADD_NEW_TRIP, ADD_TRIP_DATE, LIVE_SEARCH_SHOW } from "../actions/trips";
+         SET_SEARCHED_LOCATION, SET_TARGET_COORDS, SET_USER_TRIP_PARAMS, SET_CURRENT_TRIP_PARAMS, SET_TRIP,
+         SET_TRIP_DATE_TIME, ADD_NEW_TRIP, SET_MAIN_TRIP_ID, DELETE_TRIP_FROM_HISTORY,
+         SET_START_LOCATION, SET_FINISH_LOCATION, CLEAR_MAP, SET_MY_LOCATION, SET_JOIN_STATUS_ARRAY, SET_JOIN_ID_ARRAY,
+         SET_MAIN_TRIP_USER_ARRAY, SET_USER_MAIN_TRIP_SHOWN } from "../actions/trips";
+
 
 
 
@@ -9,20 +12,23 @@ const initialState = {
     trip: {},
     myCoordinates: null,
     searchedLocation: '',
+    myLocation: '',
     targetCoordinates: null,
-    initialLoad: true,
     intermediatePoints: [],
     mainTripParams: null,
-    mainTripPointNames: [],
+    mainTripPointNames: null,
     userMainTripParams: null,
     currentMainTripParams: null,
-    tripDateTime: Date(),
-    liveSearchShow: true,
-    newTrip:{
-        car:'',
-        tripDateTime:'',
-        tripPoint:[],
-    },
+    mainTripId: null,
+    tripsHistoryRequest: false,
+    tripsHistory: [],
+    startLocation: '',
+    finishLocation: '',
+    clearMap: false,
+    joinStatusArray: [],
+    joinIdArray: null,
+    mainTripUserArray: null,
+    userMainTripShown: false,
 }
 
 function trips (state = initialState, action) {
@@ -46,13 +52,29 @@ function trips (state = initialState, action) {
         case SET_CURRENT_TRIP_PARAMS:
             return {...state, currentMainTripParams: action.payload}
         case SET_TRIP_DATE_TIME:
-            return {...state, tripDateTime: action.payload}
-        case ADD_TRIP_DATE:
-            return {...state, newTrip: {...state.newTrip, tripDate:action.payload}}
+            return {...state, tripDateTime:action.payload}
         case ADD_NEW_TRIP:
             return{...state, newTrip: action.payload}
-        case LIVE_SEARCH_SHOW:
-            return {...state, liveSearchShow: action.payload}
+        case SET_MAIN_TRIP_ID:
+            return {...state, mainTripId: action.payload}
+        case DELETE_TRIP_FROM_HISTORY:
+            return {...state, tripsHistory: action.payload}
+        case SET_START_LOCATION:
+            return {...state, startLocation: action.payload}
+        case SET_FINISH_LOCATION:
+            return {...state, finishLocation: action.payload}
+        case CLEAR_MAP:
+            return {...state, clearMap: true}
+        case SET_MY_LOCATION:
+            return {...state, myLocation: action.payload}
+        case SET_JOIN_STATUS_ARRAY:
+            return {...state, joinStatusArray: action.payload}
+        case SET_JOIN_ID_ARRAY:
+            return {...state, joinIdArray: action.payload}
+        case SET_MAIN_TRIP_USER_ARRAY:
+            return {...state, mainTripUserArray: action.payload}
+        case SET_USER_MAIN_TRIP_SHOWN:
+            return {...state, userMainTripShown: true}
 
         default:
             return {...state}

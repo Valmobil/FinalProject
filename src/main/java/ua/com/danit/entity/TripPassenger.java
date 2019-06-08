@@ -20,7 +20,7 @@ import javax.persistence.ManyToOne;
 public class TripPassenger {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long tripPassengerId;
+  private Long tripPassengerId;
   @ManyToOne
   @NonNull
   @JoinColumn(name = "TRIP_PASSENGER_TRIP_ID", referencedColumnName = "tripId")
@@ -29,9 +29,6 @@ public class TripPassenger {
   @NonNull
   @JoinColumn(name = "TRIP_PASSENGER_DRIVER_TRIP_ID", referencedColumnName = "tripId")
   private Trip tripDriver;
-  @ManyToOne
-  @NonNull
-  @JoinColumn(name = "TRIP_PASSENGER_USER_ID", referencedColumnName = "userId")
-  private User user;
-  private int tripPassengerEmptySitsQty;
+  private Integer tripPassengerDriverJoinStatus;
+  private Integer tripPassengerUserJoinStatus;
 }

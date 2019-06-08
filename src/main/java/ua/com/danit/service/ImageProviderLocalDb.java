@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ua.com.danit.entity.Image;
 import ua.com.danit.entity.ImageDb;
 import ua.com.danit.entity.User;
-import ua.com.danit.error.KnownException;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.repository.ImageDbRepository;
 import ua.com.danit.repository.ImagesRepository;
 
@@ -39,7 +39,7 @@ public class ImageProviderLocalDb extends ImageDbProviderImpl {
     imageDb.setImageDbId(UUID.fromString(name));
     imageDb = imageDbRepository.save(imageDb);
     if (imageDb == null) {
-      throw new KnownException("Error! Image cannot be uploaded to DB! Please try later or contact support team!");
+      throw new ApplicationException("Error! Image cannot be uploaded to DB! Please try later or contact support team!");
     }
     Image image = Image.builder()
         .user(user)

@@ -1,15 +1,20 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux'
-// import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
-import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import {withStyles} from "@material-ui/core/styles/index";
-import { deleteTripFromHistory } from '../../actions/userCreators'
-import { callApi } from '../../utils/utils'
-import PropTypes from 'prop-types'
-// import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-// import orange from "@material-ui/core/colors/orange";
+import {
+    deleteTripFromHistory,
+    setMainTrips,
+    setTrip,
+} from '../../actions/tripCreators'
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+
+import { errorPopupShow } from '../../actions/userCreators'
+import { callApi  } from '../../utils/utils'
+import Spinner from '../Spinner/Spinner'
 import './TripsHistory.css'
 
 const styles = theme => ({
@@ -28,7 +33,7 @@ const styles = theme => ({
     iconButton: {
         padding: 0,
 
-        color: '#fff',
+        color:'#464d73',
         '&:focus': {
             outline: 'none'
         }
@@ -39,19 +44,18 @@ class TripsHistory extends Component {
     state ={
         tripsHistory: this.props.tripsHistory,
         fetchingTripsHistory: true,
-        error:''
-    }
+        error:'',
+    };
 
     componentDidMount(){
-        callApi('post', '/api/trips/list')
+        callApi('get', '/api/trips')
             .then(resp => {
-              console.log('response data from trips history',resp.data)
                 this.setState({
-                tripsHistory: resp.data,
-                fetchingTripsHistory: false
-              })
+                    tripsHistory: resp.data,
+                    fetchingTripsHistory: false,
+                })
             })
-            .catch(err => err.message)
+            .catch(err => console.log(err.message))
     }
 
     handleDelete = (id) => {
@@ -67,45 +71,113 @@ class TripsHistory extends Component {
         this.props.deleteTripFromHistory(id);
     }
 
+    defineElement = (id) => {
+        const currentTrip = this.state.tripsHistory.filter(item => {
+            return (item.tripId === id)
+        })
+        currentTrip[0].tripDateTime = this.getTime()
+        this.props.setTrip(currentTrip[0])
+        this.props.redirectOnMain()
+    }
+
+    getTime = () => {
+      let tempDate = new Date()
+      return new Date(tempDate.getTime() - tempDate.getTimezoneOffset()*60000).toISOString()
+    }
+
     render() {
-        const { classes  } = this.props
+        const { classes } = this.props
         let nameOfPoint = '';
         const tripsHistoryPointArray = this.state.tripsHistory;
         let tripsHistoryList = null;
-        if (tripsHistoryPointArray.length > 0) {
-          tripsHistoryList = this.state.tripsHistory.map((item) => {
-            return (
-                <li key={item.tripId}>
-                    {
-                        item.tripPoint.forEach((name) => {
-                            nameOfPoint += name.tripPointName + ' - '
-                        })
-                    }
-                    {nameOfPoint}
-                    <div className="icon-trip">
-                        <IconButton
-                            // onClick={() => this.handleEdit(item)}
-                            className={classes.iconButton}
-                            aria-label="Copy">
-                            <EditIcon />
-                        </IconButton>
-                        <IconButton
-                            onClick={() => this.handleDelete(item.tripId)}
-                            className={classes.iconButton}
-                            aria-label="Delete">
-                            <DeleteIcon />
-                        </IconButton>
-                    </div>
-                    {nameOfPoint=''}
-                </li>
-            )
-        })} else{
-          tripsHistoryList = 'No Trips Yet'
+        if (tripsHistoryPointArray !== undefined && tripsHistoryPointArray.length > 0 ) {
+            tripsHistoryList = this.state.tripsHistory.map((item) => {
+                return (
+                    <li key={item.tripId}>
+                      {
+                        ((new Date(item.tripDateTime) - new Date())/60000 > -180 )? (
+                          <Card className='trip-card' style={{border:'2px solid orange'}}>
+                            <CardContent style={{width:'80%', textAlign:'center'}} onClick={() => this.defineElement(item.tripId)}>
+                              <CardContent>
+                                <Typography variant="body2" color="textSecondary" component="div">
+                                {
+                                  (item.tripDateTime ) ?
+                                  (item.tripDateTime.replace('T',' ').substring(0,16)) : <span>time was lost</span>
+                                }
+                                </Typography>
+                              </CardContent>
+                              <CardContent>
+                                <Typography variant="body1" color="textSecondary" component="div">
+                                  {
+                                    item.tripPoint.forEach((name) => {
+                                      if (name.tripPointName != null){
+                                        nameOfPoint +=(name.tripPointName) + ' - '
+                                      }
+                                    })
+                                  }
+                                  {nameOfPoint.slice(0, nameOfPoint.length -3)}
+                                </Typography>
+                              </CardContent>
+                          </CardContent>
+                          <CardContent>
+                              <IconButton
+                                onClick={() => this.handleDelete(item.tripId)}
+                                className={classes.iconButton}
+                                aria-label="Delete">
+                                <DeleteIcon/>
+                              </IconButton>
+                            </CardContent>
+
+                            {nameOfPoint=''}
+                          </Card>
+                        ):(
+                          <Card className='trip-card' style={{border:'2px solid white'}}>
+                            <CardContent style={{width:'80%', textAlign:'center'}} onClick={() => this.defineElement(item.tripId)}>
+                              <CardContent>
+                                <Typography variant="body2" color="textSecondary" component="div">
+                                  {
+                                    (item.tripDateTime ) ?
+                                      (item.tripDateTime.replace('T',' ').substring(0,16)) : <span>time was lost</span>
+                                  }
+                                </Typography>
+                              </CardContent>
+                              <CardContent>
+                                <Typography variant="body1" color="textSecondary" component="div">
+                                  {
+                                    item.tripPoint.forEach((name) => {
+                                      if (name.tripPointName != null){
+                                        nameOfPoint +=(name.tripPointName) + ' - '
+                                      }
+                                    })
+                                  }
+                                  {nameOfPoint.slice(0, nameOfPoint.length-3)}
+                                </Typography>
+                              </CardContent>
+                            </CardContent>
+                            <CardContent>
+                              <IconButton
+                                onClick={() => this.handleDelete(item.tripId)}
+                                className={classes.iconButton}
+                                aria-label="Delete">
+                                <DeleteIcon/>
+                              </IconButton>
+                            </CardContent>
+
+                            {nameOfPoint=''}
+                          </Card>
+                        )
+                      }
+                    </li>
+                )
+            })
+        } else{
+          tripsHistoryList = <span>trips are displayed here</span>
         }
+
         return (
-            <div className='trip-history-list'>
+            <div className='trip-history-block'>
                 <ul className='list-history'>
-                    {this.state.fetchingTripsHistory ? 'Loading...' : tripsHistoryList }
+                    {this.state.fetchingTripsHistory ? <Spinner/> : tripsHistoryList }
                 </ul>
             </div>
         );
@@ -114,18 +186,23 @@ class TripsHistory extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        tripsHistory: state.users.tripsHistory,
+        tripsHistory: state.trips.tripsHistory,
+        trips: state.trips
+
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        deleteTripFromHistory: (newTripsHistory) => dispatch(deleteTripFromHistory(newTripsHistory))
+        deleteTripFromHistory: (newTripsHistory) => dispatch(deleteTripFromHistory(newTripsHistory)),
+        callApi:(id) => dispatch(callApi(id)),
+        setTrip: (trip) => dispatch(setTrip(trip)),
+        setMainTrips:(id) => dispatch(setMainTrips(id)),
+        errorPopupShow: () => dispatch(errorPopupShow()),
     }
-}
-TripsHistory.propTypes ={
-    tripsHistory: PropTypes.array.isRequired,
 }
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TripsHistory))
+
+
 

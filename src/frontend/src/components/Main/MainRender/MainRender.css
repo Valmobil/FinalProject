@@ -1,0 +1,25 @@
+.companion-details{
+    display: flex;
+    align-items: center;
+}
+.companion-details-left{
+    height: 33px;
+    text-align: left;
+}
+.companion-details-right{
+    height: 100px;
+    text-align: right;
+}
+.phone-link, .phone-link:active, .phone-link:visited, .phone-link:focus{
+    text-decoration: none;
+}
+.my-route-button{
+    width: 100px;
+    background-color: #fff;
+    border-radius: 4px;
+    color: #f57c00;
+}
+.my-route-button, .my-route-button:active, .my-route-button:focus{
+    border: none;
+    outline: none;
+}

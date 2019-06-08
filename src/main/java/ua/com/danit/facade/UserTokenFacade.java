@@ -7,11 +7,6 @@ import ua.com.danit.entity.UserToken;
 @Component
 public class UserTokenFacade extends AbstractDtoFacade<UserToken, UserTokenResponse,UserTokenResponse> {
 
-  @Override
-  public UserTokenResponse mapEntityToResponseDto(UserToken entity) {
-    return super.mapEntityToResponseDto(entity);
-  }
-
   public UserToken mapRequestDtoToEntity(UserTokenResponse dto, UserToken entity) {
     UserToken destination = super.mapRequestDtoToEntity(dto);
     destination.setUserTokenId(entity.getUserTokenId());

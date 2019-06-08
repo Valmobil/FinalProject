@@ -4,21 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.com.danit.dto.TripPassengerResponse;
+import ua.com.danit.dto.TripPassengerRequest;
 import ua.com.danit.dto.TripResponse;
-import ua.com.danit.dto.TripResponseId;
 import ua.com.danit.dto.TripResponseWithUser;
 import ua.com.danit.entity.Trip;
 import ua.com.danit.entity.User;
 import ua.com.danit.service.TripsService;
 import ua.com.danit.service.UserTokensService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -33,12 +33,13 @@ public class TripsController {
     this.userTokensService = userTokensService;
   }
 
-  @PutMapping
-  public ResponseEntity<TripResponseId> saveTripToDb(@RequestBody Trip trip) {
-    return new ResponseEntity<>(tripsService.saveTripToDb(trip), HttpStatus.OK);
+  @PostMapping
+  public ResponseEntity<String> saveTrip(@RequestBody Trip trip, @RequestHeader String authorization) {
+    return new ResponseEntity<>(tripsService.putTrip(trip, userTokensService.findUserByAccessToken(authorization)),
+        HttpStatus.OK);
   }
 
-  @PostMapping("list")
+  @GetMapping()
   public ResponseEntity<List<TripResponse>> getUserTripList(@RequestHeader String authorization) {
     return new ResponseEntity<>(tripsService.getTripListService(userTokensService.findUserByAccessToken(authorization)),
         HttpStatus.OK);
@@ -65,9 +66,9 @@ public class TripsController {
   }
 
   @PostMapping("passengers")
-  public ResponseEntity<String> putSelectedPassangers(@RequestBody List<TripPassengerResponse> tripPassengersResponse,
+  public ResponseEntity<String> putSelectedPassengers(@Valid @RequestBody TripPassengerRequest tripPassengersRequest,
                                                       @RequestHeader String authorization) {
-    return new ResponseEntity<>(tripsService.putPassengers(tripPassengersResponse,
+    return new ResponseEntity<>(tripsService.putPassengers(tripPassengersRequest,
         userTokensService.findUserByAccessToken(authorization)), HttpStatus.OK);
   }
 }

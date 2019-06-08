@@ -26,7 +26,7 @@ public class ImagesController {
     this.userTokensService = userTokensService;
   }
 
-  @GetMapping(value = "", produces = MediaType.IMAGE_PNG_VALUE)
+  @GetMapping(produces = MediaType.IMAGE_PNG_VALUE)
   public byte[] getImageControllerGet(@RequestParam String id) {
     return imageService.getImageService(id);
   }
@@ -35,7 +35,7 @@ public class ImagesController {
   public ResponseEntity<String> putImageController(@RequestBody byte[] file,
                                                    @RequestHeader String authorization,
                                                    @RequestHeader(value = "Host") String host) {
-    return new ResponseEntity<>(imageService.saveImageToDb(file,
+    return new ResponseEntity<>(imageService.saveImageToStorage(file,
         userTokensService.findUserByAccessToken(authorization), host),
         HttpStatus.OK);
   }

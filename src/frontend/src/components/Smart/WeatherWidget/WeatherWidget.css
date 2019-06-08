@@ -1,0 +1,16 @@
+.widget-container {
+    display: flex;
+    margin: 60px calc(10% - 30px) auto auto;
+    color: #fff;
+    animation: weather .3s forwards;
+}
+@keyframes weather {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+.widget-paragraph {
+    margin-bottom: 0;
+}
+.wi {
+    margin: 3px 10px auto 10px;
+}

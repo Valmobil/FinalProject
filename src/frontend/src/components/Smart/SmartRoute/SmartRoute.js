@@ -36,21 +36,19 @@ const styles = theme => ({
 class SmartRoute extends Component {
     state = {
         editing: false,
-        timeout: null,
     }
-
+    timeout =  null;
     startTouch = 0;
 
     touchStart = () => {
-        const timeout = setTimeout(() => this.setState(prevSate => ({editing: !prevSate.editing})), 700)
-        this.setState({ timeout })
+        this.timeout = setTimeout(() => this.setState(prevSate => ({editing: !prevSate.editing})), 700)
         this.startTouch = Date.now()
     }
 
     touchEnd = () => {
         if (Date.now() - this.startTouch < 700) {
             this.props.handleRoute(this.props.item)
-            clearTimeout(this.state.timeout)
+            clearTimeout(this.timeout)
         }
     }
     contextMenuDisable = (e) => {
@@ -61,9 +59,9 @@ class SmartRoute extends Component {
 
     render(){
         const { classes } = this.props
-        const { item, handleEdit, handleDelete } = this.props
+        const { item, handleEdit, handleDelete, index } = this.props
         const { editing } = this.state
-        const transitionDelay = 100*item.userPointId + 'ms'
+        const transitionDelay = 50*index + 'ms'
         return(
             <>
 
@@ -80,6 +78,7 @@ class SmartRoute extends Component {
                         onContextMenu={this.contextMenuDisable}
                         onTouchStart={this.touchStart}
                         onTouchEnd={this.touchEnd}
+                        onClick={() => this.props.handleRoute(this.props.item)}
                         variant="contained"
                         color="primary"
                         className={classes.smartRoute}

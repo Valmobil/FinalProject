@@ -19,7 +19,7 @@ public abstract class AbstractDtoFacade<E, I, O> {
   @Autowired
   protected ModelMapper modelMapper;
 
-  protected O mapEntityToResponseDto(E entity) {
+  public O mapEntityToResponseDto(E entity) {
     if (entity != null) {
       return modelMapper.map(entity, (Class<O>) ((ParameterizedType) getClass()
           .getGenericSuperclass()).getActualTypeArguments()[2]);

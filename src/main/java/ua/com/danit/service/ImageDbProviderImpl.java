@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public abstract class ImageDbProviderImpl implements ImageDbProvider {
 
+
   byte[] imageDeCompressPng(byte[] file) {
     return Base64.decodeBase64(new String(file).split(",")[1].getBytes());
   }
