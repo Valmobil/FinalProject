@@ -8,6 +8,10 @@ import {
     setMainTrips,
     setTrip,
 } from '../../actions/tripCreators'
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+
 import { errorPopupShow } from '../../actions/userCreators'
 import { callApi  } from '../../utils/utils'
 import Spinner from '../Spinner/Spinner'
@@ -71,11 +75,14 @@ class TripsHistory extends Component {
         const currentTrip = this.state.tripsHistory.filter(item => {
             return (item.tripId === id)
         })
-        console.log('current trip',currentTrip)
-        let tempDate = new Date()
-        currentTrip[0].tripDateTime = new Date(tempDate.getTime() - tempDate.getTimezoneOffset()*60000).toISOString()
+        currentTrip[0].tripDateTime = this.getTime()
         this.props.setTrip(currentTrip[0])
         this.props.redirectOnMain()
+    }
+
+    getTime = () => {
+      let tempDate = new Date()
+      return new Date(tempDate.getTime() - tempDate.getTimezoneOffset()*60000).toISOString()
     }
 
     render() {
@@ -88,71 +95,83 @@ class TripsHistory extends Component {
                 return (
                     <li key={item.tripId}>
                       {
-                        (new Date(item.tripDateTime)>new Date()) ? (
-                          <div className='trip-card' style={{backgroundColor:'orange'}}   >
-                            <div className='trip-data' onClick={()=>{this.defineElement(item.tripId)}}>
-                                <div className='trip-date-time' style ={{color: '#464d73'}}>
+                        ((new Date(item.tripDateTime) - new Date())/60000 > -180 )? (
+                          <Card className='trip-card' style={{border:'2px solid orange'}}>
+                            <CardContent style={{width:'80%', textAlign:'center'}} onClick={() => this.defineElement(item.tripId)}>
+                              <CardContent>
+                                <Typography variant="body2" color="textSecondary" component="div">
                                 {
                                   (item.tripDateTime ) ?
                                   (item.tripDateTime.replace('T',' ').substring(0,16)) : <span>time was lost</span>
                                 }
-                                </div>
-                                {
-                                  item.tripPoint.forEach((name) => {
-                                  if (name.tripPointName != null){
-                                  nameOfPoint += name.tripPointName + ' - '
-                                }
-                                })
-                                }
-                                {nameOfPoint}
-                            </div>
-                            <div className="icon-trip">
-                              <IconButton
-                              onClick={() => this.handleDelete(item.tripId)}
-                              className={classes.iconButton}
-                              aria-label="Delete">
-                              <DeleteIcon />
-                              </IconButton>
-                            </div>
-
-                            {nameOfPoint=''}
-                          </div>
-                        ):(
-                          <div className = 'trip-card' style={{backgroundColor:' white'}}  >
-                            <div className='trip-data' onClick={()=>{this.defineElement(item.tripId)}}>
-                              <div className='trip-date-time' style ={{color: 'black'}}>
-                              {
-                              (item.tripDateTime ) ?
-                              (item.tripDateTime.replace('T',' ').substring(0,16)) : <span>time was lost</span>
-                              }
-                              </div>
-                              {
-                              item.tripPoint.forEach((name) => {
-                              if (name.tripPointName != null){
-                              nameOfPoint += name.tripPointName + ' - '
-                              }
-                              })
-                              }
-                              {nameOfPoint}
-                            </div>
-                            <div className="icon-trip">
+                                </Typography>
+                              </CardContent>
+                              <CardContent>
+                                <Typography variant="body1" color="textSecondary" component="div">
+                                  {
+                                    item.tripPoint.forEach((name) => {
+                                      if (name.tripPointName != null){
+                                        nameOfPoint +=(name.tripPointName) + ' - '
+                                      }
+                                    })
+                                  }
+                                  {nameOfPoint}
+                                </Typography>
+                              </CardContent>
+                          </CardContent>
+                          <CardContent>
                               <IconButton
                                 onClick={() => this.handleDelete(item.tripId)}
                                 className={classes.iconButton}
                                 aria-label="Delete">
-                                <DeleteIcon />
+                                <DeleteIcon/>
                               </IconButton>
-                            </div>
+                            </CardContent>
 
                             {nameOfPoint=''}
-                          </div>
+                          </Card>
+                        ):(
+                          <Card className='trip-card' style={{border:'2px solid white'}}>
+                            <CardContent style={{width:'80%', textAlign:'center'}} onClick={() => this.defineElement(item.tripId)}>
+                              <CardContent>
+                                <Typography variant="body2" color="textSecondary" component="div">
+                                  {
+                                    (item.tripDateTime ) ?
+                                      (item.tripDateTime.replace('T',' ').substring(0,16)) : <span>time was lost</span>
+                                  }
+                                </Typography>
+                              </CardContent>
+                              <CardContent>
+                                <Typography variant="body1" color="textSecondary" component="div">
+                                  {
+                                    item.tripPoint.forEach((name) => {
+                                      if (name.tripPointName != null){
+                                        nameOfPoint +=(name.tripPointName) + ' - '
+                                      }
+                                    })
+                                  }
+                                  {nameOfPoint}
+                                </Typography>
+                              </CardContent>
+                            </CardContent>
+                            <CardContent>
+                              <IconButton
+                                onClick={() => this.handleDelete(item.tripId)}
+                                className={classes.iconButton}
+                                aria-label="Delete">
+                                <DeleteIcon/>
+                              </IconButton>
+                            </CardContent>
+
+                            {nameOfPoint=''}
+                          </Card>
                         )
                       }
                     </li>
                 )
             })
         } else{
-            tripsHistoryList = 'No Trips Yet'
+          tripsHistoryList = <span>trips are displayed here</span>
         }
 
         return (
@@ -169,6 +188,7 @@ const mapStateToProps = (state) => {
     return {
         tripsHistory: state.trips.tripsHistory,
         trips: state.trips
+
     }
 }
 
