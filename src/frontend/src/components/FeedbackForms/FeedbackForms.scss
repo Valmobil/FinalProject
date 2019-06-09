@@ -56,13 +56,13 @@
 .formFeedback-List {
   display: flex;
   justify-content: space-between;
-  columns: auto;
   width: 400px;
   height: 100px;
+  color: red;
+  columns: auto;
   border-style: solid;
   border-color: darkgreen;
   border-radius: 30px;
-  color: red;
 }
 
 .formFeedback-item{
