@@ -2,6 +2,7 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/core/styles'
+import PropTypes from 'prop-types';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import orange from "@material-ui/core/colors/orange";
@@ -107,5 +108,15 @@ const styles = theme => ({
         }
     },
 })
+
+
+AddingCar.propTypes = {
+    userCarName: PropTypes.string,
+    userCarColour: PropTypes.string,
+    handleChange: PropTypes.func,
+    submitNewCar: PropTypes.func,
+    rejectNewCar: PropTypes.func,
+    classes: PropTypes.object,
+}
 
 export default withStyles(styles)(AddingCar)
