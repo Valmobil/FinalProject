@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import red from '@material-ui/core/colors/red'
 import { callApi } from '../../utils/utils'
-import './FeedbackForms.scss'
 
 const styles = theme => ({
 
