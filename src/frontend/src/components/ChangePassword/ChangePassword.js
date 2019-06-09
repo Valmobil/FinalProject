@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
-import { withStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
+import { connect } from 'react-redux'
 import { postNewPassword } from '../../actions/passwordCreator'
-import './ChangePassword.scss'
+import { callApi } from '../../utils/utils'
 import MuiThemeProvider from '../PassRestoration/PassRestoration'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
+import { withStyles } from '@material-ui/core/styles'
+import TextField from '@material-ui/core/TextField'
 import orange from '@material-ui/core/colors/orange'
-import { callApi } from '../../utils/utils'
 import Button from '@material-ui/core/Button'
+import './ChangePassword.scss'
+
 
 const theme = createMuiTheme({
   palette: {
@@ -135,7 +137,7 @@ class ChangePassword extends Component {
 }
 const mapDispatchToProps = dispatch => {
   return {
-    postNewPassword: (psw) => dispatch(postNewPassword(psd))
+    postNewPassword: (psd) => dispatch(postNewPassword(psd))
   }
 }
 
