@@ -22,26 +22,19 @@ const Drawer = (props) => {
             >
 
                 <div className='drawer-links-container'>
-                    <NavLink to={'/main'}
+                    <NavLink to={'/profile'}
                              className='drawer-link-regular'
                              activeClassName="drawer-active-link"
                              style={{ textDecoration: 'none' }}
                     >
-                        Main
+                        My profile
                     </NavLink>
                     <NavLink to={'/smart'}
                              className='drawer-link-regular'
                              activeClassName="drawer-active-link"
                              style={{ textDecoration: 'none' }}
                     >
-                        Smart
-                    </NavLink>
-                    <NavLink to={'/profile'}
-                             className='drawer-link-regular'
-                             activeClassName="drawer-active-link"
-                             style={{ textDecoration: 'none' }}
-                    >
-                        Profile
+                        Quick trip
                     </NavLink>
                     <NavLink to={'/mytrips'}
                              className='drawer-link-regular'

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
+import PropTypes from 'prop-types';
 import IconButton from '@material-ui/core/IconButton'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -58,13 +59,11 @@ class SmartRoute extends Component {
     };
 
     render(){
-        const { classes } = this.props
-        const { item, handleEdit, handleDelete, index } = this.props
+        const { item, handleEdit, handleDelete, index, classes } = this.props
         const { editing } = this.state
         const transitionDelay = 50*index + 'ms'
         return(
             <>
-
                 {editing &&
                 <IconButton
                     onClick={() => handleDelete(item.userPointId)}
@@ -99,7 +98,14 @@ class SmartRoute extends Component {
             </>
         )
     }
+}
 
+
+SmartRoute.propTypes = {
+    handleEdit: PropTypes.func,
+    handleDelete: PropTypes.func,
+    index: PropTypes.number,
+    classes: PropTypes.object,
 }
 
 export default withStyles(styles)(SmartRoute)

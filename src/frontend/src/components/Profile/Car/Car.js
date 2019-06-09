@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types';
 import './Car.css'
 
 
@@ -40,6 +41,11 @@ class Car extends Component{
     }
 }
 
+
+Car.propTypes = {
+    deleteCar: PropTypes.func,
+    item: PropTypes.object,
+}
 
 
 
