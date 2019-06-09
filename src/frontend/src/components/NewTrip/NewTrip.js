@@ -179,8 +179,6 @@ class NewTrip extends Component {
         this.props.clearMap()
         this.props.setEndLocation('', 'start');
         this.props.setEndLocation('', 'end');
-        this.props.setTargetCoordinates(null)
-        this.props.setMyCoordinates(null)
     }
 
     componentDidUpdate(prevProps) {
@@ -200,8 +198,6 @@ class NewTrip extends Component {
     }
 
     render() {
-
-
         const { classes } = this.props;
         const { smart } = this.props.location
         const { role, car, valueFrom, valueTo, tripTime } = this.state
@@ -264,7 +260,6 @@ class NewTrip extends Component {
 
                     <Map
                         height={230}
-                        marginTop={20}
                         showSmartRoute={true}
                         smart={smart}
                     />
@@ -318,7 +313,6 @@ const mapStateToProps = state => {
     return {
         users: state.users,
         trips: state.trips,
-        // newTrip: state.users.newTrip
     }
 }
 

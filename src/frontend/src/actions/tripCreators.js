@@ -7,16 +7,14 @@ import { errorPopupShow } from './userCreators'
 import {callApi} from "../utils/utils";
 
 
-export const setTrip = (trip) => dispatch => {
-    console.log('setTrip: trip = ', trip)
-    callApi('post', '/api/trips', trip)
-        .then(res => {
-          console.log('setTrip: res = ', res.data.tripId)
-          dispatch({type: SET_MAIN_TRIP_ID, payload: res.data.tripId})
-          window.localStorage.setItem('tripId', res.data.tripId)
-    })
-
-        .catch(err => errorPopupShow())
+export const setTrip = (trip) => async dispatch => {
+    try {
+        const res = await callApi('post', '/api/trips', trip)
+        dispatch({type: SET_MAIN_TRIP_ID, payload: res.data.tripId})
+        window.localStorage.setItem('tripId', res.data.tripId)
+    } catch (err) {
+        errorPopupShow()
+    }
     dispatch({type: SET_TRIP, trip})
 }
 //* **********************
@@ -49,52 +47,49 @@ export const setIntermediatePoints = (points) => dispatch => {
 }
 //* **********************
 
-export const setMainTrips = (id) => dispatch => {
-    callApi('post', 'api/trips/others', {tripId: id})
-        .then(res => {
-            console.log('setMainTrips: res = ', res.data)
-            let parameterArray = []
-            let allRoutesArray = []
-            let joinStatusArray = []
-            let idArray = []
-            let userArray = []
-            res.data.forEach(element => {
-                joinStatusArray.push(element.tripJoinStatus)
-                idArray.push(element.tripId)
-                if (element.userCar){
-                    element.user.userCar = element.userCar.userCarName + ' ' + element.userCar.userCarColour
-                }
-                userArray.push(element.user)
-                let currentRouteArray = []
-                let routeRequestParams = {
-                    mode: 'fastest;car',
-                    representation: 'display',
-                    routeattributes : 'waypoints,summary,shape,legs',
-                    maneuverattributes: 'direction,action',
-                };
-                element.tripPoint.forEach((item, index) => {
-                    const object = {['waypoint' + index]: item.tripPointLatitude + ',' + item.tripPointLongitude}
-                    Object.assign(routeRequestParams, object)
-                    currentRouteArray.push(item.tripPointName)
-                })
-                parameterArray.push(routeRequestParams)
-                allRoutesArray.push(currentRouteArray)
+export const setMainTrips = (id) => async dispatch => {
+    try {
+        const res = await callApi('post', 'api/trips/others', {tripId: id})
+        let parameterArray = []
+        let allRoutesArray = []
+        let joinStatusArray = []
+        let idArray = []
+        let userArray = []
+        res.data.forEach(element => {
+            joinStatusArray.push(element.tripJoinStatus)
+            idArray.push(element.tripId)
+            if (element.userCar){
+                element.user.userCar = element.userCar.userCarName + ' ' + element.userCar.userCarColour
+            }
+            userArray.push(element.user)
+            let currentRouteArray = []
+            let routeRequestParams = {
+                mode: 'fastest;car',
+                representation: 'display',
+                routeattributes : 'waypoints,summary,shape,legs',
+                maneuverattributes: 'direction,action',
+            };
+            element.tripPoint.forEach((item, index) => {
+                const object = {['waypoint' + index]: item.tripPointLatitude + ',' + item.tripPointLongitude}
+                Object.assign(routeRequestParams, object)
+                currentRouteArray.push(item.tripPointName)
             })
-            const joinArray = [...joinStatusArray]
-            joinArray.splice(0,1)
-            idArray.splice(0,1)
-            userArray.splice(0,1)
-            dispatch({type: SET_JOIN_ID_ARRAY, payload: idArray})
-            dispatch({type: SET_JOIN_STATUS_ARRAY, payload: joinArray})
-            dispatch({type: SET_MAIN_TRIPS_PARAMS, payload: parameterArray})
-            dispatch({type: SET_MAIN_TRIPS_POINT_NAMES, payload: allRoutesArray})
-            dispatch({type: SET_USER_TRIP_PARAMS, payload: parameterArray[0]})
-            dispatch({type: SET_MAIN_TRIP_USER_ARRAY, payload: userArray})
+            parameterArray.push(routeRequestParams)
+            allRoutesArray.push(currentRouteArray)
         })
-        .catch(err => {
-            console.log('setMainTrips: err = ', err)
-            dispatch(errorPopupShow())
-        })
+        const joinArray = [...joinStatusArray]
+        joinArray.splice(0,1)
+        idArray.splice(0,1)
+        userArray.splice(0,1)
+        dispatch({type: SET_JOIN_ID_ARRAY, payload: idArray})
+        dispatch({type: SET_JOIN_STATUS_ARRAY, payload: joinArray})
+        dispatch({type: SET_MAIN_TRIPS_PARAMS, payload: parameterArray})
+        dispatch({type: SET_MAIN_TRIPS_POINT_NAMES, payload: allRoutesArray})
+        dispatch({type: SET_USER_TRIP_PARAMS, payload: parameterArray[0]})
+        dispatch({type: SET_MAIN_TRIP_USER_ARRAY, payload: userArray})
+    } catch (err) {
+        dispatch(errorPopupShow())
+    }
 }
 // * *********************
 
@@ -111,7 +106,6 @@ export const setTripDateTime = dateTime => dispatch => {
 export const deleteTripFromHistory = (tripId, newTripsHistory) => dispatch => {
     dispatch({type: DELETE_TRIP_FROM_HISTORY, payload: newTripsHistory})
     callApi('delete', 'api/trips', {tripId})
-        .then(resp => console.log(resp))
         .catch(err => dispatch(errorPopupShow()))
 }
 // * *********************
@@ -144,4 +138,6 @@ export const setMainTripIdFromStorage = () => dispatch => {
 export const setUserMainTripShown = () => dispatch => {
     dispatch({type: SET_USER_MAIN_TRIP_SHOWN, payload: true})
 }
+//* **********************
+
 
