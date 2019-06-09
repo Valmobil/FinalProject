@@ -36,21 +36,19 @@ const styles = theme => ({
 class SmartRoute extends Component {
     state = {
         editing: false,
-        timeout: null,
     }
-
+    timeout =  null;
     startTouch = 0;
 
     touchStart = () => {
-        const timeout = setTimeout(() => this.setState(prevSate => ({editing: !prevSate.editing})), 700)
-        this.setState({ timeout })
+        this.timeout = setTimeout(() => this.setState(prevSate => ({editing: !prevSate.editing})), 700)
         this.startTouch = Date.now()
     }
 
     touchEnd = () => {
         if (Date.now() - this.startTouch < 700) {
             this.props.handleRoute(this.props.item)
-            clearTimeout(this.state.timeout)
+            clearTimeout(this.timeout)
         }
     }
     contextMenuDisable = (e) => {
