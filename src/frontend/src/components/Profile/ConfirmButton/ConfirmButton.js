@@ -1,21 +1,22 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import {withStyles} from '@material-ui/core/styles'
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button'
-
+import ErrorSnackbar from "../ErrorSnackbar/ErrorSnackbar";
 
 
 const ConfirmButton = ({classes, confirmEmail}) => {
-    return(
+    return (
         <>
-        <Button
-            onClick={ confirmEmail }
-            classes={{
-                root: classes.confirmButton,
-                label: classes.label
-            }}
-        >
-            Confirm
-        </Button>
+            <Button
+                onClick={confirmEmail}
+                classes={{
+                    root: classes.confirmButton,
+                    label: classes.label
+                }}
+            >
+                Confirm
+            </Button>
 
         </>
     )
@@ -36,6 +37,11 @@ const styles = theme => ({
         textTransform: 'capitalize'
     },
 })
+
+ErrorSnackbar.propTypes = {
+    confirmEmail: PropTypes.func,
+    classes: PropTypes.object,
+}
 
 
 export default withStyles(styles)(ConfirmButton)

@@ -11,7 +11,7 @@ import {updateProfile, setPhoto, confirmEmail} from '../../actions/userCreators'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Car from './Car/Car'
 import ConfirmButton from './ConfirmButton/ConfirmButton'
-import manSihlouette from '../../utils/manSihlouette.svg'
+import manSihlouette from '../../img/manSihlouette.svg'
 import ErrorSnackbar from "./ErrorSnackbar/ErrorSnackbar";
 import AddingCar from "./AddingCar/AddingCar";
 import './Profile.css'

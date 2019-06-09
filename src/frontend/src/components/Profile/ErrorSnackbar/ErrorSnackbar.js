@@ -1,5 +1,6 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -22,9 +23,7 @@ const styles1 = theme => ({
 });
 
 
-function MySnackbarContent(props) {
-    const { classes, message } = props;
-
+function MySnackbarContent({ classes, message }) {
     return (
         <SnackbarContent
             className={classes.error}
@@ -44,7 +43,6 @@ const MySnackbarContentWrapper = withStyles(styles1)(MySnackbarContent);
 
 
 const ErrorSnackbar = ({ handleSnackbarClose, open, message }) => {
-
         return (
             <div>
                 <Snackbar
@@ -63,5 +61,13 @@ const ErrorSnackbar = ({ handleSnackbarClose, open, message }) => {
             </div>
         );
 }
+
+
+ErrorSnackbar.propTypes = {
+    handleSnackbarClose: PropTypes.func,
+    message: PropTypes.string,
+    open: PropTypes.bool,
+}
+
 
 export default ErrorSnackbar;

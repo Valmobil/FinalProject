@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import './Map.css'
-import { setTargetCoordinates, setSearchedLocation, setIntermediatePoints, setMyCoordinates, setMyLocation } from "../../actions/tripCreators";
 import { connect } from "react-redux";
-
+import { setTargetCoordinates, setSearchedLocation, setIntermediatePoints, setMyCoordinates, setMyLocation } from "../../actions/tripCreators";
+import PropTypes from 'prop-types';
+import './Map.css'
 
 
 /*global H*/
@@ -90,7 +90,6 @@ class Map extends Component {
 
             geocoder.reverseGeocode(parameters,
                 (result) => {
-                    console.log('result = ', result)
                     const address = result.Response.View[0].Result[0].Location.Address
                     const city = address.City ? address.City + (address.Street || address.HouseNumber ? ', ' : '') : ''
                     const street = address.Street ? address.Street + (address.HouseNumber ? ', ' : '') : ''
@@ -123,7 +122,6 @@ class Map extends Component {
             let latitude = coordinates.lat.toFixed(6)
             let longitude = coordinates.lng.toFixed(6)
             this.setMarker(latitude, longitude)
-            console.log('Clicked at ' + coordinates.lat.toFixed(6) + ' ' + coordinates.lng.toFixed(6));
                 this.setState({targetLatitude: coordinates.lat.toFixed(6), targetLongitude: coordinates.lng.toFixed(6)}, () => this.reverseGeocode())
                 // this.setState({targetLatitude: coordinates.lat.toFixed(6), targetLongitude: coordinates.lng.toFixed(6)})
                 this.props.setTargetCoordinates({
@@ -232,6 +230,12 @@ class Map extends Component {
         this.group.removeAll()
     }
 
+    renderUserMainRoute = () => {
+        this.clearMap()
+        this.currentRender = 'user'
+        this.calculateRouteFromAtoB(this.props.userMainTripParams)
+    }
+
 
 
     componentDidMount() {
@@ -265,6 +269,9 @@ class Map extends Component {
         if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute ){
             this.calculateRouteFromAtoB()
         }
+        if (this.props.userMainTripParams && this.props.showMainRoute){
+            this.renderUserMainRoute()
+        }
     }
 
 
@@ -281,23 +288,10 @@ class Map extends Component {
                 this.calculateRouteFromAtoB()
             }
         }
-        // if (this.props.coords !== prevProps.coords && this.props.coords){
-        //     this.setMarker(this.props.coords.latitude, this.props.coords.longitude)
-        //     if (this.props.coords && this.props.targetCoordinates && this.props.showSmartRoute ){
-        //         this.clearMap()
-        //         this.calculateRouteFromAtoB()
-        //     }
-        // }
 
-        if (this.props.userMainTripParams !== prevProps.userMainTripParams && this.props.showMainRoute){
-            this.clearMap()
-            this.currentRender = 'user'
-            this.calculateRouteFromAtoB(this.props.userMainTripParams)
-        }
-
-        if (this.props.userMainTripShown !== prevProps.userMainTripShown && this.props.showMainRoute){
-            this.currentRender = 'user'
-            this.calculateRouteFromAtoB(this.props.userMainTripParams)
+        if ((this.props.userMainTripParams !== prevProps.userMainTripParams ||
+            (this.props.userMainTripShown !== prevProps.userMainTripShown)) && this.props.showMainRoute){
+            this.renderUserMainRoute()
         }
 
         if (this.props.currentMainTripParams !== prevProps.currentMainTripParams && this.props.showMainRoute){
@@ -313,7 +307,6 @@ class Map extends Component {
         if (this.listen){
             this.map.removeEventListener(this.listen)
         }
-        this.clearMap()
     }
 
     render() {
@@ -325,6 +318,14 @@ class Map extends Component {
             </div>
         );
     }
+}
+
+Map.propTypes = {
+    height: PropTypes.number,
+    marginTop: PropTypes.string,
+    showMainRoute: PropTypes.bool,
+    showSmartRoute: PropTypes.bool,
+
 }
 
 
