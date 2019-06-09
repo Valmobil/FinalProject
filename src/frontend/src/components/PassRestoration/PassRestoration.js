@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { Auth } from 'aws-amplify'
 import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
-import './PassRestoration.scss'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
 import TextField from '@material-ui/core/TextField'
@@ -80,20 +78,6 @@ class PassRestoration extends Component {
     this.props.history.push('/main')
   }
 
-  handleSendCodeClick = async event => {
-    event.preventDefault()
-
-    this.setState({ isSendingCode: true })
-
-    try {
-      await Auth.forgotPassword(this.state.email)
-      this.setState({ codeSent: true })
-    } catch (e) {
-      alert(e.message)
-      this.setState({ isSendingCode: false })
-    }
-  }
-
   handleInput = ({ target: { name, value } }) => {
     this.setState({ [name]: value })
   }
@@ -126,7 +110,7 @@ class PassRestoration extends Component {
   render () {
 
     return (
-      <div className="PassRestoration">
+      <div className="PassRestoration" style={{marginTop: '200px'}}>
         {this.renderConfirmationForm()}
       </div>
     )

@@ -57,18 +57,6 @@ const Drawer = (props) => {
                     >
                         New Trip
                     </NavLink>
-                    <NavLink to={'/restore_password'}
-                             className='drawer-link-regular'
-                             activeClassName="drawer-active-link"
-                    >
-                        Restore password
-                    </NavLink>
-                    <NavLink to={'/newpassword'}
-                             className='drawer-link-regular'
-                             activeClassName="drawer-active-link"
-                    >
-                        Change password
-                    </NavLink>
                     <NavLink to={'/'}
                              onClick={() => signOut(props.auth, props.logOut)}
                              className='drawer-link-logout'
