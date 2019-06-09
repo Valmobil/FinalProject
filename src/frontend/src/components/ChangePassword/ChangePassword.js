@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { FormGroup, FormControl } from 'react-bootstrap'
-import { postNewPassword } from '../../actions/passwordCreater'
 import { withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
-import LoaderButton from './LoaderButton'
 import './ChangePassword.scss'
 import MuiThemeProvider from '../PassRestoration/PassRestoration'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
@@ -153,13 +149,5 @@ class ChangePassword extends Component {
   }
 
 }
-
-//
-// const mapStateToProps = (state) => {
-//   return {
-//     password: state.password
-//   }
-// }
-
 
 export default withStyles(styles)(ChangePassword)

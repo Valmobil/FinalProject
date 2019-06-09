@@ -1,13 +1,7 @@
 import React, { Component } from 'react'
 import { Auth } from 'aws-amplify'
-import { Link } from 'react-router-dom'
-import {
-  FormGroup,
-  FormControl
-} from 'react-bootstrap'
 import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
-import LoaderButton from './LoaderButton'
 import './PassRestoration.scss'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import orange from '@material-ui/core/colors/orange'
@@ -15,10 +9,8 @@ import TextField from '@material-ui/core/TextField'
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Button from '@material-ui/core/Button'
 import { restorePassword } from '../../actions/userCreators'
-import { postNewPassword } from '../../actions/passwordCreater'
-// import Button from '../Login/Login'
 
-const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+//const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const theme = createMuiTheme({
   palette: {
@@ -75,7 +67,6 @@ class PassRestoration extends Component {
   state = {
     code: '',
     email: '',
-
   }
 
 

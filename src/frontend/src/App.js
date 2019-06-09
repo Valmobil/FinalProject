@@ -12,10 +12,8 @@ import PassRestoration from './components/PassRestoration/PassRestoration'
 import ChangePassword from './components/ChangePassword/ChangePassword'
 import TripsHistoryForm from "./components/TripsHistory/TripsHistoryForm";
 import NewTrip from './components/NewTrip/NewTrip'
-import Card from './components/FeedbackForms/Cards/Card'
 import Button from './components/FeedbackForms'
 
-import AddCar from './components/AddCar/AddCar'
 import Main from "./components/Main/Main";
 import Popup from './components/Popup/Popup'
 import './App.css'
@@ -39,7 +37,7 @@ class App extends Component {
                         <AuthorizedRoute userRole='user' path='/newtrip' component={NewTrip}/>
                         <Route path="/restore_password" component={PassRestoration}/>
                         <Route path="/newpassword" component={ChangePassword}/>
-      <Route exact path="/feedback" component={Button} />
+                        <Route exact path="/feedback" component={Button} />
                         <Route path='*' component={NoMatch}/>
                     </Switch>
                     <Popup/>

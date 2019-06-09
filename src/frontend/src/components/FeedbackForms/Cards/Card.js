@@ -4,19 +4,12 @@ import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
-import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
-import SkipPreviousIcon from '@material-ui/icons/SkipPrevious'
-import PlayArrowIcon from '@material-ui/icons/PlayArrow'
-import SkipNextIcon from '@material-ui/icons/SkipNext'
 
 const styles = theme => ({
   card: {
     display: 'flex',
-    // alignItems: 'center'
     marginLeft: '0',
-    // marginRight: '0',
-    // justifyContent: 'center',
     maxWidth: '250px'
   },
   details: {
@@ -32,17 +25,6 @@ const styles = theme => ({
     width: 151
   }
 
-
-  // controls: {
-  //   display: 'flex',
-  //   alignItems: 'center',
-  //   paddingLeft: theme.spacing.unit,
-  //   paddingBottom: theme.spacing.unit,
-  // },
-  // playIcon: {
-  //   height: 38,
-  //   width: 38,
-  // },
 })
 
 function MediaControlCard (props) {
