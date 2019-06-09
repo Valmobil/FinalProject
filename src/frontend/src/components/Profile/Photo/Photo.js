@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { withStyles } from '@material-ui/core/styles'
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button'
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
@@ -147,5 +148,14 @@ const Photo = ({ classes, setPhoto, photo, sihlouette, error, onFocus }) => {
 }
 
 
+
+Photo.propTypes = {
+    setPhoto: PropTypes.func,
+    onFocus: PropTypes.func,
+    photo: PropTypes.string,
+    sihlouette: PropTypes.string,
+    error: PropTypes.bool,
+    classes: PropTypes.object,
+}
 
 export default withStyles(styles)(Photo)

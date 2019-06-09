@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -8,7 +9,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 
-const MainRender = ({ setCurrentMainTripParams, mainTripParams, index, mainTripUserArray, joinStatusArray, item, classes}) => {
+const MainRoute = ({ setCurrentMainTripParams, mainTripParams, index, mainTripUserArray, joinStatusArray, item, classes}) => {
     const [expanded, setExpanded] = useState(false)
     let timeout = null;
     let startTouch = 0;
@@ -45,7 +46,6 @@ const MainRender = ({ setCurrentMainTripParams, mainTripParams, index, mainTripU
                 return 'unselected'
         }
     }
-
 
     return(
         <ExpansionPanel
@@ -122,4 +122,18 @@ const styles = theme => ({
     },
 });
 
-export default withStyles(styles)(MainRender)
+MainRoute.propTypes = {
+    setCurrentMainTripParams: PropTypes.func,
+    mainTripParams: PropTypes.array,
+    index: PropTypes.number,
+    mainTripUserArray: PropTypes.array,
+    joinStatusArray: PropTypes.array,
+    item: PropTypes.array,
+    classes: PropTypes.object,
+}
+
+MainRoute.defaultProps = {
+    mainTripUserArray: [],
+}
+
+export default withStyles(styles)(MainRoute)

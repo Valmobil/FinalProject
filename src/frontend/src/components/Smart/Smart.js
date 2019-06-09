@@ -306,7 +306,6 @@ class Smart extends Component {
         }
 
         return (
-
             <MuiThemeProvider theme={theme}>
                 <WeatherWidget />
                 <div className="welcome-user">

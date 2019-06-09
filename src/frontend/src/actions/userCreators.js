@@ -11,7 +11,7 @@ import axios from 'axios'
 
 //* *********************
 
-export const checkAuthorizationByToken = () => dispatch => {
+export const checkAuthorizationByToken = () => async dispatch => {
     const accessToken = window.localStorage.getItem('iTripper_access_token');
     if (accessToken) {
         const accessTokenExpires = window.localStorage.getItem('iTripper_access_token_expires')
@@ -20,28 +20,24 @@ export const checkAuthorizationByToken = () => dispatch => {
         if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))) {
             dispatch(logOut());
         } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
-            axios({
-                method: 'post',
-                url: '/api/usertokens',
-                data: {userTokenRefresh}
-            })
-                .then(response => {
-                    if (response.data) {
-                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-                    } else {
-                        dispatch(logOut())
-                    }
-                })
-                .catch(err => dispatch(errorPopupShow()))
+            try {
+                const response = await axios.post('/api/usertokens', {userTokenRefresh})
+                if (response.data) {
+                    setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                } else {
+                    dispatch(logOut())
+                }
+            } catch (err) {
+                dispatch(errorPopupShow())
+            }
         }
     } else {
         dispatch(logOut())
     }
 }
-
 // * *********************
 
-export const setAuthByToken = () => dispatch => {
+export const setAuthByToken = () => async dispatch => {
     const userToken = window.localStorage.getItem('iTripper_access_token');
     if (userToken) {
         dispatch({type: INITIAL_LOAD, payload: true})
@@ -51,31 +47,30 @@ export const setAuthByToken = () => dispatch => {
         if (refreshTokenExpires && (Date.now() > Date.parse(refreshTokenExpires))) {
             dispatch(logOut());
         } else if (accessTokenExpires && (Date.now() > Date.parse(accessTokenExpires))) {
-            axios({
-                method: 'post',
-                url: '/api/usertokens',
-                data: {userTokenRefresh}
-            })
-                .then(response => {
-                    if (response.data) {
-                        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-                        callApi('post', '/api/logins/signin', {userToken: response.data.userTokenAccess})
-                            .then(res => {
-                                dispatch(authDispatches(res))
-                            })
-                            .catch(err => dispatch(errorPopupShow()))
-                    } else {
-                        dispatch(logOut())
-                    }
-                })
-                .catch(console.log)
-        } else {
-            callApi('post', '/api/logins/signin', {userToken})
-                .then(response => {
+            try {
+                const response = await axios.post('/api/usertokens', userTokenRefresh)
+                if (response.data) {
                     setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-                    dispatch(authDispatches(response))
-                })
-                .catch(err => dispatch(errorPopupShow()))
+                    try {
+                        const res = await callApi('post', '/api/logins/signin', {userToken: response.data.userTokenAccess})
+                        dispatch(authDispatches(res))
+                    } catch (error) {
+                        dispatch(errorPopupShow())
+                    }
+                } else {
+                    dispatch(logOut())
+                }
+            } catch (error) {
+                dispatch(errorPopupShow())
+            }
+        } else {
+            try {
+                const response = await callApi('post', '/api/logins/signin', {userToken})
+                setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+                dispatch(authDispatches(response))
+            } catch (error) {
+                dispatch(errorPopupShow())
+            }
         }
     }
 }
@@ -89,7 +84,7 @@ const authDispatches = (response) => dispatch => {
 
 // * *********************
 
-export const setAuthorization = (state, signType) => (dispatch) => {
+export const setAuthorization = (state, signType) => async dispatch => {
     let route = signType === 'log-in' ? 'signin' : 'signup'
     let data = null
     if (state.password) {
@@ -105,17 +100,15 @@ export const setAuthorization = (state, signType) => (dispatch) => {
             userToken: state.token,
         }
     }
-    axios.post('/api/logins/' + route, data)
-        .then(response => {
-            console.log('user = ', response.data)
-            setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-            dispatch(authDispatches(response))
-            dispatch({type: INITIAL_LOAD, payload: true})
-        })
-        .catch(error => {
-            dispatch(setErrorPopupOpen(true))
-            dispatch(setErrorMessage(error.response.data))
-        })
+    try {
+        const response = await axios.post('/api/logins/' + route, data)
+        setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+        dispatch(authDispatches(response))
+        dispatch({type: INITIAL_LOAD, payload: true})
+    } catch (error) {
+        dispatch(setErrorPopupOpen(true))
+        dispatch(setErrorMessage(error.response.data))
+    }
 }
 //* *********************
 
@@ -156,30 +149,32 @@ export const setErrorMessage = (message) => dispatch => {
 
 //* **********************
 
-export const setPhoto = (image, user) => dispatch => {
+export const setPhoto = (image, user) => async dispatch => {
     dispatch({type: SET_USER, payload: user})
     let data = new FormData();
     data.append('fileUpload', image);
-    callApi('put', 'api/images', data)
-        .then(response => {
-            dispatch({type: SET_USER_PHOTO, payload: response.data})
-        })
-        .catch(err => dispatch(errorPopupShow()))
+    try {
+        const response = await callApi('put', 'api/images', data)
+        dispatch({type: SET_USER_PHOTO, payload: response.data})
+    } catch (err) {
+        dispatch(errorPopupShow())
+    }
 }
 //* **********************
 
-export const updateProfile = (user) => dispatch => {
+export const updateProfile = (user) => async dispatch => {
     dispatch({type: SET_USER, payload: user})
-    callApi('put', '/api/users', user)
-        .then(response => {
-            if (response.data) {
-                dispatch({type: SET_USER, payload: response.data})
-                setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
-            } else {
-                dispatch(logOut())
-            }
-        })
-        .catch(err => dispatch(errorPopupShow()))
+    try {
+        const response = await  callApi('put', '/api/users', user)
+        if (response.data) {
+            dispatch({type: SET_USER, payload: response.data})
+            setLocalStorage(response.data.userTokenAccess, response.data.userTokenRefresh)
+        } else {
+            dispatch(logOut())
+        }
+    } catch (err) {
+        dispatch(errorPopupShow())
+    }
 }
 
 //* **********************
