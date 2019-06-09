@@ -161,10 +161,5 @@ class ChangePassword extends Component {
 //   }
 // }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    confirmPass: password => dispatch(confirmPass(password))
-  }
-}
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ChangePassword))
+export default withStyles(styles)(ChangePassword)
