@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
+import { postNewPassword } from '../../actions/passwordCreator'
 import './ChangePassword.scss'
 import MuiThemeProvider from '../PassRestoration/PassRestoration'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
@@ -63,7 +64,6 @@ class ChangePassword extends Component {
   state = {
     password: '',
     confirmPassword: ''
-
   }
 
   confirmPass = () => {
@@ -82,10 +82,6 @@ class ChangePassword extends Component {
     )
   }
 
-  // handleClickShowPassword = () => {
-  //   this.setState({ showPassword: !this.state.showPassword })
-  // }
-
   handleInput = event => {
     this.setState({
       [event.target.name]: event.target.value
@@ -99,55 +95,48 @@ class ChangePassword extends Component {
     this.props.postNewPassword(this.state.password)
   }
 
-  renderConfirmationForm () {
+  render () {
     const { classes } = this.props
     return (
-      <MuiThemeProvider theme={theme}>
-        <TextField
-          label="New password"
-          style={style.input}
-          autoComplete="off"
-          name='password'
-          onChange={this.handleInput}
-          onBlur={this.onBlur}
-          onFocus={this.onFocus}
-        />
-        <TextField
-          label="Confirm New password"
-          style={style.input}
-          autoComplete="off"
-          name='confirmPassword'
-          onChange={this.handleInput}
-          onBlur={this.onBlur}
-          onFocus={this.onFocus}
-        />
-        <Button onClick={() => this.confirmPass()}
-                style={style.button}
-                classes={{
-                  root: classes.root,
-                  label: classes.label
-                }}
-        >
-          Submit
-        </Button>
-      </MuiThemeProvider>)
-  }
-
-  render () {
-
-    return (
       <div className="PassRestoration">
-        {/*{!this.state.codeSent*/}
-        {/*? this.renderRequestCodeForm()*/}
-        {/*: !this.state.confirmed*/}
-        {/*? this.renderConfirmationForm()*/}
-        {/*: this.renderSuccessMessage()}*/}
-        {this.renderConfirmationForm()}
+        <MuiThemeProvider theme={theme}>
+          <TextField
+            label="New password"
+            style={style.input}
+            autoComplete="off"
+            name='password'
+            onChange={this.handleInput}
+            onBlur={this.onBlur}
+            onFocus={this.onFocus}
+          />
+          <TextField
+            label="Confirm New password"
+            style={style.input}
+            autoComplete="off"
+            name='confirmPassword'
+            onChange={this.handleInput}
+            onBlur={this.onBlur}
+            onFocus={this.onFocus}
+          />
+          <Button onClick={() => this.confirmPass()}
+                  style={style.button}
+                  classes={{
+                    root: classes.root,
+                    label: classes.label
+                  }}
+          >
+            Submit
+          </Button>
+        </MuiThemeProvider>)
       </div>
 
     )
   }
-
+}
+const mapDispatchToProps = dispatch => {
+  return {
+    postNewPassword: (psw) => dispatch(postNewPassword(psd))
+  }
 }
 
-export default withStyles(styles)(ChangePassword)
+export default withStyles(styles)(connect(null, mapDispatchToProps)(ChangePassword))

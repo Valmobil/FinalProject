@@ -36,7 +36,7 @@ class App extends Component {
                         <AuthorizedRoute userRole='user' path='/mytrips' component={TripsHistoryForm}/>
                         <AuthorizedRoute userRole='user' path='/newtrip' component={NewTrip}/>
                         <Route path="/restore_password" component={PassRestoration}/>
-                        <Route path="/newpassword" component={ChangePassword}/>
+                        <Route path="/change_password" component={ChangePassword}/>
                         <Route exact path="/feedback" component={Button} />
                         <Route path='*' component={NoMatch}/>
                     </Switch>
