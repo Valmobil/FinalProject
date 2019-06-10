@@ -53,7 +53,7 @@ class Main extends Component {
             </div>
         )
         if (tripPointParams && joinStatusArray && tripPointNames && userArray){
-        output =    <MainRender
+           output = <MainRender
                     mainTripPointNames={mainTripPointNames}
                     checkboxArray={checkboxArray}
                     joinIdArray={joinIdArray}
@@ -61,6 +61,7 @@ class Main extends Component {
                     mainTripParams={mainTripParams}
                     mainTripId={this.props.trips.mainTripId}
                     mainTripUserArray={mainTripUserArray}
+                    setMainTrips={this.props.setMainTrips}
                     />
         }
 
