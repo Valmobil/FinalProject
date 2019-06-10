@@ -124,7 +124,6 @@ class LiveSearch extends Component {
         let suggestionsList = []
 
         if (inputLength > 0){
-
             let response = await singleCallApi(this.props.method, this.props.url, this.props.data)
             suggestionsList = response.data
         }
