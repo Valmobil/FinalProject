@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import {connect} from 'react-redux';
-import {setTargetCoordinates, setTripDateTime, setMyCoordinates, clearMap, setTrip, setEndLocation} from '../../actions/tripCreators';
+import {setTargetCoordinates, setTripDateTime, setMyCoordinates, setClearMap, setTrip, setEndLocation} from '../../actions/tripCreators';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -33,6 +33,10 @@ const styles = theme => ({
             background: '#fff',
             outline: 'none',
         },
+        '&:active': {
+            background: '#fff',
+            outline: 'none',
+        },
     },
     rejectButton: {
         borderRadius: 3,
@@ -42,6 +46,10 @@ const styles = theme => ({
         padding: 0,
         width: '40%',
         '&:focus': {
+            background: '#fff',
+            outline: 'none',
+        },
+        '&:active': {
             background: '#fff',
             outline: 'none',
         },
@@ -176,7 +184,7 @@ class NewTrip extends Component {
 
     rejectRoute = () => {
         this.setState({valueFrom: '', valueTo: ''})
-        this.props.clearMap()
+        this.props.setClearMap(true)
         this.props.setEndLocation('', 'start');
         this.props.setEndLocation('', 'end');
         this.props.setTargetCoordinates(null);
@@ -324,7 +332,7 @@ const mapDispatchToProps = dispatch => {
         setTargetCoordinates: (coords) => dispatch(setTargetCoordinates(coords)),
         setMyCoordinates: (coordinates) => dispatch(setMyCoordinates(coordinates)),
         setTripDateTime: (newTripDate) => dispatch(setTripDateTime(newTripDate)),
-        clearMap: () => dispatch(clearMap()),
+        setClearMap: (value) => dispatch(setClearMap(value)),
         setTrip: (trip) => dispatch(setTrip(trip)),
         setEndLocation: (location, end) => dispatch(setEndLocation(location, end)),
     }

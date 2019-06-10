@@ -125,6 +125,7 @@ class MainRender extends Component {
                                 joinStatusArray={this.state.joinStatusArray}
                                 mainTripUserArray={mainTripUserArray}
                                 item={item}
+                                setUserMainTripShown={this.props.setUserMainTripShown}
                             />
                             <Checkbox
                                 onChange={this.handleChange(index)}
@@ -148,7 +149,7 @@ class MainRender extends Component {
                         {
                             routesList.length > 0 &&
                             <Button
-                                onClick={this.props.setUserMainTripShown}
+                                onClick={() => this.props.setUserMainTripShown(true)}
                                 classes={{
                                     root: classes.routeButton,
                                     label: classes.label
@@ -188,7 +189,7 @@ MainRender.propTypes = {
 const mapDispatchToProps = (dispatch) => {
     return {
         setCurrentMainTripParams: (array) => dispatch(setCurrentMainTripParams(array)),
-        setUserMainTripShown: () => dispatch(setUserMainTripShown()),
+        setUserMainTripShown: (value) => dispatch(setUserMainTripShown(value)),
         setMainTrips: (tripId) => dispatch(setMainTrips(tripId)),
     }
 }

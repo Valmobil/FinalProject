@@ -13,7 +13,6 @@ const VoiceSearch = ({ voiceHandle, start }) => {
             .map(data => data.transcript)
             .join('');
         if (e.results[0].isFinal){
-            console.log(transcript)
             voiceHandle(transcript)
         }
     }

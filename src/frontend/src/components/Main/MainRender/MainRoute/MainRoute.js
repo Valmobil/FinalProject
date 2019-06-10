@@ -9,7 +9,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 
-const MainRoute = ({ setCurrentMainTripParams, mainTripParams, index, mainTripUserArray, joinStatusArray, item, classes}) => {
+const MainRoute = ({ setUserMainTripShown, setCurrentMainTripParams, mainTripParams, index, mainTripUserArray, joinStatusArray, item, classes}) => {
     const [expanded, setExpanded] = useState(false)
     let timeout = null;
     let startTouch = 0;
@@ -57,7 +57,7 @@ const MainRoute = ({ setCurrentMainTripParams, mainTripParams, index, mainTripUs
             onMouseDown={mouseDown}
         >
             <ExpansionPanelSummary
-                onClick={() => setCurrentMainTripParams(mainTripParams[index + 1])}
+                onClick={() => {setUserMainTripShown(false); setCurrentMainTripParams(mainTripParams[index + 1])}}
                 expandIcon={<ExpandMoreIcon className={classes.expandIcon}/>}
                 style={style[setTabStyle(index)]}
             >

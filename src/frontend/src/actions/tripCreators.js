@@ -118,8 +118,8 @@ export const setEndLocation = (location, end) => dispatch => {
 }
 // * *********************
 
-export const clearMap = () => dispatch => {
-    dispatch({type: CLEAR_MAP})
+export const setClearMap = (value) => dispatch => {
+    dispatch({type: CLEAR_MAP, payload: value})
 }
 // * *********************
 
@@ -135,8 +135,8 @@ export const setMainTripIdFromStorage = () => dispatch => {
 }
 //* **********************
 
-export const setUserMainTripShown = () => dispatch => {
-    dispatch({type: SET_USER_MAIN_TRIP_SHOWN, payload: true})
+export const setUserMainTripShown = (value) => dispatch => {
+    dispatch({type: SET_USER_MAIN_TRIP_SHOWN, payload: value})
 }
 //* **********************
 
