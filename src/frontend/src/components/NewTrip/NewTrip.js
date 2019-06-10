@@ -179,6 +179,9 @@ class NewTrip extends Component {
         this.props.clearMap()
         this.props.setEndLocation('', 'start');
         this.props.setEndLocation('', 'end');
+        this.props.setTargetCoordinates(null);
+        this.props.setMyCoordinates(null);
+
     }
 
     componentDidUpdate(prevProps) {
