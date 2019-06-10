@@ -13,6 +13,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import ua.com.danit.entity.Point;
+import ua.com.danit.error.ApplicationException;
 import ua.com.danit.repository.PointsRepository;
 
 import javax.annotation.PostConstruct;
@@ -55,12 +56,8 @@ public class XmlToPointDbService extends Thread {
     try {
       builder = factory.newDocumentBuilder();
       xmlDoc = builder.parse(file);
-    } catch (ParserConfigurationException e) {
-      e.printStackTrace();
-    } catch (SAXException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (ParserConfigurationException | SAXException | IOException e) {
+      throw new ApplicationException("Error! Cannot parse map.xml!");
     }
 
     //Extract node list
@@ -74,7 +71,7 @@ public class XmlToPointDbService extends Thread {
           xmlDoc,
           XPathConstants.NODESET);
     } catch (XPathExpressionException e) {
-      e.printStackTrace();
+      throw new ApplicationException("Error! Cannot read xml structure!");
     }
     if (res == null) {
       return;

@@ -124,7 +124,7 @@ public class MailSenderService {
       helper.setText(msg, true);
       return message;
     } catch (MessagingException ignored) {
-      throw new ApplicationException("Error! Cannot generate eMail via MimeMessage");
+      throw new ApplicationException("Error! Cannot generate eMail via MimeMessage!");
     }
   }
 

@@ -16,6 +16,6 @@ script:
   - mvn clean test
   - npm run build --prefix ./src/frontend/
 
-#Fromtend part
+#Frontend part
 before_script:
   - npm install --prefix ./src/frontend/

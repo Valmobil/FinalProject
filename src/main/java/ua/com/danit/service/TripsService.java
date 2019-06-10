@@ -163,7 +163,7 @@ public class TripsService {
           tripDeepCopy.setTripDateTime(trip.getTripDateTime().plusDays(1));
           tripsRepository.saveAndFlush(tripDeepCopy);
         } catch (IOException e) {
-          e.printStackTrace();
+          throw new ApplicationException("Cannot create deep copy of the trip!");
         }
       }
     }
