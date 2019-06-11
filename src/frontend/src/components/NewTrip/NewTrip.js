@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import {connect} from 'react-redux';
-import {setTargetCoordinates, setTripDateTime, setMyCoordinates, clearMap, setTrip, setEndLocation} from '../../actions/tripCreators';
+import {setTargetCoordinates, setMyCoordinates, setClearMap, setTrip, setEndLocation} from '../../actions/tripCreators';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -33,6 +33,10 @@ const styles = theme => ({
             background: '#fff',
             outline: 'none',
         },
+        '&:active': {
+            background: '#fff',
+            outline: 'none',
+        },
     },
     rejectButton: {
         borderRadius: 3,
@@ -42,6 +46,10 @@ const styles = theme => ({
         padding: 0,
         width: '40%',
         '&:focus': {
+            background: '#fff',
+            outline: 'none',
+        },
+        '&:active': {
             background: '#fff',
             outline: 'none',
         },
@@ -106,12 +114,14 @@ class NewTrip extends Component {
         this.setState({
             valueFrom
         })
+        this.props.setEndLocation(valueFrom, 'start')
     }
 
     setValueTo = (valueTo) => {
         this.setState({
             valueTo
         })
+        this.props.setEndLocation(valueTo, 'end')
     }
 
     getIntermediate = () => new Promise((resolve) => {
@@ -146,8 +156,7 @@ class NewTrip extends Component {
                 tripPoint = tripPoint.concat(res)
                 endPoint.tripPointSequence = tripPoint.length
                 tripPoint.push(endPoint)
-                const {userCars} = this.props.users.user
-                let currentCar = userCars.length === 1 ? userCars[0] : this.state.car
+                let currentCar = this.props.userCars.length === 1 ? this.props.userCars[0] : this.state.car
                 const userCarId = this.state.role === 'driver' ? currentCar.userCarId : null
                 let result = this.setTimeWithTimezoneOffset(this.state.tripTime)
                 let trip = {
@@ -176,7 +185,7 @@ class NewTrip extends Component {
 
     rejectRoute = () => {
         this.setState({valueFrom: '', valueTo: ''})
-        this.props.clearMap()
+        this.props.setClearMap(true)
         this.props.setEndLocation('', 'start');
         this.props.setEndLocation('', 'end');
         this.props.setTargetCoordinates(null);
@@ -204,9 +213,8 @@ class NewTrip extends Component {
         const { classes } = this.props;
         const { smart } = this.props.location
         const { role, car, valueFrom, valueTo, tripTime } = this.state
-        const {userCars} = this.props.users.user
-        let currentCar = userCars.length === 1 ? userCars[0] : car
-        const carList = userCars.map((item) => {
+        let currentCar = this.props.userCars.length === 1 ? this.props.userCars[0] : car
+        const carList = this.props.userCars.map((item) => {
             return <MenuItem value={item} key={item.userCarId}>{item.userCarName + ' ' + item.userCarColour}</MenuItem>
         })
         return (
@@ -314,7 +322,7 @@ class NewTrip extends Component {
 
 const mapStateToProps = state => {
     return {
-        users: state.users,
+        userCars: state.users.user.userCars,
         trips: state.trips,
     }
 }
@@ -323,8 +331,7 @@ const mapDispatchToProps = dispatch => {
     return {
         setTargetCoordinates: (coords) => dispatch(setTargetCoordinates(coords)),
         setMyCoordinates: (coordinates) => dispatch(setMyCoordinates(coordinates)),
-        setTripDateTime: (newTripDate) => dispatch(setTripDateTime(newTripDate)),
-        clearMap: () => dispatch(clearMap()),
+        setClearMap: (value) => dispatch(setClearMap(value)),
         setTrip: (trip) => dispatch(setTrip(trip)),
         setEndLocation: (location, end) => dispatch(setEndLocation(location, end)),
     }

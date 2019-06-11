@@ -64,7 +64,7 @@ function trips (state = initialState, action) {
         case SET_FINISH_LOCATION:
             return {...state, finishLocation: action.payload}
         case CLEAR_MAP:
-            return {...state, clearMap: true}
+            return {...state, clearMap: action.payload}
         case SET_MY_LOCATION:
             return {...state, myLocation: action.payload}
         case SET_JOIN_STATUS_ARRAY:
@@ -74,7 +74,7 @@ function trips (state = initialState, action) {
         case SET_MAIN_TRIP_USER_ARRAY:
             return {...state, mainTripUserArray: action.payload}
         case SET_USER_MAIN_TRIP_SHOWN:
-            return {...state, userMainTripShown: true}
+            return {...state, userMainTripShown: action.payload}
 
         default:
             return {...state}
