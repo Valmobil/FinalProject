@@ -99,7 +99,6 @@ class Smart extends Component {
     editing: '',
     adding: false,
     creatingTrip: false,
-    id: null,
     value: '',
   };
 
@@ -116,13 +115,11 @@ class Smart extends Component {
         latitude: userPoint.userPointLatitude,
         longitude: userPoint.userPointLongitude,
       })
-
       const address = userPoint.userPointAddress
       this.props.setEndLocation('My location', 'start')
       this.props.setEndLocation(address, 'end')
       this.props.history.push({pathname: '/newtrip', smart: true})
 
-      // this.setState({creatingTrip: true, id: userPoint.userPointId})
     }
 
   }
@@ -228,8 +225,8 @@ class Smart extends Component {
 
 
   render() {
-    const {name, value, editing, adding, creatingTrip, id} = this.state
-    const {userPoints} = this.props.users
+    const { name, value, editing, adding, creatingTrip } = this.state
+    const { userPoints } = this.props.users
     const firstEmptyUserPoint = userPoints.find(item => item.userPointName === '<no point>')
     let adDisable = userPoints.indexOf(firstEmptyUserPoint) === -1
 
@@ -305,9 +302,7 @@ class Smart extends Component {
       <MuiThemeProvider theme={theme}>
         <WeatherWidget/>
         <div className="welcome-user">
-          {!adding && !editing &&
-          <>
-            {!creatingTrip &&
+          {!adding && !editing && !creatingTrip &&
             <>
               <Slide direction="down" in={true} mountOnEnter unmountOnExit>
                 <div className="type-button-container">
@@ -326,8 +321,6 @@ class Smart extends Component {
               </Slide>
               <span className="quick-trips">Quick trips ( long tap to edit/delete )</span>
             </>
-            }
-          </>
           }
           {placesList}
           {dependentButton}

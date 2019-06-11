@@ -19,7 +19,7 @@ class Car extends Component{
     handleMove = (car, e) => {
         let offset = e.touches[0].clientX - this.state.startTouch
         if (offset > 0) this.setState({offset})
-        if (offset > 150) this.props.deleteCar(car)
+        if (offset > 150 && car.userCarId) this.props.deleteCar(car)
     }
 
     handleEnd = () => {

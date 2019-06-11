@@ -115,7 +115,7 @@ class MainRender extends Component {
         const routesArray = [...mainTripPointNames]
         routesArray.splice(0, 1)
         const routesList = routesArray.map((item, index) => {
-                if (mainTripUserArray[index]) {
+                if (mainTripUserArray && mainTripUserArray[index]) {
                     return (
                         <div className={classes.rectangle} key={index}>
                             <MainRoute

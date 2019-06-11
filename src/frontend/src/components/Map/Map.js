@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { connect } from "react-redux";
 import { setTargetCoordinates, setSearchedLocation, setIntermediatePoints, setMyCoordinates,
-    setMyLocation, setUserMainTripShown, setClearMap } from "../../actions/tripCreators";
+    setMyLocation, setClearMap } from "../../actions/tripCreators";
 import PropTypes from 'prop-types';
 import './Map.css'
 
@@ -292,14 +292,12 @@ class Map extends Component {
         }
 
         if ((this.props.userMainTripParams !== prevProps.userMainTripParams ||
-            (this.props.userMainTripShown !== prevProps.userMainTripShown) && this.props.userMainTripShown) && this.props.showMainRoute){
+            ((this.props.userMainTripShown !== prevProps.userMainTripShown) && this.props.userMainTripShown)) && this.props.showMainRoute){
             this.renderUserMainRoute()
         }
 
         if (this.props.currentMainTripParams !== prevProps.currentMainTripParams && this.props.showMainRoute){
             this.clearMap()
-
-            this.props.setUserMainTripShown(false)
             this.currentRender = 'current'
             this.calculateRouteFromAtoB(this.props.currentMainTripParams)
         }
@@ -350,7 +348,6 @@ const mapDispatchToProps = (dispatch) => {
         setIntermediatePoints: (points) => dispatch(setIntermediatePoints(points)),
         setMyCoordinates: (coordinates) => dispatch(setMyCoordinates(coordinates)),
         setMyLocation: (location) => dispatch(setMyLocation(location)),
-        setUserMainTripShown: (value) => dispatch(setUserMainTripShown(value)),
         setClearMap: (value) => dispatch(setClearMap(value)),
     }
 }
