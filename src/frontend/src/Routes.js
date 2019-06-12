@@ -9,7 +9,7 @@ import NewNote from './containers/NewNote'
 import NotFound from './containers/NotFound'
 import Settings from './containers/Settings'
 import ChangeEmail from './containers/ChangeEmail'
-import ResetPassword from './components/PassRestoration'
+import ResetPassword from './components/PassRestoration/PassRestoration'
 import ChangePassword from './containers/ChangePassword'
 
 import AppliedRoute from './components/AppliedRoute'
