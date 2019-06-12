@@ -1,6 +1,6 @@
 import { SET_MAIN_TRIPS_PARAMS, SET_MAIN_TRIPS_POINT_NAMES, SET_CURRENT_TRIP_PARAMS, SET_USER_TRIP_PARAMS,
          SET_TRIP, SET_MY_COORDS, SET_TARGET_COORDS, SET_SEARCHED_LOCATION, SET_INTERMEDIATE_POINTS,
-         SET_TRIP_DATE_TIME, SET_MAIN_TRIP_ID, DELETE_TRIP_FROM_HISTORY, SET_START_LOCATION,
+         SET_MAIN_TRIP_ID, DELETE_TRIP_FROM_HISTORY, SET_START_LOCATION,
          SET_FINISH_LOCATION, CLEAR_MAP, SET_MY_LOCATION, SET_JOIN_STATUS_ARRAY, SET_JOIN_ID_ARRAY,
          SET_MAIN_TRIP_USER_ARRAY, SET_USER_MAIN_TRIP_SHOWN } from './trips'
 import { errorPopupShow } from './userCreators'
@@ -94,12 +94,7 @@ export const setMainTrips = (id) => async dispatch => {
 // * *********************
 
 export const setCurrentMainTripParams = (params) => dispatch => {
-    dispatch({type: SET_CURRENT_TRIP_PARAMS, payload: params})
-}
-// * *********************
-
-export const setTripDateTime = dateTime => dispatch => {
-  dispatch({type: SET_TRIP_DATE_TIME, payload: dateTime})
+    dispatch({type: SET_CURRENT_TRIP_PARAMS, payload: {...params}})
 }
 // * *********************
 
@@ -118,8 +113,8 @@ export const setEndLocation = (location, end) => dispatch => {
 }
 // * *********************
 
-export const clearMap = () => dispatch => {
-    dispatch({type: CLEAR_MAP})
+export const setClearMap = (value) => dispatch => {
+    dispatch({type: CLEAR_MAP, payload: value})
 }
 // * *********************
 
@@ -135,9 +130,13 @@ export const setMainTripIdFromStorage = () => dispatch => {
 }
 //* **********************
 
-export const setUserMainTripShown = () => dispatch => {
-    dispatch({type: SET_USER_MAIN_TRIP_SHOWN, payload: true})
+export const setUserMainTripShown = (value) => dispatch => {
+    dispatch({type: SET_USER_MAIN_TRIP_SHOWN, payload: value})
 }
 //* **********************
+
+export const clearMainTripId = () => dispatch => {
+    dispatch({type: SET_MAIN_TRIP_ID, payload: null})
+}
 
 

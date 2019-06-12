@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import { connect } from 'react-redux'
-import { setCurrentMainTripParams, setUserMainTripShown } from "../../../actions/tripCreators";
-import { sendJoinTripRequest } from '../../../utils/utils'
-import { withStyles } from '@material-ui/core/styles';
+import {connect} from 'react-redux'
+import {setCurrentMainTripParams, setUserMainTripShown, setMainTrips} from "../../../actions/tripCreators";
+import {sendJoinTripRequest} from '../../../utils/utils'
+import {withStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button'
 import Map from '../../Map/Map'
@@ -32,7 +32,7 @@ const styles = theme => ({
     details: {
         display: 'block',
     },
-    button: {
+    routeButton: {
         background: '#fff',
         borderRadius: 4,
         color: '#f57c00',
@@ -42,6 +42,21 @@ const styles = theme => ({
             background: '#fff',
             outline: 'none',
         }
+    },
+    refreshButton: {
+        background: '#fff',
+        borderRadius: 4,
+        color: '#f57c00',
+        height: 30,
+        padding: '0 60px',
+        '&:focus': {
+            background: '#fff',
+            outline: 'none',
+        },
+        '&:active': {
+            background: '#fff',
+            outline: 'none',
+        },
     },
     label: {
         textTransform: 'capitalize'
@@ -83,37 +98,44 @@ class MainRender extends Component {
             this.setJoinStatusArray(joinStatusArray, index)
         }
         else if (joinStatusArray[index] === 3) {
-            joinStatusArray[index] = 4
+            joinStatusArray[index] = 0
             this.setJoinStatusArray(joinStatusArray, index)
         }
-        else if (joinStatusArray[index] === 4) {
-            joinStatusArray[index] = 3
-            this.setJoinStatusArray(joinStatusArray, index)
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.joinStatusArray !== prevProps.joinStatusArray) {
+            this.setState({joinStatusArray: this.props.joinStatusArray})
         }
     }
 
 
     render() {
-        const {classes, mainTripParams, mainTripPointNames, mainTripUserArray} = this.props
+        const {classes, mainTripParams, mainTripPointNames, mainTripUserArray, mainTripId} = this.props
         const routesArray = [...mainTripPointNames]
         routesArray.splice(0, 1)
-        const routesList = routesArray.map((item, index) => (
-                <div className={classes.rectangle} key={index}>
-                    <MainRoute
-                        setCurrentMainTripParams={this.props.setCurrentMainTripParams}
-                        mainTripParams={mainTripParams}
-                        index={index}
-                        joinStatusArray={this.state.joinStatusArray}
-                        mainTripUserArray={mainTripUserArray}
-                        item={item}
-                    />
-                    <Checkbox
-                        onChange={this.handleChange(index)}
-                        checked={this.state.checkboxArray[index]}
-                        style={{color: '#fff'}}
-                    />
-                </div>
-            )
+        const routesList = routesArray.map((item, index) => {
+                if (mainTripUserArray && mainTripUserArray[index]) {
+                    return (
+                        <div className={classes.rectangle} key={index}>
+                            <MainRoute
+                                setCurrentMainTripParams={this.props.setCurrentMainTripParams}
+                                mainTripParams={mainTripParams}
+                                index={index}
+                                joinStatusArray={this.state.joinStatusArray}
+                                mainTripUserArray={mainTripUserArray}
+                                item={item}
+                                setUserMainTripShown={this.props.setUserMainTripShown}
+                            />
+                            <Checkbox
+                                onChange={this.handleChange(index)}
+                                checked={this.state.checkboxArray[index]}
+                                style={{color: '#fff'}}
+                            />
+                        </div>
+                    )
+                } else return null
+            }
         )
         return (
             <>
@@ -123,21 +145,32 @@ class MainRender extends Component {
                     marginTop={'50px'}
                 />
                 <div style={{width: '100%', margin: '20px 0'}}>
+                    <div className='main-buttons-container'>
+                        {
+                            routesList.length > 0 &&
+                            <Button
+                                onClick={() => this.props.setUserMainTripShown(true)}
+                                classes={{
+                                    root: classes.routeButton,
+                                    label: classes.label
+                                }}
+                            >
+                                My route
+                            </Button>
+                        }
+                        <Button
+                            onClick={() => this.props.setMainTrips(mainTripId)}
+                            classes={{
+                                root: classes.refreshButton,
+                                label: classes.label
+                            }}
+                        >
+                            Refresh
+                        </Button>
+                    </div>
                     {
-                        routesList.length > 0 ?
-                            <>
-                                <Button
-                                    onClick={this.props.setUserMainTripShown}
-                                    classes={{
-                                        root: classes.button,
-                                        label: classes.label
-                                    }}
-                                >
-                                    My route
-                                </Button>
-                                {routesList}
-                            </>
-                            : <span style={{color: '#fff'}}>Unfortunately you have no matching routes now</span>
+                        routesList.length > 0 ? routesList :
+                            <span style={{color: '#fff'}}>Unfortunately you have no matching routes now</span>
                     }
                 </div>
             </>
@@ -156,7 +189,8 @@ MainRender.propTypes = {
 const mapDispatchToProps = (dispatch) => {
     return {
         setCurrentMainTripParams: (array) => dispatch(setCurrentMainTripParams(array)),
-        setUserMainTripShown: () => dispatch(setUserMainTripShown()),
+        setUserMainTripShown: (value) => dispatch(setUserMainTripShown(value)),
+        setMainTrips: (tripId) => dispatch(setMainTrips(tripId)),
     }
 }
 

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import { setMainTrips } from "../../actions/tripCreators";
+import { setMainTrips, clearMainTripId } from "../../actions/tripCreators";
 import Spinner from "../Spinner/Spinner";
 import MainRender from "./MainRender/MainRender";
 
@@ -38,6 +38,10 @@ class Main extends Component {
 
     }
 
+    componentWillUnmount(){
+        this.props.clearMainTripId()
+    }
+
     componentDidMount() {
         if (this.props.trips.mainTripId) {
             this.props.setMainTrips(this.props.trips.mainTripId)
@@ -53,7 +57,7 @@ class Main extends Component {
             </div>
         )
         if (tripPointParams && joinStatusArray && tripPointNames && userArray){
-        output =    <MainRender
+           output = <MainRender
                     mainTripPointNames={mainTripPointNames}
                     checkboxArray={checkboxArray}
                     joinIdArray={joinIdArray}
@@ -61,6 +65,7 @@ class Main extends Component {
                     mainTripParams={mainTripParams}
                     mainTripId={this.props.trips.mainTripId}
                     mainTripUserArray={mainTripUserArray}
+                    setMainTrips={this.props.setMainTrips}
                     />
         }
 
@@ -79,6 +84,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         setMainTrips: (id) => dispatch(setMainTrips(id)),
+        clearMainTripId: () => dispatch(clearMainTripId()),
     }
 }
 

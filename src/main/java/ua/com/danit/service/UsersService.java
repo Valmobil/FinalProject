@@ -127,7 +127,7 @@ public class UsersService {
     }
   }
 
-  String normalizeAndCheckPhoneFormat(String userPhone) {
+  public String normalizeAndCheckPhoneFormat(String userPhone) {
     String phone = userPhone.replace("(", "")
         .replace(")", "")
         .replace(" ", "")
