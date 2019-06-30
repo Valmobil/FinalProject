@@ -8,5 +8,6 @@ public class UserCarResponse {
   private String userCarName;
   private String userCarColour;
   private String userCarPhoto;
+  private int userCarSitsQty;
 }
 

@@ -41,8 +41,8 @@ spring:
       enabled: true
       path: /console
 
-server:
-  port: 9000
+#server:
+#  port: $PORT
 
 aws:
   s3:

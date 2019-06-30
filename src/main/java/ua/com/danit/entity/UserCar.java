@@ -28,6 +28,7 @@ public class UserCar extends Auditable {
   private String userCarName;
   private String userCarColour;
   private String userCarPhoto;
+  private int userCarSitsQty;
   @ManyToOne
   @JoinColumn(name = "USER_CAR_USER_ID", referencedColumnName = "userId")
   private User user;
