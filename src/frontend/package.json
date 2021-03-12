@@ -40,7 +40,7 @@
   "devDependencies": {
     "@babel/preset-react": "^7.0.0",
     "npm-watch": "^0.3.0",
-    "react-dev-utils": "^7.0.5",
+    "react-dev-utils": "^11.0.4",
     "standard": "^10.0.3",
     "stylelint": "^9.10.1",
     "stylelint-config-rational-order": "0.0.2",
